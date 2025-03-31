@@ -105,9 +105,9 @@ Route::get('apiarios/editar/{id}', [ApiarioController::class, 'edit'])->name('ap
 Route::post('apiarios/editar/{id}', [ApiarioController::class, 'update'])->name('apiarios.editar');
 Route::get('comunas/{region}', [ApiarioController::class, 'getComunas']);
 Route::delete('/apiarios/delete/{apiario}', [ApiarioController::class, 'deleterApiario'])->name('apiarios.destroy');
+
+// Historial de visitas de un apiario
 Route::get('apiarios/{apiario}/visitas', [VisitaController::class, 'showHistorial'])->name('visitas.historial');
-
-
 
 //Task
 Route::delete('/tareas/{id}', [TaskController::class, 'destroy'])->name('tareas.destroy');

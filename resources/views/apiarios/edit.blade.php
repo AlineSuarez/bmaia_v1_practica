@@ -141,25 +141,7 @@
             $('#longitud').val(lng);
         });
 
-        $('#region').change(function() {
-            var regionId = $(this).val();
-            if (regionId) {
-                $.ajax({
-                    url: '/comunas/' + regionId,
-                    type: "GET",
-                    dataType: "json",
-                    success: function(data) {
-                        $('#comuna').empty();
-                        $('#comuna').append('<option value="">Selecciona una Comuna</option>');
-                        $.each(data, function(key, value) {
-                            $('#comuna').append('<option value="' + key + '">' + value + '</option>');
-                        });
-                    }
-                });
-            } else {
-                $('#comuna').empty();
-            }
-        });
+    
     });
 </script>
 

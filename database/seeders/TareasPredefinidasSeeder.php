@@ -84,7 +84,7 @@ class TareasPredefinidasSeeder extends Seeder
             ["tarea_general_id" => 20, "nombre" =>"Formar núcleos "],
             ["tarea_general_id" => 20, "nombre" =>"Vigilar la enjambrazón natural "],
             ["tarea_general_id" => 20, "nombre" =>"Revisar la fecundación de reinas nuevas "],
-            ["tarea_general_id" => 20, "nombre" =>"RColocar alzas "],
+            ["tarea_general_id" => 20, "nombre" =>"Colocar alzas "],
             ["tarea_general_id" => 20, "nombre" =>"Revisar la ventilación y espacio de las colmenas, para evitar enjambrazón "],
             ["tarea_general_id" => 20, "nombre" =>"Revisar la postura de reinas vírgenes y colmenas zanganeras "],
             ["tarea_general_id" => 20, "nombre" =>"Eliminar restos de miel y cera cerca del apiario, para evitar pillaje "],

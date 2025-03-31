@@ -85,9 +85,9 @@ public function send(Request $request)
             ->latest('fecha_visita')
             ->take(10)
             ->get(['apiario_id', 'fecha_visita', 'vigor_de_colmena',
-             'actividad_colmena','bloqueo_camara_cria','presencia_celdas_reales',
-             'ingreso_pollen','reserva_alimento','presencia_varroa','estado_de_cria',
-             'postura_zanganos','postura_de_reina']);
+                'actividad_colmena','bloqueo_camara_cria','presencia_celdas_reales',
+                'ingreso_pollen','reserva_alimento','presencia_varroa','estado_de_cria',
+                'postura_zanganos','postura_de_reina']);
 
             $context['visitas'] = $visitas->map(function ($visita) {
                 return [
@@ -138,7 +138,7 @@ public function send(Request $request)
             [
                 'role' => 'system',
                 'content' => "Eres un asistente experto en apicultura llamado MaIA. Ayudas a apicultores a manejar sus apiarios y resolver dudas. 
-                              Aquí está la información del apicultor: " . json_encode($context, JSON_PRETTY_PRINT),
+                                Aquí está la información del apicultor: " . json_encode($context, JSON_PRETTY_PRINT),
             ],
             [
                 'role' => 'user',
@@ -288,7 +288,7 @@ public function generarConsejos()
     ]);
 
     // Procesar respuesta
-  
+
     $consejos = json_decode($response['choices'][0]['message']['content'], true);
 
     // Asegurar que el JSON tiene la estructura esperada

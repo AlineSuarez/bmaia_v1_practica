@@ -4,7 +4,7 @@
 <div class="container">
     <h1 class="mb-4 text-center" style="color: #FFB800;">Agregar Nuevo Apiario</h1>
 
-    <form action="{{ route('apiarios.store') }}" method="POST" class="p-4 shadow-sm" style="background-color: #FFF8E1; border-radius: 10px;">
+    <form action="{{ route('apiarios.store') }}" method="POST" enctype="multipart/form-data" class="p-4 shadow-sm" style="background-color: #FFF8E1; border-radius: 10px;">
     @csrf
 
     <!-- Campo para Nombre del Apiario -->
@@ -75,18 +75,19 @@
     <div class="form-group">
         <label for="map" class="text-warning">Ubicación en el Mapa</label>
         <div id="map" style="height: 350px; margin-bottom: 15px; border: 2px solid #FFB800; border-radius: 8px;"></div>
+        
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label for="latitud" class="text-warning">Latitud</label>
+                <input type="text" class="form-control" id="latitud" name="latitud" readonly required style="border: 1px solid #FFB800;">
+            </div>
+            <div class="form-group col-md-6">
+                <label for="longitud" class="text-warning">Longitud</label>
+                <input type="text" class="form-control" id="longitud" name="longitud" readonly required style="border: 1px solid #FFB800;">
+            </div>
+        </div>
     </div>
 
-    <div class="form-row">
-        <div class="form-group col-md-6">
-            <label for="latitud" class="text-warning">Latitud</label>
-            <input type="text" class="form-control" id="latitud" name="latitud" readonly required style="border: 1px solid #FFB800;">
-        </div>
-        <div class="form-group col-md-6">
-            <label for="longitud" class="text-warning">Longitud</label>
-            <input type="text" class="form-control" id="longitud" name="longitud" readonly required style="border: 1px solid #FFB800;">
-        </div>
-    </div>
 
     <!-- Fotografía del Apiario -->
     <div class="form-group">
@@ -106,67 +107,89 @@
 </form>
 
 </div>
- <!-- Scripts -->
- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
-    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
-    <script>
-        $(document).ready(function() {
-            // Generar años para la temporada de producción
-            const currentYear = new Date().getFullYear();
-            let options = '';
+<!-- Scripts -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    
+<script>
 
-            // Crear las opciones para el rango actual y pasado
-            for (let i = 1; i >= -1; i--) {
-                const startYear = currentYear - i;
-                const endYear = startYear + 1;
-                options += `<option value="${startYear}-${endYear}">${startYear}-${endYear}</option>`;
-            }
-            $('#temporada_produccion').html(options);
+    let map;
+    let marker;
+    let comunasCoordenadas = @json($comunasCoordenadas); // Obtener las coordenadas desde el controlador
 
-            // Inicializar el mapa con geolocalización
-            function getCurrentLocation() {
-                if (navigator.geolocation) {
-                    navigator.geolocation.getCurrentPosition(function(position) {
-                        initMap(position.coords.latitude, position.coords.longitude);
-                    }, function() {
-                        // Coordenadas predeterminadas si falla la geolocalización
-                        alert('No se pudo obtener la ubicación. Usando ubicación predeterminada.');
-                        initMap(-33.4489, -70.6693); // Santiago, Chile
-                    });
-                } else {
-                    alert('Geolocalización no es soportada. Usando ubicación predeterminada.');
+    $(document).ready(function() {
+        // Generar años para la temporada de producción
+        const currentYear = new Date().getFullYear();
+        let options = '';
+
+        // Crear las opciones para el rango actual y pasado
+        for (let i = 1; i >= -1; i--) {
+            const startYear = currentYear - i;
+            const endYear = startYear + 1;
+            options += `<option value="${startYear}-${endYear}">${startYear}-${endYear}</option>`;
+        }
+        $('#temporada_produccion').html(options);
+
+        // Inicializar el mapa con geolocalización
+        function getCurrentLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(function(position) {
+                    initMap(position.coords.latitude, position.coords.longitude);
+                }, function() {
+                    // Coordenadas predeterminadas si falla la geolocalización
+                    alert('No se pudo obtener la ubicación. Usando ubicación predeterminada.');
                     initMap(-33.4489, -70.6693); // Santiago, Chile
-                }
-            }
-
-            function initMap(lat, lng) {
-                const map = L.map('map').setView([lat, lng], 13);
-                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                    attribution: 'Map data © <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                }).addTo(map);
-
-                const marker = L.marker([lat, lng], { draggable: true }).addTo(map);
-
-                marker.on('dragend', function(event) {
-                    const position = marker.getLatLng();
-                    $('#latitud').val(position.lat);
-                    $('#longitud').val(position.lng);
                 });
-
-                map.on('click', function(e) {
-                    marker.setLatLng(e.latlng);
-                    $('#latitud').val(e.latlng.lat);
-                    $('#longitud').val(e.latlng.lng);
-                });
-
-                $('#latitud').val(lat);
-                $('#longitud').val(lng);
+            } else {
+                alert('Geolocalización no es soportada. Usando ubicación predeterminada.');
+                initMap(-33.4489, -70.6693); // Santiago, Chile
             }
+        }
 
-            getCurrentLocation();
-        });
-    </script>
+        function initMap(lat, lng) {
+            map = L.map('map').setView([lat, lng], 13);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: 'Map data © <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            }).addTo(map);
+
+            marker = L.marker([lat, lng], { draggable: true }).addTo(map);
+
+            marker.on('dragend', function(event) {
+                const position = marker.getLatLng();
+                $('#latitud').val(position.lat);
+                $('#longitud').val(position.lng);
+            });
+
+            map.on('click', function(e) {
+                marker.setLatLng(e.latlng);
+                $('#latitud').val(e.latlng.lat);
+                $('#longitud').val(e.latlng.lng);
+            });
+
+            $('#latitud').val(lat);
+            $('#longitud').val(lng);
+        }
+
+        getCurrentLocation();
+
+    // Cambiar las coordenadas al seleccionar una comuna
+    $('#comuna').change(function(){
+        const comunaNombre = $(this).find('option:selected').text();
+        console.log("Comuna seleccionada: " + comunaNombre);
+        console.log("comunasCoordenadas", comunasCoordenadas);
+        if (comunasCoordenadas[comunaNombre]) {
+            const { lat, lon } = comunasCoordenadas[comunaNombre];
+            map.setView([lat, lon], 13);
+            marker.setLatLng([lat, lon]);
+            $('#latitud').val(lat);
+            $('#longitud').val(lon);
+        } else {
+            alert('No se encontraron las coordenadas de la comuna seleccionada.');
+        }
+    });
+    });
+</script>
 
 
 <script>
@@ -220,5 +243,5 @@
         });
     });
 </script>
-</div>
+
 @endsection

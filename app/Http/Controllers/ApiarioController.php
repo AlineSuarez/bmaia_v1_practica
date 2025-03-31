@@ -23,8 +23,16 @@ class ApiarioController extends Controller
     public function create()
     { // Obtener todas las regiones
         $regiones = Region::with('comunas')->get();
-        return view('apiarios.create', compact('regiones'));
 
+        //Recuperar las comunas de la región seleccionada
+        $comunas = Comuna::all();
+
+        // Preparar coordenadas de las comunas para usar en el mapa
+        $comunasCoordenadas = $comunas->mapWithKeys(function ($comuna) {
+            return [$comuna->nombre => ['lat' => $comuna->lat, 'lon' => $comuna->lon]];
+        })->toArray();
+
+    return view('apiarios.create', compact('regiones', 'comunasCoordenadas'));
     }
 
     // Guardar un nuevo apiario
@@ -77,7 +85,6 @@ class ApiarioController extends Controller
         return redirect()->route('apiarios')->with('success', 'Apiario agregado con éxito');
 
     }
-
 
         // Método para retornar comunas en función de la región
         public function getComunas($regionId)
@@ -172,7 +179,4 @@ class ApiarioController extends Controller
 
                 return redirect()->route('apiarios')->with('success', 'Apiario actualizado exitosamente.');
             }
-
-
-
 }

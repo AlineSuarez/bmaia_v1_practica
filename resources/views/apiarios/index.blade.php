@@ -16,63 +16,59 @@
     
     <!-- Tabla de Apiarios -->
     <div class="table-responsive">
-    <table id="apiariosTable" class="table table-striped table-bordered">
-    <thead>
-        <tr>
-            <th class="text-center"><input type="checkbox" id="selectAll"></th>
-            <th class="text-center">ID Apiario</th>
-            <th class="text-center">Temporada de producción</th>
-            <th class="text-center">N° Registro SAG (FRADA)</th>
-            <th class="text-center">N° de colmenas</th>
-            <th class="text-center">Tipo de apiario</th>
-            <th class="text-center">Tipo de manejo</th>
-            <th class="text-center">Objetivo de producción</th>
-            <th class="text-center">Comuna</th>
-            <th class="text-center">Localización</th>
-            <th class="text-center">Fotografía</th>
-            <th class="text-center">Acciones</th>
-         
-        </tr>
-    </thead>
-    <tbody>
-        @foreach ($apiarios as $apiario)
-        <tr>
-            <td class="text-center">
-                <input type="checkbox" class="select-checkbox" value="{{ $apiario->id }}">
-            </td>
-            <td class="text-center">{{ $apiario->id }}-{{ $apiario->nombre }}</td>
-            <td class="text-center">{{ $apiario->temporada_produccion }}</td>
-            <td class="text-center">{{ $apiario->registro_sag }}</td>
-            <td class="text-center">{{ $apiario->num_colmenas }}</td>
-            <td class="text-center">{{ $apiario->tipo_apiario }}</td>
-            <td class="text-center">{{ $apiario->tipo_manejo }}</td>
-            <td class="text-center">{{ $apiario->objetivo_produccion }}</td>
-            <td class="text-center">{{ $apiario->nombre_comuna ? $apiario->comuna->nombre  : 'N/A' }}</td>
-            <td class="text-center">{{ $apiario->latitud }}, {{ $apiario->longitud }}</td>
-            <td class="text-center">    
-                @if($apiario->foto)
-                    <img src="{{ asset('storage/' . $apiario->foto) }}" alt="Fotografía del Apiario" style="max-width: 100px; border-radius: 8px;">
-                @endif
-            </td>
-            <td class="text-center">
-                <a href="{{ route('apiarios.editar', $apiario->id) }}" class="btn btn-sm btn-warning">
-                    <i class="fas fa-edit"></i> 
-                </a>
-                <button class="btn btn-sm btn-danger" type="button" onclick="showDeleteModal({{ $apiario->id }})">
-                    <i class="fas fa-trash-alt"></i> 
-                </button>
+        <table id="apiariosTable" class="table table-striped table-bordered">
+            <thead>
+                <tr>
+                    <th class="text-center"><input type="checkbox" id="selectAll"></th>
+                    <th class="text-center">ID Apiario</th>
+                    <th class="text-center">Temporada de producción</th>
+                    <th class="text-center">N° Registro SAG (FRADA)</th>
+                    <th class="text-center">N° de colmenas</th>
+                    <th class="text-center">Tipo de apiario</th>
+                    <th class="text-center">Tipo de manejo</th>
+                    <th class="text-center">Objetivo de producción</th>
+                    <th class="text-center">Comuna</th>
+                    <th class="text-center">Localización</th>
+                    <th class="text-center">Fotografía</th>
+                    <th class="text-center">Acciones</th>
+                </tr>
+            </thead>
 
-            <a href="{{ route('generate.document', $apiario->id) }}" class="btn btn-sm btn-info">
-                    <i class="fas fa-download"></i> 
-                </a>
-             
-
-            </td>
-        </tr>
-        @endforeach
-    </tbody>
-</table>
-
+            <tbody>
+                @foreach ($apiarios as $apiario)
+                <tr>
+                    <td class="text-center">
+                        <input type="checkbox" class="select-checkbox" value="{{ $apiario->id }}">
+                    </td>
+                    <td class="text-center">{{ $apiario->id }}-{{ $apiario->nombre }}</td>
+                    <td class="text-center">{{ $apiario->temporada_produccion }}</td>
+                    <td class="text-center">{{ $apiario->registro_sag }}</td>
+                    <td class="text-center">{{ $apiario->num_colmenas }}</td>
+                    <td class="text-center">{{ $apiario->tipo_apiario }}</td>
+                    <td class="text-center">{{ $apiario->tipo_manejo }}</td>
+                    <td class="text-center">{{ $apiario->objetivo_produccion }}</td>
+                    <td class="text-center">{{ $apiario->nombre_comuna ? $apiario->comuna->nombre  : 'N/A' }}</td>
+                    <td class="text-center">{{ $apiario->latitud }}, {{ $apiario->longitud }}</td>
+                    <td class="text-center">    
+                        @if($apiario->foto)
+                            <img src="{{ asset('storage/' . $apiario->foto) }}" alt="Fotografía del Apiario" style="max-width: 100px; border-radius: 8px;">
+                        @endif
+                    </td>
+                    <td class="text-center">
+                        <a href="{{ route('apiarios.editar', $apiario->id) }}" class="btn btn-sm btn-warning">
+                            <i class="fas fa-edit"></i> 
+                        </a>
+                            <button class="btn btn-sm btn-danger" type="button" data-bs-toggle="modal" data-bs-target="#deleteModal{{ $apiario->id }}">
+                                <i class="fas fa-trash-alt"></i> 
+                            </button>
+                        <a href="{{ route('generate.document', $apiario->id) }}" class="btn btn-sm btn-info">
+                            <i class="fas fa-download"></i> 
+                        </a>
+                    </td>
+                </tr>
+                @endforeach
+            </tbody>
+        </table>
     </div>
 </div>
 
@@ -94,6 +90,31 @@
         </div>
     </div>
 </div>
+
+<!-- Modal de confirmacion para un apiario individual -->
+@foreach ($apiarios as $apiario)
+<div class="modal fade" id="deleteModal{{ $apiario->id }}" tabindex="-1" aria-labelledby="deleteModalLabel{{ $apiario->id }}" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteModalLabel{{ $apiario->id }}">Confirmar Eliminación</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                ¿Está seguro de que desea eliminar este apiario?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <form action="{{ route('apiarios.destroy', $apiario->id) }}" method="POST">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="btn btn-danger">Eliminar</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+@endforeach
 
 <!-- Scripts -->
 <script>
