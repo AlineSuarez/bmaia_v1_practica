@@ -1037,5 +1037,148 @@
 </section>
 
 <footer>
-  <p>&copy; {{ date(format: 'Y') }} MaiA. Todos los derechos reservados.</p>
+  <!-- Decoraciones hexagonales -->
+  <div class="footer-decoration footer-hex-1"></div>
+  <div class="footer-decoration footer-hex-2"></div>
+  <div class="footer-decoration footer-hex-3"></div>
+  <div class="footer-decoration footer-hex-4"></div>
+  <div class="footer-decoration footer-hex-5"></div>
+
+  <!-- Efecto de luz radial -->
+  <div class="footer-light"></div>
+
+  <!-- Efecto de brillo en el borde superior -->
+  <div class="footer-glow"></div>
+
+  <!-- Contenedor principal -->
+  <div class="footer-container">
+    <!-- Sección del logo -->
+    <div class="footer-logo-section">
+      <div class="footer-logo">
+        <div class="footer-logo-icon">
+          <i class="fas fa-seedling"></i>
+        </div>
+        <div class="footer-logo-text">MaiA</div>
+      </div>
+      <p class="footer-description">
+        Soluciones innovadoras para la apicultura moderna. Monitorizamos y optimizamos la producción de miel con
+        tecnología de vanguardia para garantizar la salud de las abejas y la calidad del producto final, contribuyendo a
+        un ecosistema más sostenible.
+      </p>
+      <div class="footer-social">
+        <a href="#" class="social-link"><i class="fab fa-facebook-f"></i></a>
+        <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
+        <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
+        <a href="#" class="social-link"><i class="fab fa-linkedin-in"></i></a>
+        <a href="#" class="social-link"><i class="fab fa-youtube"></i></a>
+      </div>
+    </div>
+
+    <!-- Productos destacados -->
+    <div class="footer-column">
+      <h3>Productos Destacados</h3>
+      <ul class="product-list">
+        <li class="product-item">
+          <div class="product-icon">
+            <i class="fas fa-microchip"></i>
+          </div>
+          <div class="product-info">
+            <div class="product-name">MaiA Sensor Pro</div>
+            <div class="product-desc">Monitoreo avanzado de temperatura y humedad</div>
+          </div>
+        </li>
+        <li class="product-item">
+          <div class="product-icon">
+            <i class="fas fa-tablet-alt"></i>
+          </div>
+          <div class="product-info">
+            <div class="product-name">MaiA Control</div>
+            <div class="product-desc">Panel de control para apicultores</div>
+          </div>
+        </li>
+        <li class="product-item">
+          <div class="product-icon">
+            <i class="fas fa-cloud"></i>
+          </div>
+          <div class="product-info">
+            <div class="product-name">MaiA Cloud</div>
+            <div class="product-desc">Almacenamiento y análisis de datos</div>
+          </div>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Horario de atención -->
+    <div class="footer-column">
+      <h3>Horario de Atención</h3>
+      <ul class="hours-list">
+        <li class="hours-item">
+          <span class="day">Lunes</span>
+          <span class="time">9:00 - 18:00</span>
+        </li>
+        <li class="hours-item">
+          <span class="day">Martes</span>
+          <span class="time">9:00 - 18:00</span>
+        </li>
+        <li class="hours-item current">
+          <span class="day">Miércoles</span>
+          <span class="time">9:00 - 18:00</span>
+        </li>
+        <li class="hours-item">
+          <span class="day">Jueves</span>
+          <span class="time">9:00 - 18:00</span>
+        </li>
+        <li class="hours-item">
+          <span class="day">Viernes</span>
+          <span class="time">9:00 - 17:00</span>
+        </li>
+        <li class="hours-item">
+          <span class="day">Sábado</span>
+          <span class="time">10:00 - 14:00</span>
+        </li>
+        <li class="hours-item">
+          <span class="day">Domingo</span>
+          <span class="time">Cerrado</span>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Información de contacto -->
+    <div class="footer-column">
+      <h3>Contacto</h3>
+      <ul class="footer-contact-info">
+        <li>
+          <i class="fas fa-map-marker-alt"></i>
+          <span>Calle Apicultura 123, Ciudad Miel, 28001</span>
+        </li>
+        <li>
+          <i class="fas fa-phone-alt"></i>
+          <span>+34 123 456 789</span>
+        </li>
+        <li>
+          <i class="fas fa-envelope"></i>
+          <span>info@maia-tech.com</span>
+        </li>
+        <li>
+          <i class="fas fa-headset"></i>
+          <span>Soporte: +34 123 456 790</span>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Parte inferior del footer -->
+  <div class="footer-bottom">
+    <!-- Efecto de onda decorativa -->
+    <div class="footer-wave"></div>
+
+    <div class="footer-bottom-content">
+      <p class="copyright">&copy; {{ date(format: 'Y') }} MaiA. Todos los derechos reservados.</p>
+      <div class="footer-bottom-links">
+        <a href="#">Política de Privacidad</a>
+        <a href="#">Términos de Servicio</a>
+        <a href="#">Política de Cookies</a>
+      </div>
+    </div>
+  </div>
 </footer>

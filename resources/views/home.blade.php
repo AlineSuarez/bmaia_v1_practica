@@ -114,7 +114,6 @@ $(document).ready(function() {
   var nombreCompleto = usuario.name;
   var nombreDePila = obtenerNombreDePila(nombreCompleto);
 console.log(usuario.name);
-  // Generar un mensaje aleatorio
   var mensajes = [
     function() {
       return "Bienvenido otra vez "+nombreDePila+", veo que tienes " + tareas_pendientes + " tareas sin realizar.";
@@ -130,10 +129,7 @@ console.log(usuario.name);
     }
   ];
 
-  // Seleccionar un mensaje aleatorio
   var mensajeAleatorio = mensajes[Math.floor(Math.random() * mensajes.length)]();
-
-  // Leer el mensaje
   VoiceReader.readText(mensajeAleatorio);
 });
 
@@ -142,7 +138,6 @@ console.log(usuario.name);
 
 //tour
 document.addEventListener('DOMContentLoaded', function () {
-    // Inicializa Shepherd.js
     const tour = new Shepherd.Tour({
         defaultStepOptions: {
             classes: 'shepherd-theme-arrows',
@@ -157,32 +152,31 @@ document.addEventListener('DOMContentLoaded', function () {
     // Pasos del tour
     const steps = [
         {
-            element: '.col-md-3:nth-child(1)', // Primer Card (Apiarios)
+            element: '.col-md-3:nth-child(1)',
             title: 'Apiarios',
             text: 'Aquí puedes gestionar todos tus apiarios, revisar el total de colmenas y más detalles.',
             position: 'bottom',
         },
         {
-            element: '.col-md-3:nth-child(2)', // Segundo Card (Inspecciones)
+            element: '.col-md-3:nth-child(2)',
             title: 'Inspecciones',
             text: 'Accede al cuaderno de campo para realizar inspecciones. Revisa los detalles y organiza tu temporada.',
             position: 'bottom',
         },
         {
-            element: '.col-md-3:nth-child(3)', // Tercer Card (Tareas)
+            element: '.col-md-3:nth-child(3)',
             title: 'Tareas',
             text: 'Aquí puedes gestionar tu agenda.',
             position: 'bottom',
         },
         {
-            element: '.col-md-3:nth-child(4)', // Cuarto Card (Zonificación)
+            element: '.col-md-3:nth-child(4)',
             title: 'Zonificación',
             text: 'Gestiona áreas geográficas relacionadas con tus apiarios.',
             position: 'bottom',
         },
     ];
 
-    // Agregar los pasos al tour
     steps.forEach((step) => {
         tour.addStep({
             text: step.text,
@@ -204,16 +198,11 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
-    // Mostrar el tour solo la primera vez que el usuario abre el sitio
     if (!localStorage.getItem('hasSeenTour')) {
         tour.start();
-        localStorage.setItem('hasSeenTour', true); // Marca que el usuario ya vio el tour
+        localStorage.setItem('hasSeenTour', true);
     }
 });
 
 </script>
-
-
-
-
 @endsection

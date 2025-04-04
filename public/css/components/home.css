@@ -10,9 +10,25 @@
     --gradient-start: rgba(0, 0, 0, 0);
     --gradient-end: rgba(0, 0, 0, 0.8);
     --background-light: #fffdf7;
+    --amber-50: #fffbeb;
+    --amber-100: #fef3c7;
+    --amber-200: #fde68a;
+    --amber-300: #fcd34d;
+    --amber-400: #fbbf24;
+    --amber-500: #f59e0b;
+    --amber-600: #d97706;
+    --amber-700: #b45309;
+    --amber-800: #92400e;
+    --amber-900: #78350f;
+    --amber-950: #451a03;
+    --text-darker: #2c3e50;
+    --text-lighter: #718096;
+    --white: #ffffff;
+    --shadow-sm: 0 4px 6px rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 10px 15px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 20px 25px rgba(0, 0, 0, 0.15);
 }
 
-/* Reset all margins and paddings */
 * {
     margin: 0;
     padding: 0;
@@ -2109,18 +2125,6 @@ body {
 
 /*Sección de herramientas*/
 
-:root {
-    --primary-color: #ffd54f;
-    --primary-light: #fff3c4;
-    --primary-dark: #ffca28;
-    --accent-color: #ecc100;
-    --text-light: #ffffff;
-    --text-dark: #2c3e50;
-    --gradient-start: rgba(0, 0, 0, 0);
-    --gradient-end: rgba(0, 0, 0, 0.8);
-    --background-light: #fffdf7;
-}
-
 /* Estilos generales de la sección */
 .herramientas-section {
     position: relative;
@@ -3132,30 +3136,6 @@ body {
 
 /* Estilos para las secciones de Descarga y Cómo Funciona */
 
-/* Variables compartidas */
-:root {
-    --primary-color: #ffd54f;
-    --primary-light: #fff3c4;
-    --primary-dark: #ffca28;
-    --accent-color: #ecc100;
-    --text-light: #ffffff;
-    --text-dark: #2c3e50;
-    --gradient-start: rgba(0, 0, 0, 0);
-    --gradient-end: rgba(0, 0, 0, 0.8);
-    --background-light: #fffdf7;
-    --amber-50: #fffbeb;
-    --amber-100: #fef3c7;
-    --amber-200: #fde68a;
-    --amber-300: #fcd34d;
-    --amber-400: #fbbf24;
-    --amber-500: #f59e0b;
-    --amber-600: #d97706;
-    --amber-700: #b45309;
-    --amber-800: #92400e;
-    --amber-900: #78350f;
-}
-
-/* Estilos generales para ambas secciones */
 .container {
     max-width: 1400px;
     margin: 0 auto;
@@ -4276,28 +4256,6 @@ body {
 
 /* Estilos para las secciones de Testimonios y Contacto */
 
-/* Variables */
-:root {
-    --amber-50: #fffbeb;
-    --amber-100: #fef3c7;
-    --amber-200: #fde68a;
-    --amber-300: #fcd34d;
-    --amber-400: #fbbf24;
-    --amber-500: #f59e0b;
-    --amber-600: #d97706;
-    --amber-700: #b45309;
-    --amber-800: #92400e;
-    --amber-900: #78350f;
-    --amber-950: #451a03;
-    --text-darker: #2c3e50;
-    --text-lighter: #718096;
-    --white: #ffffff;
-    --shadow-sm: 0 4px 6px rgba(0, 0, 0, 0.05);
-    --shadow-md: 0 10px 15px rgba(0, 0, 0, 0.1);
-    --shadow-lg: 0 20px 25px rgba(0, 0, 0, 0.15);
-}
-
-/* ===== SECCIÓN DE TESTIMONIOS ===== */
 .testimonios-section {
     position: relative;
     padding: 120px 0;
@@ -4305,7 +4263,6 @@ body {
     overflow: hidden;
 }
 
-/* Fondo de panal de abeja */
 .honeycomb-bg {
     position: absolute;
     top: 0;
@@ -4318,7 +4275,6 @@ body {
     z-index: 0;
 }
 
-/* Partículas decorativas */
 .testimonios-section .particles-container {
     position: absolute;
     top: 0;
@@ -4774,6 +4730,7 @@ body {
 }
 
 /* ===== SECCIÓN DE CONTACTO ===== */
+
 .contacto-section {
     position: relative;
     padding: 120px 0;
@@ -4795,7 +4752,6 @@ body {
     position: absolute;
     width: 300px;
     height: 600px;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='100' viewBox='0 0 56 100'%3E%3Cpath fill='%23fbbf24' d='M28 66L0 50L0 16L28 0L56 16L56 50L28 66L28 100'/%3E%3C/svg%3E");
     background-size: 56px 100px;
     opacity: 0.05;
 }
@@ -5115,35 +5071,6 @@ body {
     transform: translateY(-5px) scale(1.1);
     box-shadow: var(--shadow-md);
 }
-
-.facebook {
-    background: #3b5998;
-}
-
-.instagram {
-    background: linear-gradient(
-        45deg,
-        #f09433 0%,
-        #e6683c 25%,
-        #dc2743 50%,
-        #cc2366 75%,
-        #bc1888 100%
-    );
-}
-
-.twitter {
-    background: #1da1f2;
-}
-
-.youtube {
-    background: #ff0000;
-}
-
-.linkedin {
-    background: #0077b5;
-}
-
-/* Decoraciones hexagonales */
 .contacto-decoration {
     position: absolute;
     width: 100%;
@@ -5328,5 +5255,806 @@ body {
         width: 40px;
         height: 40px;
         font-size: 18px;
+    }
+}
+
+/*Fin de la sección contacto*/
+
+/* Footer */
+footer {
+    position: relative;
+    background: linear-gradient(
+        180deg,
+        var(--background-light) 0%,
+        var(--amber-50) 100%
+    );
+    overflow: hidden;
+    padding-top: 120px; /* Más espacio superior */
+    padding-bottom: 0;
+    border-top: 1px solid rgba(252, 211, 77, 0.3);
+    color: #333333; /* Color base para todo el footer */
+}
+
+/* Decoraciones hexagonales mejoradas */
+.footer-decoration {
+    position: absolute;
+    background-color: var(--amber-200);
+    opacity: 0.15;
+    clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+    z-index: 0;
+}
+
+.footer-hex-1 {
+    width: 400px; /* Más grande */
+    height: 400px;
+    top: -200px;
+    right: -100px;
+    animation: float-slow 20s ease-in-out infinite;
+}
+
+.footer-hex-2 {
+    width: 250px; /* Más grande */
+    height: 250px;
+    bottom: 50px;
+    left: -80px;
+    animation: float-medium 15s ease-in-out infinite;
+}
+
+.footer-hex-3 {
+    width: 180px; /* Más grande */
+    height: 180px;
+    top: 30%;
+    left: 30%;
+    animation: float-fast 12s ease-in-out infinite;
+}
+
+/* Decoraciones adicionales */
+.footer-hex-4 {
+    width: 120px;
+    height: 120px;
+    bottom: 20%;
+    right: 15%;
+    animation: float-medium 18s ease-in-out infinite reverse;
+    opacity: 0.1;
+}
+
+.footer-hex-5 {
+    width: 80px;
+    height: 80px;
+    top: 15%;
+    left: 10%;
+    animation: float-fast 10s ease-in-out infinite;
+    opacity: 0.1;
+}
+
+@keyframes float-slow {
+    0%,
+    100% {
+        transform: translateY(0) rotate(0deg);
+    }
+    50% {
+        transform: translateY(-30px) rotate(5deg);
+    }
+}
+
+@keyframes float-medium {
+    0%,
+    100% {
+        transform: translateY(0) rotate(0deg);
+    }
+    50% {
+        transform: translateY(20px) rotate(-5deg);
+    }
+}
+
+@keyframes float-fast {
+    0%,
+    100% {
+        transform: translateY(0) rotate(0deg);
+    }
+    50% {
+        transform: translateY(-15px) rotate(10deg);
+    }
+}
+
+/* Patrón de fondo de panal mejorado */
+footer::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='100' viewBox='0 0 56 100'%3E%3Cpath fill='%23fbbf24' d='M28 66L0 50L0 16L28 0L56 16L56 50L28 66L28 100'/%3E%3C/svg%3E");
+    background-size: 56px 100px;
+    opacity: 0.05;
+    z-index: 0;
+}
+
+/* Efecto de luz radial */
+.footer-light {
+    position: absolute;
+    top: 30%;
+    left: 50%;
+    width: 800px;
+    height: 800px;
+    background: radial-gradient(
+        circle,
+        rgba(252, 211, 77, 0.1) 0%,
+        rgba(252, 211, 77, 0) 70%
+    );
+    transform: translate(-50%, -50%);
+    z-index: 0;
+    pointer-events: none;
+}
+
+/* Contenedor principal - Layout mejorado y ajustado sin certificaciones */
+.footer-container {
+    position: relative;
+    max-width: 1800px; /* Aún más ancho para pantallas grandes */
+    margin: 0 auto;
+    padding: 0 5%;
+    display: grid;
+    grid-template-columns: 2fr repeat(3, 1fr); /* Ajustado a 4 columnas en total */
+    gap: 70px; /* Más espacio entre columnas */
+    z-index: 1;
+}
+
+/* Sección del logo - Diseño mejorado */
+.footer-logo-section {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding-right: 40px; /* Más espacio a la derecha */
+    position: relative;
+}
+
+/* Efecto de borde decorativo */
+.footer-logo-section::after {
+    content: "";
+    position: absolute;
+    top: 10%;
+    right: 0;
+    height: 80%;
+    width: 1px;
+    background: linear-gradient(
+        to bottom,
+        rgba(252, 211, 77, 0),
+        rgba(252, 211, 77, 0.5),
+        rgba(252, 211, 77, 0)
+    );
+}
+
+.footer-logo {
+    display: flex;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.footer-logo-icon {
+    width: 70px; /* Más grande */
+    height: 70px;
+    background: linear-gradient(
+        135deg,
+        var(--amber-400) 0%,
+        var(--amber-600) 100%
+    );
+    border-radius: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 20px;
+    box-shadow: 0 10px 25px rgba(245, 158, 11, 0.3);
+    position: relative;
+    overflow: hidden;
+}
+
+.footer-logo-icon::after {
+    content: "";
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(
+        to right,
+        rgba(255, 255, 255, 0) 0%,
+        rgba(255, 255, 255, 0.3) 50%,
+        rgba(255, 255, 255, 0) 100%
+    );
+    transform: rotate(30deg);
+    animation: shine 3s infinite;
+}
+
+@keyframes shine {
+    0% {
+        transform: translateX(-100%) rotate(30deg);
+    }
+    100% {
+        transform: translateX(100%) rotate(30deg);
+    }
+}
+
+.footer-logo-icon i {
+    font-size: 32px; /* Más grande */
+    color: white;
+}
+
+.footer-logo-text {
+    font-family: "Playfair Display", serif;
+    font-size: 42px; /* Más grande */
+    font-weight: 700;
+    color: #000000; /* Negro para el título principal */
+    background: linear-gradient(to right, var(--amber-700), var(--amber-500));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+.footer-description {
+    font-size: 17px; /* Más grande */
+    line-height: 1.8;
+    color: #444444; /* Gris oscuro para texto */
+    margin-bottom: 35px;
+    opacity: 0.9;
+    max-width: 90%;
+}
+
+.footer-social {
+    display: flex;
+    gap: 18px; /* Más espacio entre iconos */
+}
+
+.social-link {
+    width: 50px; /* Más grande */
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(
+        135deg,
+        var(--amber-100) 0%,
+        var(--amber-200) 100%
+    );
+    color: var(--amber-700);
+    font-size: 20px; /* Más grande */
+    transition: all 0.3s ease;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    position: relative;
+    overflow: hidden;
+    text-decoration: none; /* Quitar subrayado de redes sociales */
+}
+
+.social-link::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        135deg,
+        var(--amber-400) 0%,
+        var(--amber-600) 100%
+    );
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    z-index: -1;
+}
+
+.social-link:hover {
+    color: white;
+    transform: translateY(-8px); /* Más movimiento */
+    box-shadow: 0 12px 20px rgba(245, 158, 11, 0.2);
+}
+
+.social-link:hover::before {
+    opacity: 1;
+}
+
+/* Columnas del footer - Diseño mejorado */
+.footer-column {
+    display: flex;
+    flex-direction: column;
+    padding: 0 15px; /* Más padding horizontal */
+    position: relative;
+}
+
+/* Quitar las líneas superiores de cada título */
+.footer-column::before {
+    display: none; /* Eliminamos la línea superior */
+}
+
+/* Mejorar el subrayado inferior de cada título */
+.footer-column h3 {
+    font-size: 22px;
+    font-weight: 700;
+    color: #000000;
+    margin-bottom: 30px;
+    position: relative;
+    padding-bottom: 15px;
+}
+
+.footer-column h3::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 60px; /* Más ancho */
+    height: 3px; /* Altura adecuada */
+    background: linear-gradient(
+        to right,
+        var(--amber-500),
+        var(--amber-300)
+    ); /* Gradiente más suave */
+    border-radius: 3px;
+    transition: width 0.3s ease; /* Añadimos transición */
+}
+
+/* Efecto hover para el subrayado */
+.footer-column:hover h3::after {
+    width: 80px; /* Se expande ligeramente al hacer hover */
+}
+
+/* Información de contacto - Diseño mejorado */
+.footer-contact-info {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.footer-contact-info li {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 25px; /* Más espacio entre elementos */
+    transition: all 0.3s ease;
+}
+
+.footer-contact-info li:hover {
+    transform: translateX(5px);
+}
+
+.footer-contact-info i {
+    width: 40px; /* Más grande */
+    height: 40px;
+    background: linear-gradient(
+        135deg,
+        var(--amber-100) 0%,
+        var(--amber-200) 100%
+    );
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--amber-700);
+    font-size: 18px;
+    margin-right: 18px;
+    flex-shrink: 0;
+    transition: all 0.3s ease;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+}
+
+.footer-contact-info li:hover i {
+    background: linear-gradient(
+        135deg,
+        var(--amber-300) 0%,
+        var(--amber-400) 100%
+    );
+    color: var(--text-dark);
+    transform: scale(1.1);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+}
+
+.footer-contact-info span {
+    font-size: 16px;
+    color: #444444; /* Gris oscuro para texto */
+    line-height: 1.6;
+    padding-top: 5px; /* Alineación vertical mejorada */
+}
+
+/* Productos destacados - Diseño mejorado */
+.product-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.product-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 25px; /* Más espacio */
+    padding-bottom: 25px;
+    border-bottom: 1px dashed rgba(252, 211, 77, 0.3);
+    transition: all 0.3s ease;
+}
+
+.product-item:hover {
+    transform: translateX(8px);
+}
+
+.product-item:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+.product-icon {
+    width: 50px; /* Más grande */
+    height: 50px;
+    background: linear-gradient(
+        135deg,
+        var(--amber-100) 0%,
+        var(--amber-200) 100%
+    );
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 20px;
+    flex-shrink: 0;
+    transition: all 0.3s ease;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+}
+
+.product-item:hover .product-icon {
+    background: linear-gradient(
+        135deg,
+        var(--amber-200) 0%,
+        var(--amber-300) 100%
+    );
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+}
+
+.product-icon i {
+    font-size: 22px; /* Más grande */
+    color: var(--amber-700);
+}
+
+.product-info {
+    flex: 1;
+}
+
+.product-name {
+    font-weight: 600;
+    color: #333333; /* Gris muy oscuro, casi negro */
+    margin-bottom: 6px;
+    font-size: 17px; /* Más grande */
+}
+
+.product-desc {
+    font-size: 15px; /* Más grande */
+    color: #444444; /* Gris oscuro para texto */
+    line-height: 1.5;
+}
+
+.footer-column p {
+    font-size: 16px;
+    line-height: 1.7;
+    color: #444444; /* Gris oscuro para texto */
+    margin-bottom: 20px;
+}
+
+/* Horario de atención - Diseño mejorado */
+.hours-list {
+    list-style: none;
+    padding: 10px; /* Padding general para la lista */
+    margin: 0;
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.03);
+}
+
+.hours-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 14px 20px; /* Más padding vertical */
+    margin-bottom: 5px; /* Espacio entre elementos */
+    border-radius: 8px; /* Bordes redondeados para cada elemento */
+    transition: all 0.3s ease;
+    border-bottom: 1px dashed rgba(252, 211, 77, 0.2); /* Borde más sutil */
+}
+
+.hours-item:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+}
+
+.hours-item:hover {
+    background: rgba(255, 255, 255, 0.8);
+    transform: translateX(5px); /* Pequeño efecto al hacer hover */
+}
+
+.day {
+    font-weight: 600;
+    color: #333333;
+    font-size: 16px;
+    padding-right: 15px; /* Espacio entre día y hora */
+}
+
+.time {
+    color: #444444;
+    font-size: 16px;
+}
+
+.hours-item.current {
+    background: rgba(252, 211, 77, 0.15);
+    padding: 16px 20px; /* Más padding para el día actual */
+    position: relative;
+    border-left: 4px solid var(--amber-400); /* Borde lateral en lugar de before */
+    border-bottom: none; /* Quitamos el borde inferior para el día actual */
+}
+
+/* Quitamos el ::before que ya no necesitamos */
+.hours-item.current::before {
+    display: none;
+}
+
+/* Parte inferior del footer - Diseño mejorado */
+.footer-bottom {
+    position: relative;
+    margin-top: 100px; /* Más espacio */
+    padding: 35px 0; /* Más padding */
+    border-top: 1px solid rgba(252, 211, 77, 0.2);
+    z-index: 1;
+    background-color: rgba(255, 251, 235, 0.7); /* Fondo más visible */
+}
+
+/* Efecto de onda decorativa */
+.footer-wave {
+    position: absolute;
+    top: -2px;
+    left: 0;
+    width: 100%;
+    height: 15px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 120' preserveAspectRatio='none'%3E%3Cpath d='M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V0H0V27.35A600.21,600.21,0,0,0,321.39,56.44Z' fill='%23fffbeb' opacity='0.5'%3E%3C/path%3E%3C/svg%3E");
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+
+.footer-bottom-content {
+    max-width: 1800px; /* Consistente con el contenedor principal */
+    margin: 0 auto;
+    padding: 0 5%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.copyright {
+    font-size: 16px; /* Más grande */
+    color: #444444; /* Gris oscuro para texto */
+    margin: 0;
+}
+
+.footer-bottom-links {
+    display: flex;
+    gap: 30px; /* Más espacio */
+}
+
+.footer-bottom-links a {
+    font-size: 16px; /* Más grande */
+    color: #444444; /* Gris oscuro para texto */
+    text-decoration: none;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.footer-bottom-links a::after {
+    content: "";
+    position: absolute;
+    bottom: -5px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: var(--amber-400);
+    transition: width 0.3s ease;
+}
+
+.footer-bottom-links a:hover {
+    color: var(--amber-700);
+}
+
+.footer-bottom-links a:hover::after {
+    width: 100%;
+}
+
+/* Efecto de brillo en el borde superior */
+.footer-glow {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    background: linear-gradient(
+        90deg,
+        rgba(252, 211, 77, 0) 0%,
+        rgba(252, 211, 77, 0.7) 50%,
+        rgba(252, 211, 77, 0) 100%
+    );
+    animation: glow-move 8s linear infinite;
+}
+
+@keyframes glow-move {
+    0% {
+        background-position: -1000px 0;
+    }
+    100% {
+        background-position: 1000px 0;
+    }
+}
+
+/* Responsive - Mejorado para mejor uso del espacio */
+@media (max-width: 1600px) {
+    .footer-container {
+        grid-template-columns: 1.8fr 1fr 1fr 1fr; /* Ajustado a 4 columnas */
+        gap: 50px;
+    }
+}
+
+@media (max-width: 1400px) {
+    .footer-container {
+        grid-template-columns: 1.5fr 1fr 1fr 1fr; /* Ajustado a 4 columnas */
+        gap: 40px;
+    }
+
+    .footer-logo-section {
+        grid-column: span 1;
+    }
+
+    /* Mejoras responsivas para los horarios */
+    .hours-list {
+        max-width: 100%; /* Usar todo el ancho disponible */
+    }
+}
+
+@media (max-width: 1200px) {
+    .footer-container {
+        grid-template-columns: 1fr 1fr 1fr; /* Ajustado a 3 columnas */
+        gap: 40px;
+    }
+
+    .footer-logo-section {
+        grid-column: span 3;
+        text-align: center;
+        align-items: center;
+        padding-right: 0;
+        margin-bottom: 20px;
+    }
+
+    .footer-logo-section::after {
+        display: none;
+    }
+
+    .footer-description {
+        max-width: 700px;
+    }
+
+    /* Centrar el subrayado en pantallas medianas */
+    .footer-column h3::after {
+        left: 50%;
+        transform: translateX(-50%);
+        width: 70px; /* Un poco más ancho en pantallas medianas */
+    }
+
+    .footer-column:hover h3::after {
+        width: 90px;
+    }
+}
+
+@media (max-width: 992px) {
+    footer {
+        padding-top: 80px;
+    }
+
+    .footer-container {
+        grid-template-columns: 1fr 1fr;
+        gap: 40px;
+    }
+
+    .footer-logo-section {
+        grid-column: span 2;
+    }
+
+    .footer-column h3 {
+        text-align: center;
+    }
+
+    .hours-list {
+        max-width: 350px;
+        margin: 0 auto;
+    }
+
+    .hours-item {
+        padding: 12px 15px; /* Ajustar padding */
+    }
+}
+
+@media (max-width: 768px) {
+    footer {
+        padding-top: 60px;
+    }
+
+    .footer-container {
+        grid-template-columns: 1fr;
+        gap: 50px;
+    }
+
+    .footer-logo-section {
+        grid-column: span 1;
+    }
+
+    .footer-column {
+        text-align: center;
+        align-items: center;
+    }
+
+    .footer-contact-info li {
+        justify-content: center;
+        margin-bottom: 20px;
+    }
+
+    .product-item {
+        justify-content: center;
+    }
+
+    .hours-list {
+        max-width: 100%; /* Usar todo el ancho disponible */
+    }
+
+    .hours-item {
+        margin-bottom: 8px; /* Más espacio entre elementos */
+        padding: 15px; /* Padding uniforme */
+    }
+
+    .day,
+    .time {
+        font-size: 15px; /* Texto ligeramente más pequeño */
+    }
+
+    .footer-bottom-content {
+        flex-direction: column;
+        text-align: center;
+    }
+}
+
+@media (max-width: 576px) {
+    .product-item {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .product-icon {
+        margin-right: 0;
+        margin-bottom: 15px;
+    }
+
+    .hours-item {
+        flex-direction: row; /* Mantener en fila incluso en móviles */
+        justify-content: space-between; /* Mantener separados día y hora */
+        padding: 12px 15px; /* Ajustar padding */
+        margin-bottom: 6px;
+    }
+
+    .day {
+        margin-bottom: 0; /* Quitar margen inferior */
+        padding-right: 10px; /* Menos espacio a la derecha */
+    }
+
+    /* Añadir más espacio entre elementos en móviles */
+    .footer-column {
+        margin-bottom: 40px;
+    }
+
+    .footer-column:last-child {
+        margin-bottom: 0;
+    }
+
+    .footer-bottom-links {
+        flex-direction: column;
+        gap: 15px;
     }
 }
