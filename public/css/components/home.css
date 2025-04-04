@@ -5269,13 +5269,12 @@ footer {
         var(--amber-50) 100%
     );
     overflow: hidden;
-    padding-top: 120px; /* Más espacio superior */
+    padding-top: 120px;
     padding-bottom: 0;
     border-top: 1px solid rgba(252, 211, 77, 0.3);
-    color: #333333; /* Color base para todo el footer */
+    color: #333333;
 }
 
-/* Decoraciones hexagonales mejoradas */
 .footer-decoration {
     position: absolute;
     background-color: var(--amber-200);
@@ -5285,7 +5284,7 @@ footer {
 }
 
 .footer-hex-1 {
-    width: 400px; /* Más grande */
+    width: 400px;
     height: 400px;
     top: -200px;
     right: -100px;
@@ -5293,7 +5292,7 @@ footer {
 }
 
 .footer-hex-2 {
-    width: 250px; /* Más grande */
+    width: 250px;
     height: 250px;
     bottom: 50px;
     left: -80px;
@@ -5301,14 +5300,13 @@ footer {
 }
 
 .footer-hex-3 {
-    width: 180px; /* Más grande */
+    width: 180px;
     height: 180px;
     top: 30%;
     left: 30%;
     animation: float-fast 12s ease-in-out infinite;
 }
 
-/* Decoraciones adicionales */
 .footer-hex-4 {
     width: 120px;
     height: 120px;
@@ -5357,7 +5355,6 @@ footer {
     }
 }
 
-/* Patrón de fondo de panal mejorado */
 footer::before {
     content: "";
     position: absolute;
@@ -5371,7 +5368,6 @@ footer::before {
     z-index: 0;
 }
 
-/* Efecto de luz radial */
 .footer-light {
     position: absolute;
     top: 30%;
@@ -5388,28 +5384,25 @@ footer::before {
     pointer-events: none;
 }
 
-/* Contenedor principal - Layout mejorado y ajustado sin certificaciones */
 .footer-container {
     position: relative;
-    max-width: 1800px; /* Aún más ancho para pantallas grandes */
+    max-width: 1800px;
     margin: 0 auto;
     padding: 0 5%;
     display: grid;
-    grid-template-columns: 2fr repeat(3, 1fr); /* Ajustado a 4 columnas en total */
-    gap: 70px; /* Más espacio entre columnas */
+    grid-template-columns: 2fr repeat(3, 1fr);
+    gap: 70px;
     z-index: 1;
 }
 
-/* Sección del logo - Diseño mejorado */
 .footer-logo-section {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    padding-right: 40px; /* Más espacio a la derecha */
+    padding-right: 40px;
     position: relative;
 }
 
-/* Efecto de borde decorativo */
 .footer-logo-section::after {
     content: "";
     position: absolute;
@@ -5432,7 +5425,7 @@ footer::before {
 }
 
 .footer-logo-icon {
-    width: 70px; /* Más grande */
+    width: 70px;
     height: 70px;
     background: linear-gradient(
         135deg,
@@ -5476,15 +5469,15 @@ footer::before {
 }
 
 .footer-logo-icon i {
-    font-size: 32px; /* Más grande */
+    font-size: 32px;
     color: white;
 }
 
 .footer-logo-text {
     font-family: "Playfair Display", serif;
-    font-size: 42px; /* Más grande */
+    font-size: 42px;
     font-weight: 700;
-    color: #000000; /* Negro para el título principal */
+    color: #000000;
     background: linear-gradient(to right, var(--amber-700), var(--amber-500));
     -webkit-background-clip: text;
     background-clip: text;
@@ -5492,9 +5485,9 @@ footer::before {
 }
 
 .footer-description {
-    font-size: 17px; /* Más grande */
+    font-size: 17px;
     line-height: 1.8;
-    color: #444444; /* Gris oscuro para texto */
+    color: #444444;
     margin-bottom: 35px;
     opacity: 0.9;
     max-width: 90%;
@@ -5502,11 +5495,11 @@ footer::before {
 
 .footer-social {
     display: flex;
-    gap: 18px; /* Más espacio entre iconos */
+    gap: 18px;
 }
 
 .social-link {
-    width: 50px; /* Más grande */
+    width: 50px;
     height: 50px;
     border-radius: 50%;
     display: flex;
@@ -5518,12 +5511,12 @@ footer::before {
         var(--amber-200) 100%
     );
     color: var(--amber-700);
-    font-size: 20px; /* Más grande */
+    font-size: 20px;
     transition: all 0.3s ease;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
     position: relative;
     overflow: hidden;
-    text-decoration: none; /* Quitar subrayado de redes sociales */
+    text-decoration: none;
 }
 
 .social-link::before {
@@ -5545,7 +5538,7 @@ footer::before {
 
 .social-link:hover {
     color: white;
-    transform: translateY(-8px); /* Más movimiento */
+    transform: translateY(-8px);
     box-shadow: 0 12px 20px rgba(245, 158, 11, 0.2);
 }
 
@@ -5553,20 +5546,17 @@ footer::before {
     opacity: 1;
 }
 
-/* Columnas del footer - Diseño mejorado */
 .footer-column {
     display: flex;
     flex-direction: column;
-    padding: 0 15px; /* Más padding horizontal */
+    padding: 0 15px;
     position: relative;
 }
 
-/* Quitar las líneas superiores de cada título */
 .footer-column::before {
-    display: none; /* Eliminamos la línea superior */
+    display: none;
 }
 
-/* Mejorar el subrayado inferior de cada título */
 .footer-column h3 {
     font-size: 22px;
     font-weight: 700;
@@ -5581,23 +5571,21 @@ footer::before {
     position: absolute;
     bottom: 0;
     left: 0;
-    width: 60px; /* Más ancho */
-    height: 3px; /* Altura adecuada */
+    width: 60px;
+    height: 3px;
     background: linear-gradient(
         to right,
         var(--amber-500),
         var(--amber-300)
     ); /* Gradiente más suave */
     border-radius: 3px;
-    transition: width 0.3s ease; /* Añadimos transición */
+    transition: width 0.3s ease;
 }
 
-/* Efecto hover para el subrayado */
 .footer-column:hover h3::after {
-    width: 80px; /* Se expande ligeramente al hacer hover */
+    width: 80px;
 }
 
-/* Información de contacto - Diseño mejorado */
 .footer-contact-info {
     list-style: none;
     padding: 0;
@@ -5607,7 +5595,7 @@ footer::before {
 .footer-contact-info li {
     display: flex;
     align-items: flex-start;
-    margin-bottom: 25px; /* Más espacio entre elementos */
+    margin-bottom: 25px;
     transition: all 0.3s ease;
 }
 
@@ -5616,7 +5604,7 @@ footer::before {
 }
 
 .footer-contact-info i {
-    width: 40px; /* Más grande */
+    width: 40px;
     height: 40px;
     background: linear-gradient(
         135deg,
@@ -5648,12 +5636,11 @@ footer::before {
 
 .footer-contact-info span {
     font-size: 16px;
-    color: #444444; /* Gris oscuro para texto */
+    color: #444444;
     line-height: 1.6;
-    padding-top: 5px; /* Alineación vertical mejorada */
+    padding-top: 5px;
 }
 
-/* Productos destacados - Diseño mejorado */
 .product-list {
     list-style: none;
     padding: 0;
@@ -5663,7 +5650,7 @@ footer::before {
 .product-item {
     display: flex;
     align-items: center;
-    margin-bottom: 25px; /* Más espacio */
+    margin-bottom: 25px;
     padding-bottom: 25px;
     border-bottom: 1px dashed rgba(252, 211, 77, 0.3);
     transition: all 0.3s ease;
@@ -5680,7 +5667,7 @@ footer::before {
 }
 
 .product-icon {
-    width: 50px; /* Más grande */
+    width: 50px;
     height: 50px;
     background: linear-gradient(
         135deg,
@@ -5707,7 +5694,7 @@ footer::before {
 }
 
 .product-icon i {
-    font-size: 22px; /* Más grande */
+    font-size: 22px;
     color: var(--amber-700);
 }
 
@@ -5717,28 +5704,27 @@ footer::before {
 
 .product-name {
     font-weight: 600;
-    color: #333333; /* Gris muy oscuro, casi negro */
+    color: #333333;
     margin-bottom: 6px;
-    font-size: 17px; /* Más grande */
+    font-size: 17px;
 }
 
 .product-desc {
-    font-size: 15px; /* Más grande */
-    color: #444444; /* Gris oscuro para texto */
+    font-size: 15px;
+    color: #444444;
     line-height: 1.5;
 }
 
 .footer-column p {
     font-size: 16px;
     line-height: 1.7;
-    color: #444444; /* Gris oscuro para texto */
+    color: #444444;
     margin-bottom: 20px;
 }
 
-/* Horario de atención - Diseño mejorado */
 .hours-list {
     list-style: none;
-    padding: 10px; /* Padding general para la lista */
+    padding: 10px;
     margin: 0;
     background: rgba(255, 255, 255, 0.5);
     border-radius: 15px;
@@ -5749,11 +5735,11 @@ footer::before {
 .hours-item {
     display: flex;
     justify-content: space-between;
-    padding: 14px 20px; /* Más padding vertical */
-    margin-bottom: 5px; /* Espacio entre elementos */
-    border-radius: 8px; /* Bordes redondeados para cada elemento */
+    padding: 14px 15px;
+    margin-bottom: 5px;
+    border-radius: 8px;
     transition: all 0.3s ease;
-    border-bottom: 1px dashed rgba(252, 211, 77, 0.2); /* Borde más sutil */
+    border-bottom: 1px dashed rgba(252, 211, 77, 0.2);
 }
 
 .hours-item:last-child {
@@ -5763,14 +5749,14 @@ footer::before {
 
 .hours-item:hover {
     background: rgba(255, 255, 255, 0.8);
-    transform: translateX(5px); /* Pequeño efecto al hacer hover */
+    transform: translateX(5px);
 }
 
 .day {
     font-weight: 600;
     color: #333333;
     font-size: 16px;
-    padding-right: 15px; /* Espacio entre día y hora */
+    padding-right: 15px;
 }
 
 .time {
@@ -5780,28 +5766,25 @@ footer::before {
 
 .hours-item.current {
     background: rgba(252, 211, 77, 0.15);
-    padding: 16px 20px; /* Más padding para el día actual */
+    padding: 16px 20px;
     position: relative;
-    border-left: 4px solid var(--amber-400); /* Borde lateral en lugar de before */
-    border-bottom: none; /* Quitamos el borde inferior para el día actual */
+    border-left: 4px solid var(--amber-400);
+    border-bottom: none;
 }
 
-/* Quitamos el ::before que ya no necesitamos */
 .hours-item.current::before {
     display: none;
 }
 
-/* Parte inferior del footer - Diseño mejorado */
 .footer-bottom {
     position: relative;
     margin-top: 100px; /* Más espacio */
     padding: 35px 0; /* Más padding */
     border-top: 1px solid rgba(252, 211, 77, 0.2);
     z-index: 1;
-    background-color: rgba(255, 251, 235, 0.7); /* Fondo más visible */
+    background-color: rgba(255, 251, 235, 0.7);
 }
 
-/* Efecto de onda decorativa */
 .footer-wave {
     position: absolute;
     top: -2px;
@@ -5814,7 +5797,7 @@ footer::before {
 }
 
 .footer-bottom-content {
-    max-width: 1800px; /* Consistente con el contenedor principal */
+    max-width: 1800px;
     margin: 0 auto;
     padding: 0 5%;
     display: flex;
@@ -5825,8 +5808,8 @@ footer::before {
 }
 
 .copyright {
-    font-size: 16px; /* Más grande */
-    color: #444444; /* Gris oscuro para texto */
+    font-size: 16px;
+    color: #444444;
     margin: 0;
 }
 
@@ -5836,8 +5819,8 @@ footer::before {
 }
 
 .footer-bottom-links a {
-    font-size: 16px; /* Más grande */
-    color: #444444; /* Gris oscuro para texto */
+    font-size: 16px;
+    color: #444444;
     text-decoration: none;
     transition: all 0.3s ease;
     position: relative;
@@ -5862,7 +5845,6 @@ footer::before {
     width: 100%;
 }
 
-/* Efecto de brillo en el borde superior */
 .footer-glow {
     position: absolute;
     top: 0;
@@ -5887,17 +5869,16 @@ footer::before {
     }
 }
 
-/* Responsive - Mejorado para mejor uso del espacio */
 @media (max-width: 1600px) {
     .footer-container {
-        grid-template-columns: 1.8fr 1fr 1fr 1fr; /* Ajustado a 4 columnas */
+        grid-template-columns: 1.8fr 1fr 1fr 1fr;
         gap: 50px;
     }
 }
 
 @media (max-width: 1400px) {
     .footer-container {
-        grid-template-columns: 1.5fr 1fr 1fr 1fr; /* Ajustado a 4 columnas */
+        grid-template-columns: 1.5fr 1fr 1fr 1fr;
         gap: 40px;
     }
 
@@ -5905,15 +5886,14 @@ footer::before {
         grid-column: span 1;
     }
 
-    /* Mejoras responsivas para los horarios */
     .hours-list {
-        max-width: 100%; /* Usar todo el ancho disponible */
+        max-width: 100%;
     }
 }
 
 @media (max-width: 1200px) {
     .footer-container {
-        grid-template-columns: 1fr 1fr 1fr; /* Ajustado a 3 columnas */
+        grid-template-columns: 1fr 1fr 1fr;
         gap: 40px;
     }
 
@@ -5933,11 +5913,10 @@ footer::before {
         max-width: 700px;
     }
 
-    /* Centrar el subrayado en pantallas medianas */
     .footer-column h3::after {
         left: 50%;
         transform: translateX(-50%);
-        width: 70px; /* Un poco más ancho en pantallas medianas */
+        width: 70px;
     }
 
     .footer-column:hover h3::after {
@@ -5969,7 +5948,7 @@ footer::before {
     }
 
     .hours-item {
-        padding: 12px 15px; /* Ajustar padding */
+        padding: 12px 15px;
     }
 }
 
@@ -6002,17 +5981,17 @@ footer::before {
     }
 
     .hours-list {
-        max-width: 100%; /* Usar todo el ancho disponible */
+        max-width: 100%;
     }
 
     .hours-item {
-        margin-bottom: 8px; /* Más espacio entre elementos */
-        padding: 15px; /* Padding uniforme */
+        margin-bottom: 8px;
+        padding: 15px;
     }
 
     .day,
     .time {
-        font-size: 15px; /* Texto ligeramente más pequeño */
+        font-size: 15px;
     }
 
     .footer-bottom-content {
@@ -6033,18 +6012,17 @@ footer::before {
     }
 
     .hours-item {
-        flex-direction: row; /* Mantener en fila incluso en móviles */
-        justify-content: space-between; /* Mantener separados día y hora */
-        padding: 12px 15px; /* Ajustar padding */
+        flex-direction: row;
+        justify-content: space-between;
+        padding: 12px 15px;
         margin-bottom: 6px;
     }
 
     .day {
-        margin-bottom: 0; /* Quitar margen inferior */
-        padding-right: 10px; /* Menos espacio a la derecha */
+        margin-bottom: 0;
+        padding-right: 10px;
     }
 
-    /* Añadir más espacio entre elementos en móviles */
     .footer-column {
         margin-bottom: 40px;
     }

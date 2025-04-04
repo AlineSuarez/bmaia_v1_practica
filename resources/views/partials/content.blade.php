@@ -1120,7 +1120,7 @@
           <span class="day">Martes</span>
           <span class="time">9:00 - 18:00</span>
         </li>
-        <li class="hours-item current">
+        <li class="hours-item">
           <span class="day">Miércoles</span>
           <span class="time">9:00 - 18:00</span>
         </li>
