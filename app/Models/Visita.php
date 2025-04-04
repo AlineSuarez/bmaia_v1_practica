@@ -10,6 +10,7 @@ class Visita extends Model
 
     protected $fillable = [
         'apiario_id',
+        'colmena_id', // Agregado
         'fecha_visita',
         'vigor_de_colmena',
         'actividad_colmena',
@@ -27,13 +28,29 @@ class Visita extends Model
         'num_colmenas_inspeccionadas',
         'num_colmenas_enfermas',
         'observacion_primera_visita',
+        'num_colmenas_tratadas', // Agregado
+        'motivo_tratamiento', // Agregado
+        'nombre_comercial_medicamento', // Agregado
+        'principio_activo_medicamento', // Agregado
+        'periodo_resguardo', // Agregado
+        'responsable', // Agregado
+        'nombres', // Agregado
+        'apellidos', // Agregado
+        'rut', // Agregado
+        'motivo', // Agregado
+        'telefono', // Agregado
+        'firma', // Agregado
     ];
-
+    
+    // Relaciones
     public function apiario()
     {
         return $this->belongsTo(Apiario::class);
     }
 
-     // Relaciones
+    public function usuario()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
 
 }

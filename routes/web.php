@@ -1,5 +1,4 @@
 <?php
-
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
@@ -17,7 +16,6 @@ use App\Http\Controllers\Auth\GoogleController;
 use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\MailController;
 use App\Http\Controllers\PaymentController;
-
 
 Route::get('/tareas/search', [TaskController::class, 'search'])->name('tareas.search');
 Route::resource('tareas', TaskController::class);
@@ -38,12 +36,23 @@ Route::get('login/google/callback', [LoginController::class, 'handleGoogleCallba
 Route::middleware(['auth'])->group(function () {
     Route::get('/home', [ApiarioController::class, 'home'])->name('home');
     Route::resource('apiarios', ApiarioController::class);
+
     Route::resource('visita', VisitaController::class);
     Route::get('/visitas', [VisitaController::class, 'index'])->name('visitas.index');
-    Route::get('visitas/create1/{id}', [VisitaController::class, 'primeraInspeccion'])->name('visitas.create1');
     Route::get('visitas/create/{id}', [VisitaController::class, 'create'])->name('visitas.create');
-    Route::post('/apiarios/visitas1', [VisitaController::class, 'store1'])->name('visitas.store1');
-    Route::post('/apiarios/visitas', [VisitaController::class, 'store'])->name('visitas.store');
+
+    // Rutas para Registro de Inspección de Apiario
+    Route::get('visitas/create/{id}', [VisitaController::class, 'create'])->name('visitas.create');
+    Route::post('apiarios/{apiario}/inspeccion-apiario', [VisitaController::class, 'store'])->name('apiarios.inspeccion-apiario.store');
+    Route::get('/generate-document/inspeccion/{id}', [DocumentController::class, 'generateInspeccionDocument'])->name('generate.document.inspeccion');
+    // Rutas para Registro General de Visitas
+    Route::get('visitas/create1/{id}', [VisitaController::class, 'createGeneral'])->name('visitas.visitas-general');
+    Route::post('apiarios/{apiario}/visitas-general', [VisitaController::class, 'storeGeneral'])->name('apiarios.visitas-general.store');
+    Route::get('/generate-document/visitas/{id}', [DocumentController::class, 'generateVisitasDocument'])->name('generate.document.visitas');
+    //Rutas para registro de uso de medicamentos.
+    Route::get('visitas/create2/{id}', [VisitaController::class, 'createMedicamentos'])->name('visitas.medicamentos-registro');
+    Route::post('apiarios/{apiario}/medicamentos-registro', [VisitaController::class, 'storeMedicamentos'])->name('apiarios.medicamentos-registro.store');
+    Route::get('/generate-document/medicamentos/{apiarioId}', [DocumentController::class, 'generateMedicamentsDocument'])->name('generate.document.medicamentos');
 
 Route::post('/apiarios/massDelete', [ApiarioController::class, 'massDelete'])->name('apiarios.massDelete');
 });
@@ -63,10 +72,8 @@ Route::get('/chatbot/consejos', [ChatbotController::class, 'generarConsejos'])->
 // Callback después de la autenticación
 Route::get('login/google/callback', function () {
     $googleUser = Socialite::driver('google')->user();
-
     // Aquí puedes encontrar o crear un usuario en tu base de datos
     $user = User::where('email', $googleUser->getEmail())->first();
-
     if (!$user) {
         // Crea un nuevo usuario si no existe
         $user = User::create([
@@ -75,18 +82,14 @@ Route::get('login/google/callback', function () {
             'password' => bcrypt(str_random(16)), // O usa un método diferente para generar la contraseña
         ]);
     }
-
     // Autentica al usuario
     Auth::login($user);
-
     return redirect()->intended('home'); // Cambia 'dashboard' por la ruta a la que quieras redirigir al usuario
 });
-
 
 // Ruta de registro
 Route::get('/register', [RegisterController::class, 'showRegistrationForm'])->name('register');
 Route::post('/register', [RegisterController::class, 'register']);
-
 
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [LoginController::class, 'login']);
@@ -94,9 +97,7 @@ Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 Route::get('/home', [DashboardController::class, 'home'])->name('home');
 
-
-//apiarios:
-// Rutas para Apiarios
+// Apiarios
 Route::resource('apiarios', ApiarioController::class)->except(['show']);
 Route::get('/apiarios', [ApiarioController::class, 'index'])->name('apiarios');
 Route::get('apiarios/create', [ApiarioController::class, 'create'])->name('apiarios.create');
@@ -122,7 +123,6 @@ Route::patch('/tareas/{id}/update', [TaskController::class, 'updateTarea']);
 Route::get('/tareas/calendario', [TaskController::class, 'calendario'])->name('tareas.calendario');
 Route::get('/tareas/json', [TaskController::class, 'obtenerTareasJson'])->name('tareas.json');
 
-
 Route::get('/visitas', [VisitaController::class, 'index'])->name('visitas');
 Route::post('apiarios/{apiario}/visitas', [VisitaController::class, 'store'])->name('visitas.store');
 Route::post('apiarios/{apiario}/visitas1', [VisitaController::class, 'store1'])->name('visitas.store1');
@@ -130,24 +130,25 @@ Route::post('apiarios/{apiario}/visitas1', [VisitaController::class, 'store1'])-
 // Grupo de rutas protegidas por el middleware de autenticación y verificación de pago
 Route::middleware(['auth', 'check.payment'])->group(function () {
 Route::get('/zonificacion', [ZonificacionController::class, 'index'])->name('zonificacion');
-//usuarios:
+
+//Usuarios
 });
 Route::get('/user/settings', [UserController::class, 'settings'])->name('user.settings');
 Route::patch('/user/update-name', [UserController::class, 'updateName'])->name('user.update.name');
 Route::patch('/user/update-avatar', [UserController::class, 'updateAvatar'])->name('user.update.avatar');
 Route::patch('/user/update-password', [UserController::class, 'updatePassword'])->name('user.update.password');
 Route::post('/user/update-settings', [UserController::class, 'updateSettings'])->name('user.updateSettings');
-
 Route::post('/user/update-plan', [UserController::class, 'updatePlan'])->name('user.updatePlan');
+
 Route::middleware(['auth', 'check.payment'])->group(function () {
 Route::get('/sistemaexperto', [ChatbotController::class, 'sistemaExpertoIndex'])->name('sistemaexperto');
 });
 
+// Documentos y Emails
 Route::get('/generate-document/{id}', [DocumentController::class, 'generateDocument'])->name('generate.document');
-
 Route::get('/send-email', [MailController::class, 'sendEmail']);
 
-
+// Pagos
 Route::middleware(['auth'])->group(function () {
     Route::get('/payment/initiate', [PaymentController::class, 'initiatePayment'])->name('payment.initiate');
     Route::get('/payment/response', [PaymentController::class, 'paymentResponse'])->name('payment.response');
@@ -162,7 +163,6 @@ Route::get('/payment/success', function () {
 Route::get('/payment/failed', function () {
     return view('payment.failed');
 })->name('payment.failed');
-
 
 Route::get('/payment/required', function () {
     return view('payment.required');

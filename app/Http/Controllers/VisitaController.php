@@ -6,21 +6,22 @@ use App\Models\Visita;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use Auth;
+
 class VisitaController extends Controller
 {
-
-
     public function index()
     {
         $user = auth()->user();
         $apiarios = Apiario::where('user_id', auth()->id())->get();
         return view('visitas.index', compact('apiarios','user'));
     }
+
     public function show(Apiario $apiario)
     {
         $visitas = $apiario->visitas()->latest()->get();
         return view('visitas.show', compact('apiario', 'visitas'));
     }
+
     public function create($id_apiario)
     {
         $user = auth()->user();
@@ -32,106 +33,110 @@ class VisitaController extends Controller
     if (!$apiario) {
         abort(404, 'Apiario no encontrado.');
     }
-
     return view('visitas.create', compact('apiario','user'));
     }
-    public function primeraInspeccion($id_apiario)
+
+    public function createMedicamentos($id_apiario)
     {
         $user = auth()->user();
-
-        // Obtener el apiario del usuario autenticado
-        $apiario = Apiario::where('user_id', auth()->id())
-            ->where('id', $id_apiario)
-            ->first();
-
-        // Verificar si el apiario existe
-        if (!$apiario) {
-            abort(404, 'Apiario no encontrado.');
-        }
-
-        // Obtener las visitas asociadas al apiario
-        $visita = Visita::where('apiario_id', $id_apiario)
-        ->where('tipo_visita', 'Primera Visita')
-        ->first();
-
-        // Pasar los datos a la vista
-        return view('visitas.create1', compact('apiario', 'user', 'visita'));
+        $apiario = Apiario::where('user_id', auth()->id())->where('id', $id_apiario)->firstOrFail();
+    return view('visitas.create2', compact('apiario','user'));
     }
 
-    public function store1(Request $request, Apiario $apiario)
+    public function createGeneral($id_apiario)
     {
-         // Asegúrate de que el apiario pertenece al usuario autenticado
-    // Validar los datos enviados
-            $validated = $request->validate([
-                'numero_colmenas_activas' => 'required',
-                'numero_colmenas_enfermas' => 'required',
-                'numero_colmenas_muertas' => 'required',
-                'observaciones' => 'required|string',
-                'fecha_visita' => 'string',
-            ]);
-
-
-        $visita = new Visita();
-        $visita->apiario_id=$apiario->id;;
-        $visita->fecha_visita = $validated['fecha_visita'] ?? Carbon::now();
-        $visita->num_colmenas_totales = $validated['numero_colmenas_activas'];
-        $visita->num_colmenas_enfermas = $validated['numero_colmenas_enfermas'];
-       // $visita->num_colmenas_muertas = $validated['numero_colmenas_muertas'];
-        $visita->num_colmenas_inspeccionadas  =$apiario->num_colmenas;
-        $visita->tipo_visita = 'Primera Visita';
-        $visita->observacion_primera_visita = $validated['observaciones'];
-
-        $visita->save();
-
-
-
-        return redirect()->route('visitas.create1', $apiario)->with('success', 'Visita registrada correctamente.');
+        $user = auth()->user();
+        $apiario = Apiario::where('user_id', auth()->id())->where('id', $id_apiario)->firstOrFail();
+        $visita = Visita::where('apiario_id', $id_apiario)->where('tipo_visita', 'Visita General')->first();
+    return view('visitas.create1', compact('apiario','visita','user'));
     }
+
     public function store(Request $request, Apiario $apiario)
     {
-         // Asegúrate de que el apiario pertenece al usuario autenticado
+        // Lógica para guardar el registro de inspección de apiario (visitas.create)
+        $validated = $request->validate([
+            'fecha_inspeccion' => 'required|date',
+            'num_colmenas_totales' => 'required|integer',
+            'num_colmenas_activas' => 'required|integer',
+            'num_colmenas_enfermas' => 'required|integer',
+            'num_colmenas_muertas' => 'required|integer',
+            'num_colmenas_inspeccionadas' => 'required|integer',
+            'flujo_nectar_polen' => 'required|string',
+            'nombre_revisor_apiario' => 'required|string',
+            'sospecha_enfermedad' => 'nullable|string',
+            'observaciones' => 'nullable|string',
+        ]);
 
-        // Validar los datos enviados
-            $validated = $request->validate([
-                'pcc1_vigor_total' => 'required|string',
-                'pcc1_activity_total' => 'required|string',
-                'pcc1_pollen_total' => 'required|string',
-                'pcc1_block_total' => 'required|string',
-                'pcc1_cells_total' => 'required|string',
-                'pcc2_postura_total' => 'required|string',
-                'pcc2_cria_total' => 'required|string',
-                'pcc2_zanganos_total' => 'required|string',
-                'pcc3_reserva_total' => 'required|string',
-                'pcc4_varroa_total' => 'required|string',
-                'fecha_visita' => 'string',
-            ]);
+        Visita::create([
+            'apiario_id' => $apiario->id,
+            'user_id' => auth()->id(),
+            'fecha_visita' => $validated['fecha_inspeccion'],
+            'num_colmenas_totales' => $validated['num_colmenas_totales'],
+            'num_colmenas_activas' => $validated['num_colmenas_activas'],
+            'num_colmenas_enfermas' => $validated['num_colmenas_enfermas'],
+            'num_colmenas_muertas' => $validated['num_colmenas_muertas'],
+            'num_colmenas_inspeccionadas' => $validated['num_colmenas_inspeccionadas'],
+            'flujo_nectar_polen' => $validated['flujo_nectar_polen'],
+            'nombre_revisor_apiario' => $validated['nombre_revisor_apiario'],
+            'sospecha_enfermedad' => $validated['sospecha_enfermedad'],
+            'observaciones' => $validated['observaciones'],
+            'tipo_visita' => 'Inspección de Visita',
+        ]);
+        return redirect()->route('visitas')->with('success', 'Registro de Inspección guardado correctamente.');
+    }
 
-        $visita = new Visita();
-        $visita->fecha_visita = $validated['fecha_visita'] ?? Carbon::now();
-        $visita->apiario_id=$apiario->id;
-        $visita->vigor_de_colmena = $validated['pcc1_vigor_total'];
-        $visita->actividad_colmena = $validated['pcc1_activity_total'];
-        $visita->ingreso_pollen = $validated['pcc1_pollen_total'];
-        $visita->bloqueo_camara_cria = $validated['pcc1_block_total'];
-        $visita->presencia_celdas_reales = $validated['pcc1_cells_total'];
-        $visita->postura_de_reina = $validated['pcc2_postura_total'];
-        $visita->estado_de_cria = $validated['pcc2_cria_total'];
-        $visita->postura_zanganos = $validated['pcc2_zanganos_total'];
-        $visita->reserva_alimento = $validated['pcc3_reserva_total'];
-        $visita->presencia_varroa = $validated['pcc4_varroa_total'];
-        $visita->tipo_visita = 'Inspección General';
-        $visita->save();
+    public function storeMedicamentos(Request $request, Apiario $apiario)
+    {
+        // Lógica para guardar el registro de uso de medicamentos (visitas.create2)
+        $validated = $request->validate([
+            'fecha' => 'required|date',
+            'num_colmenas_tratadas' => 'required|integer',
+            'motivo_tratamiento' => 'required|string',
+            'nombre_comercial_medicamento' => 'required|string',
+            'principio_activo_medicamento' => 'required|string',
+            'periodo_resguardo' => 'required|string',
+            'responsable' => 'required|string',
+            'observaciones' => 'nullable|string',
+        ]);
 
+        Visita::create([
+            'apiario_id' => $apiario->id,
+            'user_id' => auth()->id(),
+            'fecha_visita' => $validated['fecha'],
+            'num_colmenas_tratadas' => $validated['num_colmenas_tratadas'],
+            'motivo_tratamiento' => $validated['motivo_tratamiento'],
+            'nombre_comercial_medicamento' => $validated['nombre_comercial_medicamento'],
+            'principio_activo_medicamento' => $validated['principio_activo_medicamento'],
+            'periodo_resguardo' => $validated['periodo_resguardo'],
+            'responsable' => $validated['responsable'],
+            'observaciones' => $validated['observaciones'],
+            'tipo_visita' => 'Uso de Medicamentos',
+        ]);
+        return redirect()->route('visitas')->with('success', 'Registro de Uso de Medicamentos guardado correctamente.');
+    }
 
+    public function storeGeneral(Request $request, Apiario $apiario)
+    {
+        // Lógica para guardar el registro de visita general (visitas.create1)
+        $validated = $request->validate([
+            'fecha' => 'required|date',
+            'motivo' => 'required|string',
+        ]);
 
-        return redirect()->route('visitas.create', $apiario)->with('success', 'Visita registrada correctamente.');
+        Visita::create([
+            'apiario_id' => $apiario->id,
+            'user_id' => auth()->id(),
+            'fecha_visita' => $validated['fecha'],
+            'motivo' => $validated['motivo'],
+            'tipo_visita' => 'Visita General',
+        ]);
+        return redirect()->route('visitas')->with('success', 'Registro de Visita General guardado correctamente.');
     }
 
     public function showHistorial($apiarioId)
     {
         // Obtener el apiario y sus visitas
         $apiario = Apiario::with('visitas')->findOrFail($apiarioId);
-
         // Retornar la vista de historial con los datos del apiario y sus visitas
         return view('visitas.historial', compact('apiario'));
     }

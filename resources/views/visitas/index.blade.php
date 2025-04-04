@@ -26,11 +26,16 @@
                         <a href="{{ route('visitas.historial', $apiario->id) }}" class="btn btn-info btn-sm" title="Historial de Visitas">
                             <i class="fas fa-history"></i>
                         </a>
-                        <a href="{{ route('generate.document', $apiario->id) }}" class="btn btn-success btn-sm" title="Descargar Registro de Visitas">
-                            <i class="fas fa-file-download"></i>
+                        <a href="{{ route('generate.document.visitas', $apiario->id) }}" class="btn btn-success btn-sm" title="Descargar Registro de Visitas">
+                            <!-- <i class="fas fa-file-download"></i> -->
+                            <i class="fas fa-clipboard-list"></i> 
                         </a>
-                        <a href="{{ route('generate.document', $apiario->id) }}" class="btn btn-warning btn-sm" title="Descargar Registro de Inspección">
-                            <i class="fas fa-file-alt"></i>
+                        <a href="{{ route('generate.document.inspeccion', $apiario->id) }}" class="btn btn-warning btn-sm" title="Descargar Registro de Inspección">
+                            <!-- <i class="fas fa-file-alt"></i> -->
+                            <i class="fas fa-search"></i>
+                        </a>
+                        <a href="{{ route('generate.document.medicamentos', $apiario->id) }}" class="btn btn-secondary btn-sm" title="Descargar Registro de Uso de Medicamentos">
+                            <i class="fas fa-syringe"></i>     
                         </a>
                     </div>
 
@@ -45,14 +50,14 @@
                                 <div class="modal-body">
                                     <p>Selecciona el tipo de registro que deseas realizar:</p>
                                     <div class="d-grid gap-2">
-                                        <a href="{{ url('visitas/create1/' . $apiario->id . '?type=primera') }}" class="btn btn-secondary">
-                                            Registrar Primera Visita
+                                        <a href="{{ url('visitas/create1/' . $apiario->id) }}" class="btn btn-secondary">
+                                            Registro de Visitas
                                         </a>
-                                        <a href="{{ url('visitas/create/' . $apiario->id . '?type=general') }}" class="btn btn-primary">
-                                            Registro General
+                                        <a href="{{ url('visitas/create/' . $apiario->id) }}" class="btn btn-primary">
+                                            Registro de Inspección de Apiario
                                         </a>
-                                        <a href="{{ url('visitas/create/' . $apiario->id . '?type=medicamentos') }}" class="btn btn-dark">
-                                            Registro de Medicamentos
+                                        <a href="{{ url('visitas/create2/' . $apiario->id) }}" class="btn btn-dark">
+                                            Registro de Uso de Medicamentos
                                         </a>
                                     </div>
                                 </div>
