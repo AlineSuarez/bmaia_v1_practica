@@ -28,9 +28,15 @@
                 placeholder="Ej: 12.345.678-9" required pattern="\d{1,2}\.\d{3}\.\d{3}-[0-9Kk]{1}" title="Ingrese un RUT válido (Ej: 12.345.678-9)"
                 value='{{ $user->rut}}'>
             </div>
+
+            <div class="form-group mt-4">
+                <label for="razon_social">Razón Social</label>
+                <input type="text" class="form-control" id="razon_social" name="razon_social" placeholder="Ingrese su razón social (opcional)" value='{{ old("razon_social", $user->razon_social ?? "") }}' >
+            </div>
+
             <div class="form-group mt-4">
                 <label for="name">Nombre</label>
-                <input type="text" class="form-control" id="name" name="name" placeholder="Ingrese su nombre" required value='{{ $user->razon_social}}'>
+                <input type="text" class="form-control" id="name" name="name" placeholder="Ingrese su nombre" required value='{{ $user->name}}'>
             </div>
             <div class="form-group mt-4">
                 <label for="last_name">Apellido</label>
@@ -56,7 +62,7 @@
             </div>
             <div class="form-group mt-4">
                 <label for="comuna">Comuna</label>
-                <select id="comuna" class="form-control" disabled>
+                <select id="comuna" class="form-control" name="id_comuna" disabled>
 
                     <option value="">Seleccione una comuna</option>
                 </select>

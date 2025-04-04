@@ -23,6 +23,7 @@ class UserController extends Controller
 
         return redirect()->back()->with('success', 'Nombre actualizado correctamente.');
     }
+
     public function settings()
     {
         $regiones = Region::with('comunas')->get();
@@ -70,10 +71,13 @@ class UserController extends Controller
             'rut' => ['required', 'regex:/^\d{1,2}\.\d{3}\.\d{3}-[0-9Kk]{1}$/'],
             'name' => ['required', 'string', 'max:255'],
             'last_name' => ['nullable', 'string', 'max:255'],
+            'razon_social' => ['nullable', 'string', 'max:255'],
             'phone' => ['required', 'regex:/^\d{9}$/'],
             'id_region' => ['nullable', 'exists:regiones,id'],
             'id_comuna' => ['nullable', 'exists:comunas,id'],
             'nregistro' => ['nullable', 'string', 'max:50'],
+            'address' => ['nullable', 'string', 'max:255'],
+            'email' => ['required', 'email', 'unique:users,email,' . Auth::id()],
         ]);
     
         // Buscar al usuario por su ID
@@ -82,13 +86,14 @@ class UserController extends Controller
         // Completar o actualizar los datos del usuario
         $user->rut = $validated['rut'] ?? $user->rut;
         $user->name = $validated['name'] ?? $user->name;
+        $user->last_name = $validated['last_name'] ?? $user->last_name;
         $user->telefono = $validated['phone'] ?? $user->telefono;
-        $user->razon_social = $validated['name'] . ' ' . ($validated['last_name'] ?? '') ?? $user->razon_social;
+        $user->razon_social = trim($request->razon_social) !== '' ? $request->razon_social : null;
         $user->id_region = $validated['id_region'] ?? $user->id_region;
         $user->id_comuna = $validated['id_comuna'] ?? $user->id_comuna;
         $user->numero_registro = $validated['nregistro'] ?? $user->numero_registro;
-    
-    
+        $user->direccion = $validated['address'] ?? $user->direccion;
+        $user->email = $validated['email'] ?? $user->email;
     
         // Guardar los cambios
         $user->save();
