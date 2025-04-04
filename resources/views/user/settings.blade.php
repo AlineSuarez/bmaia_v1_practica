@@ -22,6 +22,14 @@
         <form action="{{ route('user.updateSettings') }}" method="POST" enctype="multipart/form-data" class="tab-content mt-4" id="settingsTabsContent">
         @csrf
 
+            @if (session('success_settings'))
+            <div class="alert alert-success alert-dismissible fade show mt-3" role="alert">
+                {{ session('success_settings') }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+            </div>
+            @endif
+    
+
             <div class="form-group">
                 <label for="rut">RUT del usuario o Representante Legal</label>
                 <input type="text" class="form-control" id="rut" name="rut"
@@ -90,45 +98,77 @@
             </form>
     </div>
 
-        <!-- Seguridad y Contraseñas -->
-    <div class="tab-pane fade d-none" id="security" role="tabpanel" aria-labelledby="security-tab">
-        <form action="{{ route('user.update.password') }}" method="POST" enctype="multipart/form-data" class="tab-content mt-4" id="settingsTabsContent2">
-        @csrf
 
-            <div class="form-group mt-4">
-                <label for="password">Nueva Contraseña</label>
-                <input type="password" class="form-control" id="password" name="password">
-            </div>
-            <div class="form-group mt-4">
-                <label for="password_confirmation">Confirmar Contraseña</label>
-                <input type="password" class="form-control" id="password_confirmation" name="password_confirmation">
-            </div>
-            <button type="submit" class="btn btn-primary mt-3">Guardar Cambios</button>
-        </form>
-    </div>
+        <!-- Seguridad y Contraseñas -->
+        <div class="tab-pane fade d-none" id="security" role="tabpanel" aria-labelledby="security-tab">
+            <form action="{{ route('user.update.password') }}" method="POST" class="tab-content mt-4" id="settingsTabsContent2">
+                @csrf
+                @method('PATCH')
+
+                @if (session('success_password'))
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        {{ session('success_password') }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+                    </div>
+                @endif
+
+                @if ($errors->any())
+                    <div class="alert alert-danger">
+                        <ul class="mb-0">
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
+
+                <div class="form-group mt-4">
+                    <label for="current_password">Contraseña Actual</label>
+                    <input type="password" class="form-control" id="current_password" name="current_password" required>
+                </div>
+
+                <div class="form-group mt-4">
+                    <label for="new_password">Nueva Contraseña</label>
+                    <input type="password" class="form-control" id="new_password" name="new_password" required>
+                </div>
+
+                <div class="form-group mt-4">
+                    <label for="new_password_confirmation">Confirmar Nueva Contraseña</label>
+                    <input type="password" class="form-control" id="new_password_confirmation" name="new_password_confirmation" required>
+                </div>
+
+                <button type="submit" class="btn btn-warning mt-3">Guardar Cambios</button>
+            </form>
+        </div>
+
 
         <!-- Planes -->
     <div class="tab-pane fade d-none" id="plans" role="tabpanel" aria-labelledby="plans-tab">
             <h3 class="mt-4">Suscripción a Planes</h3>
-            <p>Elige entre nuestro Plan Premium mensual o anual y disfruta de todos los beneficios exclusivos.</p>
+            <p>Actualiza a plan anual y disfruta del acceso completo a MAIA.</p>
 
             <div class="card mb-4">
                 <div class="card-body">
                     <form action="{{ route('payment.initiate') }}" method="GET">
-                        <div class="form-check">
+                        
+                        <!-- 
+                        
+                            <div class="form-check">
                             <input class="form-check-input" type="radio" name="plan" id="planMensual" value="mensual" required>
                             <label class="form-check-label" for="planMensual">
                                 <strong>Plan Premium Mensual:</strong> $8.900 CLP / mes
                             </label>
                             <p class="text-muted">Disfruta del acceso completo con pagos cómodos cada mes.</p>
                         </div>
+                        
+                        -->
 
                         <div class="form-check mt-3">
                             <input class="form-check-input" type="radio" name="plan" id="planAnual" value="anual" required>
                             <label class="form-check-label" for="planAnual">
-                                <strong>Plan Premium Anual:</strong> $90.000 CLP / año (¡ahorra $16.800!)
+                                <strong>Plan Premium Anual:</strong> $90.000 CLP / año.
                             </label>
-                            <p class="text-muted">Obtén 12 meses al precio de 10 con nuestra oferta anual.</p>
+                            <!-- <p class="text-muted">Obtén 12 meses al precio de 10 con nuestra oferta anual.</p> -->
                         </div>
 
                         <button type="submit" class="btn btn-success mt-4">Suscribirse Ahora</button>

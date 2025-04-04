@@ -61,7 +61,7 @@ class UserController extends Controller
         $user->password = Hash::make($request->new_password);
         $user->save();
 
-        return redirect()->back()->with('success', 'Contraseña restablecida correctamente.');
+        return redirect()->back()->with('success_password', 'Contraseña actualizada correctamente.');
     }
 
     public function updateSettings(Request $request)
@@ -98,7 +98,7 @@ class UserController extends Controller
         // Guardar los cambios
         $user->save();
     
-        return redirect()->back()->with('success', 'Información actualizada correctamente.');
+        return redirect()->back()->with('success_settings', 'Información actualizada correctamente.');
     }
     
 
