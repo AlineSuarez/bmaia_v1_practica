@@ -5764,22 +5764,10 @@ footer::before {
     font-size: 16px;
 }
 
-.hours-item.current {
-    background: rgba(252, 211, 77, 0.15);
-    padding: 16px 20px;
-    position: relative;
-    border-left: 4px solid var(--amber-400);
-    border-bottom: none;
-}
-
-.hours-item.current::before {
-    display: none;
-}
-
 .footer-bottom {
     position: relative;
-    margin-top: 100px; /* Más espacio */
-    padding: 35px 0; /* Más padding */
+    margin-top: 100px;
+    padding: 35px 0; 
     border-top: 1px solid rgba(252, 211, 77, 0.2);
     z-index: 1;
     background-color: rgba(255, 251, 235, 0.7);
@@ -5815,7 +5803,7 @@ footer::before {
 
 .footer-bottom-links {
     display: flex;
-    gap: 30px; /* Más espacio */
+    gap: 30px;
 }
 
 .footer-bottom-links a {
