@@ -1108,49 +1108,10 @@
       </ul>
     </div>
 
-    <!-- Horario de atención -->
-    <div class="footer-column">
-      <h3>Horario de Atención</h3>
-      <ul class="hours-list">
-        <li class="hours-item">
-          <span class="day">Lunes</span>
-          <span class="time">9:00 - 18:00</span>
-        </li>
-        <li class="hours-item">
-          <span class="day">Martes</span>
-          <span class="time">9:00 - 18:00</span>
-        </li>
-        <li class="hours-item">
-          <span class="day">Miércoles</span>
-          <span class="time">9:00 - 18:00</span>
-        </li>
-        <li class="hours-item">
-          <span class="day">Jueves</span>
-          <span class="time">9:00 - 18:00</span>
-        </li>
-        <li class="hours-item">
-          <span class="day">Viernes</span>
-          <span class="time">9:00 - 17:00</span>
-        </li>
-        <li class="hours-item">
-          <span class="day">Sábado</span>
-          <span class="time">10:00 - 14:00</span>
-        </li>
-        <li class="hours-item">
-          <span class="day">Domingo</span>
-          <span class="time">Cerrado</span>
-        </li>
-      </ul>
-    </div>
-
     <!-- Información de contacto -->
     <div class="footer-column">
       <h3>Contacto</h3>
       <ul class="footer-contact-info">
-        <li>
-          <i class="fas fa-map-marker-alt"></i>
-          <span>Calle Apicultura 123, Ciudad Miel, 28001</span>
-        </li>
         <li>
           <i class="fas fa-phone-alt"></i>
           <span>+34 123 456 789</span>
@@ -1162,6 +1123,10 @@
         <li>
           <i class="fas fa-headset"></i>
           <span>Soporte: +34 123 456 790</span>
+        </li>
+        <li>
+          <i class="fas fa-map-marker-alt"></i>
+          <span>Calle Apicultura 123, Ciudad Miel, 28001</span>
         </li>
       </ul>
     </div>
