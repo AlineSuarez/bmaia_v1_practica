@@ -19,16 +19,16 @@
                         <!-- Editable Fecha Inicio -->
                         <td>
                             <input type="date" 
-                                   class="form-control fecha-inicio" 
-                                   value="{{ \Carbon\Carbon::parse($task->fecha_inicio)->format('Y-m-d') }}" 
-                                   data-id="{{ $task->id }}" />
+                                class="form-control fecha-inicio" 
+                                value="{{ \Carbon\Carbon::parse($task->fecha_inicio)->format('Y-m-d') }}" 
+                                data-id="{{ $task->id }}" />
                         </td>
                         <!-- Editable Fecha Fin -->
                         <td>
                             <input type="date" 
-                                   class="form-control fecha-fin" 
-                                   value="{{ \Carbon\Carbon::parse($task->fecha_limite)->format('Y-m-d') }}" 
-                                   data-id="{{ $task->id }}" />
+                                class="form-control fecha-fin" 
+                                value="{{ \Carbon\Carbon::parse($task->fecha_limite)->format('Y-m-d') }}" 
+                                data-id="{{ $task->id }}" />
                         </td>
                     <!-- Editable Prioridad -->
                                 <td>
@@ -52,7 +52,7 @@
 
                         <!-- Botón Acciones -->
 
-                          <!-- Botón Eliminar -->
+                        <!-- Botón Eliminar -->
                                 <td>
                                     <div class="btn-group" role="group" aria-label="Acciones de Tarea">
                                         <!-- Botón Guardado Automático -->
@@ -68,7 +68,7 @@
 
                                         <!-- Botón Guardar Cambios -->
                                         <button class="btn btn-success btn-sm guardar-cambios" data-id="{{ $task->id }}"
-                                           data-bs-toggle="tooltip" 
+                                            data-bs-toggle="tooltip" 
                                             data-bs-placement="top" 
                                             title="Guardar los cambios sobre ésta tarea.">
                                             <i class="fa-solid fa-save"></i>
@@ -76,16 +76,16 @@
 
                                         <!-- Botón Eliminar -->
                                         <button class="btn btn-danger btn-sm eliminar-tarea" data-id="{{ $task->id }}" 
-                                          data-bs-placement="top" 
-                                          data-bs-toggle="tooltip" 
+                                        data-bs-placement="top" 
+                                        data-bs-toggle="tooltip" 
                                         title="Eliminar esta tarea">
                                             <i class="fa-solid fa-trash"></i>
                                         </button>
+                                        <button class="btn btn-outline-dark btn-sm imprimir-tareas" " title="Imprimir tareas">
+                                            <i class="fa-solid fa-print"></i>
+                                        </button>
                                     </div>
                                 </td>
-
-
-
                     </tr>
                 @endforeach
             </tbody>
