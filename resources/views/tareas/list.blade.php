@@ -65,7 +65,6 @@
                                             title="Actualmente, los cambios no se guardan automáticamente. Haga clic para habilitar el guardado automático.">
                                             <i class="fa-solid fa-lock"></i>
                                         </button>
-
                                         <!-- Botón Guardar Cambios -->
                                         <button class="btn btn-success btn-sm guardar-cambios" data-id="{{ $task->id }}"
                                             data-bs-toggle="tooltip" 
@@ -73,7 +72,6 @@
                                             title="Guardar los cambios sobre ésta tarea.">
                                             <i class="fa-solid fa-save"></i>
                                         </button>
-
                                         <!-- Botón Eliminar -->
                                         <button class="btn btn-danger btn-sm eliminar-tarea" data-id="{{ $task->id }}" 
                                         data-bs-placement="top" 
@@ -81,6 +79,7 @@
                                         title="Eliminar esta tarea">
                                             <i class="fa-solid fa-trash"></i>
                                         </button>
+                                        <!-- Botón Imprimir -->
                                         <button class="btn btn-outline-dark btn-sm imprimir-tareas" " title="Imprimir tareas">
                                             <i class="fa-solid fa-print"></i>
                                         </button>

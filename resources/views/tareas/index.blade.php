@@ -1,6 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
+
 <div class="container">
     <h1 class="mb-4">Tareas</h1>
 
@@ -24,28 +25,52 @@
     <form method="POST" action="{{ route('tareas.default') }}">
         @csrf
         <h3>Agregar Tareas Predefinidas</h3>
-        @foreach ($listaEtapa as $tareaGeneral)
-            <div class="tarea-general">
-                <h4>{{ $tareaGeneral->nombre }}</h4>
-                <ul>
+        <!-- Tabla para mostrar las tareas generales y subtareas -->
+        <table class="table table-bordered table-striped mt-3 text-center">
+            <thead>
+                <tr>
+                    <th class="checkbox-header" style="width: 10px">
+                        <label for="select-all-subtasks" class="checkbox-label">
+                            <input type="checkbox" id="select-all-subtasks" />
+                            <span>Seleccionar Todo</span>
+                        </label>
+                    </th>
+                    <th>Etapa</th>
+                    <th>Nombre</th>
+                    <th style="width: 120px;">Fecha Inicio</th>
+                    <th style="width: 120px;">Fecha Fin</th>
+                    <th>Prioridad</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach ($listaEtapa as $tareaGeneral)
+                    <!-- Mostrar la tarea general solo una vez -->
+                    <tr>
+                        <td colspan="1"></td>
+                        <td class="font-weight-bold" colspan="1" style="width: 14px"> <strong>{{ $tareaGeneral->nombre }}</strong> </td> <!-- Solo una vez -->
+                        <td colspan="4"></td> <!-- Vaciar las otras columnas para que se vea la tarea general -->
+                    </tr>
+                    
                     @foreach ($tareaGeneral->predefinidas as $subtarea)
-                        <li>
-                            <label>
+                    
+                        <tr>
+                            <td class="checkbox-cell" style="width: 10px">
                                 <input 
                                     type="checkbox" 
                                     name="subtareas[]" 
                                     value="{{ $subtarea->id }}" 
-                                    checked>
-                               <b> {{ $subtarea->nombre }} </b>
-                                <i>{{ $subtarea->fecha_inicio }} -
-                                {{ $subtarea->fecha_limite }}</i>
-                               <strong> {{ $subtarea->prioridad }}</strong>
-                            </label>
-                        </li>
+                                    class="subtask-checkbox">
+                            </td>
+                            <td></td>
+                            <td>{{ $subtarea->nombre }}</td>
+                            <td>{{ $subtarea->fecha_inicio }}</td>
+                            <td>{{ $subtarea->fecha_limite }}</td>
+                            <td>{{ $subtarea->prioridad }}</td>
+                        </tr>
                     @endforeach
-                </ul>
-            </div>
-        @endforeach
+                @endforeach
+            </tbody>
+        </table>
         <button type="submit" class="btn btn-primary">Agregar Subtareas Seleccionadas</button>
     </form>
 </div>
@@ -170,9 +195,32 @@
 </div>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    
+    // Obtén los elementos
+    const selectAllCheckbox = document.getElementById('select-all-subtasks');
+    const subtasksCheckboxes = document.querySelectorAll('.subtask-checkbox');
 
+    // Función para verificar si todos los checkboxes están seleccionados
+    function updateSelectAllCheckbox() {
+        const allChecked = Array.from(subtasksCheckboxes).every(checkbox => checkbox.checked);
+        selectAllCheckbox.checked = allChecked;
+        selectAllCheckbox.indeterminate = !allChecked && Array.from(subtasksCheckboxes).some(checkbox => checkbox.checked);
+    }
 
+    // Maneja el cambio en el checkbox "Seleccionar todo"
+    selectAllCheckbox.addEventListener('change', function () {
+        const isChecked = selectAllCheckbox.checked;
+        subtasksCheckboxes.forEach(checkbox => {
+            checkbox.checked = isChecked;
+        });
+    });
+
+    // Escuchar cambios en las subtareas
+    subtasksCheckboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', updateSelectAllCheckbox);
+    });
+
+    // Inicializar el estado del "Seleccionar todo"
+    updateSelectAllCheckbox();
 
 document.body.addEventListener('click', (event) => {
     console.log("clicando algún event");
