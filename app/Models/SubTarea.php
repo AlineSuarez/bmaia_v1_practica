@@ -4,8 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use app\Models\TareaGeneral;
-use app\Models\User;
+use App\Models\TareaGeneral;
+use App\Models\User;
 class SubTarea extends Model
 {
     use HasFactory;
@@ -44,7 +44,7 @@ class SubTarea extends Model
         return $this->belongsTo(TareaGeneral::class, 'tarea_general_id');
     }
     public function user()
-{
-    return $this->belongsTo(User::class);
-}
+    {
+        return $this->belongsTo(User::class);
+    }
 }

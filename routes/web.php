@@ -111,6 +111,15 @@ Route::delete('/apiarios/delete/{apiario}', [ApiarioController::class, 'deleterA
 Route::get('apiarios/{apiario}/visitas', [VisitaController::class, 'showHistorial'])->name('visitas.historial');
 
 //Task
+// Imprimir todas las tareas
+Route::get('/todas-las-tareas/imprimir', [TaskController::class, 'imprimirTodas']);
+/*
+Route::get('/tareas/imprimir-todas', [TaskController::class, 'imprimirTodas'])
+    ->name('tareas.imprimirTodas')
+    ->where('tarea', '^(?!imprimir-todas$).*$'); // Esto lo protege de colisionar con /tareas/{tarea}
+*/
+// Imprimir detalle de una tarea
+Route::get('/tareas/{id}/imprimir', [TaskController::class, 'imprimir'])->name('tareas.imprimir');
 Route::delete('/tareas/{id}', [TaskController::class, 'destroy'])->name('tareas.destroy');
 Route::get('/tareas', [TaskController::class, 'index'])->name('tareas');
 Route::post('/tareas', [TaskController::class, 'store'])->name('tareas.store');
@@ -122,6 +131,9 @@ Route::post('/tareas/update/{id}', [TaskController::class, 'guardarCambios']);
 Route::patch('/tareas/{id}/update', [TaskController::class, 'updateTarea']);
 Route::get('/tareas/calendario', [TaskController::class, 'calendario'])->name('tareas.calendario');
 Route::get('/tareas/json', [TaskController::class, 'obtenerTareasJson'])->name('tareas.json');
+// Imprimir todas las tareas
+Route::get('/todas-las-tareas/imprimir', [TaskController::class, 'imprimirTodas'])->name('tareas.imprimirTodas');
+
 
 Route::get('/visitas', [VisitaController::class, 'index'])->name('visitas');
 Route::post('apiarios/{apiario}/visitas', [VisitaController::class, 'store'])->name('visitas.store');

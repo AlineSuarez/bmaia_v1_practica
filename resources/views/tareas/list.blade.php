@@ -1,5 +1,14 @@
-<div class="LIST">
+<div class="LIST" id="printableArea">
     <div class="table-responsive">
+        <!-- Botón Imprimir
+        <button  onclick="imprimirSoloContenido()" class="btn btn-outline-dark">
+            <i class="fa fa-print"></i> Imprimir Tabla
+        </button>
+        -->
+        <a href="{{ route('tareas.imprimirTodas') }}" target="_blank" class="btn btn-dark mb-2">
+            <i class="fa fa-print"></i> Imprimir todas las tareas
+        </a>
+        
         <table id="subtareasTable" class="table table-striped table-hover">
             <thead class="table-dark">
                 <tr>
@@ -9,7 +18,6 @@
                     <th>Prioridad</th>
                     <th>Estado</th>
                     <th>Acciones</th>
-                    
                 </tr>
             </thead>
             <tbody>
@@ -80,9 +88,18 @@
                                             <i class="fa-solid fa-trash"></i>
                                         </button>
                                         <!-- Botón Imprimir -->
-                                        <button class="btn btn-outline-dark btn-sm imprimir-tareas" " title="Imprimir tareas">
-                                            <i class="fa-solid fa-print"></i>
+                                        <a href="{{ route('tareas.imprimir', ['id' => $task->id]) }}"
+                                            target="_blank"
+                                            class="btn btn-outline-dark btn-sm"
+                                            title="Ver detalle como PDF">
+                                            <i class="fa-solid fa-file-text"></i>
+                                        </a>
+                                        <!-- Botón Ver Detalle 
+                                        <button onclick="window.print()" class="btn btn-outline-dark">
+                                            <i class="fa fa-print"></i> Imprimir vista actual
                                         </button>
+                                        -->
+                                        
                                     </div>
                                 </td>
                     </tr>
@@ -91,9 +108,6 @@
         </table>
     </div>
 </div>
-
-
-
 
 @section('optional-scripts')
 <script>
@@ -147,6 +161,7 @@ $(document).ready(function () {
             default: return "#ffffff"; // Blanco por defecto
         }
     }
+
 });
 
 
@@ -270,70 +285,100 @@ document.querySelectorAll('.guardar-cambios').forEach(button => {
     });
 });
 
-
-
-
-
-
-//eliminar
-document.addEventListener('DOMContentLoaded', function () {
-    // Eliminar tarea con confirmación
-    document.querySelectorAll('.eliminar-tarea').forEach(button => {
-        button.addEventListener('click', function () {
-            const taskId = this.dataset.id;
-
-            Swal.fire({
-                title: '¿Está seguro?',
-                text: "Esta acción no se puede deshacer.",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#d33',
-                cancelButtonColor: '#3085d6',
-                confirmButtonText: 'Sí, eliminar',
-                cancelButtonText: 'Cancelar'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    eliminarTarea(taskId);
-                }
+    // Eliminar tarea
+    document.addEventListener('DOMContentLoaded', function () {
+        // Eliminar tarea con confirmación
+        document.querySelectorAll('.eliminar-tarea').forEach(button => {
+            button.addEventListener('click', function () {
+                const taskId = this.dataset.id; // Obtener ID de la tarea
+                const buttonElement = this; // Guardar referencia al botón
+                // Mostrar alerta de confirmación
+                Swal.fire({
+                    title: '¿Está seguro?',
+                    text: "Esta acción no se puede deshacer.",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Sí, eliminar',
+                    cancelButtonText: 'Cancelar'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        eliminarTarea(taskId, buttonElement);
+                    }
+                });
             });
         });
-    });
 
-    function eliminarTarea(taskId) {
-        fetch(`/tareas/${taskId}`, {
-            method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': '{{ csrf_token() }}'
-            }
-        })
-        .then(response => {
-            if (response.ok) {
-                Swal.fire(
-                    'Eliminado!',
-                    'La tarea ha sido eliminada exitosamente.',
-                    'success'
-                );
-                // Eliminar la fila correspondiente en la tabla
-                document.querySelector(`button[data-id="${taskId}"]`).closest('tr').remove();
-            } else {
-                Swal.fire(
-                    'Error',
-                    'Hubo un problema al intentar eliminar la tarea.',
-                    'error'
-                );
-            }
-        })
-        .catch(error => {
+        function eliminarTarea(taskId, buttonElement) {
+            fetch(`/tareas/${taskId}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+            })
+            .then(response => response.json()) // Convertir la respuesta en JSON
+            .then(data => {
+                console.log(data); // Asegurar que la respuesta json sea la esperada
+                if (data.message === 'Subtarea eliminada correctamente.') {
+                    Swal.fire(
+                        'Eliminado!',
+                        'La tarea ha sido eliminada exitosamente.',
+                        'success'
+                    );
+                    // Eliminar la fila correspondiente en la tabla
+                    const row = buttonElement.closest('tr');
+                    if (row) {
+                        row.remove();
+                    }
+                } else {
+                    Swal.fire(
+                        'Error',
+                        'Hubo un problema al intentar eliminar la tarea.',
+                        'error'
+                    );
+                }
+            })
+            .catch(error => {
             console.error('Error:', error);
             Swal.fire(
                 'Error',
                 'Hubo un problema al intentar eliminar la tarea.',
                 'error'
-            );
-        });
+                );
+            });
+        }
+    });
+
+    // Función para imprimir solo el contenido de la tabla
+    function imprimirSoloContenido() {
+    // Desactivar paginación y mostrar todos los datos
+    const tabla = $('#subtareasTable').DataTable();
+
+    tabla.page.len(-1).draw(); // Mostrar todos los registros (sin paginación)
+
+    setTimeout(() => {
+        const contenido = document.getElementById("printableArea").innerHTML;
+        const ventana = window.open('', '', 'height=800,width=1000');
+
+        ventana.document.write('<html><head><title>Imprimir</title>');
+        ventana.document.write('<style>button, select, .btn, .acciones-columna { display: none; }</style>');
+        ventana.document.write('</head><body>');
+        ventana.document.write('<h2 style="text-align:center;">Resumen de Subtareas</h2>');
+        ventana.document.write(contenido);
+        ventana.document.write('</body></html>');
+        ventana.document.close();
+        ventana.focus();
+        ventana.print();
+        ventana.close();
+
+        // Restaurar paginación
+        tabla.page.len(10).draw();
+    }, 500); // Esperamos un poco para que se rendericen todos los registros
     }
-});
+
+
 
 </script>
 
