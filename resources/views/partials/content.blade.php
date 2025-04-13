@@ -16,7 +16,7 @@
 
     <div class="content-wrapper">
       <div class="hero-text">
-        <h1>Bienvenido a <span class="brand-name">Ma<span class="highlight">iA</span></span></h1>
+        <h1>Bienvenido a Ma<span class="highlight">iA</span></span></h1>
         <p class="tagline">Innovación inteligente para un futuro brillante</p>
       </div>
     </div>
@@ -317,8 +317,7 @@
           <div class="efficiency-showcase">
             <div class="efficiency-image-container">
               <div class="efficiency-image-hexagon">
-                <img src="https://files.cdn-files-a.com/uploads/10098964/800_6761a84cd11e2-thumbnail.jpg"
-                  alt="Eficiencia apícola con MaiA" class="efficiency-image">
+                <img src="/img/eficiencia.jpg" alt="Eficiencia apícola con MaiA" class="efficiency-image">
                 <div class="hexagon-border hexagon-border-efficiency"></div>
               </div>
             </div>
@@ -437,7 +436,7 @@
         <div class="herramienta-inner">
           <div class="herramienta-icon-wrapper">
             <div class="herramienta-icon-container">
-              <i class="fa-solid fa-hive"></i>
+              <i class="fa-solid fa-arrow-trend-up"></i>
             </div>
           </div>
           <div class="herramienta-content">
@@ -706,7 +705,7 @@
             de las abejas y condiciones ambientales.</p>
           <div class="step-illustration">
             <div class="hive-icon">
-              <i class="fa-solid fa-hive"></i>
+              <i class="fa-solid fa-server"></i>
             </div>
             <div class="data-stream">
               <span class="data-point"></span>
@@ -939,7 +938,7 @@
       </div>
       <div class="stat-item">
         <div class="stat-icon">
-          <i class="fa-solid fa-hive"></i>
+          <i class="fa-solid fa-gauge-high"></i>
         </div>
         <div class="stat-number">10,000+</div>
         <div class="stat-label">Colmenas monitoreadas</div>
@@ -1055,9 +1054,6 @@
     <!-- Sección del logo -->
     <div class="footer-logo-section">
       <div class="footer-logo">
-        <div class="footer-logo-icon">
-          <i class="fas fa-seedling"></i>
-        </div>
         <div class="footer-logo-text">MaiA</div>
       </div>
       <p class="footer-description">

@@ -424,7 +424,6 @@
             }
         }
 
-        /* Ajustes de hero */
         .hero {
             height: 100vh;
             display: flex;

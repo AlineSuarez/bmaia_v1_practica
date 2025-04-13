@@ -1,15 +1,14 @@
 /* Colores principales */
 :root {
-    --primary-color: #FFA500; /* Anaranjado */
-    --secondary-color: #FFD700; /* Amarillo */
-    --dark-color: #FF8C00; /* Anaranjado oscuro */
+    --primary-color: #ffa500; /* Anaranjado */
+    --secondary-color: #ffd700; /* Amarillo */
+    --dark-color: #ff8c00; /* Anaranjado oscuro */
     --light-color: #ffffff; /* Crema, para contraste */
     --text-color: #333333;
-    --red-color:#ff3300;
-    --blue-color:#4400ff;
-    --green-color:#0de764;
-    --greenlight-color:#8eecb3;
-    
+    --red-color: #ff3300;
+    --blue-color: #4400ff;
+    --green-color: #0de764;
+    --greenlight-color: #8eecb3;
 }
 
 /* General styling */
@@ -67,7 +66,6 @@ body {
     background-color: var(--dark-color);
     color: white;
 }
-
 
 /* Ajustes para la imagen del usuario */
 .navbar .rounded-circle {
@@ -147,8 +145,6 @@ body {
     cursor: pointer;
     color: white;
 }
-
-
 
 /* Fondo general */
 body {
@@ -230,7 +226,7 @@ body {
     color: white;
 }
 
-.bg-greenligh{
+.bg-greenligh {
     background-color: var(--greenlight-color) !important;
     color: rgb(101, 96, 96);
 }
@@ -299,36 +295,36 @@ body {
 }
 
 .list-group-item {
-    background-color: #FFEBCC;
-    border-color: #FF9900;
+    background-color: #ffebcc;
+    border-color: #ff9900;
 }
 
 .btn-primary {
-    background-color: #FFA500;
-    border-color: #FF8C00;
+    background-color: #ffa500;
+    border-color: #ff8c00;
 }
 
 .btn-success {
-    background-color: #FFD700;
-    border-color: #FFC700;
+    background-color: #ffd700;
+    border-color: #ffc700;
 }
 
 .btn-danger {
-    background-color: #FF6347;
-    border-color: #FF4500;
+    background-color: #ff6347;
+    border-color: #ff4500;
 }
 
 h4 {
-    color: #FF8C00;
+    color: #ff8c00;
 }
 h1 {
-    color: #FF8C00;
+    color: #ff8c00;
 }
 h2 {
-    color: #FF8C00;
+    color: #ff8c00;
 }
 h4 {
-    color: #FF8C00;
+    color: #ff8c00;
 }
 .task-list {
     min-height: 200px;
@@ -371,7 +367,6 @@ h4 {
     border-top-left-radius: 5px;
     border-top-right-radius: 5px;
 }
-
 
 #loader {
     position: fixed;
@@ -441,8 +436,12 @@ h4 {
 
 /* Animación de rotación */
 @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
 }
 
 main-contenload .card {
@@ -454,7 +453,8 @@ main-contenload .card {
     flex-wrap: nowrap; /* Por defecto: evita que los elementos bajen a otra línea */
 }
 
-@media (max-width: 768px) { /* Ajustes para pantallas móviles */
+@media (max-width: 768px) {
+    /* Ajustes para pantallas móviles */
     #main-contenload {
         flex-wrap: wrap; /* Permite que los elementos bajen */
         justify-content: center; /* Centra los elementos verticalmente */
@@ -477,7 +477,7 @@ main-contenload .card {
 }
 
 .timeline-event::before {
-    content: '';
+    content: "";
     position: absolute;
     left: -10px;
     top: 0;
@@ -486,7 +486,6 @@ main-contenload .card {
     background: #333;
     border-radius: 50%;
 }
-
 
 /* Estilo del badge de prioridad en estilo semáforo */
 .badge {
@@ -526,10 +525,18 @@ main-contenload .card {
 }
 
 /* Ajuste del borde izquierdo del ítem de tarea según la prioridad */
-.task-item.bg-danger { border-color: #e63946; }
-.task-item.bg-warning { border-color: #f4a261; }
-.task-item.bg-success { border-color: #2a9d8f; }
-.task-item.bg-secondary { border-color: #6c757d; }
+.task-item.bg-danger {
+    border-color: #e63946;
+}
+.task-item.bg-warning {
+    border-color: #f4a261;
+}
+.task-item.bg-success {
+    border-color: #2a9d8f;
+}
+.task-item.bg-secondary {
+    border-color: #6c757d;
+}
 
 /* Estilo para la descripción con scroll */
 .task-description {
@@ -558,7 +565,6 @@ main-contenload .card {
     color: #28a745; /* Color de ícono de completar */
 }
 
-
 /* Estilo general del chat */
 .assistant-chat {
     position: fixed;
@@ -575,10 +581,6 @@ main-contenload .card {
     overflow: hidden;
     font-family: Arial, sans-serif;
 }
-
-
-
-
 
 .nav-pills .nav-link {
     color: orange; /* Texto anaranjado por defecto */
@@ -599,9 +601,8 @@ main-contenload .card {
 /*BORDE MAIN-CONTENT*/
 
 .main-content {
-   margin-left:0px;
+    margin-left: 0px;
 }
-
 
 .badge-red {
     background-color: #f30b0b; /* Rosa intenso */
@@ -615,10 +616,6 @@ main-contenload .card {
     background-color: #5c6fda; /* Rosa intenso */
     color: #fff; /* Texto blanco */
 }
-
-
-
-
 
 /* Colores para Prioridad */
 .select2-results__option[data-prioridad="alta"] {
@@ -656,9 +653,6 @@ main-contenload .card {
     color: white;
 }
 
-
-
-
 select.form-select {
     width: 100%;
     margin: 5px 0;
@@ -678,7 +672,6 @@ select.form-select {
     background-color: #007bff;
     border-color: #007bff;
 }
-
 
 .play-voice-button:disabled {
     background-color: #ffc107; /* Amarillo */
