@@ -17,7 +17,7 @@
     <div class="content-wrapper">
       <div class="hero-text">
         <h1>Bienvenido a Ma<span class="highlight">iA</span></span></h1>
-        <p class="tagline">Innovación inteligente para un futuro brillante</p>
+        <p class="tagline">Inteligencia Artificial al servicio de la Apicultura</p>
       </div>
     </div>
 
@@ -34,14 +34,21 @@
       <div class="maia-content-row">
         <div class="maia-text">
           <p>
-            MaiA es un ecosistema de apicultura inteligente que integra condiciones ambientales,
-            el estado de desarrollo de las colmenas y el conocimiento de los apicultores, proporcionando
-            soporte técnico para la toma de decisiones eficientes.
+            ¿Buscas una forma simple y rápida para gestionar tus colmenas?
+            ¡Bee MaiA es la solución!
           </p>
           <p>
-            Cualquier apicultor con smartphone puede interactuar con MaiA, llevar registros
-            visuales, realizar consultas técnicas, completar registros por voz, facilitando
-            las labores del apiario.
+            Bee MaiA es el primer Agente de Inteligencia Artificial en Apicultura diseñado específicamente para ti.
+            Imagina
+            tener un
+            asesor experto siempre disponible para ayudarte a tomar decisiones oportunamente.
+          </p>
+          <p>
+            Bee MaiA es una herramienta muy fácil de usar. Cualquier persona con smartphone puede interactuar con
+            nuestra
+            aplicación
+            móvil, realizar consultas técnicas, llevar notas o completar registros por voz, facilitando las labores del
+            apiario.
           </p>
           <!-- Enhanced feature list -->
           <div class="feature-list">
@@ -52,7 +59,7 @@
                   <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
                 </svg>
               </div>
-              <div class="feature-text">Protección de colmenas</div>
+              <div class="feature-text">Conociemiento</div>
             </div>
             <div class="feature-item">
               <div class="feature-icon">
@@ -61,7 +68,7 @@
                   <path d="M22 12h-4l-3 9L9 3l-3 9H2"></path>
                 </svg>
               </div>
-              <div class="feature-text">Monitoreo en tiempo real</div>
+              <div class="feature-text">Eficiencia</div>
             </div>
             <div class="feature-item">
               <div class="feature-icon">
@@ -72,7 +79,7 @@
                   </path>
                 </svg>
               </div>
-              <div class="feature-text">Análisis de datos</div>
+              <div class="feature-text">Productividad</div>
             </div>
           </div>
         </div>
@@ -108,17 +115,20 @@
             Simplifica la gestión de tu apiario con una herramienta intuitiva que permite registrar datos por voz, en
             tiempo real y sin necesidad de conexión a internet.
           </p>
+          <p>
+            Usa nuestra plataforma todo en uno, +segura y 100% digital, con acceso desde cualquier dispositivo
+          </p>
           <!-- Enhanced benefits list -->
           <div class="benefits-container">
-            <h3 class="benefits-title">Beneficios clave:</h3>
+            <h3 class="benefits-title">Nuestro distintivo:</h3>
             <ul class="benefits-list">
               <li>
                 <span class="benefit-check">✓</span>
-                Registro de datos por voz para mayor comodidad
+                Registro de datos por voz
               </li>
               <li>
                 <span class="benefit-check">✓</span>
-                Funciona sin conexión a internet en el campo
+                Funciona en lugares sin conexión a internet
               </li>
               <li>
                 <span class="benefit-check">✓</span>
@@ -126,7 +136,19 @@
               </li>
               <li>
                 <span class="benefit-check">✓</span>
-                Sincronización automática cuando hay conexión
+                Sincronización automática
+              </li>
+              <li>
+                <span class="benefit-check">✓</span>
+                Fácil de usar
+              </li>
+              <li>
+                <span class="benefit-check">✓</span>
+                Conexión por Bluetooth con otros dispositivos
+              </li>
+              <li>
+                <span class="benefit-check">✓</span>
+                Aplicación multiplataforma
               </li>
             </ul>
           </div>
@@ -166,16 +188,16 @@
           <!-- Enhanced sustainability metrics -->
           <div class="metrics-container">
             <div class="metric-item">
+              <div class="metric-value">-10%</div>
+              <div class="metric-label">Reducción de viajes, uso de combustible y emisiones de CO2</div>
+            </div>
+            <div class="metric-item">
               <div class="metric-value">-30%</div>
               <div class="metric-label">Reducción en mortandad de abejas</div>
             </div>
             <div class="metric-item">
-              <div class="metric-value">+25%</div>
-              <div class="metric-label">Aumento en producción de miel</div>
-            </div>
-            <div class="metric-item">
               <div class="metric-value">-40%</div>
-              <div class="metric-label">Reducción en pérdida por enjambres</div>
+              <div class="metric-label">Previene la formación y pérdida de enjambres</div>
             </div>
           </div>
           <p class="sustainability-note">
@@ -209,12 +231,15 @@
 
     <!-- NEW SECTION: Eficiencia y Productividad -->
     <div class="maia-content-section">
-      <h1 class="section-title">Eficiencia y <span class="highlight">Productividad</span></h1>
+      <h1 class="section-title">+ Práctico</h1>
       <div class="maia-content-row">
         <div class="maia-text">
           <p>
             MaiA optimiza el trabajo apícola, reduciendo el tiempo dedicado a tareas administrativas y permitiendo
             enfocarse en lo que realmente importa: el cuidado de las abejas y la producción de miel de calidad.
+          </p>
+          <p>
+            ¡Con BMaiA puedes tomar notas en menos de 10 segundos!
           </p>
 
           <!-- Efficiency stats -->
@@ -229,7 +254,7 @@
                 </div>
                 <div class="efficiency-bar-wrapper">
                   <div class="efficiency-bar efficiency-bar-after" style="width: 65%;">
-                    <span>Con MaiA: 65%</span>
+                    <span>Con MaiA: 65% + 35% de tiempo libre</span>
                   </div>
                 </div>
               </div>
@@ -245,7 +270,7 @@
                 </div>
                 <div class="efficiency-bar-wrapper">
                   <div class="efficiency-bar efficiency-bar-after" style="width: 40%;">
-                    <span>Con MaiA: 40%</span>
+                    <span>Con MaiA: 40% + 60% de tiempo libre</span>
                   </div>
                 </div>
               </div>
@@ -253,7 +278,7 @@
 
             <div class="efficiency-stat-row">
               <div class="efficiency-bar-container">
-                <div class="efficiency-label">Detección de problemas</div>
+                <div class="efficiency-label">Tiempo al detectar problemas</div>
                 <div class="efficiency-bar-wrapper">
                   <div class="efficiency-bar efficiency-bar-before" style="width: 60%;">
                     <span>Antes: 60%</span>
@@ -261,53 +286,9 @@
                 </div>
                 <div class="efficiency-bar-wrapper">
                   <div class="efficiency-bar efficiency-bar-after" style="width: 95%;">
-                    <span>Con MaiA: 95%</span>
+                    <span>Con MaiA: 95% + 5% de tiempo libre</span>
                   </div>
                 </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Key productivity features -->
-          <div class="productivity-features">
-            <div class="productivity-feature">
-              <div class="productivity-icon">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                  stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <circle cx="12" cy="12" r="10"></circle>
-                  <polyline points="12 6 12 12 16 14"></polyline>
-                </svg>
-              </div>
-              <div class="productivity-content">
-                <h4>Ahorro de tiempo</h4>
-                <p>Reduce hasta un 35% el tiempo dedicado a tareas administrativas y de registro</p>
-              </div>
-            </div>
-
-            <div class="productivity-feature">
-              <div class="productivity-icon">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                  stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-                  <polyline points="22 4 12 14.01 9 11.01"></polyline>
-                </svg>
-              </div>
-              <div class="productivity-content">
-                <h4>Precisión mejorada</h4>
-                <p>Aumenta la precisión en la detección temprana de problemas en las colmenas</p>
-              </div>
-            </div>
-
-            <div class="productivity-feature">
-              <div class="productivity-icon">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                  stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M12 20v-6M6 20V10M18 20V4"></path>
-                </svg>
-              </div>
-              <div class="productivity-content">
-                <h4>Escalabilidad</h4>
-                <p>Gestiona desde unas pocas hasta cientos de colmenas con la misma facilidad</p>
               </div>
             </div>
           </div>
@@ -395,7 +376,7 @@
           <!-- Título simplificado -->
           <h2 class="section-title">Herramientas</h2>
           <p class="hero-description">
-            Todas las herramientas necesarias para aumentar la rentabilidad del negocio apícola, ¡al alcance de todos!
+            Todas las herramientas necesarias para aumentar la rentabilidad del negocio apícola, ¡al alcance de tu mano!
           </p>
         </div>
       </div>
@@ -403,11 +384,12 @@
 
     <!-- Texto introductorio adicional -->
     <div class="intro-text">
-      <p>En MaiA, hemos desarrollado un conjunto completo de herramientas digitales diseñadas específicamente para
-        apicultores profesionales y aficionados. Nuestras soluciones te ayudarán a optimizar cada aspecto de tu
-        operación apícola, desde la planificación de inspecciones hasta el análisis predictivo de producción.</p>
-      <p>Cada herramienta ha sido creada en colaboración con expertos apicultores y científicos especializados,
-        garantizando soluciones prácticas y efectivas para los desafíos reales del sector.</p>
+      <p>Bee MaiA la forma más inteligente de gestionar tus colmenas</p>
+      <p>Plataforma todo en uno, 100% digital, que integra herramientas avanzadas de IA para gestionar tus colmenas, de
+        manera más fácil y rápida.</p>
+      <div class="cta-buttons">
+        <a href="#contacto" class="cta-button primary">Comienza tu prueba gratis</a>
+      </div>
     </div>
 
     <ul class="herramientas-list">
@@ -419,9 +401,10 @@
             </div>
           </div>
           <div class="herramienta-content">
-            <h3>Planificación</h3>
-            <p>Planifica y organiza tus inspecciones de manera eficiente con nuestro calendario inteligente que te
-              alerta sobre las actividades críticas según la temporada y condiciones climáticas.</p>
+            <h3>Agenda de Tareas</h3>
+            <p>Planifica y organiza tus inspecciones de manera eficiente. Podrás recibir notificaciones de tareas
+              pendientes y alertas
+              de eventos críticos.</p>
             <div class="herramienta-stats">
               <div class="stat">
                 <span class="stat-value">30%</span>
@@ -436,17 +419,18 @@
         <div class="herramienta-inner">
           <div class="herramienta-icon-wrapper">
             <div class="herramienta-icon-container">
-              <i class="fa-solid fa-arrow-trend-up"></i>
+              <i class="fa-solid fa-brain"></i>
             </div>
           </div>
           <div class="herramienta-content">
-            <h3>Desarrollo</h3>
-            <p>Chequea el desarrollo de las colmenas con seguimiento detallado. Registra la fortaleza de la colonia,
-              presencia de reina, comportamiento y patrones de crecimiento con gráficos visuales.</p>
+            <h3>Sistema Experto</h3>
+            <p>Realiza consultas técnicas a nuestro Agente de IA, y obtén respuestas precisas y contextualizadas basadas
+              en lainformación de tu apiario y nuestra base de conocimiento. Tendrás un asesor experto las 24 horas del
+              día, 365 días al año.</p>
             <div class="herramienta-stats">
               <div class="stat">
-                <span class="stat-value">25%</span>
-                <span class="stat-label">Mejor desarrollo</span>
+                <span class="stat-value">40%</span>
+                <span class="stat-label">Mayor precisión</span>
               </div>
             </div>
           </div>
@@ -462,12 +446,36 @@
           </div>
           <div class="herramienta-content">
             <h3>Control sanitario</h3>
-            <p>Vigila y controla varroa y nosema con alertas inteligentes. Nuestro sistema de detección temprana te
-              ayuda a identificar problemas sanitarios antes de que se conviertan en infestaciones graves.</p>
+            <p>Vigila y controla la presencia de varroa y nosema. Nuestro sistema de detección temprana te ayuda a
+              identificar
+              problemas sanitarios antes de que se conviertan en un problema fuera de control.</p>
             <div class="herramienta-stats">
               <div class="stat">
                 <span class="stat-value">40%</span>
-                <span class="stat-label">Reducción de pérdidas</span>
+                <span class="stat-label">Reducción de mortandad</span>
+              </div>
+            </div>
+          </div>
+          <div class="hexagon-decoration"></div>
+        </div>
+      </li>
+      <li class="herramienta-item">
+        <div class="herramienta-inner">
+          <div class="herramienta-icon-wrapper">
+            <div class="herramienta-icon-container">
+              <i class="fa-solid fa-boxes-stacked"></i>
+            </div>
+          </div>
+          <div class="herramienta-content">
+            <h3>Trazabilidad de Colmenas</h3>
+            <p>Crea y gestiona tus apiarios fácilmente.
+              Podrás crear todos los apiarios que necesites durante la temporada, manteniendo el registro y trazabilidad
+              individual de
+              cada colmena.</p>
+            <div class="herramienta-stats">
+              <div class="stat">
+                <span class="stat-value">100%</span>
+                <span class="stat-label">Trazabilidad de colmenas</span>
               </div>
             </div>
           </div>
@@ -482,12 +490,15 @@
             </div>
           </div>
           <div class="herramienta-content">
-            <h3>Monitoreo</h3>
-            <p>Monitorea las condiciones del clima y vegetación en tiempo real. Integración con estaciones
-              meteorológicas y datos satelitales para predecir flujos de néctar y condiciones óptimas de pecoreo.</p>
+            <h3>Clima y Vegetación</h3>
+            <p>Monitorea las condiciones del clima y vegetación. Descubre las zonas ideales para ubicar tus colmenas,
+              considerando la
+              flora local, los calendarios de floración y los riesgos ambientales. Maximiza el potencial de cada apiario
+              de manera
+              sostenible.</p>
             <div class="herramienta-stats">
               <div class="stat">
-                <span class="stat-value">20%</span>
+                <span class="stat-value">50%</span>
                 <span class="stat-label">Mayor precisión</span>
               </div>
             </div>
@@ -503,13 +514,16 @@
             </div>
           </div>
           <div class="herramienta-content">
-            <h3>Predicción</h3>
-            <p>Aplica modelos de predicción y simulación para optimizar la producción. Nuestros algoritmos analizan
-              datos históricos y actuales para proyectar rendimientos y sugerir intervenciones estratégicas.</p>
+            <h3>Simulador de Rendimiento</h3>
+            <p>Aplica modelos de predicción de floraciones y simulación de rendimiento. Nuestros algoritmos analizan
+              datos históricos y
+              actuales, que te ayudarán a predecir flujos de néctar, proyectar rendimientos y ajustar tus prácticas de
+              manejo para
+              obtener el máximo potencial.</p>
             <div class="herramienta-stats">
               <div class="stat">
-                <span class="stat-value">35%</span>
-                <span class="stat-label">Aumento productivo</span>
+                <span class="stat-value">25%</span>
+                <span class="stat-label">Mayor producción</span>
               </div>
             </div>
           </div>
@@ -525,13 +539,13 @@
           </div>
           <div class="herramienta-content">
             <h3>Calculadoras</h3>
-            <p>Usa calculadoras para nutrición y tratamientos sanitarios precisos. Determina dosis exactas de
-              medicamentos, cantidades de alimentación suplementaria y programación de tratamientos según el tamaño de
-              la colonia.</p>
+            <p>Usa calculadoras de nutrición y tratamientos sanitarios. Determina dosis exactas de medicamentos y
+              alimentación
+              suplementaria, según el tamaño y estado de desarrollo de las colmenas.</p>
             <div class="herramienta-stats">
               <div class="stat">
                 <span class="stat-value">50%</span>
-                <span class="stat-label">Menos errores</span>
+                <span class="stat-label">Mayor precisión</span>
               </div>
             </div>
           </div>
@@ -546,14 +560,15 @@
             </div>
           </div>
           <div class="herramienta-content">
-            <h3>Registros</h3>
-            <p>Completa y descarga automáticamente registros FRADA y RAMEX. Cumple con los requisitos regulatorios sin
-              esfuerzo, generando documentación oficial a partir de los datos que ya registras en tu operación diaria.
+            <h3>Cuaderno de Campo</h3>
+            <p>Completa y descarga automáticamente el Cuaderno de Campo del SAG. Cumple con los requisitos regulatorios
+              sin esfuerzo, generando documentación oficial a partir de los datos que registras, mediante comando de
+              voz. Solo tienes que imprimir y firmar.
             </p>
             <div class="herramienta-stats">
               <div class="stat">
-                <span class="stat-value">80%</span>
-                <span class="stat-label">Ahorro administrativo</span>
+                <span class="stat-value">100%</span>
+                <span class="stat-label">Más Práctico</span>
               </div>
             </div>
           </div>
@@ -589,9 +604,9 @@
   <div class="container">
     <div class="descarga-content">
       <div class="descarga-text">
-        <h2 class="section-title">Descarga la <span class="highlight">App</span></h2>
-        <p class="section-description">Accede a nuestra aplicación móvil para empezar a transformar tu apicultura.
-          Disponible para Android e iOS.</p>
+        <h2 class="section-title">Descarga la App</h2>
+        <p class="section-description">Accede a nuestra aplicación móvil BMaiA, la forma más inteligente de gestionar
+          tus colmenas.</p>
 
         <div class="app-features">
           <div class="feature">
@@ -600,7 +615,7 @@
             </div>
             <div class="feature-text">
               <h3>Interfaz intuitiva</h3>
-              <p>Diseñada para apicultores, fácil de usar en el campo</p>
+              <p>Diseñada para apicultores, fácil de usar por comandos de voz</p>
             </div>
           </div>
 
@@ -610,7 +625,7 @@
             </div>
             <div class="feature-text">
               <h3>Modo offline</h3>
-              <p>Trabaja sin conexión y sincroniza cuando vuelvas a tener señal</p>
+              <p>Funciona en lugares sin conexión a internet</p>
             </div>
           </div>
 
@@ -620,7 +635,37 @@
             </div>
             <div class="feature-text">
               <h3>Notificaciones</h3>
-              <p>Alertas personalizadas sobre eventos importantes</p>
+              <p>Recibe notificaciones de tareas pendientes y alertas de eventos críticos</p>
+            </div>
+          </div>
+
+          <div class="feature">
+            <div class="feature-icon">
+              <i class="fa-solid fa-infinity"></i>
+            </div>
+            <div class="feature-text">
+              <h3>Apiarios ilimitados</h3>
+              <p>Crea y gestiona tantos apiarios como quieras</p>
+            </div>
+          </div>
+
+          <div class="feature">
+            <div class="feature-icon">
+              <i class="fa-solid fa-qrcode"></i>
+            </div>
+            <div class="feature-text">
+              <h3>Código QR</h3>
+              <p>Identifica tus colmenas con códigos QR y accede a la información de cada una</p>
+            </div>
+          </div>
+
+          <div class="feature">
+            <div class="feature-icon">
+              <i class="fa-solid fa-cloud"></i>
+            </div>
+            <div class="feature-text">
+              <h3>Datos seguros</h3>
+              <p>Tus datos siempre estarán sincronizados de forma segura en la nube</p>
             </div>
           </div>
         </div>
@@ -662,19 +707,17 @@
       <div class="app-mockup">
         <div class="phone-frame">
           <div class="phone-screen">
-            <img src="https://files.cdn-files-a.com/uploads/10098964/app-mockup.jpg" alt="MaiA App"
-              class="app-screenshot" />
+            <img src="{{ asset('img/home/MaiA - App final-01.png') }}" alt="MaiA App" class="app-screenshot" />
           </div>
           <div class="phone-notch"></div>
-          <div class="phone-button"></div>
           <div class="phone-reflection"></div>
         </div>
         <div class="floating-screens">
           <div class="floating-screen screen-1">
-            <img src="https://files.cdn-files-a.com/uploads/10098964/app-screen1.jpg" alt="Pantalla de estadísticas" />
+            <img src="{{ asset('img/home/MaiA - App final-02.png') }}" alt="Pantalla de estadísticas" />
           </div>
           <div class="floating-screen screen-2">
-            <img src="https://files.cdn-files-a.com/uploads/10098964/app-screen2.jpg" alt="Pantalla de colmenas" />
+            <img src="{{ asset('img/home/MaiA - App final-10.png') }}" alt="Pantalla de colmenas" />
           </div>
         </div>
         <div class="mockup-shadow"></div>
@@ -693,24 +736,24 @@
         información clave que te ayudará a tomar mejores decisiones.</p>
     </div>
 
+    <div class="contenedor-img">
+      <img src="{{ asset('img/home/procesar.png') }}" alt="Fondo IA" class="img-flotante">
+    </div>
+
+
     <div class="process-flow">
       <div class="process-step">
         <div class="step-number">1</div>
         <div class="step-icon">
-          <i class="fa-solid fa-microchip"></i>
+          <i class="fa-solid fa-calendar-days"></i>
         </div>
         <div class="step-content">
-          <h3>Recopilación de datos</h3>
-          <p>Los sensores instalados en tus colmenas recopilan información sobre temperatura, humedad, peso, actividad
-            de las abejas y condiciones ambientales.</p>
+          <h3>Planifica tus Tareas</h3>
+          <p>Planifica y organiza tus inspecciones de manera eficiente, optimizando el uso del tiempo y los recursos en
+            cada etapa de producción.</p>
           <div class="step-illustration">
             <div class="hive-icon">
-              <i class="fa-solid fa-server"></i>
-            </div>
-            <div class="data-stream">
-              <span class="data-point"></span>
-              <span class="data-point"></span>
-              <span class="data-point"></span>
+              <i class="fa-solid fa-calendar-check"></i>
             </div>
           </div>
         </div>
@@ -746,8 +789,10 @@
         </div>
         <div class="step-content">
           <h3>Análisis inteligente</h3>
-          <p>Nuestros algoritmos de inteligencia artificial analizan los datos, identifican patrones y generan insights
-            basados en investigaciones apícolas avanzadas.</p>
+          <p>Nuestro Agente de IA integra y analiza los datos registrados, correlacionando el estado de desarrollo de
+            las colmenas, las condiciones ambientales del apiario, y el registro de los manejos aplicados. BMaiA
+            identifica patrones y genera recomendaciones técnicas personalizadas.
+          </p>
           <div class="step-illustration">
             <div class="analysis-animation">
               <div class="analysis-graph">
@@ -771,8 +816,9 @@
         </div>
         <div class="step-content">
           <h3>Información accionable</h3>
-          <p>Recibe alertas, recomendaciones y visualizaciones claras en tu dispositivo móvil o computadora,
-            permitiéndote tomar decisiones informadas en el momento adecuado.</p>
+          <p>Recibe notificaciones de tareas pendientes, alertas de eventos críticos y recomendaciones personalizadas en
+            tu
+            dispositivo móvil, permitiéndote tomar decisiones informadas oportunamente.</p>
           <div class="step-illustration">
             <div class="notification-animation">
               <div class="notification-bell">
@@ -791,36 +837,107 @@
 
     <div class="benefits-grid">
       <div class="benefit-card">
-        <div class="benefit-icon">
-          <i class="fa-solid fa-chart-line"></i>
+        <div class="benefit-header">
+          <div class="benefit-icon">
+            <i class="fa-solid fa-chart-line"></i>
+          </div>
+          <h3>Aumento de productividad</h3>
         </div>
-        <h3>Aumento de productividad</h3>
         <p>Incrementa la producción de miel hasta un 30% gracias a intervenciones oportunas basadas en datos reales.</p>
       </div>
 
       <div class="benefit-card">
-        <div class="benefit-icon">
-          <i class="fa-solid fa-clock"></i>
+        <div class="benefit-header">
+          <div class="benefit-icon">
+            <i class="fa-solid fa-clock"></i>
+          </div>
+          <h3>Ahorro de tiempo</h3>
         </div>
-        <h3>Ahorro de tiempo</h3>
         <p>Reduce el tiempo dedicado a inspecciones innecesarias y enfócate en las colmenas que realmente necesitan
           atención.</p>
       </div>
 
       <div class="benefit-card">
-        <div class="benefit-icon">
-          <i class="fa-solid fa-shield-virus"></i>
+        <div class="benefit-header">
+          <div class="benefit-icon">
+            <i class="fa-solid fa-shield-virus"></i>
+          </div>
+          <h3>Prevención de enfermedades</h3>
         </div>
-        <h3>Prevención de enfermedades</h3>
         <p>Detecta tempranamente signos de problemas sanitarios antes de que afecten a toda la colonia.</p>
       </div>
 
       <div class="benefit-card">
-        <div class="benefit-icon">
-          <i class="fa-solid fa-leaf"></i>
+        <div class="benefit-header">
+          <div class="benefit-icon">
+            <i class="fa-solid fa-leaf"></i>
+          </div>
+          <h3>Apicultura sostenible</h3>
         </div>
-        <h3>Apicultura sostenible</h3>
         <p>Optimiza recursos y reduce el impacto ambiental mientras mejoras la salud de tus colonias.</p>
+      </div>
+
+      <div class="benefit-card">
+        <div class="benefit-header">
+          <div class="benefit-icon">
+            <i class="fas fa-check-circle" style="color: #b45309; font-size: 24px;"></i>
+          </div>
+          <h3>Precisión mejorada</h3>
+        </div>
+        <p>Aumenta la precisión en la detección temprana de problemas en las colmenas.</p>
+      </div>
+
+      <div class="benefit-card">
+        <div class="benefit-header">
+          <div class="benefit-icon">
+            <i class="fas fa-layer-group" style="color: #b45309; font-size: 24px;"></i>
+          </div>
+          <h3>Escalabilidad</h3>
+        </div>
+        <p>Gestiona desde unas pocas hasta cientos de colmenas con la misma facilidad.</p>
+      </div>
+
+      <div class="benefit-card">
+        <div class="benefit-header">
+          <div class="benefit-icon">
+            <i class="fas fa-robot" style="color: #b45309; font-size: 24px;"></i>
+          </div>
+          <h3>Consulta al Sistema Experto</h3>
+        </div>
+        <p>Realiza consultas técnicas a nuestro Agente de IA, y obtén respuestas precisas y contextualizadas basadas en
+          la información de tu propio apiario.</p>
+      </div>
+
+      <div class="benefit-card">
+        <div class="benefit-header">
+          <div class="benefit-icon">
+            <i class="fas fa-chart-pie" style="color: #b45309; font-size: 24px;"></i>
+          </div>
+          <h3>Visualización de Indicadores</h3>
+        </div>
+        <p>Visualiza la información de tus apiarios de un vistazo y toma decisiones basadas en datos concretos.</p>
+      </div>
+
+      <div class="benefit-card">
+        <div class="benefit-header">
+          <div class="benefit-icon">
+            <i class="fas fa-mobile-alt" style="color: #b45309; font-size: 24px;"></i>
+          </div>
+          <h3>Acceso Multiplataforma</h3>
+        </div>
+        <p>Accede a tu información desde cualquier dispositivo, en cualquier momento y lugar, con sincronización
+          automática.</p>
+      </div>
+
+      <div class="benefit-card">
+        <div class="benefit-header">
+          <div class="benefit-icon">
+            <i class="fas fa-history" style="color: #b45309; font-size: 24px;"></i>
+          </div>
+          <h3>Historial Detallado</h3>
+        </div>
+        <p>Mantén un registro completo de todas las actividades y tratamientos aplicados a tus colmenas para un
+          seguimiento preciso.</p>
       </div>
     </div>
   </div>
@@ -931,17 +1048,17 @@
     <div class="testimonios-stats">
       <div class="stat-item">
         <div class="stat-icon">
-          <i class="fa-solid fa-users"></i>
+          <i class="fa-solid fa-user-check"></i>
         </div>
         <div class="stat-number">500+</div>
         <div class="stat-label">Apicultores satisfechos</div>
       </div>
       <div class="stat-item">
         <div class="stat-icon">
-          <i class="fa-solid fa-gauge-high"></i>
+          <i class="fa-solid fa-pen-nib"></i>
         </div>
         <div class="stat-number">10,000+</div>
-        <div class="stat-label">Colmenas monitoreadas</div>
+        <div class="stat-label">Apiarios registrados</div>
       </div>
       <div class="stat-item">
         <div class="stat-icon">
@@ -949,6 +1066,20 @@
         </div>
         <div class="stat-number">30%</div>
         <div class="stat-label">Aumento promedio en producción</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-icon">
+          <i class="fa-solid fa-seedling"></i>
+        </div>
+        <div class="stat-number">5,000+</div>
+        <div class="stat-label">Cultivos polinizados</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-icon">
+          <i class="fa-solid fa-map"></i>
+        </div>
+        <div class="stat-number">60%</div>
+        <div class="stat-label">Hectáreas polinizadas</div>
       </div>
     </div>
   </div>
