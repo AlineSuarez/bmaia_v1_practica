@@ -112,13 +112,15 @@ class TaskController extends Controller
 
     public function update(Request $request, Subtarea $subtarea)
     {
+        // Log temporal para depuración (puedes eliminar después)
+        logger()->info('Datos recibidos en update:', $request->all());
         $request->validate([
             'nombre' => 'required|string|max:255',
             'descripcion' => 'nullable|string',
             'fecha_inicio' => 'required|date',
             'fecha_fin' => 'required|date|after_or_equal:fecha_inicio',
             'prioridad' => 'nullable|in:urgent,high,low',
-            'estado' => 'required|in:Pendiente,En progreso,Completada',
+            'estado' => 'required|in:Pendiente,En progreso,Completada,Vencida',
         ]);
         $subtarea->update([
             'nombre' => $request->nombre,
@@ -128,6 +130,7 @@ class TaskController extends Controller
             'prioridad' => $request->prioridad,
             'estado' => $request->estado,
         ]);
+        $subtarea->update($validated);
         return redirect()->route('tareas')->with('success', 'Subtarea actualizada exitosamente.');
     }
 

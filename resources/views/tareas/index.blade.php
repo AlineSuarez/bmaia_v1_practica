@@ -1,10 +1,7 @@
 @extends('layouts.app')
-
 @section('content')
-
 <div class="container">
     <h1 class="mb-4">Tareas</h1>
-
     <!-- Botones para cambiar la vista -->
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div class="btn-group" role="group" aria-label="Vista de Tareas">
@@ -13,21 +10,18 @@
             <button class="btn btn-primary view-toggler" data-view="timeline">Línea de Tiempo</button>
             <button class="btn btn-secondary view-toggler" data-view="calendar">Calendario</button>
         </div>
-
         <!-- Botón para agregar nueva tarea -->
         <button id="toggle-form" class="btn btn-warning"><i class="fa fa-tasks"></i>Administrar tareas</button>
     </div>
-
     <!-- Formulario para agregar nueva tarea (colapsable) -->
     <div id="new-task-form" style="display:none;" class="mb-4">
-
     <div id="tareas-pre-definidas" class="contenedor-gestor-tareas">
     <form method="POST" action="{{ route('tareas.default') }}">
         @csrf
         <h3>Agregar Tareas Predefinidas</h3>
         <!-- Tabla para mostrar las tareas generales y subtareas -->
         <table class="table table-bordered table-striped mt-3 text-center">
-            <thead>
+            <thead class="table-dark">
                 <tr>
                     <th class="checkbox-header" style="width: 10px">
                         <label for="select-all-subtasks" class="checkbox-label">
@@ -36,10 +30,10 @@
                         </label>
                     </th>
                     <th>Etapa</th>
-                    <th>Nombre</th>
-                    <th style="width: 120px;">Fecha Inicio</th>
-                    <th style="width: 120px;">Fecha Fin</th>
-                    <th>Prioridad</th>
+                    <th><i class="fa-solid fa-thumbtack"></i> Nombre</th>
+                    <th style="width: 130px;"><i class="fa-solid fa-calendar-day"></i> Fecha Inicio</th>
+                    <th style="width: 130px;"><i class="fa-solid fa-calendar-check"></i> Fecha Fin</th>
+                    <th style="width: 130px;"><i class="fa-solid fa-bolt"></i> Prioridad</th>
                 </tr>
             </thead>
             <tbody>
@@ -50,9 +44,7 @@
                         <td class="font-weight-bold" colspan="1" style="width: 14px"> <strong>{{ $tareaGeneral->nombre }}</strong> </td> <!-- Solo una vez -->
                         <td colspan="4"></td> <!-- Vaciar las otras columnas para que se vea la tarea general -->
                     </tr>
-                    
                     @foreach ($tareaGeneral->predefinidas as $subtarea)
-                    
                         <tr>
                             <td class="checkbox-cell" style="width: 10px">
                                 <input 
@@ -75,13 +67,12 @@
     </form>
 </div>
 
-
-        <form action="{{ route('tareas.store') }}" method="POST">
-            @csrf
-            <h3>Crear Tareas Personalizadas</h3>
-            <!-- Sección para la Tarea General -->
-            <div class="form-group">
-    <label for="tarea_general_id">Etapa</label>
+<form action="{{ route('tareas.store') }}" method="POST">
+    @csrf
+    <h3>Crear Tareas Personalizadas</h3>
+        <!-- Sección para la Tarea General -->
+        <div class="form-group">
+                <label for="tarea_general_id">Etapa</label>
             <select name="tarea_general_id" id="tarea_general_id" class="form-control" required>
                 <option value="" disabled selected>Seleccione una Etapa</option>
                 @foreach($listaEtapa as $tarea)
@@ -104,7 +95,6 @@
                                 <option value="urgente">Urgente</option>
                             </select>
                         </div>
-
                         <div class="col-md-4">
                             <label>Título de la tarea</label>
                             <input type="text" data-field="nombre" class="form-control" placeholder="Ejemplo: Limpiar la zona">
@@ -131,9 +121,7 @@
                     <hr>
                 </div>
             </div>
-
             <button type="button" id="add-subtarea" class="btn btn-secondary">Agregar Tarea</button>
-
             <!-- Botón de Envío -->
             <div class="form-group mt-4">
                 <button type="submit" class="btn btn-primary">Guardar Tareas</button>
@@ -149,7 +137,6 @@
         <div class="view kanban ">
             @include('tareas.kanban')
         </div>
-       
         <div class="view timeline">
             @include('tareas.timeline')
         </div>
@@ -159,7 +146,6 @@
         </div>
     </div>
 </div>
-
 
 <!--MODALS-->
 <div class="modal fade" id="taskModal" tabindex="-1" aria-labelledby="taskModalLabel" aria-hidden="true">
@@ -237,8 +223,8 @@ document.body.addEventListener('click', (event) => {
             estadoModal.show();
         }
     });
-         // Confirmar el cambio de estado
-         document.getElementById('confirmarEstado').addEventListener('click', () => {
+        // Confirmar el cambio de estado
+        document.getElementById('confirmarEstado').addEventListener('click', () => {
             const subtareaId = document.getElementById('subtareaId').value;
             const nuevoEstado = document.getElementById('nuevoEstado').value;
 

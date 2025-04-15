@@ -19,13 +19,13 @@
 
     <h2>Resumen de Subtareas</h2>
 
-    <table>
+    <table class="text-center">
         <thead>
             <tr>
                 <th>Tarea General</th>
                 <th>Nombre</th>
-                <th>Fecha Inicio</th>
-                <th>Fecha Fin</th>
+                <th style="width: 120px">Fecha Inicio</th>
+                <th style="width: 120px">Fecha Fin</th>
                 <th>Prioridad</th>
                 <th>Estado</th>
             </tr>

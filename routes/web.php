@@ -113,13 +113,8 @@ Route::get('apiarios/{apiario}/visitas', [VisitaController::class, 'showHistoria
 //Task
 // Imprimir todas las tareas
 Route::get('/todas-las-tareas/imprimir', [TaskController::class, 'imprimirTodas']);
-/*
-Route::get('/tareas/imprimir-todas', [TaskController::class, 'imprimirTodas'])
-    ->name('tareas.imprimirTodas')
-    ->where('tarea', '^(?!imprimir-todas$).*$'); // Esto lo protege de colisionar con /tareas/{tarea}
-*/
+
 // Imprimir detalle de una tarea
-Route::get('/tareas/{id}/imprimir', [TaskController::class, 'imprimir'])->name('tareas.imprimir');
 Route::delete('/tareas/{id}', [TaskController::class, 'destroy'])->name('tareas.destroy');
 Route::get('/tareas', [TaskController::class, 'index'])->name('tareas');
 Route::post('/tareas', [TaskController::class, 'store'])->name('tareas.store');
