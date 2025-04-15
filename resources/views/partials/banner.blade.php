@@ -53,14 +53,10 @@
 
     <!-- Botones de acción -->
     <div class="navbar-actions">
-        <!-- Botón de login -->
-        <button class="action-button action-button-login" onclick="openModal('login-modal')">
-            Iniciar sesión
-        </button>
-
-        <!-- Botón de registro -->
-        <button class="action-button action-button-register" onclick="openModal('register-modal')">
-            Registrarse
+        <!-- Botón de Ingresar -->
+        <button class="action-button action-button-enter" style="background-color:#ecc100; color:rgb(255, 255, 255);"
+            onclick="openModal('login-modal')">
+            Ingresar
         </button>
     </div>
 
@@ -101,11 +97,8 @@
     </ul>
 
     <div class="mobile-actions">
-        <button class="mobile-action-button mobile-action-login" onclick="openModal('login-modal')">
-            Iniciar sesión
-        </button>
-        <button class="mobile-action-button mobile-action-register" onclick="openModal('register-modal')">
-            Registrarse
+        <button class="mobile-action-button mobile-action-enter" onclick="openModal('login-modal')">
+            Ingresar
         </button>
     </div>
 </div>
