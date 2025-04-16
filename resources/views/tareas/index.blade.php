@@ -70,17 +70,17 @@
 <form action="{{ route('tareas.store') }}" method="POST">
     @csrf
     <h3>Crear Tareas Personalizadas</h3>
-        <!-- Sección para la Tarea General -->
-        <div class="form-group">
-                <label for="tarea_general_id">Etapa</label>
-            <select name="tarea_general_id" id="tarea_general_id" class="form-control" required>
-                <option value="" disabled selected>Seleccione una Etapa</option>
-                @foreach($listaEtapa as $tarea)
-                    <option value="{{ $tarea->id }}">{{ $tarea->nombre }}</option>
-                @endforeach
-            </select>
-        </div>
-            <!-- Sección para Subtareas -->
+    <!-- Sección para la Tarea General -->
+    <div class="form-group">
+        <label for="tarea_general_id">Etapa</label>
+        <select name="tarea_general_id" id="tarea_general_id" class="form-control" required>
+            <option value="" disabled selected>Seleccione una Etapa</option>
+            @foreach($listaEtapa as $tarea)
+                <option value="{{ $tarea->id }}">{{ $tarea->nombre }}</option>
+            @endforeach
+        </select>
+    </div>
+        <!-- Sección para Subtareas -->
             <div id="subtareas-container">
                 <h4>Tareas</h4>
                 <div class="subtarea" id="subtarea-template" style="display: none;">
@@ -126,8 +126,9 @@
             <div class="form-group mt-4">
                 <button type="submit" class="btn btn-primary">Guardar Tareas</button>
             </div>
-        </form>
-    </div>
+        </div>
+</form>
+    
 
     <!-- Contenedor donde se cargan las vistas dinámicas -->
     <div id="task-view-container">
@@ -140,58 +141,31 @@
         <div class="view timeline">
             @include('tareas.timeline')
         </div>
-        
         <div class="view calendar">
             <div id="calendar"></div>
         </div>
     </div>
 </div>
 
-<!--MODALS-->
-<div class="modal fade" id="taskModal" tabindex="-1" aria-labelledby="taskModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="task-title">Título de la tarea</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
-            </div>
-            <div class="modal-body">
-                <p><strong>Tarea General:</strong> <span id="task-general"></span></p>
-                <p><strong>Descripción:</strong> <span id="task-description"></span></p>
-                <p><strong>Estado:</strong> <span id="task-status"></span></p>
-                <p><strong>Prioridad:</strong> <span id="task-priority"></span></p>
-            </div>
-            <div class="modal-footer">
-                <form id="complete-task-form" method="POST">
-                    @csrf
-                    @method('PATCH')
-                    <input type="hidden" name="status" value="Completada">
-                    <button type="submit" class="btn btn-success">Completar</button>
-                </form>
-                <form id="delete-task-form" method="POST">
-                    @csrf
-                    @method('DELETE')
-                    <button type="submit" class="btn btn-danger">Eliminar</button>
-                </form>
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-            </div>
-        </div>
-    </div>
-</div>
-</div>
 <script>
+
+    function actualizarKanban() {
+
+    }
+
+    
+
+
 document.addEventListener('DOMContentLoaded', function() {
     // Obtén los elementos
     const selectAllCheckbox = document.getElementById('select-all-subtasks');
     const subtasksCheckboxes = document.querySelectorAll('.subtask-checkbox');
-
     // Función para verificar si todos los checkboxes están seleccionados
     function updateSelectAllCheckbox() {
         const allChecked = Array.from(subtasksCheckboxes).every(checkbox => checkbox.checked);
         selectAllCheckbox.checked = allChecked;
         selectAllCheckbox.indeterminate = !allChecked && Array.from(subtasksCheckboxes).some(checkbox => checkbox.checked);
     }
-
     // Maneja el cambio en el checkbox "Seleccionar todo"
     selectAllCheckbox.addEventListener('change', function () {
         const isChecked = selectAllCheckbox.checked;
@@ -199,12 +173,10 @@ document.addEventListener('DOMContentLoaded', function() {
             checkbox.checked = isChecked;
         });
     });
-
     // Escuchar cambios en las subtareas
     subtasksCheckboxes.forEach(checkbox => {
         checkbox.addEventListener('change', updateSelectAllCheckbox);
     });
-
     // Inicializar el estado del "Seleccionar todo"
     updateSelectAllCheckbox();
 
@@ -272,23 +244,20 @@ document.getElementById('add-subtarea').addEventListener('click', function () {
 
     container.appendChild(newSubtarea);
     subtareaIndex++; // Incrementa el índice para la siguiente subtarea
-});
+    });
 
-document.addEventListener('click', function (e) {
-    if (e.target.classList.contains('remove-subtarea')) {
-        const subtarea = e.target.closest('.subtarea');
-        subtarea.remove();
-    }
-});
-
- 
-
+    document.addEventListener('click', function (e) {
+        if (e.target.classList.contains('remove-subtarea')) {
+            const subtarea = e.target.closest('.subtarea');
+            subtarea.remove();
+        }
+    });
     // Mostrar la vista por defecto (Kanban)
     const views = document.querySelectorAll('.view');
     views.forEach(view => view.classList.remove('active'));
     document.querySelector('.view.list').classList.add('active');
 
-    // Función para ocultar todas las vistas
+    // Ocultar todas las vistas
     const hideAllViews = () => {
         views.forEach(view => {
             if (!view.classList.contains('active')) {
@@ -296,7 +265,6 @@ document.addEventListener('click', function (e) {
         }
         });
     };
-
     // Inicialmente, ocultamos todas las vistas
     hideAllViews();
 
@@ -305,14 +273,12 @@ document.addEventListener('click', function (e) {
         button.addEventListener('click', function () {
             const view = this.getAttribute('data-view');
             views.forEach(v => v.classList.remove('active'));
-          
-           document.querySelector(`.view.${view}`).classList.add('active');
-           hideAllViews();
+            document.querySelector(`.view.${view}`).classList.add('active');
+            hideAllViews();
             const viewToShow= document.querySelector(`.view.${view}`);
             if (viewToShow) {
                 viewToShow.style.display = '';
             }
-
             // Si se selecciona la vista de calendario, inicializar FullCalendar
             if (view === 'calendar') {
                 initializeCalendar();
@@ -320,189 +286,77 @@ document.addEventListener('click', function (e) {
         });
     });
 
-    
-
     // Inicializar FullCalendar
-function initializeCalendar() {
-    const calendarEl = document.getElementById('calendar');
-    console.log("Initializing calendar", calendarEl); // Verifica si el contenedor se está encontrando
-    if (calendarEl && !calendarEl.classList.contains('initialized')) {
-        calendarEl.classList.add('initialized');
-        new FullCalendar.Calendar(calendarEl, {
-            initialView: 'dayGridMonth',
-            events: [
-                @foreach($subtareas as $task)
-                {
-                    id: '{{ $task->id }}',
-                    title: '{{ $task->nombre }}',
-                    start: '{{ $task->fecha_inicio }}',
-                    end: '{{ $task->fecha_fin }}',
-                    extendedProps: {
-                        descripcion: '{{ $task->descripcion }}',
-                        tareaGeneral: '{{ $task->tareaGeneral->nombre }}',
-                        estado: '{{ $task->estado }}',
-                        prioridad: '{{ ucfirst($task->prioridad) }}'
-                    }
-                },
-                @endforeach
-            ],
-            eventClick: function (info) {
-                const evento = info.event;
-                document.getElementById('task-title').textContent = evento.title;
-                document.getElementById('task-general').textContent = evento.extendedProps.tareaGeneral;
-                document.getElementById('task-description').textContent = evento.extendedProps.descripcion;
-                document.getElementById('task-status').textContent = evento.extendedProps.estado;
-                document.getElementById('task-priority').textContent = evento.extendedProps.prioridad;
-
-                const taskModal = new bootstrap.Modal(document.getElementById('taskModal'));
-                taskModal.show();
-            }
-        }).render();
+    function initializeCalendar() {
+        const calendarEl = document.getElementById('calendar');
+        console.log("Initializing calendar", calendarEl); // Verifica si el contenedor se está encontrando
+        if (calendarEl && !calendarEl.classList.contains('initialized')) {
+            calendarEl.classList.add('initialized');
+            new FullCalendar.Calendar(calendarEl, {
+                initialView: 'dayGridMonth',
+                events: [
+                    @foreach($subtareas as $task)
+                    {
+                        id: '{{ $task->id }}',
+                        title: '{{ $task->nombre }}',
+                        start: '{{ $task->fecha_inicio }}',
+                        end: '{{ $task->fecha_fin }}',
+                        extendedProps: {
+                            descripcion: '{{ $task->descripcion }}',
+                            tareaGeneral: '{{ $task->tareaGeneral->nombre }}',
+                            estado: '{{ $task->estado }}',
+                            prioridad: '{{ ucfirst($task->prioridad) }}'
+                        }
+                    },
+                    @endforeach
+                ],
+                eventClick: function (info) {
+                    const evento = info.event;
+                    document.getElementById('task-title').textContent = evento.title;
+                    document.getElementById('task-general').textContent = evento.extendedProps.tareaGeneral;
+                    document.getElementById('task-description').textContent = evento.extendedProps.descripcion;
+                    document.getElementById('task-status').textContent = evento.extendedProps.estado;
+                    document.getElementById('task-priority').textContent = evento.extendedProps.prioridad;
+                    const taskModal = new bootstrap.Modal(document.getElementById('taskModal'));
+                    taskModal.show();
+                }
+            }).render();
+        }
     }
-}
-
-
-
-
-
-function loadView(view) {
-   /* fetch(`/tareas/view/${view}`)
-        .then(response => response.text())
-        .then(html => {
-            document.getElementById('task-view-container').innerHTML = html;
-        })
-        .catch(error => console.error('Error loading view:', error));*/
-       
-}
 
     document.addEventListener('DOMContentLoaded', function () {
         var quill;
-
-
         // Mostrar/ocultar el formulario y asegurar que el editor esté inicializado
         document.getElementById('toggle-form').addEventListener('click', function () {
             const form = document.getElementById('new-task-form');
             form.style.display = form.style.display === 'none' ? 'block' : 'none';
-          
         });
-
         // Asegurar que el contenido del editor esté sincronizado al enviar el formulario
         document.querySelector('form').addEventListener('submit', function () {
             if (quill) {
                 document.querySelector('#description').value = quill.root.innerHTML;
             }
         });
+        // Escuchar el evento 'subtareaActualizada' y recargar las subtareas
+        escucharEvento('subtareaActualizada', () => {
+            recargarSubtareas(); // Esto actualizará la lista de subtareas
+            actualizarKanban(); // Actualizar el tablero Kanban
+            actualizarTimeline(); // Actualizar la línea de tiempo
+            initializeCalendar(); // Actualizar el calendario
+        });
+        
     });
 
+    function emitirEvento(nombre, detalle = {}) {
+        const evento = new CustomEvent(nombre, { detail: detalle });
+        window.eventBus.dispatchEvent(evento);
+    }
 
+    function escucharEvento(nombre, callback) {
+        window.eventBus.addEventListener(nombre, callback);
+    }
 </script>
-
-<script>
-    $(document).ready(function() {
-        // Inicializar DataTable
-        $('#subtareasTable').DataTable({
-            language: {
-                url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json' // Traducción al español
-            },
-            order: [[1, 'asc']] // Ordenar inicialmente por fecha de inicio
-        });
-
-        // Modal para cambiar el estado
-        const estadoModal = new bootstrap.Modal(document.getElementById('estadoModal'));
-        let currentButton = null;
-
-        // Delegación de evento para cambiar estado
-        document.body.addEventListener('click', (event) => {
-            const target = event.target.closest('.estado-badge');
-            if (target) {
-                currentButton = target;
-                const subtareaId = currentButton.dataset.id;
-                const currentState = currentButton.dataset.currentState;
-
-                document.getElementById('subtareaId').value = subtareaId;
-                document.getElementById('nuevoEstado').value = currentState;
-
-                estadoModal.show();
-            }
-        });
-
-        // Confirmar cambio de estado
-        document.getElementById('confirmarEstado').addEventListener('click', () => {
-            const subtareaId = document.getElementById('subtareaId').value;
-            const nuevoEstado = document.getElementById('nuevoEstado').value;
-
-            fetch(`/tareas/${subtareaId}/update-status`, {
-                method: 'PATCH',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                },
-                body: JSON.stringify({ estado: nuevoEstado })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    currentButton.textContent = nuevoEstado;
-                    currentButton.dataset.currentState = nuevoEstado;
-                    Swal.fire('¡Actualizado!', 'El estado de la subtarea ha sido actualizado.', 'success');
-                } else {
-                    Swal.fire('Error', 'Hubo un problema al actualizar el estado.', 'error');
-                }
-                estadoModal.hide();
-            });
-        });
-
-        // Delegación de evento para cambiar prioridad
-        document.body.addEventListener('click', (event) => {
-            const target = event.target.closest('.cambiar-prioridad');
-            if (target) {
-                const subtareaId = target.dataset.id;
-                const currentPriority = target.dataset.currentPriority;
-
-                // Lógica para mostrar un modal o realizar cambios de prioridad
-                Swal.fire({
-                    title: 'Cambiar Prioridad',
-                    input: 'select',
-                    inputOptions: {
-                        'Baja': 'Baja',
-                        'Media': 'Media',
-                        'Alta': 'Alta',
-                        'Urgente': 'Urgente'
-                    },
-                    inputValue: currentPriority,
-                    showCancelButton: true,
-                    confirmButtonText: 'Guardar'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        const nuevaPrioridad = result.value;
-                        fetch(`/tareas/${subtareaId}/update-priority`, {
-                            method: 'PATCH',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                            },
-                            body: JSON.stringify({ prioridad: nuevaPrioridad })
-                        })
-                        .then(response => response.json())
-                        .then(data => {
-                            if (data.success) {
-                                target.closest('td').innerHTML = nuevaPrioridad;
-                                Swal.fire('¡Actualizado!', 'La prioridad ha sido cambiada.', 'success');
-                            } else {
-                                Swal.fire('Error', 'Hubo un problema al actualizar la prioridad.', 'error');
-                            }
-                        });
-                    }
-                });
-            }
-        });
-    });
-</script>
-
 @endsection
-
 @section('optional-scripts')
 <script src="{{ asset('vendor/chatbot/js/chatbot.js') }}"></script>
-<!-- Scripts opcionales -->
-<script src="/js/VoiceCommands.js"></script> 
 @endsection

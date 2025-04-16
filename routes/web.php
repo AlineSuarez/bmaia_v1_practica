@@ -111,10 +111,7 @@ Route::delete('/apiarios/delete/{apiario}', [ApiarioController::class, 'deleterA
 Route::get('apiarios/{apiario}/visitas', [VisitaController::class, 'showHistorial'])->name('visitas.historial');
 
 //Task
-// Imprimir todas las tareas
-Route::get('/todas-las-tareas/imprimir', [TaskController::class, 'imprimirTodas']);
-
-// Imprimir detalle de una tarea
+Route::get('/datos-subtareas', [TaskController::class, 'obtenerSubtareasUsuarioJson'])->name('tareas.data');
 Route::delete('/tareas/{id}', [TaskController::class, 'destroy'])->name('tareas.destroy');
 Route::get('/tareas', [TaskController::class, 'index'])->name('tareas');
 Route::post('/tareas', [TaskController::class, 'store'])->name('tareas.store');

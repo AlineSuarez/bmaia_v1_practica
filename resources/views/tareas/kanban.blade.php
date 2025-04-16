@@ -152,51 +152,98 @@
 
 <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
 <script>
-    $(function () {
+    function activarSortableKanban() {
         $(".task-list").sortable({
-            connectWith: ".task-list",
-            placeholder: "ui-state-highlight",
+            connectWith: ".task-list", // Permite mover las tarjetas entre columnas
+            placeholder: "ui-state-highlight", // Efecto visual al mover la tarjeta
             receive: function (event, ui) {
-            const card = ui.item;
-            const id = card.data("id");
-            const newEstado = $(this).data("status");
-    
-            $.ajax({
-                url: `/tareas/${id}/update`,
-                method: 'POST',
-                data: {
-                _method: 'PATCH',
-                _token: '{{ csrf_token() }}',
-                estado: newEstado
-                },
-                success: function () {
-                console.log("Estado actualizado");
-                },
-                error: function (err) {
-                console.error("Error al actualizar estado", err);
-                }
-            });
+                const card = ui.item; // La tarjeta que se movió
+                const id = card.data("id"); // ID de la subtarea
+                const newEstado = $(this).data("status"); // Nuevo estado basado en la columna
+
+                // Enviar nuevo estado al servidor cuando se mueve una tarjeta
+                fetch(`/tareas/${id}/update-status`, { 
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    },
+                    body: `_method=PATCH&estado=${encodeURIComponent(newEstado)}`
+                })
+                .then(res => {
+                    if (res.ok) {
+                        toastr.success("Estado actualizado.");
+                        recargarSubtareas(); // Actualizar la lista y el kanban con los nuevos datos
+                    } else {
+                        toastr.error("No se pudo actualizar el estado.");
+                    }
+                });
             }
-        }).disableSelection();
-    // Al hacer clic en la tarjeta, abrir modal
-    $(document).on('click', '.kanban-card', function () {
-        const tareaId = $(this).data("id");
-        const nombre = $(this).data("nombre");
-        const inicio = $(this).data("inicio");
-        const fin = $(this).data("fin");
-        const prioridad = $(this).data("prioridad");
-        const estado = $(this).data("estado");
-        const etapa = $(this).data("etapa");
-        $('#modal-tarea-id').val(tareaId);
-        $('#modal-nombre').val(nombre);
-        $('#modal-inicio').val(inicio);
-        $('#modal-fin').val(fin);
-        $('#modal-prioridad').val(prioridad);
-        $('#modal-estado').val(estado);
-        $('#modal-etapa').val(etapa);
-        $('#editarTareaForm').attr('action', `/tareas/${tareaId}/update`);
-        const modal = new bootstrap.Modal(document.getElementById('editarTareaModal'));
-        modal.show();
+        }).disableSelection(); // Deshabilita la selección de los elementos al moverlos
+    }
+
+    $(document).ready(function () {
+        activarSortableKanban();
     });
-    });
+
+
+    // Actualizar la vista de la lista con los datos más recientes
+    function actualizarLista(tareasGenerales) {
+        const tbody = document.querySelector('#subtareasTable tbody');
+        if (!tbody) return;
+        tbody.innerHTML = ''; // Limpia la tabla actual
+
+        tareasGenerales.forEach(tg => {
+            tg.subtareas.forEach(task => {
+                const row = document.createElement("tr");
+                row.innerHTML = `
+                    <td>${task.nombre}</td>
+                    <td><input type="date" class="form-control fecha-inicio" value="${task.fecha_inicio}" data-id="${task.id}" /></td>
+                    <td><input type="date" class="form-control fecha-fin" value="${task.fecha_limite}" data-id="${task.id}" /></td>
+                    <td>
+                        <select class="form-select prioridad" data-id="${task.id}">
+                            <option value="baja" ${task.prioridad === 'baja' ? 'selected' : ''}>Baja</option>
+                            <option value="media" ${task.prioridad === 'media' ? 'selected' : ''}>Media</option>
+                            <option value="alta" ${task.prioridad === 'alta' ? 'selected' : ''}>Alta</option>
+                            <option value="urgente" ${task.prioridad === 'urgente' ? 'selected' : ''}>Urgente</option>
+                        </select>
+                    </td>
+                    <td>
+                        <select class="form-select estado" data-id="${task.id}">
+                            <option value="Pendiente" ${task.estado === 'Pendiente' ? 'selected' : ''}>Pendiente</option>
+                            <option value="En progreso" ${task.estado === 'En progreso' ? 'selected' : ''}>En progreso</option>
+                            <option value="Completada" ${task.estado === 'Completada' ? 'selected' : ''}>Completada</option>
+                            <option value="Vencida" ${task.estado === 'Vencida' ? 'selected' : ''}>Vencida</option>
+                        </select>
+                    </td>
+                    <td>
+                        <div class="btn-group" role="group">
+                            <button class="btn btn-success btn-sm guardar-cambios" data-id="${task.id}">
+                                <i class="fa-solid fa-save"></i>
+                            </button>
+                            <button class="btn btn-danger btn-sm eliminar-tarea" data-id="${task.id}">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        });
+        reasociarEventosLista();  // Reasociar los eventos de la lista
+    }
+
+    // Reasociar los eventos de la lista (como select2)
+    function reasociarEventosLista() {
+        $('.estado').select2({
+            width: '100%',
+            templateResult: function (data) {
+                return $(`<span>${getEstadoIcon(data.id)} ${data.text}</span>`);
+            },
+            templateSelection: function (data) {
+                return $(`<span>${getEstadoIcon(data.id)} ${data.text}</span>`);
+            }
+        });
+    }
+
 </script>

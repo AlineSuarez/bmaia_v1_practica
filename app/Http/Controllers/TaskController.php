@@ -99,16 +99,27 @@ class TaskController extends Controller
     }
 
     public function updateTarea(Request $request, $id)
-    {
-        $subtarea = Subtarea::findOrFail($id);
-        $subtarea->update([
-            'fecha_inicio' => $request->input('fecha_inicio'),
-            'fecha_limite' => $request->input('fecha_limite'),
-            'prioridad' => $request->input('prioridad'),
-            'estado' => $request->input('estado'),
-        ]);
-        return redirect()->back()->with('success', 'Subtarea actualizada correctamente');
-    }
+        {
+            try {
+                $subtarea = Subtarea::findOrFail($id);
+                $subtarea->update([
+                    'fecha_inicio' => $request->input('fecha_inicio'),
+                    'fecha_limite' => $request->input('fecha_limite'),
+                    'prioridad' => $request->input('prioridad'),
+                    'estado' => $request->input('estado'),
+                ]);
+                if ($request->ajax()) {
+                    return response()->json(['message' => 'Subtarea actualizada con éxito.']);
+                }
+                return redirect()->back()->with('success', 'Subtarea actualizada correctamente');
+            } catch (\Exception $e) {
+                \Log::error('Error al actualizar tarea: '.$e->getMessage());
+                if ($request->ajax()) {
+                    return response()->json(['message' => 'Error interno'], 500);
+                }
+                return redirect()->back()->with('error', 'Error al actualizar tarea.');
+            }
+        }
 
     public function update(Request $request, Subtarea $subtarea)
     {
@@ -173,16 +184,22 @@ class TaskController extends Controller
         return redirect()->route('tareas')->with('success', 'Tarea modificada con éxito');
         
     }
+
     public function updateStatus(Request $request, $id)
     {
+        \Log::info('Entró a updateStatus', [
+        'id' => $id,
+        'estado' => $request->estado
+    ]);
         $request->validate([
-            'status' => 'required|in:Pendiente,En progreso,Completada',
+            'estado' => 'required|in:Pendiente,En progreso,Completada,Vencida',
         ]);
         $subtarea = Subtarea::findOrFail($id);
         $subtarea->update([
-            'estado' => $request->status,
+            'estado' => $request->estado,
         ]);
-        return redirect()->route('tareas')->with('success', 'Estado de la subtarea actualizado.');
+        return response()->json(['message' => 'Estado actualizado correctamente']);
+        // return redirect()->route('tareas')->with('success', 'Estado de la subtarea actualizado.');
     }
 
     // Función para la vista de calendario
@@ -304,17 +321,24 @@ class TaskController extends Controller
         return response()->json($tareas);
     }
 
-    // genera pdf con el detalle de la tarea especifica
-    public function imprimir($id)
-    {
-        $tarea = \App\Models\Subtarea::findOrFail($id);
-        $pdf = Pdf::loadView('tareas.imprimir', compact('tarea'));
-        return $pdf->stream("Subtarea_{$tarea->id}.pdf");
-    }
-    // 
     public function imprimirTodas()
     {
         $subtareas = \App\Models\SubTarea::with('tareaGeneral')->get(); // o tu relación correcta
         return view('tareas.imprimir-todas', compact('subtareas'));
+    }
+
+    public function obtenerSubtareasUsuarioJson()
+    {
+        $user = Auth::user();
+
+        $tareasGenerales = TareaGeneral::whereIn('id', 
+            Subtarea::where('user_id', $user->id)->pluck('tarea_general_id')
+        )
+        ->with(['subtareas' => function ($query) use ($user) {
+            $query->where('user_id', $user->id);
+        }])
+        ->get();
+
+        return response()->json($tareasGenerales);
     }
 }
