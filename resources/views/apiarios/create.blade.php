@@ -1,247 +1,893 @@
 @extends('layouts.app')
+
+<head>
+    <link href="{{ asset('./css/components/home-user/create/create-apiario.css') }}" rel="stylesheet">
+</head>
 @section('title', 'Maia - Apiarios')
+@section('styles')
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800&family=Poppins:wght@300;400;500;600;700;800&family=Roboto+Mono&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ asset('css/apiario-luxury.css') }}">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+@endsection
+
 @section('content')
-<div class="container">
-    <h1 class="mb-4 text-center" style="color: #FFB800;">Agregar Nuevo Apiario</h1>
+    <div class="container">
+        <!-- Efectos de fondo -->
+        <div class="blur-effect" style="top: 20%; left: 10%;"></div>
+        <div class="blur-effect" style="top: 60%; right: 15%;"></div>
+        <div class="blur-effect" style="bottom: 10%; left: 30%;"></div>
 
-    <form action="{{ route('apiarios.store') }}" method="POST" enctype="multipart/form-data" class="p-4 shadow-sm" style="background-color: #FFF8E1; border-radius: 10px;">
-    @csrf
+        <!-- Botón para volver al menú anterior -->
+        <a href="javascript:history.back()" class=" btn-back">
+            <i class="fas fa-arrow-left"></i> Volver al listado de apiarios
+        </a>
 
-    <!-- Campo para Nombre del Apiario -->
-    <div class="form-group">
-        <label for="nombre" class="text-warning">Nombre del Apiario</label>
-        <input type="text" class="form-control" id="nombre" name="nombre" required style="border: 1px solid #FFB800;">
-    </div>
+        <h1 class="fade-in-up">
+            <span>Sistema de Gestión Apícola</span>
+            Agregar Nuevo Apiario
+        </h1>
 
-    <!-- Primera fila: Temporada de Producción y Registro SAG -->
-    <div class="form-row">
-        <div class="form-group col-md-6">
+        <!-- Contenedor global para tooltips -->
+        <div id="tooltip-container"></div>
 
-            <label for="temporada_produccion" class="text-warning">Temporada de Producción</label>
-            <select class="form-control" id="temporada_produccion" name="temporada_produccion" required style="border: 1px solid #FFB800;">
-                <!-- Opciones generadas dinámicamente por JavaScript -->
-            </select>
-        </div>
-        <div class="form-group col-md-6">
-            <label for="registro_sag" class="text-warning">N° Registro SAG (FRADA)</label>
-            <input type="text" class="form-control" id="registro_sag" name="registro_sag" required style="border: 1px solid #FFB800;">
-        </div>
-    </div>
+        <form action="{{ route('apiarios.store') }}" method="POST" enctype="multipart/form-data" class="fade-in-up">
+            @csrf
+            <div class="honeycomb-bg"></div>
 
-    <!-- Segunda fila: N° de Colmenas y Tipo de Apiario -->
-    <div class="form-row">
-        <div class="form-group col-md-6">
-            <label for="num_colmenas" class="text-warning">N° de Colmenas</label>
-            <input type="number" class="form-control" id="num_colmenas" name="num_colmenas" required style="border: 1px solid #FFB800;">
-        </div>
-        <div class="form-group col-md-6">
-            <label for="tipo_apiario" class="text-warning">Tipo de Apiario</label>
-            <input type="text" class="form-control" id="tipo_apiario" name="tipo_apiario" required style="border: 1px solid #FFB800;">
-        </div>
-    </div>
-
-    <!-- Tercera fila: Tipo de Manejo y Objetivo de Producción -->
-    <div class="form-row">
-        <div class="form-group col-md-6">
-            <label for="tipo_manejo" class="text-warning">Tipo de Manejo</label>
-            <input type="text" class="form-control" id="tipo_manejo" name="tipo_manejo" required style="border: 1px solid #FFB800;">
-        </div>
-        <div class="form-group col-md-6">
-            <label for="objetivo_produccion" class="text-warning">Objetivo de Producción</label>
-            <input type="text" class="form-control" id="objetivo_produccion" name="objetivo_produccion" required style="border: 1px solid #FFB800;">
-        </div>
-    </div>
-
-    <!-- Cuarta fila: Región y Comuna -->
-    <div class="form-row">
-        <div class="form-group col-md-6">
-            <label for="region" class="text-warning">Región</label>
-            <select class="form-control" id="region" name="region" required style="border: 1px solid #FFB800;">
-                <option value="">Selecciona una Región</option>
-                @foreach($regiones as $region)
-                    <option value="{{ $region->id }}">{{ $region->nombre }}</option>
-                @endforeach
-            </select>
-        </div>
-        <div class="form-group col-md-6">
-            <label for="comuna" class="text-warning">Comuna</label>
-            <select class="form-control" id="comuna" name="comuna" required style="border: 1px solid #FFB800;">
-                <option value="">Selecciona una Comuna</option>
-            </select>
-        </div>
-    </div>
-
-    <!-- Mapa y coordenadas -->
-    <div class="form-group">
-        <label for="map" class="text-warning">Ubicación en el Mapa</label>
-        <div id="map" style="height: 350px; margin-bottom: 15px; border: 2px solid #FFB800; border-radius: 8px;"></div>
-        
-        <div class="form-row">
-            <div class="form-group col-md-6">
-                <label for="latitud" class="text-warning">Latitud</label>
-                <input type="text" class="form-control" id="latitud" name="latitud" readonly required style="border: 1px solid #FFB800;">
+            <!-- Campo para Nombre del Apiario -->
+            <div class="form-group">
+                <label for="nombre">
+                    <i class="fas fa-signature fa-fw"></i> Nombre del Apiario
+                </label>
+                <input type="text" class="form-control" id="nombre" name="nombre" required
+                    placeholder="Ingrese el nombre del apiario">
+                <div class="custom-tooltip" data-tooltip-for="nombre">Asigna un nombre único y descriptivo a tu apiario para
+                    identificarlo fácilmente.</div>
             </div>
-            <div class="form-group col-md-6">
-                <label for="longitud" class="text-warning">Longitud</label>
-                <input type="text" class="form-control" id="longitud" name="longitud" readonly required style="border: 1px solid #FFB800;">
+
+            <!-- Primera fila: Temporada de Producción y Registro SAG -->
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label for="temporada_produccion">
+                        <i class="fas fa-calendar-alt fa-fw"></i> Temporada de Producción
+                    </label>
+                    <select class="form-control" id="temporada_produccion" name="temporada_produccion" required>
+                        <!-- Opciones generadas dinámicamente por JavaScript -->
+                    </select>
+                    <div class="custom-tooltip" data-tooltip-for="temporada_produccion">Selecciona la temporada actual de
+                        producción para tu apiario.</div>
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="registro_sag">
+                        <i class="fas fa-id-card fa-fw"></i> N° Registro SAG (FRADA)
+                    </label>
+                    <input type="text" class="form-control" id="registro_sag" name="registro_sag" required
+                        placeholder="Ingrese el número de registro">
+                    <div class="custom-tooltip" data-tooltip-for="registro_sag">Ingresa el número de registro oficial
+                        asignado por el SAG (FRADA).</div>
+                </div>
             </div>
-        </div>
+
+            <!-- Segunda fila: N° de Colmenas y Tipo de Apiario -->
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label for="num_colmenas">
+                        <i class="fas fa-archive fa-fw"></i> N° de Colmenas
+                    </label>
+                    <input type="number" class="form-control" id="num_colmenas" name="num_colmenas" required
+                        placeholder="Ingrese el número de colmenas">
+                    <div class="custom-tooltip" data-tooltip-for="num_colmenas">Indica la cantidad total de colmenas que
+                        tiene este apiario.</div>
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="tipo_apiario">
+                        <i class="fas fa-tags fa-fw"></i> Tipo de Apiario
+                    </label>
+                    <input type="text" class="form-control" id="tipo_apiario" name="tipo_apiario" required
+                        placeholder="Ej: Producción, Polinización">
+                    <div class="custom-tooltip" data-tooltip-for="tipo_apiario">Especifica el tipo de apiario según su
+                        función principal (producción, polinización, etc).</div>
+                </div>
+            </div>
+
+            <!-- Tercera fila: Tipo de Manejo y Objetivo de Producción -->
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label for="tipo_manejo">
+                        <i class="fas fa-cogs fa-fw"></i> Tipo de Manejo
+                    </label>
+                    <input type="text" class="form-control" id="tipo_manejo" name="tipo_manejo" required
+                        placeholder="Ej: Orgánico, Convencional">
+                    <div class="custom-tooltip" data-tooltip-for="tipo_manejo">Define el método de manejo que utilizas en
+                        este apiario.</div>
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="objetivo_produccion">
+                        <i class="fas fa-bullseye fa-fw"></i> Objetivo de Producción
+                    </label>
+                    <input type="text" class="form-control" id="objetivo_produccion" name="objetivo_produccion" required
+                        placeholder="Ej: Miel, Polen, Propóleo">
+                    <div class="custom-tooltip" data-tooltip-for="objetivo_produccion">Indica los productos principales que
+                        esperas obtener de este apiario.</div>
+                </div>
+            </div>
+
+            <!-- Cuarta fila: Región y Comuna -->
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label for="region">
+                        <i class="fas fa-map fa-fw"></i> Región
+                    </label>
+                    <select class="form-control" id="region" name="region" required>
+                        <option value="">Selecciona una Región</option>
+                        @foreach($regiones as $region)
+                            <option value="{{ $region->id }}">{{ $region->nombre }}</option>
+                        @endforeach
+                    </select>
+                    <div class="custom-tooltip" data-tooltip-for="region">Selecciona la región donde se encuentra ubicado el
+                        apiario.</div>
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="comuna">
+                        <i class="fas fa-map-marker-alt fa-fw"></i> Comuna
+                    </label>
+                    <select class="form-control" id="comuna" name="comuna" required>
+                        <option value="">Selecciona una Comuna</option>
+                    </select>
+                    <div class="custom-tooltip" data-tooltip-for="comuna">Selecciona la comuna específica donde se encuentra
+                        el apiario.</div>
+                </div>
+            </div>
+
+            <!-- Mapa y coordenadas -->
+            <div class="form-group">
+                <label for="map">
+                    <i class="fas fa-map-marked-alt fa-fw"></i> Ubicación en el Mapa
+                </label>
+                <div id="map" class="gold-shine"></div>
+                <div class="map-instructions glass-effect">
+                    <i class="fas fa-info-circle"></i> Haz clic en el mapa o arrastra el marcador para ajustar la ubicación
+                    exacta de tu apiario.
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="latitud">
+                            <i class="fas fa-compass fa-fw"></i> Latitud
+                        </label>
+                        <input type="text" class="form-control" id="latitud" name="latitud" readonly required>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="longitud">
+                            <i class="fas fa-compass fa-fw"></i> Longitud
+                        </label>
+                        <input type="text" class="form-control" id="longitud" name="longitud" readonly required>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Fotografía del Apiario -->
+            <div class="form-group">
+                <label for="foto">
+                    <i class="fas fa-camera fa-fw"></i> Foto del Apiario
+                </label>
+                <div class="file-upload-container">
+                    <input type="file" class="form-control-file" id="foto" name="foto" accept="image/*">
+                    <label for="foto" class="file-upload-label">
+                        <i class="fas fa-cloud-upload-alt"></i> Seleccionar imagen
+                    </label>
+                    <div class="file-name" id="file-name">Ningún archivo seleccionado</div>
+                </div>
+                <small class="form-text text-muted">Formatos aceptados: JPG, PNG, GIF, WEBP. Tamaño máximo: 5MB</small>
+                <div id="preview-container">
+                    <img id="preview-image" src="/placeholder.svg" alt="Vista previa de la imagen" style="display: none;">
+                    <p id="error-message" style="display: none;">El archivo seleccionado no es una imagen válida.</p>
+                </div>
+            </div>
+
+            <!-- Botón de envío -->
+            <div class="text-center mt-4">
+                <button type="submit" class="btn btn-gold gold-shine">
+                    <i class="fas fa-plus-circle"></i> Agregar Apiario
+                </button>
+            </div>
+
+            <!-- Firma -->
+            <div class="signature-section">
+                <p class="signature-text">"La apicultura es un arte, y cada apiario una obra maestra"</p>
+                <div class="signature-logo">MAIA</div>
+            </div>
+        </form>
     </div>
 
+    <!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
 
-    <!-- Fotografía del Apiario -->
-    <div class="form-group">
-            <label for="foto" style="color: #FF8C00;">Foto del Apiario</label>
-            <input type="file" class="form-control-file" id="foto" name="foto" style="border: 1px solid #FFB800;">
-            <small class="form-text text-muted">Sube una nueva foto si deseas cambiar la actual.</small>
-            <div id="preview-container" style="margin-top: 15px;">
-                <img id="preview-image" src="" alt="Vista previa de la imagen" style="max-width: 200px; border-radius: 8px; display: none;">
-                <p id="error-message" style="color: red; display: none;">El archivo seleccionado no es una imagen válida.</p>
-            </div>
-        </div>
+    <script>
+        let map;
+        let marker;
+        let comunasCoordenadas = @json($comunasCoordenadas);
 
-    <!-- Botón de envío -->
-    <div class="text-center mt-4">
-        <button type="submit" class="btn btn-warning px-4" style="background-color: #FFB800; color: white; font-weight: bold;">Agregar Apiario</button>
-    </div>
-</form>
+        $(document).ready(function () {
+            // Añadir efectos de brillo
+            addSparkleEffects();
 
-</div>
-<!-- Scripts -->
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
-<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
-    
-<script>
+            // Inicializar el sistema de tooltips mejorado
+            initTooltips();
 
-    let map;
-    let marker;
-    let comunasCoordenadas = @json($comunasCoordenadas); // Obtener las coordenadas desde el controlador
+            // Generar años para la temporada de producción
+            const currentYear = new Date().getFullYear();
+            let options = '';
 
-    $(document).ready(function() {
-        // Generar años para la temporada de producción
-        const currentYear = new Date().getFullYear();
-        let options = '';
+            // Crear las opciones para el rango actual y pasado
+            for (let i = 1; i >= -1; i--) {
+                const startYear = currentYear - i;
+                const endYear = startYear + 1;
+                options += `<option value="${startYear}-${endYear}">${startYear}-${endYear}</option>`;
+            }
+            $('#temporada_produccion').html(options);
 
-        // Crear las opciones para el rango actual y pasado
-        for (let i = 1; i >= -1; i--) {
-            const startYear = currentYear - i;
-            const endYear = startYear + 1;
-            options += `<option value="${startYear}-${endYear}">${startYear}-${endYear}</option>`;
-        }
-        $('#temporada_produccion').html(options);
-
-        // Inicializar el mapa con geolocalización
-        function getCurrentLocation() {
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(function(position) {
-                    initMap(position.coords.latitude, position.coords.longitude);
-                }, function() {
-                    // Coordenadas predeterminadas si falla la geolocalización
-                    alert('No se pudo obtener la ubicación. Usando ubicación predeterminada.');
+            // Inicializar el mapa con geolocalización
+            function getCurrentLocation() {
+                showLoading('map');
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(function (position) {
+                        initMap(position.coords.latitude, position.coords.longitude);
+                        hideLoading('map');
+                    }, function () {
+                        // Coordenadas predeterminadas si falla la geolocalización
+                        showNotification('Se hará uso de la ubicación predeterminada de forma temporal.', 'info');
+                        initMap(-33.4489, -70.6693); // Santiago, Chile
+                        hideLoading('map');
+                    });
+                } else {
+                    showNotification('Geolocalización no es soportada. Usando ubicación predeterminada.', 'warning');
                     initMap(-33.4489, -70.6693); // Santiago, Chile
-                });
-            } else {
-                alert('Geolocalización no es soportada. Usando ubicación predeterminada.');
-                initMap(-33.4489, -70.6693); // Santiago, Chile
+                    hideLoading('map');
+                }
             }
-        }
 
-        function initMap(lat, lng) {
-            map = L.map('map').setView([lat, lng], 13);
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                attribution: 'Map data © <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-            }).addTo(map);
+            function initMap(lat, lng) {
+                map = L.map('map').setView([lat, lng], 13);
 
-            marker = L.marker([lat, lng], { draggable: true }).addTo(map);
+                // Estilo personalizado para el mapa
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: 'Map data © <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                }).addTo(map);
 
-            marker.on('dragend', function(event) {
-                const position = marker.getLatLng();
-                $('#latitud').val(position.lat);
-                $('#longitud').val(position.lng);
+                // Personalizar el icono del marcador
+                const apiaryIcon = L.icon({
+                    iconUrl: 'https://cdn-icons-png.flaticon.com/512/2647/2647911.png',
+                    iconSize: [40, 40],
+                    iconAnchor: [20, 40],
+                    popupAnchor: [0, -40]
+                });
+
+                marker = L.marker([lat, lng], {
+                    draggable: true,
+                    icon: apiaryIcon
+                }).addTo(map);
+
+                // Personalizar el popup
+                const popupContent = `
+                                    <div class="custom-popup">
+                                        <h4><i class="fas fa-map-pin"></i> Tu Apiario</h4>
+                                        <p>Arrastra el marcador para ajustar la ubicación exacta.</p>
+                                        <div class="popup-coordinates">
+                                            <span><strong>Lat:</strong> ${lat.toFixed(6)}</span><br>
+                                            <span><strong>Lng:</strong> ${lng.toFixed(6)}</span>
+                                        </div>
+                                    </div>
+                                `;
+
+                marker.bindPopup(popupContent).openPopup();
+
+                marker.on('dragend', function (event) {
+                    const position = marker.getLatLng();
+                    $('#latitud').val(position.lat.toFixed(6));
+                    $('#longitud').val(position.lng.toFixed(6));
+
+                    // Actualizar el popup con las nuevas coordenadas
+                    const updatedPopupContent = `
+                                        <div class="custom-popup">
+                                            <h4><i class="fas fa-map-pin"></i> Tu Apiario</h4>
+                                            <p>Ubicación actualizada correctamente.</p>
+                                            <div class="popup-coordinates">
+                                                <span><strong>Lat:</strong> ${position.lat.toFixed(6)}</span><br>
+                                                <span><strong>Lng:</strong> ${position.lng.toFixed(6)}</span>
+                                            </div>
+                                        </div>
+                                    `;
+
+                    marker.getPopup().setContent(updatedPopupContent);
+
+                    // Efecto visual para los campos de coordenadas
+                    highlightField('#latitud');
+                    highlightField('#longitud');
+                });
+
+                map.on('click', function (e) {
+                    marker.setLatLng(e.latlng);
+                    $('#latitud').val(e.latlng.lat.toFixed(6));
+                    $('#longitud').val(e.latlng.lng.toFixed(6));
+
+                    // Actualizar el popup con las nuevas coordenadas
+                    const updatedPopupContent = `
+                                        <div class="custom-popup">
+                                            <h4><i class="fas fa-map-pin"></i> Tu Apiario</h4>
+                                            <p>Ubicación actualizada correctamente.</p>
+                                            <div class="popup-coordinates">
+                                                <span><strong>Lat:</strong> ${e.latlng.lat.toFixed(6)}</span><br>
+                                                <span><strong>Lng:</strong> ${e.latlng.lng.toFixed(6)}</span>
+                                            </div>
+                                        </div>
+                                    `;
+
+                    marker.getPopup().setContent(updatedPopupContent);
+                    marker.openPopup();
+
+                    // Efecto visual para los campos de coordenadas
+                    highlightField('#latitud');
+                    highlightField('#longitud');
+                });
+
+                $('#latitud').val(lat.toFixed(6));
+                $('#longitud').val(lng.toFixed(6));
+
+                // Actualizar el mapa cuando cambia el tamaño de la ventana
+                setTimeout(function () {
+                    map.invalidateSize();
+                }, 100);
+
+                // Añadir estilos personalizados para el popup
+                const style = document.createElement('style');
+                style.textContent = `
+                                    .custom-popup {
+                                        font-family: var(--font-body);
+                                        padding: 8px;
+                                    }
+                                    .custom-popup h4 {
+                                        color: var(--color-brown);
+                                        margin: 0 0 8px 0;
+                                        font-size: 16px;
+                                        font-weight: 600;
+                                    }
+                                    .custom-popup p {
+                                        margin: 0 0 8px 0;
+                                        font-size: 14px;
+                                    }
+                                    .popup-coordinates {
+                                        font-family: var(--font-mono);
+                                        font-size: 12px;
+                                        color: var(--color-text-light);
+                                        background-color: rgba(212, 175, 55, 0.05);
+                                        padding: 8px;
+                                        border-radius: 4px;
+                                        margin-top: 5px;
+                                        border-left: 2px solid var(--color-gold);
+                                    }
+                                    .map-instructions {
+                                        text-align: center;
+                                        padding: 10px 15px;
+                                        border-radius: 8px;
+                                        margin: 10px 0 15px 0;
+                                        font-size: 14px;
+                                        color: var(--color-brown);
+                                    }
+                                `;
+                document.head.appendChild(style);
+            }
+
+            getCurrentLocation();
+
+            // Cambiar las coordenadas al seleccionar una comuna
+            $('#comuna').change(function () {
+                const comunaNombre = $(this).find('option:selected').text();
+                if (comunasCoordenadas[comunaNombre]) {
+                    const { lat, lon } = comunasCoordenadas[comunaNombre];
+                    map.setView([lat, lon], 13);
+                    marker.setLatLng([lat, lon]);
+                    $('#latitud').val(lat.toFixed(6));
+                    $('#longitud').val(lon.toFixed(6));
+
+                    // Actualizar el popup con las nuevas coordenadas
+                    const updatedPopupContent = `
+                                        <div class="custom-popup">
+                                            <h4><i class="fas fa-map-pin"></i> Comuna: ${comunaNombre}</h4>
+                                            <p>Ubicación central de la comuna seleccionada.</p>
+                                            <div class="popup-coordinates">
+                                                <span><strong>Lat:</strong> ${lat.toFixed(6)}</span><br>
+                                                <span><strong>Lng:</strong> ${lon.toFixed(6)}</span>
+                                            </div>
+                                        </div>
+                                    `;
+
+                    marker.getPopup().setContent(updatedPopupContent);
+                    marker.openPopup();
+
+                    // Efecto visual para los campos de coordenadas
+                    highlightField('#latitud');
+                    highlightField('#longitud');
+
+                    showNotification(`Ubicación actualizada a la comuna de ${comunaNombre}`, 'success');
+                } else {
+                    showNotification('No se encontraron las coordenadas de la comuna seleccionada.', 'error');
+                }
             });
 
-            map.on('click', function(e) {
-                marker.setLatLng(e.latlng);
-                $('#latitud').val(e.latlng.lat);
-                $('#longitud').val(e.latlng.lng);
+            // Mejorar la experiencia del input de archivo
+            document.getElementById('foto').addEventListener('change', function (event) {
+                const file = event.target.files[0];
+                const previewImage = document.getElementById('preview-image');
+                const errorMessage = document.getElementById('error-message');
+                const fileName = document.getElementById('file-name');
+
+                if (file) {
+                    const validImageTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+                    const maxSize = 5 * 1024 * 1024; // 5MB
+
+                    // Validar el tipo de archivo
+                    if (!validImageTypes.includes(file.type)) {
+                        previewImage.style.display = 'none';
+                        errorMessage.textContent = 'El archivo seleccionado no es una imagen válida.';
+                        errorMessage.style.display = 'block';
+                        fileName.textContent = 'Archivo no válido';
+                        event.target.value = ''; // Limpiar el input
+                        showNotification('El archivo seleccionado no es una imagen válida.', 'error');
+                        return;
+                    }
+
+                    // Validar el tamaño del archivo
+                    if (file.size > maxSize) {
+                        previewImage.style.display = 'none';
+                        errorMessage.textContent = 'La imagen excede el tamaño máximo de 5MB.';
+                        errorMessage.style.display = 'block';
+                        fileName.textContent = 'Archivo demasiado grande';
+                        event.target.value = ''; // Limpiar el input
+                        showNotification('La imagen excede el tamaño máximo de 5MB.', 'error');
+                        return;
+                    }
+
+                    errorMessage.style.display = 'none';
+                    fileName.textContent = file.name;
+
+                    // Crear una URL para mostrar la imagen
+                    const reader = new FileReader();
+                    reader.onload = function (e) {
+                        previewImage.src = e.target.result;
+                        previewImage.style.display = 'block';
+
+                        // Animación de entrada para la imagen
+                        previewImage.style.opacity = '0';
+                        previewImage.style.transform = 'scale(0.9)';
+
+                        setTimeout(() => {
+                            previewImage.style.opacity = '1';
+                            previewImage.style.transform = 'scale(1)';
+                        }, 10);
+
+                        showNotification('Imagen cargada correctamente', 'success');
+                    };
+                    reader.readAsDataURL(file);
+                } else {
+                    // Si no hay archivo seleccionado
+                    previewImage.style.display = 'none';
+                    errorMessage.style.display = 'none';
+                    fileName.textContent = 'Ningún archivo seleccionado';
+                }
             });
 
-            $('#latitud').val(lat);
-            $('#longitud').val(lng);
-        }
+            // Cargar comunas al cambiar región
+            $('#region').change(function () {
+                let regionId = $(this).val();
+                let comunaSelect = $('#comuna');
+                let regionNombre = $(this).find('option:selected').text();
 
-        getCurrentLocation();
+                comunaSelect.html('<option value="">Selecciona una Comuna</option>');
 
-    // Cambiar las coordenadas al seleccionar una comuna
-    $('#comuna').change(function(){
-        const comunaNombre = $(this).find('option:selected').text();
-        console.log("Comuna seleccionada: " + comunaNombre);
-        console.log("comunasCoordenadas", comunasCoordenadas);
-        if (comunasCoordenadas[comunaNombre]) {
-            const { lat, lon } = comunasCoordenadas[comunaNombre];
-            map.setView([lat, lon], 13);
-            marker.setLatLng([lat, lon]);
-            $('#latitud').val(lat);
-            $('#longitud').val(lon);
-        } else {
-            alert('No se encontraron las coordenadas de la comuna seleccionada.');
-        }
-    });
-    });
-</script>
+                if (regionId) {
+                    // Mostrar indicador de carga
+                    comunaSelect.html('<option value="">Cargando comunas...</option>');
+                    showLoading('comuna');
 
+                    // Simular tiempo de carga para mejor experiencia de usuario
+                    setTimeout(function () {
+                        // Obtener comunas de la región seleccionada
+                        let comunasPorRegion = @json($regiones->mapWithKeys(fn($region) => [$region->id => $region->comunas]));
 
-<script>
-    document.getElementById('foto').addEventListener('change', function(event) {
-        const file = event.target.files[0];
-        const previewImage = document.getElementById('preview-image');
-        const errorMessage = document.getElementById('error-message');
+                        if (comunasPorRegion[regionId]) {
+                            comunaSelect.html('<option value="">Selecciona una Comuna</option>');
+                            comunasPorRegion[regionId].forEach(comuna => {
+                                comunaSelect.append(`<option value="${comuna.id}">${comuna.nombre}</option>`);
+                            });
+                            hideLoading('comuna');
+                            showNotification(`Comunas de ${regionNombre} cargadas correctamente`, 'success');
+                        } else {
+                            hideLoading('comuna');
+                            showNotification('No se encontraron comunas para esta región', 'warning');
+                        }
+                    }, 800);
+                }
+            });
 
-        if (file) {
-            const validImageTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+            // Función para añadir efectos de brillo
+            function addSparkleEffects() {
+                // Añadir destellos al título
+                const h1 = document.querySelector('h1');
+                for (let i = 0; i < 5; i++) {
+                    const sparkle = document.createElement('div');
+                    sparkle.className = 'sparkle';
+                    sparkle.style.top = `${Math.random() * 100}%`;
+                    sparkle.style.left = `${Math.random() * 100}%`;
+                    sparkle.style.animationDelay = `${Math.random() * 2}s`;
+                    h1.appendChild(sparkle);
+                }
 
-            // Validar el tipo de archivo
-            if (!validImageTypes.includes(file.type)) {
-                previewImage.style.display = 'none';
-                errorMessage.style.display = 'block';
-                event.target.value = ''; // Limpiar el input
-                return;
+                // Añadir destellos al botón de envío
+                const submitBtn = document.querySelector('.btn-gold');
+                for (let i = 0; i < 3; i++) {
+                    const sparkle = document.createElement('div');
+                    sparkle.className = 'sparkle';
+                    sparkle.style.top = `${Math.random() * 100}%`;
+                    sparkle.style.left = `${Math.random() * 100}%`;
+                    sparkle.style.animationDelay = `${Math.random() * 2}s`;
+                    submitBtn.appendChild(sparkle);
+                }
             }
 
-            errorMessage.style.display = 'none'; // Ocultar el mensaje de error
+            // Función para inicializar el sistema de tooltips mejorado
+            function initTooltips() {
+                // Asegurarse de que el contenedor de tooltips existe
+                if (!document.getElementById('tooltip-container')) {
+                    const tooltipContainer = document.createElement('div');
+                    tooltipContainer.id = 'tooltip-container';
+                    document.body.appendChild(tooltipContainer);
+                }
 
-            // Crear una URL para mostrar la imagen
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                previewImage.src = e.target.result;
-                previewImage.style.display = 'block';
-            };
-            reader.readAsDataURL(file);
-        } else {
-            // Si no hay archivo seleccionado
-            previewImage.style.display = 'none';
-            errorMessage.style.display = 'none';
-        }
-    });
+                // Mover todos los tooltips al contenedor global
+                const tooltips = document.querySelectorAll('.custom-tooltip');
+                const tooltipContainer = document.getElementById('tooltip-container');
 
-    $(document).ready(function() {
-        // Guardar todas las comunas en un objeto de JavaScript
-        let comunasPorRegion = @json($regiones->mapWithKeys(fn($region) => [$region->id => $region->comunas]));
+                tooltips.forEach(tooltip => {
+                    const forElement = tooltip.getAttribute('data-tooltip-for');
+                    const targetElement = document.getElementById(forElement);
 
-        $('#region').change(function() {
-            let regionId = $(this).val();
-            let comunaSelect = $('#comuna');
+                    if (targetElement) {
+                        // Clonar el tooltip y añadirlo al contenedor global
+                        const clonedTooltip = tooltip.cloneNode(true);
+                        tooltipContainer.appendChild(clonedTooltip);
 
-            comunaSelect.html('<option value="">Selecciona una Comuna</option>');
+                        // Ocultar el tooltip original
+                        tooltip.style.display = 'none';
 
-            if (regionId && comunasPorRegion[regionId]) {
-                comunasPorRegion[regionId].forEach(comuna => {
-                    comunaSelect.append(`<option value="${comuna.id}">${comuna.nombre}</option>`);
+                        // Posicionar el tooltip clonado cuando se hace hover
+                        targetElement.addEventListener('mouseenter', () => {
+                            const rect = targetElement.getBoundingClientRect();
+                            clonedTooltip.style.position = 'fixed';
+                            clonedTooltip.style.left = `${rect.left}px`;
+                            clonedTooltip.style.top = `${rect.bottom + 10}px`;
+                            clonedTooltip.style.opacity = '1';
+                            clonedTooltip.style.visibility = 'visible';
+                            clonedTooltip.style.transform = 'translateY(0)';
+
+                            // Asegurarse de que el tooltip no se salga de la pantalla
+                            const tooltipRect = clonedTooltip.getBoundingClientRect();
+                            if (tooltipRect.right > window.innerWidth) {
+                                clonedTooltip.style.left = `${window.innerWidth - tooltipRect.width - 20}px`;
+                            }
+                        });
+
+                        // Ocultar el tooltip cuando se quita el hover
+                        targetElement.addEventListener('mouseleave', () => {
+                            clonedTooltip.style.opacity = '0';
+                            clonedTooltip.style.visibility = 'hidden';
+                            clonedTooltip.style.transform = 'translateY(10px)';
+                        });
+                    }
                 });
             }
+
+            // Función para mostrar notificaciones
+            function showNotification(message, type = 'info') {
+                // Crear elemento de notificación
+                const notification = document.createElement('div');
+                notification.className = `notification notification-${type}`;
+
+                // Determinar el icono según el tipo
+                let icon = 'info-circle';
+                if (type === 'success') icon = 'check-circle';
+                if (type === 'warning') icon = 'exclamation-triangle';
+                if (type === 'error') icon = 'times-circle';
+
+                notification.innerHTML = `
+                                    <div class="notification-icon">
+                                        <i class="fas fa-${icon}"></i>
+                                    </div>
+                                    <div class="notification-content">${message}</div>
+                                    <button class="notification-close"><i class="fas fa-times"></i></button>
+                                `;
+
+                document.body.appendChild(notification);
+
+                // Mostrar con animación
+                setTimeout(() => {
+                    notification.classList.add('show');
+                }, 10);
+
+                // Ocultar después de 5 segundos
+                setTimeout(() => {
+                    notification.classList.remove('show');
+                    setTimeout(() => {
+                        notification.remove();
+                    }, 300);
+                }, 5000);
+
+                // Cerrar al hacer clic en el botón
+                notification.querySelector('.notification-close').addEventListener('click', () => {
+                    notification.classList.remove('show');
+                    setTimeout(() => {
+                        notification.remove();
+                    }, 300);
+                });
+            }
+
+            // Función para mostrar indicador de carga
+            function showLoading(elementId) {
+                const element = document.getElementById(elementId);
+                if (!element) return;
+
+                const loadingContainer = document.createElement('div');
+                loadingContainer.className = 'loading-container';
+                loadingContainer.innerHTML = `
+                                    <div class="loading-indicator">
+                                        <div></div><div></div><div></div><div></div>
+                                    </div>
+                                `;
+
+                // Si es el mapa, añadir directamente al contenedor
+                if (elementId === 'map') {
+                    element.style.position = 'relative';
+                    loadingContainer.style.position = 'absolute';
+                    loadingContainer.style.top = '0';
+                    loadingContainer.style.left = '0';
+                    loadingContainer.style.width = '100%';
+                    loadingContainer.style.height = '100%';
+                    loadingContainer.style.display = 'flex';
+                    loadingContainer.style.alignItems = 'center';
+                    loadingContainer.style.justifyContent = 'center';
+                    loadingContainer.style.backgroundColor = 'rgba(255, 255, 255, 0.8)';
+                    loadingContainer.style.zIndex = '1000';
+                    loadingContainer.style.borderRadius = 'var(--border-radius)';
+                    element.appendChild(loadingContainer);
+                } else {
+                    // Para otros elementos, añadir después
+                    element.parentNode.style.position = 'relative';
+                    loadingContainer.style.position = 'absolute';
+                    loadingContainer.style.top = '100%';
+                    loadingContainer.style.left = '0';
+                    loadingContainer.style.width = '100%';
+                    loadingContainer.style.padding = '10px';
+                    loadingContainer.style.display = 'flex';
+                    loadingContainer.style.alignItems = 'center';
+                    loadingContainer.style.justifyContent = 'center';
+                    loadingContainer.style.zIndex = '10';
+                    element.parentNode.appendChild(loadingContainer);
+                }
+            }
+
+            // Función para ocultar indicador de carga
+            function hideLoading(elementId) {
+                const element = document.getElementById(elementId);
+                if (!element) return;
+
+                const container = elementId === 'map' ? element : element.parentNode;
+                const loadingContainer = container.querySelector('.loading-container');
+
+                if (loadingContainer) {
+                    loadingContainer.remove();
+                }
+            }
+
+            // Función para resaltar campos con efecto visual
+            function highlightField(selector) {
+                const field = $(selector);
+                field.addClass('highlight-animation');
+
+                setTimeout(() => {
+                    field.removeClass('highlight-animation');
+                }, 1000);
+            }
+
+            // Añadir estilos para efectos visuales
+            const styleElement = document.createElement('style');
+            styleElement.textContent = `
+                                .highlight-animation {
+                                    animation: highlightPulse 1s ease;
+                                }
+
+                                @keyframes highlightPulse {
+                                    0% { background-color: var(--color-background); }
+                                    50% { background-color: rgba(212, 175, 55, 0.2); }
+                                    100% { background-color: var(--color-background); }
+                                }
+
+                                .loading-container {
+                                    display: flex;
+                                    align-items: center;
+                                    justify-content: center;
+                                    padding: 10px;
+                                }
+
+                                .loading-indicator {
+                                    display: inline-block;
+                                    position: relative;
+                                    width: 80px;
+                                    height: 13px;
+                                }
+
+                                .loading-indicator div {
+                                    position: absolute;
+                                    top: 0;
+                                    width: 13px;
+                                    height: 13px;
+                                    border-radius: 50%;
+                                    background: var(--color-gold);
+                                    animation-timing-function: cubic-bezier(0, 1, 1, 0);
+                                }
+
+                                .loading-indicator div:nth-child(1) {
+                                    left: 8px;
+                                    animation: loading1 0.6s infinite;
+                                }
+
+                                .loading-indicator div:nth-child(2) {
+                                    left: 8px;
+                                    animation: loading2 0.6s infinite;
+                                }
+
+                                .loading-indicator div:nth-child(3) {
+                                    left: 32px;
+                                    animation: loading2 0.6s infinite;
+                                }
+
+                                .loading-indicator div:nth-child(4) {
+                                    left: 56px;
+                                    animation: loading3 0.6s infinite;
+                                }
+                            `;
+            document.head.appendChild(styleElement);
+
+            // Añadir efectos de animación al enviar el formulario
+            $('form').on('submit', function (e) {
+                // Validar campos antes de enviar
+                let isValid = true;
+
+                // Validar campos requeridos
+                $(this).find('input[required], select[required]').each(function () {
+                    if (!$(this).val()) {
+                        isValid = false;
+                        $(this).addClass('is-invalid');
+
+                        // Añadir mensaje de error
+                        if (!$(this).next('.error-message').length) {
+                            $('<div class="error-message">Este campo es obligatorio</div>').insertAfter($(this));
+                        }
+
+                        // Animar el campo con error
+                        $(this).parent().addClass('shake-animation');
+                        setTimeout(() => {
+                            $(this).parent().removeClass('shake-animation');
+                        }, 500);
+                    } else {
+                        $(this).removeClass('is-invalid');
+                        $(this).next('.error-message').remove();
+                    }
+                });
+
+                if (!isValid) {
+                    e.preventDefault();
+                    showNotification('Por favor, completa todos los campos requeridos', 'error');
+
+                    // Desplazarse al primer campo con error
+                    $('html, body').animate({
+                        scrollTop: $('.is-invalid:first').offset().top - 100
+                    }, 500);
+
+                    return false;
+                }
+
+                // Añadir animación de envío
+                $(this).addClass('submitting');
+                showNotification('Enviando formulario...', 'info');
+
+                // Añadir estilos para la animación de envío
+                const submitStyle = document.createElement('style');
+                submitStyle.textContent = `
+                                    .submitting {
+                                        position: relative;
+                                    }
+
+                                    .submitting::after {
+                                        content: "";
+                                        position: absolute;
+                                        top: 0;
+                                        left: 0;
+                                        width: 100%;
+                                        height: 100%;
+                                        background-color: rgba(255, 255, 255, 0.7);
+                                        backdrop-filter: blur(3px);
+                                        z-index: 1000;
+                                        display: flex;
+                                        align-items: center;
+                                        justify-content: center;
+                                        font-size: 1.5rem;
+                                        color: var(--color-gold);
+                                        border-radius: var(--border-radius);
+                                    }
+
+                                    .shake-animation {
+                                        animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
+                                    }
+
+                                    @keyframes shake {
+                                        10%, 90% { transform: translate3d(-1px, 0, 0); }
+                                        20%, 80% { transform: translate3d(2px, 0, 0); }
+                                        30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
+                                        40%, 60% { transform: translate3d(4px, 0, 0); }
+                                    }
+
+                                    .error-message {
+                                        color: var(--color-error);
+                                        font-size: 0.8rem;
+                                        margin-top: 0.25rem;
+                                        animation: fadeIn 0.3s ease;
+                                    }
+
+                                    .is-invalid {
+                                        border-color: var(--color-error) !important;
+                                        background-color: rgba(244, 67, 54, 0.05) !important;
+                                    }
+
+                                    @keyframes fadeIn {
+                                        from { opacity: 0; transform: translateY(-10px); }
+                                        to { opacity: 1; transform: translateY(0); }
+                                    }
+                                `;
+                document.head.appendChild(submitStyle);
+            });
+
+            // Eliminar mensajes de error al cambiar el valor del campo
+            $(document).on('input change', 'input, select', function () {
+                if ($(this).val()) {
+                    $(this).removeClass('is-invalid');
+                    $(this).next('.error-message').remove();
+                }
+            });
+
+            // Añadir efectos de hover a los campos
+            $('input, select').hover(
+                function () {
+                    $(this).addClass('hover-effect');
+                },
+                function () {
+                    $(this).removeClass('hover-effect');
+                }
+            );
+
+            // Añadir estilos para efectos de hover
+            const hoverStyle = document.createElement('style');
+            hoverStyle.textContent = `
+                                .hover-effect {
+                                    transform: translateY(-2px);
+                                    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+                                    transition: all 0.3s ease;
+                                }
+                            `;
+            document.head.appendChild(hoverStyle);
         });
-    });
-</script>
-
+    </script>
 @endsection

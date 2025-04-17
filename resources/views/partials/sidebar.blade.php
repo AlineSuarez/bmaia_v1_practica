@@ -1,6 +1,7 @@
 <head>
     <link href="{{ asset('./css/components/home-user/sidebar.css') }}" rel="stylesheet">
     <script src="{{ asset('./js/components/sidebar.js') }}"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 
 <div class="app-container">
@@ -11,7 +12,9 @@
     <!-- Sidebar -->
     <div id="sidebar" class="sidebar">
         <div class="sidebar-header">
-            <h3>Menú</h3>
+            <div class="logo-container">
+                <h3>Menú</h3>
+            </div>
             <button id="sidebarToggleInside" class="sidebar-toggle-inside">
                 <i class="fas fa-times"></i>
             </button>

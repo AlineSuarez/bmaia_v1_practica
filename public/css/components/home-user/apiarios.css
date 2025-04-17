@@ -1,0 +1,1347 @@
+/* Estilos base y variables - Paleta refinada */
+:root {
+    --primary-color: #f5a700;
+    --primary-light: #ffbe33;
+    --primary-dark: #c48500;
+    --secondary-color: #ff9800;
+    --accent-color: #fff5e0;
+    --danger-color: #e53935;
+    --warning-color: #ff9800;
+    --info-color: #5d4037;
+    --success-color: #8bc34a;
+    --text-color: #3d2e0f;
+    --text-light: #6d5735;
+    --background-color: #fffaf0;
+    --card-bg: #ffffff;
+    --border-color: #e8d5a7;
+    --shadow-sm: 0 2px 8px rgba(194, 151, 38, 0.08);
+    --shadow-md: 0 4px 12px rgba(194, 151, 38, 0.12);
+    --shadow-lg: 0 8px 24px rgba(194, 151, 38, 0.15);
+    --radius-sm: 6px;
+    --radius-md: 10px;
+    --radius-lg: 16px;
+    --transition: all 0.25s ease;
+    --font-family: "Poppins", "Nunito", sans-serif;
+    --honeycomb-color: rgba(249, 195, 50, 0.05);
+    --honeycomb-accent: rgba(232, 176, 25, 0.08);
+}
+
+/* Estilos generales */
+body {
+    font-family: var(--font-family);
+    background-color: var(--background-color);
+    color: var(--text-color);
+    line-height: 1.6;
+    background-image: repeating-linear-gradient(
+            60deg,
+            var(--honeycomb-color) 0,
+            var(--honeycomb-accent) 1px,
+            transparent 0,
+            transparent 40px
+        ),
+        repeating-linear-gradient(
+            120deg,
+            var(--honeycomb-color) 0,
+            var(--honeycomb-accent) 1px,
+            transparent 0,
+            transparent 40px
+        );
+    background-attachment: fixed;
+}
+
+.apiarios-container {
+    background: var(--card-bg);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+    padding: 2.5rem;
+    margin: 0 auto 2.5rem;
+    position: relative;
+    overflow: hidden;
+    border: 1px solid var(--border-color);
+}
+
+.apiarios-container::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 6px;
+    background: linear-gradient(
+        90deg,
+        var(--primary-color),
+        var(--secondary-color)
+    );
+}
+
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2.5rem;
+    border-bottom: 2px solid var(--border-color);
+    padding-bottom: 1.5rem;
+    position: relative;
+    background: var(--card-bg);
+    padding: 1.5rem 2rem;
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-sm);
+    flex-wrap: wrap;
+}
+
+.page-title {
+    font-size: 2.4rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    margin: 0;
+    text-align: center;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    margin-bottom: 1rem;
+}
+
+.action-buttons {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    margin: 0 auto 2rem;
+    padding: 1.25rem;
+    background: var(--accent-color);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--border-color);
+    flex-wrap: wrap;
+    max-width: 1200px;
+    width: 100%;
+    outline: none;
+}
+
+.action-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.85rem 1.75rem;
+    border-radius: var(--radius-md);
+    font-weight: 600;
+    transition: var(--transition);
+    box-shadow: var(--shadow-sm);
+    border: none;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    font-size: 1rem;
+    min-width: 160px;
+    text-align: center;
+    outline: none;
+}
+
+.action-button::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.2);
+    transition: var(--transition);
+    outline: none;
+}
+
+.action-button:focus {
+    outline: none;
+    box-shadow: none;
+    outline: none;
+}
+
+.action-button:focus-visible {
+    outline: 2px solid var(--primary-color);
+    outline-offset: 2px;
+}
+
+.action-button:hover::before {
+    left: 100%;
+}
+
+.action-button:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-md);
+}
+
+.action-button i {
+    font-size: 1.1rem;
+    margin-right: 0.75rem;
+}
+
+.action-button.primary {
+    background: linear-gradient(
+        135deg,
+        var(--primary-color),
+        var(--primary-dark)
+    );
+    color: #fff;
+    border: 1px solid var(--primary-dark);
+    text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.2);
+    text-decoration: none;
+}
+
+.action-button.primary:hover {
+    background: linear-gradient(
+        135deg,
+        var(--primary-dark),
+        var(--primary-color)
+    );
+    box-shadow: 0 6px 15px rgba(194, 151, 38, 0.3);
+}
+
+.action-button.danger {
+    background: linear-gradient(135deg, var(--danger-color), #c62a37);
+    color: #fff;
+    border: 1px solid #c62a37;
+    text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.2);
+}
+
+.action-button.danger:hover {
+    background: linear-gradient(135deg, #c62a37, var(--danger-color));
+    box-shadow: 0 6px 15px rgba(230, 57, 70, 0.3);
+}
+
+.action-button.warning {
+    background: linear-gradient(135deg, var(--warning-color), #e7924e);
+    color: #fff;
+    text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.2);
+}
+
+.action-button.info {
+    background: linear-gradient(135deg, var(--info-color), #31648a);
+    color: #fff;
+    text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.2);
+}
+
+.action-button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.action-button:disabled:hover {
+    transform: none;
+    box-shadow: var(--shadow-sm);
+}
+
+/* Tabla de apiarios */
+.apiarios-table-wrapper {
+    background: var(--card-bg);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-md);
+    overflow: hidden;
+    margin: 0 auto 2rem;
+    border: 1px solid var(--border-color);
+    padding: 0.5rem;
+    max-width: 100%;
+}
+
+.table-responsive {
+    border-radius: var(--radius-md);
+    overflow: auto;
+    background: var(--card-bg);
+    max-height: 75vh;
+    scrollbar-width: thin;
+    scrollbar-color: var(--primary-color) var(--accent-color);
+}
+
+.table-responsive::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+.table-responsive::-webkit-scrollbar-track {
+    background: var(--accent-color);
+    border-radius: 4px;
+}
+
+.table-responsive::-webkit-scrollbar-thumb {
+    background-color: var(--primary-color);
+    border-radius: 4px;
+}
+
+.apiarios-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    overflow: hidden;
+}
+
+.apiarios-table thead {
+    background: linear-gradient(
+        135deg,
+        var(--primary-color),
+        var(--primary-dark)
+    );
+    color: #fff;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.apiarios-table th {
+    padding: 1.25rem 1rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.875rem;
+    letter-spacing: 0.5px;
+    position: relative;
+    text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.3);
+    white-space: nowrap;
+    text-align: center;
+}
+
+.apiarios-table th::after {
+    content: "";
+    position: absolute;
+    right: 0;
+    top: 25%;
+    height: 50%;
+    width: 1px;
+    background-color: rgba(255, 255, 255, 0.3);
+}
+
+.apiarios-table th:last-child::after {
+    display: none;
+}
+
+.apiarios-table tbody tr {
+    transition: var(--transition);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.apiarios-table tbody tr:hover {
+    background-color: rgba(237, 168, 20, 0.05);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+}
+
+.apiarios-table td {
+    padding: 1.25rem 1rem;
+    vertical-align: middle;
+    border-bottom: 1px solid var(--border-color);
+    text-align: center;
+}
+
+.apiarios-table tr:last-child td {
+    border-bottom: none;
+}
+
+/* Checkbox personalizado - estilo panal */
+.custom-checkbox {
+    position: relative;
+    display: inline-block;
+    width: 22px;
+    height: 22px;
+    margin: 0 auto;
+}
+
+.custom-checkbox input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+    position: absolute;
+}
+
+.checkmark {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 22px;
+    width: 22px;
+    background-color: #fff;
+    border: 2px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    transition: var(--transition);
+    box-shadow: inset 0 0 0 2px rgba(237, 168, 20, 0.1);
+}
+
+.custom-checkbox:hover input ~ .checkmark {
+    border-color: var(--primary-color);
+}
+
+.custom-checkbox input:checked ~ .checkmark {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.checkmark:after {
+    content: "";
+    position: absolute;
+    display: none;
+}
+
+.custom-checkbox input:checked ~ .checkmark:after {
+    display: block;
+}
+
+.custom-checkbox .checkmark:after {
+    left: 7px;
+    top: 3px;
+    width: 5px;
+    height: 10px;
+    border: solid white;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+}
+
+/* Estilo para identificadores - ELIMINADO EL PSEUDO-ELEMENTO */
+.apiario-id {
+    font-weight: 600;
+    color: var(--primary-dark);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem 1rem;
+    background-color: rgba(237, 168, 20, 0.1);
+    border-radius: var(--radius-sm);
+    font-size: 0.9rem;
+    box-shadow: 0 2px 4px rgba(194, 151, 38, 0.07);
+    border: 1px solid rgba(237, 168, 20, 0.2);
+    position: relative;
+    margin: 0 auto;
+}
+
+/* Tag para tipos y categorías - Estilos de panal */
+.tag {
+    display: inline-block;
+    padding: 0.4rem 1rem;
+    border-radius: 50px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border: 1px solid transparent;
+    box-shadow: var(--shadow-sm);
+    transition: var(--transition);
+    margin: 0 auto;
+}
+
+.tag:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.tag-primary {
+    background-color: rgba(237, 168, 20, 0.15);
+    color: var(--primary-dark);
+    border-color: rgba(237, 168, 20, 0.3);
+}
+
+.tag-secondary {
+    background-color: rgba(255, 167, 38, 0.15);
+    color: #a06a00;
+    border-color: rgba(255, 167, 38, 0.3);
+}
+
+.tag-warning {
+    background-color: rgba(255, 165, 0, 0.15);
+    color: #a06a00;
+    border-color: rgba(255, 165, 0, 0.3);
+}
+
+.tag-info {
+    background-color: rgba(109, 84, 35, 0.15);
+    color: #5c462b;
+    border-color: rgba(109, 84, 35, 0.3);
+}
+
+/* Contadores y cifras - ELIMINADO EL FONDO */
+.counter {
+    font-weight: 700;
+    color: var(--primary-dark);
+    font-size: 1.2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+    position: relative;
+    text-shadow: none;
+}
+
+/* Ubicación geográfica */
+.location-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.25rem;
+    font-size: 0.875rem;
+    margin: 0 auto;
+}
+
+.location-info span {
+    color: var(--text-dark);
+}
+
+.coordinates {
+    font-family: "Roboto Mono", monospace;
+    color: var(--text-color);
+    background-color: rgba(237, 168, 20, 0.1);
+    padding: 0.35rem 0.7rem;
+    border-radius: var(--radius-sm);
+    font-size: 0.75rem;
+    border: 1px solid rgba(237, 168, 20, 0.2);
+    box-shadow: var(--shadow-sm);
+    display: inline-block;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    transition: var(--transition);
+    text-align: center;
+}
+
+.coordinates:hover {
+    background-color: rgba(237, 168, 20, 0.15);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+/* Imagen de apiario */
+.apiario-image {
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+    transition: var(--transition);
+    margin: 0 auto;
+}
+
+.apiario-image img {
+    width: 110px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: var(--radius-md);
+    border: 3px solid var(--accent-color);
+    box-shadow: var(--shadow-sm);
+    transition: var(--transition);
+}
+
+.apiario-image::after {
+    content: "\f00e";
+    font-family: "Font Awesome 5 Free";
+    font-weight: 900;
+    position: absolute;
+    right: -6px;
+    bottom: -6px;
+    background-color: var(--primary-color);
+    color: white;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    opacity: 0;
+    transition: var(--transition);
+}
+
+.apiario-image:hover::after {
+    opacity: 1;
+}
+
+.apiario-image:hover img {
+    transform: scale(1.05);
+    border-color: var(--primary-light);
+    box-shadow: var(--shadow-md);
+}
+
+/* Botones de acción en tabla */
+.table-actions {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    margin: 0 auto;
+}
+
+.btn-table-action {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    border-radius: var(--radius-md);
+    border: none;
+    cursor: pointer;
+    transition: var(--transition);
+    background-color: var(--accent-color);
+    color: var(--text-color);
+    position: relative;
+    box-shadow: var(--shadow-sm);
+}
+
+.btn-table-action:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-md);
+}
+
+.btn-edit {
+    color: var(--warning-color);
+    border: 1px solid rgba(255, 165, 0, 0.3);
+}
+
+.btn-edit:hover {
+    background-color: var(--warning-color);
+    color: white;
+}
+
+.btn-delete {
+    color: var(--danger-color);
+    border: 1px solid rgba(230, 57, 70, 0.3);
+}
+
+.btn-delete:hover {
+    background-color: var(--danger-color);
+    color: white;
+}
+
+.btn-info {
+    color: var(--info-color);
+    border: 1px solid rgba(109, 84, 35, 0.3);
+}
+
+.btn-info:hover {
+    background-color: var(--info-color);
+    color: white;
+}
+
+/* Tooltip personalizado - MEJORADO PARA EVITAR QUE SE CORTE */
+[data-tooltip] {
+    position: relative;
+}
+
+[data-tooltip]::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: 125%;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 0.6rem 1rem;
+    background-color: var(--primary-dark);
+    color: white;
+    font-size: 0.75rem;
+    border-radius: var(--radius-sm);
+    white-space: nowrap;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    z-index: 1000; /* Valor muy alto para asegurar que esté por encima de todo */
+    box-shadow: var(--shadow-md);
+    border: 1px solid rgba(196, 138, 0, 0.6);
+    pointer-events: none; /* Evita que el tooltip interfiera con los clics */
+    min-width: max-content; /* Asegura que el contenido no se corte */
+    max-width: 250px; /* Limita el ancho máximo */
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+/* Asegura que los tooltips no se salgan de la pantalla */
+[data-tooltip]:hover::after {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) translateY(-5px);
+}
+
+/* Ajuste para tooltips que podrían salirse por la derecha */
+.table-actions [data-tooltip]::after {
+    left: auto;
+    right: -5px;
+    transform: translateX(0);
+}
+
+.table-actions [data-tooltip]:hover::after {
+    transform: translateX(0) translateY(-5px);
+}
+
+/* Modales personalizados - Estilo panal */
+.custom-modal .modal-content {
+    border: none;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
+    overflow: hidden;
+    background-color: var(--card-bg);
+    border: 1px solid var(--border-color);
+    max-width: 90%;
+    margin: 0 auto;
+}
+
+.custom-modal .modal-header {
+    background: linear-gradient(
+        135deg,
+        var(--primary-color),
+        var(--primary-dark)
+    );
+    color: white;
+    border-bottom: none;
+    padding: 1.5rem 1.75rem;
+    text-align: center;
+}
+
+.custom-modal .modal-title {
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.2);
+    margin: 0 auto;
+}
+
+.custom-modal .btn-close {
+    color: white;
+    opacity: 0.8;
+    filter: brightness(0) invert(1);
+}
+
+.custom-modal .modal-body {
+    padding: 2rem;
+    font-size: 1rem;
+    background-color: var(--card-bg);
+    text-align: center;
+}
+
+.custom-modal .modal-body p {
+    background: rgba(255, 251, 240, 0.7);
+    padding: 1.25rem;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow-sm);
+    margin-bottom: 0;
+    text-align: center;
+}
+
+.custom-modal .modal-footer {
+    border-top: 1px solid var(--border-color);
+    padding: 1.25rem 1.75rem;
+    background-color: var(--accent-color);
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+}
+
+/* Botones en modal */
+.modal-btn {
+    padding: 0.75rem 1.5rem;
+    border-radius: var(--radius-md);
+    font-weight: 600;
+    transition: var(--transition);
+    border: none;
+    min-width: 120px;
+    box-shadow: var(--shadow-sm);
+    text-align: center;
+}
+
+.modal-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.modal-btn-secondary {
+    background-color: #f0f0f0;
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+}
+
+.modal-btn-secondary:hover {
+    background-color: #e0e0e0;
+}
+
+.modal-btn-danger {
+    background: linear-gradient(135deg, var(--danger-color), #c62a37);
+    color: white;
+    border: 1px solid #c62a37;
+}
+
+.modal-btn-danger:hover {
+    background: linear-gradient(135deg, #c62a37, var(--danger-color));
+    box-shadow: 0 4px 12px rgba(230, 57, 70, 0.2);
+}
+
+/* Animaciones */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes honeycombPulse {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+.animated-element {
+    animation: fadeIn 0.4s ease-out forwards;
+}
+
+/* Paginación - Estilo panal */
+.pagination {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    margin: 2rem auto;
+    flex-wrap: wrap;
+    max-width: 100%;
+}
+
+.page-item .page-link {
+    border: 1px solid var(--border-color);
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--radius-md);
+    color: var(--text-color);
+    font-weight: 500;
+    transition: var(--transition);
+    background-color: var(--card-bg);
+}
+
+.page-item.active .page-link {
+    background-color: var(--primary-color);
+    color: #fff;
+    border-color: var(--primary-dark);
+    box-shadow: var(--shadow-sm);
+    text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.2);
+}
+
+.page-item .page-link:hover {
+    background-color: var(--primary-light);
+    color: var(--text-color);
+    border-color: var(--primary-color);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+/* Panel de filtros */
+.filters-panel {
+    background-color: var(--card-bg);
+    border-radius: var(--radius-md);
+    padding: 1.5rem;
+    margin: 0 auto 2rem;
+    box-shadow: var(--shadow-sm);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--border-color);
+    position: relative;
+    overflow: hidden;
+    max-width: 1200px;
+    width: 100%;
+}
+
+.filters-panel::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(
+        90deg,
+        var(--primary-color),
+        var(--secondary-color)
+    );
+}
+
+.search-container {
+    position: relative;
+    flex: 1;
+    min-width: 200px;
+    max-width: 500px;
+}
+
+.search-input {
+    width: 100%;
+    padding: 0.85rem 1rem 0.85rem 2.75rem;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-color);
+    transition: var(--transition);
+    background-color: white;
+    color: var(--text-color);
+    font-size: 0.95rem;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
+    text-align: center;
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(237, 168, 20, 0.2);
+}
+
+.search-icon {
+    position: absolute;
+    left: 0.85rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--primary-color);
+    font-size: 1rem;
+}
+
+/* Selector de filtros - Estilo panal */
+.filter-select {
+    padding: 0.85rem 2.5rem 0.85rem 1rem;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-color);
+    background-color: white;
+    appearance: none;
+    transition: var(--transition);
+    background-image: url("data:image/svg+xml;utf8,<svg fill='%23EDA814' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/><path d='M0 0h24v24H0z' fill='none'/></svg>");
+    background-repeat: no-repeat;
+    background-position: right 0.5rem center;
+    background-size: 1.5rem;
+    color: var(--text-color);
+    font-size: 0.95rem;
+    min-width: 180px;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
+    text-align: center;
+}
+
+.filter-select:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(237, 168, 20, 0.2);
+}
+
+.filter-select:hover {
+    border-color: var(--primary-color);
+}
+
+/* Estilos responsivos mejorados */
+@media (max-width: 1400px) {
+    .apiarios-container {
+        width: 95%;
+        padding: 2rem;
+    }
+}
+
+@media (max-width: 1200px) {
+    .apiarios-table th,
+    .apiarios-table td {
+        padding: 1rem 0.75rem;
+        font-size: 0.9rem;
+    }
+
+    .apiario-image img {
+        width: 90px;
+        height: 70px;
+    }
+
+    .action-button {
+        min-width: auto;
+        padding: 0.75rem 1rem;
+    }
+
+    .page-title {
+        font-size: 2.2rem;
+    }
+}
+
+@media (max-width: 992px) {
+    .page-header {
+        flex-direction: column;
+        align-items: center;
+        gap: 1.5rem;
+        padding: 1.5rem;
+    }
+
+    .filters-panel {
+        flex-direction: column;
+        align-items: center;
+        padding: 1.25rem;
+    }
+
+    .search-container {
+        width: 100%;
+        max-width: 100%;
+    }
+
+    .filter-select {
+        width: 100%;
+        max-width: 100%;
+    }
+
+    .action-buttons {
+        padding: 1rem;
+        gap: 0.75rem;
+    }
+
+    .page-title {
+        font-size: 2rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .apiarios-container {
+        padding: 1.5rem;
+    }
+
+    .apiarios-table-wrapper {
+        overflow-x: auto;
+    }
+
+    .apiarios-table {
+        min-width: 900px;
+    }
+}
+
+@media (max-width: 768px) {
+    .apiarios-container {
+        padding: 1.25rem 1rem;
+        width: 98%;
+        margin: 0 auto 1.5rem;
+    }
+
+    .action-buttons {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .action-button {
+        width: 100%;
+        justify-content: center;
+        margin-bottom: 0.5rem;
+    }
+
+    .table-responsive {
+        max-height: 60vh;
+    }
+
+    .apiario-image img {
+        width: 80px;
+        height: 60px;
+    }
+
+    .page-title {
+        font-size: 1.8rem;
+    }
+
+    .table-actions {
+        flex-direction: row;
+        justify-content: center;
+    }
+
+    .pagination {
+        gap: 0.25rem;
+    }
+
+    .page-item .page-link {
+        width: 36px;
+        height: 36px;
+        font-size: 0.9rem;
+    }
+
+    .custom-modal .modal-content {
+        max-width: 95%;
+    }
+}
+
+@media (max-width: 576px) {
+    .page-title {
+        font-size: 1.5rem;
+        width: 100%;
+        text-align: center;
+    }
+
+    .action-button {
+        font-size: 0.9rem;
+        padding: 0.7rem 1rem;
+    }
+
+    .apiarios-table th,
+    .apiarios-table td {
+        padding: 0.85rem 0.5rem;
+        font-size: 0.85rem;
+    }
+
+    .apiarios-container {
+        border-radius: var(--radius-md);
+        padding: 1rem 0.75rem;
+    }
+
+    .btn-table-action {
+        width: 34px;
+        height: 34px;
+    }
+
+    .apiario-image img {
+        width: 70px;
+        height: 55px;
+    }
+
+    .filters-panel {
+        padding: 1rem;
+    }
+
+    .search-input,
+    .filter-select {
+        font-size: 0.9rem;
+        padding: 0.7rem 1rem 0.7rem 2.5rem;
+    }
+
+    .custom-modal .modal-body,
+    .custom-modal .modal-header,
+    .custom-modal .modal-footer {
+        padding: 1rem;
+    }
+}
+
+/* Estados interactivos y de alerta */
+.empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 4rem 2rem;
+    text-align: center;
+    color: var(--text-light);
+    background-color: var(--card-bg);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+    border: 1px solid var(--border-color);
+    margin: 2rem auto;
+    max-width: 800px;
+}
+
+.empty-state-icon {
+    font-size: 3.5rem;
+    color: var(--primary-color);
+    margin-bottom: 1.5rem;
+    opacity: 0.7;
+    animation: honeycombPulse 3s infinite ease-in-out;
+}
+
+.empty-state-text {
+    font-size: 1.2rem;
+    font-weight: 500;
+    margin-bottom: 1.75rem;
+    color: var(--text-color);
+    text-align: center;
+}
+
+/* Efecto de carga y estado de carga */
+.loading-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(255, 251, 240, 0.85);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+    backdrop-filter: blur(2px);
+}
+
+.spinner {
+    width: 45px;
+    height: 45px;
+    border: 4px solid rgba(237, 168, 20, 0.2);
+    border-left-color: var(--primary-color);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Estado de error */
+.error-message {
+    background-color: rgba(230, 57, 70, 0.1);
+    border-left: 4px solid var(--danger-color);
+    padding: 1.25rem;
+    margin: 0 auto 1.75rem;
+    border-radius: var(--radius-sm);
+    color: #c62a37;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    max-width: 800px;
+    text-align: center;
+}
+
+.error-message::before {
+    content: "\f06a";
+    font-family: "Font Awesome 5 Free";
+    font-weight: 900;
+    margin-right: 0.85rem;
+    font-size: 1.2rem;
+}
+
+/* Estado de éxito */
+.success-message {
+    background-color: rgba(145, 176, 42, 0.1);
+    border-left: 4px solid var(--success-color);
+    padding: 1.25rem;
+    margin: 0 auto 1.75rem;
+    border-radius: var(--radius-sm);
+    color: #6a7c2e;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    max-width: 800px;
+    text-align: center;
+}
+
+.success-message::before {
+    content: "\f058";
+    font-family: "Font Awesome 5 Free";
+    font-weight: 900;
+    margin-right: 0.85rem;
+    font-size: 1.2rem;
+}
+
+/* Mejora la accesibilidad para la navegación por teclado */
+a:focus,
+button:focus,
+input:focus {
+    outline: 2px solid var(--primary-color);
+    outline-offset: 2px;
+}
+
+/* Estilos para impresión */
+@media print {
+    body {
+        font-size: 12pt;
+        background: white;
+    }
+
+    .action-buttons,
+    .filters-panel,
+    .btn-table-action,
+    .page-header::after {
+        display: none !important;
+    }
+
+    .apiarios-container {
+        box-shadow: none;
+        padding: 0;
+        background: none;
+    }
+
+    .apiarios-table {
+        border: 1px solid #ddd;
+    }
+
+    .apiarios-table th {
+        background-color: #f8f0d8 !important;
+        color: #3d2e0f !important;
+    }
+}
+
+/* Títulos mejorados para cada acción - ELIMINADOS LOS PSEUDO-ELEMENTOS */
+.action-title {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--primary-dark);
+    margin-bottom: 0.5rem;
+    display: block;
+    text-align: center;
+}
+
+/* Mejora adicional para los títulos de columnas - ELIMINADO EL PSEUDO-ELEMENTO */
+.column-title {
+    display: block;
+    position: relative;
+    text-align: center;
+}
+
+/* Fondo de panal hexagonal sutil para contenedores */
+.hexagon-bg {
+    position: relative;
+}
+
+/* Efectos de hover mejorados */
+.apiarios-table tbody tr:hover td {
+    background-color: rgba(245, 167, 0, 0.05);
+}
+
+/* Efectos de transición suaves */
+.apiarios-table tbody tr {
+    transition: transform 0.3s ease, box-shadow 0.3s ease,
+        background-color 0.3s ease;
+}
+
+/* Mejoras de accesibilidad adicionales */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+}
+
+/* Mejoras de contraste */
+.tag,
+.counter,
+.coordinates {
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
+}
+
+/* Mejoras para centrado en dispositivos móviles */
+@media (max-width: 480px) {
+    .apiarios-table {
+        min-width: 700px;
+    }
+
+    .page-title {
+        font-size: 1.3rem;
+    }
+
+    .action-button {
+        font-size: 0.85rem;
+        padding: 0.6rem 0.9rem;
+    }
+
+    .btn-table-action {
+        width: 32px;
+        height: 32px;
+    }
+
+    .counter {
+        font-size: 1.1rem;
+    }
+
+    .tag {
+        padding: 0.3rem 0.8rem;
+        font-size: 0.7rem;
+    }
+
+    .apiario-id {
+        font-size: 0.85rem;
+        padding: 0.4rem 0.8rem;
+    }
+
+    .coordinates {
+        font-size: 0.7rem;
+        padding: 0.3rem 0.6rem;
+    }
+}
