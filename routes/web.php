@@ -127,6 +127,8 @@ Route::get('/tareas/json', [TaskController::class, 'obtenerTareasJson'])->name('
 Route::get('/todas-las-tareas/imprimir', [TaskController::class, 'imprimirTodas'])->name('tareas.imprimirTodas');
 
 
+
+// Visitas
 Route::get('/visitas', [VisitaController::class, 'index'])->name('visitas');
 Route::post('apiarios/{apiario}/visitas', [VisitaController::class, 'store'])->name('visitas.store');
 Route::post('apiarios/{apiario}/visitas1', [VisitaController::class, 'store1'])->name('visitas.store1');
@@ -146,6 +148,8 @@ Route::post('/user/update-plan', [UserController::class, 'updatePlan'])->name('u
 
 Route::middleware(['auth', 'check.payment'])->group(function () {
 Route::get('/sistemaexperto', [ChatbotController::class, 'sistemaExpertoIndex'])->name('sistemaexperto');
+Route::get('/sistemaexperto/create', [ChatbotController::class, 'sistemaExpertoCreate'])->name('sistemaexperto.create');
+Route::post('/sistemaexperto/guardar', [VisitaController::class, 'storeSistemaExperto'])->name('sistemaexperto.store');
 });
 
 // Documentos y Emails

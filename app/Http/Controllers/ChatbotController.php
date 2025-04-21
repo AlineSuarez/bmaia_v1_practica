@@ -174,10 +174,18 @@ public function send(Request $request)
 
         return response()->json($messages);
     }
+
     public function sistemaExpertoIndex()
     {
         $registros='';
         return view('sistemaexperto.index', compact('registros'));
+    }
+
+    public function sistemaExpertoCreate()
+    {
+        $user = Auth::user();
+        $apiarios = Apiario::where('user_id', $user->id)->get();
+        return view('sistemaexperto.create', compact('apiarios','user'));
     }
 
 

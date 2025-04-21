@@ -32,6 +32,7 @@
         </tbody>
     </table>
     <button class="btn btn-primary" id="regenerarConsejos">Regenerar Consejos</button>
+    <a href="{{ route('sistemaexperto.create') }}" class="btn btn-success">Crear PCC</a>
 </div>
 
 @endsection

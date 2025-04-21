@@ -119,12 +119,14 @@
                             <h5 class="mb-1 text-dark fw-semibold">{{ $tareaGeneral->nombre }}</h5>
                             <small class="text-muted">{{ $total }} tareas - Progreso: {{ $progreso }}%</small>
                         </div>
+
                     </div>
                     <div>
                         <div class="progress" style="width: 120px; height: 8px;">
                             <div class="progress-bar bg-success" role="progressbar" style="width: {{ $progreso }}%"></div>
                         </div>
                     </div>
+                    
                 </div>
 
                 <div id="etapa{{ $tareaGeneral->id }}" class="collapse">
@@ -133,6 +135,13 @@
                             <li class="timeline-item d-flex justify-content-between align-items-center">
                                 <div class="d-flex align-items-center gap-3">
                                     <input type="checkbox" class="form-check-input toggle-completada" data-id="{{ $subtarea->id }}" {{ $subtarea->estado === 'Completada' ? 'checked' : '' }}>
+                                    <div class="text-muted small text-end">
+                                        @if ($subtarea->fecha_inicio)
+                                            <span class="me-2">Inicio: {{ \Carbon\Carbon::parse($subtarea->fecha_inicio)->format('d/m/Y') }}</span>
+                                        @endif
+
+                                    </div>
+                                    
                                     <div>
                                         <div class="fw-medium">{{ $subtarea->nombre }}</div>
                                         <div class="text-muted small">
