@@ -11,26 +11,26 @@
                 <h2>Formulario de registro</h2>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link active" href="#step1" data-bs-toggle="tab"> 1</a>
+                    <a class="nav-link active" href="#step1" data-bs-toggle="tab"> PCC1</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#step2" data-bs-toggle="tab"> 2</a>
+                    <a class="nav-link" href="#step2" data-bs-toggle="tab"> PCC2</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#step3" data-bs-toggle="tab"> 3</a>
+                    <a class="nav-link" href="#step3" data-bs-toggle="tab"> PCC3</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#step4" data-bs-toggle="tab">4</a>
+                    <a class="nav-link" href="#step4" data-bs-toggle="tab"> PCC4</a>
                 </li>
 
                 <li class="nav-item">
-                    <a class="nav-link" href="#step5" data-bs-toggle="tab"> 5</a>
+                    <a class="nav-link" href="#step5" data-bs-toggle="tab"> PCC5</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#step6" data-bs-toggle="tab"> 6</a>
+                    <a class="nav-link" href="#step6" data-bs-toggle="tab"> PCC6</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#step7" data-bs-toggle="tab"> 7</a>
+                    <a class="nav-link" href="#step7" data-bs-toggle="tab"> PCC7</a>
                 </li>
             </ul>
         </div>
@@ -41,124 +41,123 @@
             <div class="tab-content">
                 <!-- Step 1 -->
                 <div class="tab-pane fade show active" id="step1">
-    <h4 data-bs-toggle="tooltip" data-bs-placement="top" title="Aquí se registra el número de colmenas revisadas según su vigor">
-    PCC1 - Desarrollo Cámara de Cría
-</h4>
-<p class="text-muted" data-bs-toggle="tooltip" data-bs-placement="right" title="Este campo ayuda a evaluar el estado general del apiario.">
-    Marca el número de colmenas revisadas según caracteristica observada. Este registro es importante para evaluar el estado general del apiario.
-</p>
+                    <h4 data-bs-toggle="tooltip" data-bs-placement="top" title="Aquí se registra el número de colmenas revisadas según su vigor">
+                        PCC1 - Desarrollo Cámara de Cría
+                    </h4>
+                    <p class="text-muted" data-bs-toggle="tooltip" data-bs-placement="right" title="Este campo ayuda a evaluar el estado general del apiario.">
+                        Marca el número de colmenas revisadas según caracteristica observada. Este registro es importante para evaluar el estado general del apiario.
+                    </p>
 
-<div class="mb-3">
-    <label for="pcc1_vigor" class="form-label" data-bs-toggle="tooltip" data-bs-placement="top" 
-        title="Selecciona el número de colmenas en cada categoría: débil, regular, o vigorosa.">
-        <b>Vigor de la colmena</b>
-    </label>
-    <div class="row g-2">
-        <div class="col-md-4">
-            <label for="pcc1_vigor_1" class="form-label" data-bs-toggle="tooltip" data-bs-placement="bottom"
-                title="Introduce el número de colmenas débiles.">Débil</label>
-            <input type="number" class="form-control form-control-sm" id="pcc1_vigor_1" min="0" placeholder="N° colmenas">
-        </div>
-        <div class="col-md-4">
-            <label for="pcc1_vigor_2" class="form-label" data-bs-toggle="tooltip" data-bs-placement="bottom"
-                title="Introduce el número de colmenas regulares.">Regular</label>
-            <input type="number" class="form-control form-control-sm" id="pcc1_vigor_2" min="0" placeholder="N° colmenas">
-        </div>
-        <div class="col-md-4">
-            <label for="pcc1_vigor_3" class="form-label" data-bs-toggle="tooltip" data-bs-placement="bottom"
-                title="Introduce el número de colmenas vigorosas.">Vigorosa</label>
-            <input type="number" class="form-control form-control-sm" id="pcc1_vigor_3" min="0" placeholder="N° colmenas">
-        </div>
-    </div>
-</div>
+                    <div class="mb-3">
+                        <label for="pcc1_vigor" class="form-label" data-bs-toggle="tooltip" data-bs-placement="top" 
+                            title="Selecciona el número de colmenas en cada categoría: débil, regular, o vigorosa.">
+                            <b>Vigor de la colmena</b>
+                        </label>
+                        <div class="row g-2">
+                            <div class="col-md-4">
+                                <label for="pcc1_vigor_1" class="form-label" data-bs-toggle="tooltip" data-bs-placement="bottom"
+                                    title="Introduce el número de colmenas débiles.">Débil</label>
+                                <input type="number" class="form-control form-control-sm" id="pcc1_vigor_1" min="0" placeholder="N° colmenas">
+                            </div>
+                            <div class="col-md-4">
+                                <label for="pcc1_vigor_2" class="form-label" data-bs-toggle="tooltip" data-bs-placement="bottom"
+                                    title="Introduce el número de colmenas regulares.">Regular</label>
+                                <input type="number" class="form-control form-control-sm" id="pcc1_vigor_2" min="0" placeholder="N° colmenas">
+                            </div>
+                            <div class="col-md-4">
+                                <label for="pcc1_vigor_3" class="form-label" data-bs-toggle="tooltip" data-bs-placement="bottom"
+                                    title="Introduce el número de colmenas vigorosas.">Vigorosa</label>
+                                <input type="number" class="form-control form-control-sm" id="pcc1_vigor_3" min="0" placeholder="N° colmenas">
+                            </div>
+                        </div>
+                    </div>
 
-    <div class="input-group">
-        <span class="input-group-text">Vigor de la colmena</span>
-        <input type="text" class="form-control" id="pcc1_vigor_total" name="pcc1_vigor_total" readonly required>
-        <button type="button" class="btn btn-primary" onclick="Check('pcc1_vigor_total');">Revisar</button>
-    </div>
-    
-    <div class="mb-3">
-        <label for="pcc1_activity" class="form-label"><b>Actividad de las abejas</b></label>
-        <div class="row">
-            <div class="col">
-                <label for="pcc1_activity_1" class="form-label me-2">Bajo</label>
-                <input type="number" class="form-control form-control-sm" id="pcc1_activity_1" min="0" placeholder="N° colmenas">
-            </div>
-            <div class="col">
-                <label for="pcc1_activity_2" class="form-label me-2">Medio</label>
-                <input type="number" class="form-control form-control-sm" id="pcc1_activity_2" min="0" placeholder="N° colmenas">
-            </div>
-            <div class="col">
-                <label for="pcc1_activity_3" class="form-label me-2">Alto</label>
-                <input type="number" class="form-control form-control-sm" id="pcc1_activity_3" min="0" placeholder="N° colmenas">
-            </div>
-        </div>
-        <div class="input-group">
-            <span class="input-group-text">Actividad de las abejas</span>
-            <input type="text" class="form-control" id="pcc1_activity_total" name="pcc1_activity_total" readonly required>
-            <button type="button" class="btn btn-primary" onclick="Check('pcc1_activity_total');">Revisar</button>
-        </div>
-    </div>
-    
-    <div class="mb-3">
-        <label for="pcc1_pollen" class="form-label"><b>Ingreso de polen</b></label>
-        <div class="row">
-            <div class="col">
-                <label for="pcc1_pollen_1" class="form-label me-2">No</label>
-                <input type="number" class="form-control form-control-sm" id="pcc1_pollen_1" min="0" placeholder="N° colmenas">
-            </div>
-            <div class="col">
-                <label for="pcc1_pollen_2" class="form-label me-2">Sí</label>
-                <input type="number" class="form-control form-control-sm" id="pcc1_pollen_2" min="0" placeholder="N° colmenas">
-            </div>
-        </div>
-        <div class="input-group">
-            <input type="text" class="form-control" id="pcc1_pollen_total" name="pcc1_pollen_total" readonly required>
-            <button type="button" class="btn btn-primary" onclick="Check('pcc1_pollen_total');">Revisar</button>
-        </div>
-    </div>
-    
-    <div class="mb-3">
-        <label for="pcc1_block" class="form-label"><b>Bloqueo de cámara de cría</b></label>
-        <div class="row">
-            <div class="col">
-                <label for="pcc1_block_1" class="form-label me-2">No</label>
-                <input type="number" class="form-control form-control-sm" id="pcc1_block_1" min="0" placeholder="N° colmenas">
-            </div>
-            <div class="col">
-                <label for="pcc1_block_2" class="form-label me-2">Sí</label>
-                <input type="number" class="form-control form-control-sm" id="pcc1_block_2" min="0" placeholder="N° colmenas">
-            </div>
-        </div>
-        <div class="input-group">
-            <span class="input-group-text">Bloqueo de cámara de cría</span>
-            <input type="text" class="form-control" id="pcc1_block_total" name="pcc1_block_total" readonly required>
-            <button type="button" class="btn btn-primary" onclick="Check('pcc1_block_total');">Revisar</button>
-        </div>
-    </div>
-    
-    <div class="mb-3">
-        <label for="pcc1_cells" class="form-label"><b>Presencia de celdas reales</b></label>
-        <div class="row">
-            <div class="col">
-                <label for="pcc1_cells_1" class="form-label me-2">No</label>
-                <input type="number" class="form-control form-control-sm" id="pcc1_cells_1" min="0" placeholder="N° colmenas">
-            </div>
-            <div class="col">
-                <label for="pcc1_cells_2" class="form-label me-2">Sí</label>
-                <input type="number" class="form-control form-control-sm" id="pcc1_cells_2" min="0" placeholder="N° colmenas">
-            </div>
-        </div>
-        <div class="input-group">
-            <span class="input-group-text">Presencia de celdas reales</span>
-            <input type="text" class="form-control" id="pcc1_cells_total" name="pcc1_cells_total" readonly required>
-            <button type="button" class="btn btn-primary" onclick="Check('pcc1_cells_total');">Check</button>
-        </div>
-    </div>
-    
-    <button type="button" class="btn btn-primary next-step" data-bs-target="#step2">Siguiente</button>
-</div>
+                    <div class="input-group">
+                        <span class="input-group-text">Vigor de la colmena</span>
+                        <input type="text" class="form-control" id="pcc1_vigor_total" name="pcc1_vigor_total" readonly required>
+                        <button type="button" class="btn btn-primary" onclick="Check('pcc1_vigor_total');">Revisar</button>
+                    </div>
+        
+                    <div class="mb-3">
+                        <label for="pcc1_activity" class="form-label"><b>Actividad de las abejas</b></label>
+                        <div class="row">
+                            <div class="col">
+                                <label for="pcc1_activity_1" class="form-label me-2">Bajo</label>
+                                <input type="number" class="form-control form-control-sm" id="pcc1_activity_1" min="0" placeholder="N° colmenas">
+                            </div>
+                            <div class="col">
+                                <label for="pcc1_activity_2" class="form-label me-2">Medio</label>
+                                <input type="number" class="form-control form-control-sm" id="pcc1_activity_2" min="0" placeholder="N° colmenas">
+                            </div>
+                            <div class="col">
+                                <label for="pcc1_activity_3" class="form-label me-2">Alto</label>
+                                <input type="number" class="form-control form-control-sm" id="pcc1_activity_3" min="0" placeholder="N° colmenas">
+                            </div>
+                        </div>
+                        <div class="input-group">
+                            <span class="input-group-text">Actividad de las abejas</span>
+                            <input type="text" class="form-control" id="pcc1_activity_total" name="pcc1_activity_total" readonly required>
+                            <button type="button" class="btn btn-primary" onclick="Check('pcc1_activity_total');">Revisar</button>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="pcc1_pollen" class="form-label"><b>Ingreso de polen</b></label>
+                        <div class="row">
+                            <div class="col">
+                                <label for="pcc1_pollen_1" class="form-label me-2">No</label>
+                                <input type="number" class="form-control form-control-sm" id="pcc1_pollen_1" min="0" placeholder="N° colmenas">
+                            </div>
+                            <div class="col">
+                                <label for="pcc1_pollen_2" class="form-label me-2">Sí</label>
+                                <input type="number" class="form-control form-control-sm" id="pcc1_pollen_2" min="0" placeholder="N° colmenas">
+                            </div>
+                        </div>
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="pcc1_pollen_total" name="pcc1_pollen_total" readonly required>
+                            <button type="button" class="btn btn-primary" onclick="Check('pcc1_pollen_total');">Revisar</button>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="pcc1_block" class="form-label"><b>Bloqueo de cámara de cría</b></label>
+                        <div class="row">
+                            <div class="col">
+                                <label for="pcc1_block_1" class="form-label me-2">No</label>
+                                <input type="number" class="form-control form-control-sm" id="pcc1_block_1" min="0" placeholder="N° colmenas">
+                            </div>
+                            <div class="col">
+                                <label for="pcc1_block_2" class="form-label me-2">Sí</label>
+                                <input type="number" class="form-control form-control-sm" id="pcc1_block_2" min="0" placeholder="N° colmenas">
+                            </div>
+                        </div>
+                        <div class="input-group">
+                            <span class="input-group-text">Bloqueo de cámara de cría</span>
+                            <input type="text" class="form-control" id="pcc1_block_total" name="pcc1_block_total" readonly required>
+                            <button type="button" class="btn btn-primary" onclick="Check('pcc1_block_total');">Revisar</button>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="pcc1_cells" class="form-label"><b>Presencia de celdas reales</b></label>
+                        <div class="row">
+                            <div class="col">
+                                <label for="pcc1_cells_1" class="form-label me-2">No</label>
+                                <input type="number" class="form-control form-control-sm" id="pcc1_cells_1" min="0" placeholder="N° colmenas">
+                            </div>
+                            <div class="col">
+                                <label for="pcc1_cells_2" class="form-label me-2">Sí</label>
+                                <input type="number" class="form-control form-control-sm" id="pcc1_cells_2" min="0" placeholder="N° colmenas">
+                            </div>
+                        </div>
+                        <div class="input-group">
+                            <span class="input-group-text">Presencia de celdas reales</span>
+                            <input type="text" class="form-control" id="pcc1_cells_total" name="pcc1_cells_total" readonly required>
+                            <button type="button" class="btn btn-primary" onclick="Check('pcc1_cells_total');">Revisar</button>
+                        </div>
+                    </div>
+                    <button type="button" class="btn btn-primary next-step" data-bs-target="#step2">Siguiente</button>
+                </div>
 
                 <!-- Step 2 -->
                 <div class="tab-pane fade" id="step2">
@@ -230,65 +229,95 @@
                     <button type="button" class="btn btn-primary next-step" data-bs-target="#step3">Siguiente</button>
                 </div>
 
-                <!-- Step 3 -->
-                <div class="tab-pane fade" id="step3">
-                    <h4>PCC3 - Estado Nutricional</h4>
-                    <div class="mb-3">
-                        <label for="pcc3_1" class="form-label">Reserva de alimento</label>
-                                    <div class="row">
-                                    <div class="col">
-                                        <label for="pcc3_reserva_1" class="form-label me-2">Bajo</label>
-                                        <input type="number" class="form-control form-control-sm" id="pcc3_reserva_1" min="0" placeholder="N° colmenas">
-                                    </div>
-                                    <div class="col">
-                                        <label for="pcc3_reserva_2" class="form-label me-2">Medio</label>
-                                        <input type="number" class="form-control form-control-sm" id="pcc3_reserva_2" min="0" placeholder="N° colmenas">
-                                    </div>
-                                    <div class="col">
-                                        <label for="pcc3_reserva_3" class="form-label me-2">Alto</label>
-                                        <input type="number" class="form-control form-control-sm" id="pcc3_reserva_3" min="0" placeholder="N° colmenas">
-                                    </div>
-                                </div>
-                                <div class="input-group">
-                                    <span class="input-group-text">Postura de la reina</span>
-                                    <input type="text" class="form-control" id="pcc3_reserva_total" name="pcc3_reserva_total" readonly required>
-                                    <button type="button" class="btn btn-primary" onclick="Check('pcc3_reserva_total');">Revisar</button>
-                                </div>
-                    </div>
-                    <button type="button" class="btn btn-secondary prev-step" data-bs-target="#step2">Anterior</button>
-                    <button type="button" class="btn btn-primary next-step" data-bs-target="#step4">Siguiente</button>
+            <div class="tab-pane fade" id="step3">
+                <h4>PCC3 - Estado Nutricional</h4>
+            
+                <div class="mb-3">
+                    <label class="form-label">Relación reservas de miel y polen / cantidad de cría</label>
+                    <textarea class="form-control" name="estado_nutricional[reserva_miel_polen]" rows="2"></textarea>
                 </div>
-
-                <!--Nivel de infestación de Varroa-->
-                    <!-- Step 4 -->
-                    <div class="tab-pane fade" id="step4">
-                    <h4> PCC4 - Nivel de infestación de Varroa</h4>
-                    <div class="mb-3">
-                        <label for="pcc3_1" class="form-label">Control de Varroa</label>
-                        <span class="alert alert-info"> Medir observación en la cría operculada o en abejas adultas</span>
-                                    <div class="row">
-                                    <div class="col">
-                                        <label for="pcc4_varroa_1" class="form-label me-2"> menos del 3%</label>
-                                        <input type="number" class="form-control form-control-sm" id="pcc4_varroa_1" min="0" placeholder="N° colmenas">
-                                    </div>
-                                    <div class="col">
-                                        <label for="pcc4_varroa_2" class="form-label me-2">más del 3%</label>
-                                        <input type="number" class="form-control form-control-sm" id="pcc4_varroa_2" min="0" placeholder="N° colmenas">
-                                    </div>
-                                    <div class="col">
-                                        <label for="pcc4_varroa_3" class="form-label me-2">no observado</label>
-                                        <input type="number" class="form-control form-control-sm" id="pcc4_varroa_3" min="0" placeholder="N° colmenas">
-                                    </div>
-                                </div>
-                                <div class="input-group">
-                                    <span class="input-group-text">Postura de la reina</span>
-                                    <input type="text" class="form-control" id="pcc4_varroa_total" name="pcc4_varroa_total" readonly required>
-                                    <button type="button" class="btn btn-primary" onclick="Check('pcc4_varroa_total');">Revisar</button>
-                                </div>
-                    </div>
-                    <button type="button" class="btn btn-secondary prev-step" data-bs-target="#step3">Anterior</button>
-                    <button type="button" class="btn btn-primary next-step" data-bs-target="#step5">Siguiente</button>
+            
+                <div class="mb-3">
+                    <label class="form-label">Tipo de alimentación</label>
+                    <input type="text" class="form-control" name="estado_nutricional[tipo_alimentacion]">
                 </div>
+            
+                <div class="mb-3">
+                    <label class="form-label">Fecha de aplicación</label>
+                    <input type="date" class="form-control" name="estado_nutricional[fecha_aplicacion]">
+                </div>
+            
+                <div class="mb-3">
+                    <label class="form-label">Insumo utilizado</label>
+                    <input type="text" class="form-control" name="estado_nutricional[insumo_utilizado]">
+                </div>
+            
+                <div class="mb-3">
+                    <label class="form-label">Dosificación</label>
+                    <input type="text" class="form-control" name="estado_nutricional[dosifiacion]">
+                </div>
+            
+                <div class="mb-3">
+                    <label class="form-label">Método utilizado</label>
+                    <input type="text" class="form-control" name="estado_nutricional[metodo_utilizado]">
+                </div>
+            
+                <div class="mb-3">
+                    <label class="form-label">N° de colmenas tratadas</label>
+                    <input type="number" class="form-control" name="estado_nutricional[n_colmenas_tratadas]" min="0">
+                </div>
+            
+                <button type="button" class="btn btn-secondary prev-step" data-bs-target="#step2">Anterior</button>
+                <button type="button" class="btn btn-primary next-step" data-bs-target="#step4">Siguiente</button>
+            </div>
+            
+            <div class="tab-pane fade" id="step4">
+                <h4>PCC4 - Nivel de Infestación de Varroa</h4>
+            
+                <div class="mb-3">
+                    <label class="form-label">Diagnóstico visual</label>
+                    <textarea class="form-control" name="presencia_varroa[diagnostico_visual]" rows="2" placeholder="Ej: varroa forética visible, ala mocha, cría salteada..."></textarea>
+                </div>
+            
+                <div class="mb-3">
+                    <label class="form-label">Muestreo de abejas adultas</label>
+                    <textarea class="form-control" name="presencia_varroa[muestreo_abejas_adultas]" rows="2"></textarea>
+                </div>
+            
+                <div class="mb-3">
+                    <label class="form-label">Muestreo en cría operculada</label>
+                    <textarea class="form-control" name="presencia_varroa[muestreo_cria_operculada]" rows="2"></textarea>
+                </div>
+            
+                <div class="mb-3">
+                    <label class="form-label">Tratamiento aplicado (producto o práctica)</label>
+                    <input type="text" class="form-control" name="presencia_varroa[tratamiento]">
+                </div>
+            
+                <div class="mb-3">
+                    <label class="form-label">Fecha de aplicación del tratamiento</label>
+                    <input type="date" class="form-control" name="presencia_varroa[fecha_aplicacion]">
+                </div>
+            
+                <div class="mb-3">
+                    <label class="form-label">Dosificación</label>
+                    <input type="text" class="form-control" name="presencia_varroa[dosificacion]">
+                </div>
+            
+                <div class="mb-3">
+                    <label class="form-label">Método de aplicación</label>
+                    <input type="text" class="form-control" name="presencia_varroa[metodo_aplicacion]">
+                </div>
+            
+                <div class="mb-3">
+                    <label class="form-label">N° de colmenas tratadas</label>
+                    <input type="number" class="form-control" name="presencia_varroa[n_colmenas_tratadas]" min="0">
+                </div>
+            
+                <button type="button" class="btn btn-secondary prev-step" data-bs-target="#step3">Anterior</button>
+                <button type="button" class="btn btn-primary next-step" data-bs-target="#step5">Siguiente</button>
+            </div>            
+                
 
                 <!-- Step 5: PCC5 -->
                 <div class="tab-pane fade" id="step5">
