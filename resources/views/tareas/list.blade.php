@@ -20,16 +20,14 @@
                         <td>{{ $task->nombre }}</td>
                         <!-- Editable Fecha Inicio -->
                         <td>
-                            <input type="date" 
-                                class="form-control fecha-inicio" 
-                                value="{{ \Carbon\Carbon::parse($task->fecha_inicio)->format('Y-m-d') }}" 
+                            <input type="date" class="form-control fecha-inicio"
+                                value="{{ \Carbon\Carbon::parse($task->fecha_inicio)->format('Y-m-d') }}"
                                 data-id="{{ $task->id }}" />
                         </td>
                         <!-- Editable Fecha Fin -->
                         <td>
-                            <input type="date" 
-                                class="form-control fecha-fin" 
-                                value="{{ \Carbon\Carbon::parse($task->fecha_limite)->format('Y-m-d') }}" 
+                            <input type="date" class="form-control fecha-fin"
+                                value="{{ \Carbon\Carbon::parse($task->fecha_limite)->format('Y-m-d') }}"
                                 data-id="{{ $task->id }}" />
                         </td>
                         <!-- Editable Prioridad -->
@@ -38,30 +36,34 @@
                                 <option value="alta" {{ $task->prioridad === 'alta' ? 'selected' : '' }}>Alta</option>
                                 <option value="media" {{ $task->prioridad === 'media' ? 'selected' : '' }}>Media</option>
                                 <option value="baja" {{ $task->prioridad === 'baja' ? 'selected' : '' }}>Baja</option>
-                                <option value="urgente" {{ $task->prioridad === 'urgente' ? 'selected' : '' }}>Urgente</option>
+                                <option value="urgente" {{ $task->prioridad === 'urgente' ? 'selected' : '' }}>Urgente
+                                </option>
                             </select>
                         </td>
                         <!-- Editable Estado -->
                         <td>
                             <select class="form-select estado-select estado" data-id="{{ $task->id }}">
-                                <option value="Pendiente" {{ $task->estado === 'Pendiente' ? 'selected' : '' }}>Pendiente</option>
-                                <option value="En progreso" {{ $task->estado === 'En progreso' ? 'selected' : '' }}>En Progreso</option>
-                                <option value="Completada" {{ $task->estado === 'Completada' ? 'selected' : '' }}>Completada</option>
+                                <option value="Pendiente" {{ $task->estado === 'Pendiente' ? 'selected' : '' }}>Pendiente
+                                </option>
+                                <option value="En progreso" {{ $task->estado === 'En progreso' ? 'selected' : '' }}>En
+                                    Progreso</option>
+                                <option value="Completada" {{ $task->estado === 'Completada' ? 'selected' : '' }}>Completada
+                                </option>
                                 <option value="Vencida" {{ $task->estado === 'Vencida' ? 'selected' : '' }}>Vencida</option>
                             </select>
                         </td>
-                    <!-- Botón Acciones -->
+                        <!-- Botón Acciones -->
                         <!-- Botón Eliminar -->
                         <td>
                             <div class="btn-group" role="group" aria-label="Acciones de Tarea">
                                 <!-- Botón Guardar Cambios -->
-                                <button class="btn btn-success btn-sm guardar-cambios" data-id="{{ $task->id }}" 
+                                <button class="btn btn-success btn-sm guardar-cambios" data-id="{{ $task->id }}"
                                     title="Guardar los cambios sobre ésta tarea.">
                                     <i class="fa-solid fa-save"></i>
                                 </button>
                                 <!-- Botón Eliminar -->
-                                <button class="btn btn-danger btn-sm eliminar-tarea" data-id="{{ $task->id }}" 
-                                title="Eliminar esta tarea">
+                                <button class="btn btn-danger btn-sm eliminar-tarea" data-id="{{ $task->id }}"
+                                    title="Eliminar esta tarea">
                                     <i class="fa-solid fa-trash"></i>
                                 </button>
                             </div>
@@ -73,98 +75,71 @@
     </div>
 </div>
 
-<!-- 
-
-    // Función para imprimir solo el contenido de la tabla
-    function imprimirSoloContenido() {
-        // Desactivar paginación y mostrar todos los datos
-        const tabla = $('#subtareasTable').DataTable();
-        tabla.page.len(-1).draw(); // Mostrar todos los registros (sin paginación)
-        setTimeout(() => {
-            const contenido = document.getElementById("printableArea").innerHTML;
-            const ventana = window.open('', '', 'height=800,width=1000');
-            ventana.document.write('<html><head><title>Imprimir</title>');
-            ventana.document.write('<style>button, select, .btn, .acciones-columna { display: none; }</style>');
-            ventana.document.write('</head><body>');
-            ventana.document.write('<h2 style="text-align:center;">Resumen de Subtareas</h2>');
-            ventana.document.write(contenido);
-            ventana.document.write('</body></html>');
-            ventana.document.close();
-            ventana.focus();
-            ventana.print();
-            ventana.close();
-            // Restaurar paginación
-            tabla.page.len(10).draw();
-        }, 500); // Esperamos un poco para que se rendericen todos los registros
-    }
-
--->
-
 @section('optional-scripts')
-<script>
+    <script>
 
-    function recargarSubtareas(){
-        fetch('/datos-subtareas')
-            .then(response => response.json())
-            .then(data => {
-                console.log(data);
-                actualizarLista(data);
-                // dejar otras funciones listas para luego:
-                actualizarKanban(data);
-                actualizarTimeline(data);
-            })
-            .catch(error => console.error('Error al recargar las subtareas:', error));
-    }
-    function actualizarLista(tareasGenerales){
-        const tbody = document.querySelector('#subtareasTable tbody');
-        if (!tbody) return;
-        tbody.innerHTML = '';
+        function recargarSubtareas() {
+            fetch('/datos-subtareas')
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data);
+                    actualizarLista(data);
+                    // dejar otras funciones listas para luego:
+                    actualizarKanban(data);
+                    actualizarTimeline(data);
+                })
+                .catch(error => console.error('Error al recargar las subtareas:', error));
+        }
+        function actualizarLista(tareasGenerales) {
+            const tbody = document.querySelector('#subtareasTable tbody');
+            if (!tbody) return;
+            tbody.innerHTML = '';
 
-        tareasGenerales.forEach(tg => {
-            tg.subtareas.forEach(task => {
-                const row = document.createElement("tr");
-                row.innerHTML = `
-                    <td>${task.nombre}</td>
-                    <td><input type="date" class="form-control fecha-inicio" value="${task.fecha_inicio}" data-id="${task.id}" /></td>
-                    <td><input type="date" class="form-control fecha-fin" value="${task.fecha_limite}" data-id="${task.id}" /></td>
-                    <td>
-                        <select class="form-select prioridad" data-id="${task.id}">
-                            <option value="baja" ${task.prioridad === 'baja' ? 'selected' : ''}>Baja</option>
-                            <option value="media" ${task.prioridad === 'media' ? 'selected' : ''}>Media</option>
-                            <option value="alta" ${task.prioridad === 'alta' ? 'selected' : ''}>Alta</option>
-                            <option value="urgente" ${task.prioridad === 'urgente' ? 'selected' : ''}>Urgente</option>
-                        </select>
-                    </td>
-                    <td>
-                        <select class="form-select estado" data-id="${task.id}">
-                            <option value="Pendiente" ${task.estado === 'Pendiente' ? 'selected' : ''}>Pendiente</option>
-                            <option value="En progreso" ${task.estado === 'En progreso' ? 'selected' : ''}>En progreso</option>
-                            <option value="Completada" ${task.estado === 'Completada' ? 'selected' : ''}>Completada</option>
-                            <option value="Vencida" ${task.estado === 'Vencida' ? 'selected' : ''}>Vencida</option>
-                        </select>
-                    </td>
-                    <td>
-                        <div class="btn-group" role="group" aria-label="Acciones de Tarea">
-                            <button class="btn btn-success btn-sm guardar-cambios" data-id="${task.id}" 
-                                title="Guardar los cambios sobre ésta tarea.">
-                                <i class="fa-solid fa-save"></i>
-                            </button>
-                            <button class="btn btn-danger btn-sm eliminar-tarea" data-id="${task.id}" 
-                                title="Eliminar esta tarea">
-                                <i class="fa-solid fa-trash"></i>
-                            </button>
-                        </div>
-                    </td>
-                `;
-                tbody.appendChild(row);
+            tareasGenerales.forEach(tg => {
+                tg.subtareas.forEach(task => {
+                    const row = document.createElement("tr");
+                    row.innerHTML = `
+                                            <td>${task.nombre}</td>
+                                            <td><input type="date" class="form-control fecha-inicio" value="${task.fecha_inicio}" data-id="${task.id}" /></td>
+                                            <td><input type="date" class="form-control fecha-fin" value="${task.fecha_limite}" data-id="${task.id}" /></td>
+                                            <td>
+                                                <select class="form-select prioridad" data-id="${task.id}">
+                                                    <option value="baja" ${task.prioridad === 'baja' ? 'selected' : ''}>Baja</option>
+                                                    <option value="media" ${task.prioridad === 'media' ? 'selected' : ''}>Media</option>
+                                                    <option value="alta" ${task.prioridad === 'alta' ? 'selected' : ''}>Alta</option>
+                                                    <option value="urgente" ${task.prioridad === 'urgente' ? 'selected' : ''}>Urgente</option>
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <select class="form-select estado" data-id="${task.id}">
+                                                    <option value="Pendiente" ${task.estado === 'Pendiente' ? 'selected' : ''}>Pendiente</option>
+                                                    <option value="En progreso" ${task.estado === 'En progreso' ? 'selected' : ''}>En progreso</option>
+                                                    <option value="Completada" ${task.estado === 'Completada' ? 'selected' : ''}>Completada</option>
+                                                    <option value="Vencida" ${task.estado === 'Vencida' ? 'selected' : ''}>Vencida</option>
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <div class="btn-group" role="group" aria-label="Acciones de Tarea">
+                                                    <button class="btn btn-success btn-sm guardar-cambios" data-id="${task.id}" 
+                                                        title="Guardar los cambios sobre ésta tarea.">
+                                                        <i class="fa-solid fa-save"></i>
+                                                    </button>
+                                                    <button class="btn btn-danger btn-sm eliminar-tarea" data-id="${task.id}" 
+                                                        title="Eliminar esta tarea">
+                                                        <i class="fa-solid fa-trash"></i>
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        `;
+                    tbody.appendChild(row);
+                });
             });
-        });
 
-        // Reasociar eventos despues de regenerar el DOM
-        reasociarEventosLista();
-    }
+            // Reasociar eventos despues de regenerar el DOM
+            reasociarEventosLista();
+        }
 
-    function getEstadoIcon(estado) {
+        function getEstadoIcon(estado) {
             switch (estado) {
                 case "Pendiente": return '<i class="fa fa-hourglass-start me-1 text-secondary"></i>';
                 case "En progreso": return '<i class="fa fa-spinner me-1 text-primary"></i>';
@@ -183,140 +158,162 @@
             }
         }
 
-    function reasociarEventosLista() {
-        // Aquí puedes volver a aplicar select2 u otros eventos en el futuro
-        $('.prioridad').select2({
-            width: '100%',
-            templateResult: function (data) {
-                if (!data.id) return data.text;
-                return $(`<span>${getPrioridadIcon(data.id)} ${data.text}</span>`);
-            },
-            templateSelection: function (data) {
-                return $(`<span>${getPrioridadIcon(data.id)} ${data.text}</span>`);
-            }
-        });
-
-        $('.estado').select2({
-            width: '100%',
-            templateResult: function (data) {
-                if (!data.id) return data.text;
-                return $(`<span>${getEstadoIcon(data.id)} ${data.text}</span>`);
-            },
-            templateSelection: function (data) {
-                return $(`<span>${getEstadoIcon(data.id)} ${data.text}</span>`);
-            }
-        });
-    }
-
-
-    // SCRIPT ORIGINAL + SELECT2 + ELIMINAR + IMPRIMIR
-    let guardadoAutomatico = false;
-
-    $(document).ready(function () {// Personalización de Prioridad
-        $(".prioridad-select").select2({
-            width: '100%',
-            templateResult: function (data) {
-                if (!data.id) return data.text; // Retorna texto si no hay ID
-                return $(`<span>${getPrioridadIcon(data.id)} ${data.text}</span>`);
-            },
-            templateSelection: function (data) {
-                return $(`<span>${getPrioridadIcon(data.id)} ${data.text}</span>`);
-            }
-        });
-
-        // Personalización de Estado
-        $(".estado-select").select2({
-            width: '100%',
-            templateResult: function (data) {
-                if (!data.id) return data.text;
-                return $(`<span>${getEstadoIcon(data.id)} ${data.text}</span>`);
-            },
-            templateSelection: function (data) {
-                return $(`<span>${getEstadoIcon(data.id)} ${data.text}</span>`);
-            }
-        });
-        // Guardar cambios manualmente
-        $(document).on('click', '.guardar-cambios', function () {
-            const taskId = $(this).data('id');
-            const row = $(this).closest('tr');
-            const fechaInicio = row.find('.fecha-inicio').val();
-            const fechaFin = row.find('.fecha-fin').val();
-            const prioridad = row.find('.prioridad').val();
-            const estado = row.find('.estado').val();
-            console.log("Datos a enviar:", {
-                fecha_inicio: fechaInicio,
-                fecha_limite: fechaFin,
-                prioridad: prioridad,
-                estado: estado
-            });
-            fetch(`/tareas/update/${taskId}`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+        function reasociarEventosLista() {
+            // Aquí puedes volver a aplicar select2 u otros eventos en el futuro
+            $('.prioridad').select2({
+                width: '100%',
+                templateResult: function (data) {
+                    if (!data.id) return data.text;
+                    return $(`<span>${getPrioridadIcon(data.id)} ${data.text}</span>`);
                 },
-                body: JSON.stringify({
+                templateSelection: function (data) {
+                    return $(`<span>${getPrioridadIcon(data.id)} ${data.text}</span>`);
+                }
+            });
+
+            $('.estado').select2({
+                width: '100%',
+                templateResult: function (data) {
+                    if (!data.id) return data.text;
+                    return $(`<span>${getEstadoIcon(data.id)} ${data.text}</span>`);
+                },
+                templateSelection: function (data) {
+                    return $(`<span>${getEstadoIcon(data.id)} ${data.text}</span>`);
+                }
+            });
+        }
+
+
+        // SCRIPT ORIGINAL + SELECT2 + ELIMINAR + IMPRIMIR
+        let guardadoAutomatico = false;
+
+        $(document).ready(function () {// Personalización de Prioridad
+            $(".prioridad-select").select2({
+                width: '100%',
+                templateResult: function (data) {
+                    if (!data.id) return data.text; // Retorna texto si no hay ID
+                    return $(`<span>${getPrioridadIcon(data.id)} ${data.text}</span>`);
+                },
+                templateSelection: function (data) {
+                    return $(`<span>${getPrioridadIcon(data.id)} ${data.text}</span>`);
+                }
+            });
+
+            // Personalización de Estado
+            $(".estado-select").select2({
+                width: '100%',
+                templateResult: function (data) {
+                    if (!data.id) return data.text;
+                    return $(`<span>${getEstadoIcon(data.id)} ${data.text}</span>`);
+                },
+                templateSelection: function (data) {
+                    return $(`<span>${getEstadoIcon(data.id)} ${data.text}</span>`);
+                }
+            });
+            // Guardar cambios manualmente
+            $(document).on('click', '.guardar-cambios', function () {
+                const taskId = $(this).data('id');
+                const row = $(this).closest('tr');
+                const fechaInicio = row.find('.fecha-inicio').val();
+                const fechaFin = row.find('.fecha-fin').val();
+                const prioridad = row.find('.prioridad').val();
+                const estado = row.find('.estado').val();
+                console.log("Datos a enviar:", {
                     fecha_inicio: fechaInicio,
                     fecha_limite: fechaFin,
                     prioridad: prioridad,
                     estado: estado
-                })
-            }).then(response => {
-                if (response.ok) {
-                    toastr.success("Cambios guardados exitosamente.");
-                    recargarSubtareas();
-                } else {
-                    toastr.error("Error al guardar los cambios.");
-                }
-            });
-        });
-    });
-    
-    // Eliminar tarea con confirmación
-    $(document).on('click', '.eliminar-tarea', function () {
-        const taskId = $(this).data('id');
-        const buttonElement = this;
-
-        Swal.fire({
-            title: '¿Está seguro?',
-            text: "Esta acción no se puede deshacer.",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#d33',
-            cancelButtonColor: '#3085d6',
-            confirmButtonText: 'Sí, eliminar',
-            cancelButtonText: 'Cancelar'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                fetch(`/tareas/${taskId}`, {
-                    method: 'DELETE',
+                });
+                fetch(`/tareas/update/${taskId}`, {
+                    method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                         'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                    }
-                })
-                .then(res => {
-                    console.log("Raw response:", res);
-                    return res.json();
-                })
-                .then(data => {
-                    console.log("Parsed JSON:", data);
-                    if (data.message === 'Subtarea eliminada exitosamente.') {
-                        Swal.fire('Eliminado!', 'La tarea ha sido eliminada.', 'success');
-                        $(buttonElement).closest('tr').remove();
+                    },
+                    body: JSON.stringify({
+                        fecha_inicio: fechaInicio,
+                        fecha_limite: fechaFin,
+                        prioridad: prioridad,
+                        estado: estado
+                    })
+                }).then(response => {
+                    if (response.ok) {
+                        toastr.success("Cambios guardados exitosamente.");
+                        recargarSubtareas();
                     } else {
-                        Swal.fire('Error', 'No se pudo eliminar.', 'error');
+                        toastr.error("Error al guardar los cambios.");
                     }
-                })
-                .catch(error => {
-                    console.error('Error al eliminar o al parsear JSON:', error);
-                    Swal.fire('Error', 'Hubo un problema al eliminar la tarea.', 'error');
                 });
-            }
+            });
+
+            // Añadir atributos personalizados a las selecciones
+            $(".prioridad-select").on('change', function () {
+                $(this).next('.select2-container').find('.select2-selection__rendered')
+                    .attr('data-priority', $(this).val());
+            }).trigger('change');
+
+            $(".estado-select").on('change', function () {
+                $(this).next('.select2-container').find('.select2-selection__rendered')
+                    .attr('data-estado', $(this).val());
+            }).trigger('change');
+
+            // También para elementos dinámicos
+            $(document).on('change', '.prioridad', function () {
+                $(this).next('.select2-container').find('.select2-selection__rendered')
+                    .attr('data-priority', $(this).val());
+            });
+
+            $(document).on('change', '.estado', function () {
+                $(this).next('.select2-container').find('.select2-selection__rendered')
+                    .attr('data-estado', $(this).val());
+            });
         });
-    });
-    
-</script>
+
+        // Eliminar tarea con confirmación
+        $(document).on('click', '.eliminar-tarea', function () {
+            const taskId = $(this).data('id');
+            const buttonElement = this;
+
+            Swal.fire({
+                title: '¿Está seguro?',
+                text: "Esta acción no se puede deshacer.",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Sí, eliminar',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    fetch(`/tareas/${taskId}`, {
+                        method: 'DELETE',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                        }
+                    })
+                        .then(res => {
+                            console.log("Raw response:", res);
+                            return res.json();
+                        })
+                        .then(data => {
+                            console.log("Parsed JSON:", data);
+                            if (data.message === 'Subtarea eliminada exitosamente.') {
+                                Swal.fire('Eliminado!', 'La tarea ha sido eliminada.', 'success');
+                                $(buttonElement).closest('tr').remove();
+                            } else {
+                                Swal.fire('Error', 'No se pudo eliminar.', 'error');
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error al eliminar o al parsear JSON:', error);
+                            Swal.fire('Error', 'Hubo un problema al eliminar la tarea.', 'error');
+                        });
+                }
+            });
+        });
+
+    </script>
 
 
 @endsection

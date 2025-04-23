@@ -74,6 +74,10 @@ body {
     );
 }
 
+.apiarios-container > nav {
+    display: none;
+}
+
 .page-header {
     display: flex;
     justify-content: space-between;
@@ -238,6 +242,11 @@ body {
     border: 1px solid var(--border-color);
     padding: 0.5rem;
     max-width: 100%;
+    position: relative;
+    min-height: 400px; /* Altura mínima aumentada para acomodar el estado vacío */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 }
 
 .table-responsive {
@@ -262,6 +271,16 @@ body {
 .table-responsive::-webkit-scrollbar-thumb {
     background-color: var(--primary-color);
     border-radius: 4px;
+}
+
+/* Ajuste para que el contenedor responsive funcione como contenedor del estado vacío */
+.table-responsive:empty {
+    min-height: 400px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: none;
 }
 
 .apiarios-table {
@@ -329,6 +348,11 @@ body {
 
 .apiarios-table tr:last-child td {
     border-bottom: none;
+}
+
+/* Asegurar que la tabla vacía no se muestre */
+.apiarios-table:empty {
+    display: none;
 }
 
 /* Checkbox personalizado - estilo panal */
@@ -1108,35 +1132,51 @@ body {
 
 /* Estados interactivos y de alerta */
 .empty-state {
+    /* Eliminar posicionamiento absoluto */
+    position: relative;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 4rem 2rem;
+    padding: 3rem 1rem;
     text-align: center;
-    color: var(--text-light);
-    background-color: var(--card-bg);
-    border-radius: var(--radius-lg);
-    box-shadow: var(--shadow-md);
-    border: 1px solid var(--border-color);
-    margin: 2rem auto;
-    max-width: 800px;
+    margin: 0 auto;
+    width: 100%;
+    max-width: 550px; /* Reducción para que encaje mejor en la tabla */
+    border: none;
+    background: rgba(255, 255, 255, 0.5); /* Fondo más transparente */
+    border-radius: var(--radius-md);
+    box-shadow: none; /* Quitar sombra para mejor integración */
+    z-index: 5;
 }
 
+/* Estilos mejorados para íconos y elementos dentro del estado vacío */
 .empty-state-icon {
-    font-size: 3.5rem;
+    font-size: 4rem;
     color: var(--primary-color);
     margin-bottom: 1.5rem;
-    opacity: 0.7;
+    opacity: 0.8;
     animation: honeycombPulse 3s infinite ease-in-out;
 }
 
 .empty-state-text {
-    font-size: 1.2rem;
+    font-size: 1.4rem;
     font-weight: 500;
-    margin-bottom: 1.75rem;
+    margin-bottom: 2rem;
     color: var(--text-color);
-    text-align: center;
+}
+
+.empty-state .action-button.primary {
+    margin-top: 0.5rem;
+    padding: 1.2rem 3rem;
+    font-size: 1.1rem;
+    box-shadow: var(--shadow-md);
+    transition: all 0.3s ease;
+}
+
+.empty-state .action-button.primary:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg);
 }
 
 /* Efecto de carga y estado de carga */

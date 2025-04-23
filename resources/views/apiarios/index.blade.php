@@ -39,114 +39,108 @@
         <!-- Tabla de Apiarios -->
         <div class="apiarios-table-wrapper">
             <div class="table-responsive">
-                <table id="apiariosTable" class="apiarios-table">
-                    <thead>
-                        <tr>
-                            <th class="text-center">
-                                <label class="custom-checkbox">
-                                    <input type="checkbox" id="selectAll">
-                                    <span class="checkmark"></span>
-                                </label>
-                            </th>
-                            <th class="text-center"><span class="column-title">ID Apiario</span></th>
-                            <th class="text-center"><span class="column-title">Temporada de producción</span></th>
-                            <th class="text-center"><span class="column-title">N° Registro SAG</span></th>
-                            <th class="text-center"><span class="column-title">N° de colmenas</span></th>
-                            <th class="text-center"><span class="column-title">Tipo de apiario</span></th>
-                            <th class="text-center"><span class="column-title">Tipo de manejo</span></th>
-                            <th class="text-center"><span class="column-title">Objetivo de producción</span></th>
-                            <th class="text-center"><span class="column-title">Comuna</span></th>
-                            <th class="text-center"><span class="column-title">Localización</span></th>
-                            <th class="text-center"><span class="column-title">Fotografía</span></th>
-                            <th class="text-center"><span class="column-title">Acciones</span></th>
-                        </tr>
-                    </thead>
-
-                    <tbody>
-                        @foreach ($apiarios as $apiario)
+                @if(count($apiarios) > 0)
+                    <table id="apiariosTable" class="apiarios-table">
+                        <thead>
                             <tr>
-                                <td class="text-center">
+                                <th class="text-center">
                                     <label class="custom-checkbox">
-                                        <input type="checkbox" class="select-checkbox" value="{{ $apiario->id }}">
+                                        <input type="checkbox" id="selectAll">
                                         <span class="checkmark"></span>
                                     </label>
-                                </td>
-                                <td class="text-center">
-                                    <span class="apiario-id">{{ $apiario->id }}-{{ $apiario->nombre }}</span>
-                                </td>
-                                <td class="text-center">
-                                    <span class="tag tag-primary">{{ $apiario->temporada_produccion }}</span>
-                                </td>
-                                <td class="text-center">{{ $apiario->registro_sag }}</td>
-                                <td class="text-center">
-                                    <div class="counter">{{ $apiario->num_colmenas }}</div>
-                                </td>
-                                <td class="text-center">
-                                    <span class="tag tag-secondary">{{ $apiario->tipo_apiario }}</span>
-                                </td>
-                                <td class="text-center">
-                                    <span class="tag tag-info">{{ $apiario->tipo_manejo }}</span>
-                                </td>
-                                <td class="text-center">
-                                    <span class="tag tag-warning">{{ $apiario->objetivo_produccion }}</span>
-                                </td>
-                                <td class="text-center">{{ $apiario->nombre_comuna ? $apiario->comuna->nombre : 'N/A' }}</td>
-                                <td class="text-center">
-                                    <div class="location-info">
-                                        <span class="coordinates">{{ $apiario->latitud }}, {{ $apiario->longitud }}</span>
-                                    </div>
-                                </td>
-                                <td class="text-center">
-                                    @if($apiario->foto)
-                                        <div class="apiario-image">
-                                            <img src="{{ asset('storage/' . $apiario->foto) }}" alt="Fotografía del Apiario"
-                                                data-toggle="modal" data-target="#imageModal{{ $apiario->id }}">
-                                        </div>
-                                    @else
-                                        <span class="text-muted">Sin imagen</span>
-                                    @endif
-                                </td>
-                                <td class="text-center">
-                                    <div class="table-actions">
-                                        <a href="{{ route('apiarios.editar', $apiario->id) }}" class="btn-table-action btn-edit"
-                                            data-tooltip="Editar">
-                                            <i class="fas fa-edit"></i>
-                                        </a>
-                                        <button class="btn-table-action btn-delete" type="button" data-bs-toggle="modal"
-                                            data-bs-target="#deleteModal{{ $apiario->id }}" data-tooltip="Eliminar">
-                                            <i class="fas fa-trash-alt"></i>
-                                        </button>
-                                        <a href="{{ route('generate.document', $apiario->id) }}"
-                                            class="btn-table-action btn-info" data-tooltip="Descargar reporte">
-                                            <i class="fas fa-download"></i>
-                                        </a>
-                                    </div>
-                                </td>
+                                </th>
+                                <th class="text-center"><span class="column-title">ID Apiario</span></th>
+                                <th class="text-center"><span class="column-title">Temporada de producción</span></th>
+                                <th class="text-center"><span class="column-title">N° Registro SAG</span></th>
+                                <th class="text-center"><span class="column-title">N° de colmenas</span></th>
+                                <th class="text-center"><span class="column-title">Tipo de apiario</span></th>
+                                <th class="text-center"><span class="column-title">Tipo de manejo</span></th>
+                                <th class="text-center"><span class="column-title">Objetivo de producción</span></th>
+                                <th class="text-center"><span class="column-title">Comuna</span></th>
+                                <th class="text-center"><span class="column-title">Localización</span></th>
+                                <th class="text-center"><span class="column-title">Fotografía</span></th>
+                                <th class="text-center"><span class="column-title">Acciones</span></th>
                             </tr>
-                        @endforeach
-                    </tbody>
-                </table>
+                        </thead>
+
+                        <tbody>
+                            @foreach ($apiarios as $apiario)
+                                <tr>
+                                    <td class="text-center">
+                                        <label class="custom-checkbox">
+                                            <input type="checkbox" class="select-checkbox" value="{{ $apiario->id }}">
+                                            <span class="checkmark"></span>
+                                        </label>
+                                    </td>
+                                    <td class="text-center">
+                                        <span class="apiario-id">{{ $apiario->id }}-{{ $apiario->nombre }}</span>
+                                    </td>
+                                    <td class="text-center">
+                                        <span class="tag tag-primary">{{ $apiario->temporada_produccion }}</span>
+                                    </td>
+                                    <td class="text-center">{{ $apiario->registro_sag }}</td>
+                                    <td class="text-center">
+                                        <div class="counter">{{ $apiario->num_colmenas }}</div>
+                                    </td>
+                                    <td class="text-center">
+                                        <span class="tag tag-secondary">{{ $apiario->tipo_apiario }}</span>
+                                    </td>
+                                    <td class="text-center">
+                                        <span class="tag tag-info">{{ $apiario->tipo_manejo }}</span>
+                                    </td>
+                                    <td class="text-center">
+                                        <span class="tag tag-warning">{{ $apiario->objetivo_produccion }}</span>
+                                    </td>
+                                    <td class="text-center">{{ $apiario->nombre_comuna ? $apiario->comuna->nombre : 'N/A' }}</td>
+                                    <td class="text-center">
+                                        <div class="location-info">
+                                            <span class="coordinates">{{ $apiario->latitud }}, {{ $apiario->longitud }}</span>
+                                        </div>
+                                    </td>
+                                    <td class="text-center">
+                                        @if($apiario->foto)
+                                            <div class="apiario-image">
+                                                <img src="{{ asset('storage/' . $apiario->foto) }}" alt="Fotografía del Apiario"
+                                                    data-bs-toggle="modal" data-bs-target="#imageModal{{ $apiario->id }}">
+                                            </div>
+                                        @else
+                                            <span class="text-muted">Sin imagen</span>
+                                        @endif
+                                    </td>
+                                    <td class="text-center">
+                                        <div class="table-actions">
+                                            <a href="{{ route('apiarios.editar', $apiario->id) }}" class="btn-table-action btn-edit"
+                                                data-tooltip="Editar">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                            <button class="btn-table-action btn-delete" type="button" data-bs-toggle="modal"
+                                                data-bs-target="#deleteModal{{ $apiario->id }}" data-tooltip="Eliminar">
+                                                <i class="fas fa-trash-alt"></i>
+                                            </button>
+                                            <a href="{{ route('generate.document', $apiario->id) }}"
+                                                class="btn-table-action btn-info" data-tooltip="Descargar reporte">
+                                                <i class="fas fa-download"></i>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                @else
+                    <!-- Estado vacío (ahora dentro de la tabla) -->
+                    <div class="empty-state">
+                        <div class="empty-state-icon">
+                            <i class="fas fa-boxes"></i>
+                        </div>
+                        <h3 class="empty-state-text">No hay apiarios registrados</h3>
+                        <a href="{{ route('apiarios.create') }}" class="action-button primary">
+                            <i class="fas fa-plus-circle"></i> Crear primer apiario
+                        </a>
+                    </div>
+                @endif
             </div>
         </div>
-
-        <!-- Paginación -->
-        <nav>
-            <ul class="pagination">
-                <li class="page-item disabled">
-                    <a class="page-link" href="#" aria-label="Previous">
-                        <span aria-hidden="true"><i class="fas fa-chevron-left"></i></span>
-                    </a>
-                </li>
-                <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                <li class="page-item"><a class="page-link" href="#">2</a></li>
-                <li class="page-item"><a class="page-link" href="#">3</a></li>
-                <li class="page-item">
-                    <a class="page-link" href="#" aria-label="Next">
-                        <span aria-hidden="true"><i class="fas fa-chevron-right"></i></span>
-                    </a>
-                </li>
-            </ul>
-        </nav>
     </div>
 
     <!-- Modal de Confirmación para eliminación múltiple -->
@@ -214,19 +208,6 @@
             </div>
         @endif
     @endforeach
-
-    <!-- Estado vacío (se muestra cuando no hay apiarios) -->
-    @if(count($apiarios) == 0)
-        <div class="empty-state">
-            <div class="empty-state-icon">
-                <i class="fas fa-boxes"></i>
-            </div>
-            <h3 class="empty-state-text">No hay apiarios registrados</h3>
-            <a href="{{ route('apiarios.create') }}" class="action-button primary">
-                <i class="fas fa-plus-circle"></i> Crear primer apiario
-            </a>
-        </div>
-    @endif
 @endsection
 
 @section('optional-scripts')
@@ -276,6 +257,9 @@
                 });
             });
 
+            // Ejecutar una vez para establecer el estado inicial
+            updateMultiDeleteButton();
+
             // Filtrado de tabla
             const searchInput = document.getElementById('searchInput');
             const filterTipo = document.getElementById('filterTipo');
@@ -311,6 +295,113 @@
                 row.style.transform = 'translateY(10px)';
                 row.style.animation = `fadeIn 0.3s ease-out ${index * 0.05}s forwards`;
             });
+
+            // Lógica para eliminación múltiple
+            const confirmDeleteButton = document.getElementById('confirmDelete');
+
+            // Abrir modal al hacer clic en el botón de eliminación múltiple
+            if (multiDeleteButton) {
+                multiDeleteButton.addEventListener('click', function () {
+                    const deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'));
+                    deleteModal.show();
+                });
+            }
+
+            // Procesar la eliminación múltiple cuando se confirma
+            if (confirmDeleteButton) {
+                confirmDeleteButton.addEventListener('click', function () {
+                    const selectedApiarios = Array.from(document.querySelectorAll('.select-checkbox:checked'))
+                        .map(checkbox => checkbox.value);
+
+                    if (selectedApiarios.length > 0) {
+                        // Crear un formulario oculto para enviar la solicitud
+                        const form = document.createElement('form');
+                        form.method = 'POST';
+                        form.action = '{{ route("apiarios.massDelete") }}';
+                        form.style.display = 'none';
+
+                        // Agregar token CSRF
+                        const csrfToken = document.createElement('input');
+                        csrfToken.type = 'hidden';
+                        csrfToken.name = '_token';
+                        csrfToken.value = '{{ csrf_token() }}';
+                        form.appendChild(csrfToken);
+
+                        // Agregar IDs seleccionados
+                        selectedApiarios.forEach(id => {
+                            const input = document.createElement('input');
+                            input.type = 'hidden';
+                            input.name = 'ids[]';
+                            input.value = id;
+                            form.appendChild(input);
+                        });
+
+                        // Agregar el formulario al documento
+                        document.body.appendChild(form);
+
+                        // Enviar el formulario mediante AJAX para evitar redirección del servidor
+                        fetch(form.action, {
+                            method: 'POST',
+                            body: new FormData(form),
+                            headers: {
+                                'X-Requested-With': 'XMLHttpRequest'
+                            }
+                        })
+                            .then(response => {
+                                if (response.ok) {
+                                    // Cerrar el modal
+                                    const deleteModal = document.getElementById('deleteModal');
+                                    if (deleteModal) {
+                                        const bsModal = bootstrap.Modal.getInstance(deleteModal);
+                                        if (bsModal) bsModal.hide();
+                                    }
+
+                                    // Recargar la página actual
+                                    window.location.reload();
+                                } else {
+                                    console.error('Error al eliminar los apiarios');
+                                    alert('Ha ocurrido un error al eliminar los apiarios');
+                                }
+                            })
+                            .catch(error => {
+                                console.error('Error:', error);
+                                alert('Ha ocurrido un error al procesar la solicitud');
+                            });
+
+                        // Prevenir que el formulario se envíe normalmente
+                        return false;
+                    }
+                });
+            }
+        });
+
+        // Script para manejar la expansión de imágenes
+        const apiarioImages = document.querySelectorAll('.apiario-image img');
+        apiarioImages.forEach(img => {
+            img.addEventListener('click', function () {
+                // Obtener el ID del modal desde el atributo data-target
+                const modalId = this.getAttribute('data-target');
+
+                // Crear una instancia del modal de Bootstrap 5 y mostrarlo
+                const imageModal = new bootstrap.Modal(document.querySelector(modalId));
+                imageModal.show();
+
+                // Mejorar la experiencia visual
+                const modalImg = document.querySelector(`${modalId} .modal-body img`);
+                if (modalImg) {
+                    // Añadir una transición suave para la carga de la imagen
+                    modalImg.style.opacity = '0';
+                    setTimeout(() => {
+                        modalImg.style.transition = 'opacity 0.3s ease';
+                        modalImg.style.opacity = '1';
+                    }, 100);
+                }
+            });
+
+            // Añadir clase para indicar que es clicable y mejorar la experiencia
+            img.classList.add('clickable-image');
+            img.title = "Clic para ampliar";
+            img.style.cursor = "pointer";
         });
     </script>
 @endsection

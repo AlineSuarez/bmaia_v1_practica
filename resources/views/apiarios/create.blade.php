@@ -237,16 +237,22 @@
                 if (navigator.geolocation) {
                     navigator.geolocation.getCurrentPosition(function (position) {
                         initMap(position.coords.latitude, position.coords.longitude);
+                        $('#latitud').val(position.coords.latitude.toFixed(6));
+                        $('#longitud').val(position.coords.longitude.toFixed(6));
                         hideLoading('map');
                     }, function () {
                         // Coordenadas predeterminadas si falla la geolocalización
                         showNotification('Se hará uso de la ubicación predeterminada de forma temporal.', 'info');
                         initMap(-33.4489, -70.6693); // Santiago, Chile
+                        $('#latitud').val((-33.4489).toFixed(6));
+                        $('#longitud').val((-70.6693).toFixed(6));
                         hideLoading('map');
                     });
                 } else {
                     showNotification('Geolocalización no es soportada. Usando ubicación predeterminada.', 'warning');
                     initMap(-33.4489, -70.6693); // Santiago, Chile
+                    $('#latitud').val((-33.4489).toFixed(6));
+                    $('#longitud').val((-70.6693).toFixed(6));
                     hideLoading('map');
                 }
             }
@@ -274,15 +280,15 @@
 
                 // Personalizar el popup
                 const popupContent = `
-                                    <div class="custom-popup">
-                                        <h4><i class="fas fa-map-pin"></i> Tu Apiario</h4>
-                                        <p>Arrastra el marcador para ajustar la ubicación exacta.</p>
-                                        <div class="popup-coordinates">
-                                            <span><strong>Lat:</strong> ${lat.toFixed(6)}</span><br>
-                                            <span><strong>Lng:</strong> ${lng.toFixed(6)}</span>
-                                        </div>
-                                    </div>
-                                `;
+                                                                            <div class="custom-popup">
+                                                                                <h4><i class="fas fa-map-pin"></i> Tu Apiario</h4>
+                                                                                <p>Arrastra el marcador para ajustar la ubicación exacta.</p>
+                                                                                <div class="popup-coordinates">
+                                                                                    <span><strong>Lat:</strong> ${lat.toFixed(6)}</span><br>
+                                                                                    <span><strong>Lng:</strong> ${lng.toFixed(6)}</span>
+                                                                                </div>
+                                                                            </div>
+                                                                        `;
 
                 marker.bindPopup(popupContent).openPopup();
 
@@ -293,19 +299,18 @@
 
                     // Actualizar el popup con las nuevas coordenadas
                     const updatedPopupContent = `
-                                        <div class="custom-popup">
-                                            <h4><i class="fas fa-map-pin"></i> Tu Apiario</h4>
-                                            <p>Ubicación actualizada correctamente.</p>
-                                            <div class="popup-coordinates">
-                                                <span><strong>Lat:</strong> ${position.lat.toFixed(6)}</span><br>
-                                                <span><strong>Lng:</strong> ${position.lng.toFixed(6)}</span>
-                                            </div>
-                                        </div>
-                                    `;
-
+                                                                                <div class="custom-popup">
+                                                                                    <h4><i class="fas fa-map-pin"></i> Tu Apiario</h4>
+                                                                                    <p>Ubicación actualizada correctamente.</p>
+                                                                                    <div class="popup-coordinates">
+                                                                                        <span><strong>Lat:</strong> ${position.lat.toFixed(6)}</span><br>
+                                                                                        <span><strong>Lng:</strong> ${position.lng.toFixed(6)}</span>
+                                                                                    </div>
+                                                                                </div>
+                                                                            `;
                     marker.getPopup().setContent(updatedPopupContent);
+                    marker.openPopup();
 
-                    // Efecto visual para los campos de coordenadas
                     highlightField('#latitud');
                     highlightField('#longitud');
                 });
@@ -317,20 +322,18 @@
 
                     // Actualizar el popup con las nuevas coordenadas
                     const updatedPopupContent = `
-                                        <div class="custom-popup">
-                                            <h4><i class="fas fa-map-pin"></i> Tu Apiario</h4>
-                                            <p>Ubicación actualizada correctamente.</p>
-                                            <div class="popup-coordinates">
-                                                <span><strong>Lat:</strong> ${e.latlng.lat.toFixed(6)}</span><br>
-                                                <span><strong>Lng:</strong> ${e.latlng.lng.toFixed(6)}</span>
-                                            </div>
-                                        </div>
-                                    `;
-
+                                                                                <div class="custom-popup">
+                                                                                    <h4><i class="fas fa-map-pin"></i> Tu Apiario</h4>
+                                                                                    <p>Ubicación actualizada correctamente.</p>
+                                                                                    <div class="popup-coordinates">
+                                                                                        <span><strong>Lat:</strong> ${e.latlng.lat.toFixed(6)}</span><br>
+                                                                                        <span><strong>Lng:</strong> ${e.latlng.lng.toFixed(6)}</span>
+                                                                                    </div>
+                                                                                </div>
+                                                                            `;
                     marker.getPopup().setContent(updatedPopupContent);
                     marker.openPopup();
 
-                    // Efecto visual para los campos de coordenadas
                     highlightField('#latitud');
                     highlightField('#longitud');
                 });
@@ -346,39 +349,39 @@
                 // Añadir estilos personalizados para el popup
                 const style = document.createElement('style');
                 style.textContent = `
-                                    .custom-popup {
-                                        font-family: var(--font-body);
-                                        padding: 8px;
-                                    }
-                                    .custom-popup h4 {
-                                        color: var(--color-brown);
-                                        margin: 0 0 8px 0;
-                                        font-size: 16px;
-                                        font-weight: 600;
-                                    }
-                                    .custom-popup p {
-                                        margin: 0 0 8px 0;
-                                        font-size: 14px;
-                                    }
-                                    .popup-coordinates {
-                                        font-family: var(--font-mono);
-                                        font-size: 12px;
-                                        color: var(--color-text-light);
-                                        background-color: rgba(212, 175, 55, 0.05);
-                                        padding: 8px;
-                                        border-radius: 4px;
-                                        margin-top: 5px;
-                                        border-left: 2px solid var(--color-gold);
-                                    }
-                                    .map-instructions {
-                                        text-align: center;
-                                        padding: 10px 15px;
-                                        border-radius: 8px;
-                                        margin: 10px 0 15px 0;
-                                        font-size: 14px;
-                                        color: var(--color-brown);
-                                    }
-                                `;
+                                                                            .custom-popup {
+                                                                                font-family: var(--font-body);
+                                                                                padding: 8px;
+                                                                            }
+                                                                            .custom-popup h4 {
+                                                                                color: var(--color-brown);
+                                                                                margin: 0 0 8px 0;
+                                                                                font-size: 16px;
+                                                                                font-weight: 600;
+                                                                            }
+                                                                            .custom-popup p {
+                                                                                margin: 0 0 8px 0;
+                                                                                font-size: 14px;
+                                                                            }
+                                                                            .popup-coordinates {
+                                                                                font-family: var(--font-mono);
+                                                                                font-size: 12px;
+                                                                                color: var(--color-text-light);
+                                                                                background-color: rgba(212, 175, 55, 0.05);
+                                                                                padding: 8px;
+                                                                                border-radius: 4px;
+                                                                                margin-top: 5px;
+                                                                                border-left: 2px solid var(--color-gold);
+                                                                            }
+                                                                            .map-instructions {
+                                                                                text-align: center;
+                                                                                padding: 10px 15px;
+                                                                                border-radius: 8px;
+                                                                                margin: 10px 0 15px 0;
+                                                                                font-size: 14px;
+                                                                                color: var(--color-brown);
+                                                                            }
+                                                                        `;
                 document.head.appendChild(style);
             }
 
@@ -386,26 +389,28 @@
 
             // Cambiar las coordenadas al seleccionar una comuna
             $('#comuna').change(function () {
-                const comunaNombre = $(this).find('option:selected').text();
+                const comunaNombre = $(this).find('option:selected').data('nombre');
                 if (comunasCoordenadas[comunaNombre]) {
                     const { lat, lon } = comunasCoordenadas[comunaNombre];
                     map.setView([lat, lon], 13);
                     marker.setLatLng([lat, lon]);
-                    $('#latitud').val(lat.toFixed(6));
-                    $('#longitud').val(lon.toFixed(6));
+
+                    // Obtener la posición real del marcador después de moverlo
+                    const position = marker.getLatLng();
+                    $('#latitud').val(position.lat.toFixed(6));
+                    $('#longitud').val(position.lng.toFixed(6));
 
                     // Actualizar el popup con las nuevas coordenadas
                     const updatedPopupContent = `
-                                        <div class="custom-popup">
-                                            <h4><i class="fas fa-map-pin"></i> Comuna: ${comunaNombre}</h4>
-                                            <p>Ubicación central de la comuna seleccionada.</p>
-                                            <div class="popup-coordinates">
-                                                <span><strong>Lat:</strong> ${lat.toFixed(6)}</span><br>
-                                                <span><strong>Lng:</strong> ${lon.toFixed(6)}</span>
-                                            </div>
+                                    <div class="custom-popup">
+                                        <h4><i class="fas fa-map-pin"></i> Comuna: ${comunaNombre}</h4>
+                                        <p>Ubicación central de la comuna seleccionada.</p>
+                                        <div class="popup-coordinates">
+                                            <span><strong>Lat:</strong> ${position.lat.toFixed(6)}</span><br>
+                                            <span><strong>Lng:</strong> ${position.lng.toFixed(6)}</span>
                                         </div>
-                                    `;
-
+                                    </div>
+                                `;
                     marker.getPopup().setContent(updatedPopupContent);
                     marker.openPopup();
 
@@ -502,10 +507,17 @@
                         if (comunasPorRegion[regionId]) {
                             comunaSelect.html('<option value="">Selecciona una Comuna</option>');
                             comunasPorRegion[regionId].forEach(comuna => {
-                                comunaSelect.append(`<option value="${comuna.id}">${comuna.nombre}</option>`);
+                                comunaSelect.append(`<option value="${comuna.id}" data-nombre="${comuna.nombre}">${comuna.nombre}</option>`);
                             });
                             hideLoading('comuna');
                             showNotification(`Comunas de ${regionNombre} cargadas correctamente`, 'success');
+
+                            // Seleccionar automáticamente la primera comuna válida y disparar el evento change
+                            let firstComuna = comunaSelect.find('option[value!=""]').first();
+                            if (firstComuna.length) {
+                                firstComuna.prop('selected', true);
+                                comunaSelect.trigger('change');
+                            }
                         } else {
                             hideLoading('comuna');
                             showNotification('No se encontraron comunas para esta región', 'warning');
@@ -604,12 +616,12 @@
                 if (type === 'error') icon = 'times-circle';
 
                 notification.innerHTML = `
-                                    <div class="notification-icon">
-                                        <i class="fas fa-${icon}"></i>
-                                    </div>
-                                    <div class="notification-content">${message}</div>
-                                    <button class="notification-close"><i class="fas fa-times"></i></button>
-                                `;
+                                                                            <div class="notification-icon">
+                                                                                <i class="fas fa-${icon}"></i>
+                                                                            </div>
+                                                                            <div class="notification-content">${message}</div>
+                                                                            <button class="notification-close"><i class="fas fa-times"></i></button>
+                                                                        `;
 
                 document.body.appendChild(notification);
 
@@ -643,10 +655,10 @@
                 const loadingContainer = document.createElement('div');
                 loadingContainer.className = 'loading-container';
                 loadingContainer.innerHTML = `
-                                    <div class="loading-indicator">
-                                        <div></div><div></div><div></div><div></div>
-                                    </div>
-                                `;
+                                                                            <div class="loading-indicator">
+                                                                                <div></div><div></div><div></div><div></div>
+                                                                            </div>
+                                                                        `;
 
                 // Si es el mapa, añadir directamente al contenedor
                 if (elementId === 'map') {
@@ -705,64 +717,73 @@
             // Añadir estilos para efectos visuales
             const styleElement = document.createElement('style');
             styleElement.textContent = `
-                                .highlight-animation {
-                                    animation: highlightPulse 1s ease;
-                                }
+                                                                        .highlight-animation {
+                                                                            animation: highlightPulse 1s ease;
+                                                                        }
 
-                                @keyframes highlightPulse {
-                                    0% { background-color: var(--color-background); }
-                                    50% { background-color: rgba(212, 175, 55, 0.2); }
-                                    100% { background-color: var(--color-background); }
-                                }
+                                                                        @keyframes highlightPulse {
+                                                                            0% { background-color: var(--color-background); }
+                                                                            50% { background-color: rgba(212, 175, 55, 0.2); }
+                                                                            100% { background-color: var(--color-background); }
+                                                                        }
 
-                                .loading-container {
-                                    display: flex;
-                                    align-items: center;
-                                    justify-content: center;
-                                    padding: 10px;
-                                }
+                                                                        .loading-container {
+                                                                            display: flex;
+                                                                            align-items: center;
+                                                                            justify-content: center;
+                                                                            padding: 10px;
+                                                                        }
 
-                                .loading-indicator {
-                                    display: inline-block;
-                                    position: relative;
-                                    width: 80px;
-                                    height: 13px;
-                                }
+                                                                        .loading-indicator {
+                                                                            display: inline-block;
+                                                                            position: relative;
+                                                                            width: 80px;
+                                                                            height: 13px;
+                                                                        }
 
-                                .loading-indicator div {
-                                    position: absolute;
-                                    top: 0;
-                                    width: 13px;
-                                    height: 13px;
-                                    border-radius: 50%;
-                                    background: var(--color-gold);
-                                    animation-timing-function: cubic-bezier(0, 1, 1, 0);
-                                }
+                                                                        .loading-indicator div {
+                                                                            position: absolute;
+                                                                            top: 0;
+                                                                            width: 13px;
+                                                                            height: 13px;
+                                                                            border-radius: 50%;
+                                                                            background: var(--color-gold);
+                                                                            animation-timing-function: cubic-bezier(0, 1, 1, 0);
+                                                                        }
 
-                                .loading-indicator div:nth-child(1) {
-                                    left: 8px;
-                                    animation: loading1 0.6s infinite;
-                                }
+                                                                        .loading-indicator div:nth-child(1) {
+                                                                            left: 8px;
+                                                                            animation: loading1 0.6s infinite;
+                                                                        }
 
-                                .loading-indicator div:nth-child(2) {
-                                    left: 8px;
-                                    animation: loading2 0.6s infinite;
-                                }
+                                                                        .loading-indicator div:nth-child(2) {
+                                                                            left: 8px;
+                                                                            animation: loading2 0.6s infinite;
+                                                                        }
 
-                                .loading-indicator div:nth-child(3) {
-                                    left: 32px;
-                                    animation: loading2 0.6s infinite;
-                                }
+                                                                        .loading-indicator div:nth-child(3) {
+                                                                            left: 32px;
+                                                                            animation: loading2 0.6s infinite;
+                                                                        }
 
-                                .loading-indicator div:nth-child(4) {
-                                    left: 56px;
-                                    animation: loading3 0.6s infinite;
-                                }
-                            `;
+                                                                        .loading-indicator div:nth-child(4) {
+                                                                            left: 56px;
+                                                                            animation: loading3 0.6s infinite;
+                                                                        }
+                                                                    `;
             document.head.appendChild(styleElement);
 
             // Añadir efectos de animación al enviar el formulario
             $('form').on('submit', function (e) {
+                // Forzar actualización de los campos antes de enviar
+                if (marker) {
+                    const position = marker.getLatLng();
+                    $('#latitud').val(position.lat.toFixed(6));
+                    $('#longitud').val(position.lng.toFixed(6));
+                    // Para depuración
+                    console.log('Latitud enviada:', $('#latitud').val());
+                    console.log('Longitud enviada:', $('#longitud').val());
+                }
                 // Validar campos antes de enviar
                 let isValid = true;
 
@@ -807,56 +828,56 @@
                 // Añadir estilos para la animación de envío
                 const submitStyle = document.createElement('style');
                 submitStyle.textContent = `
-                                    .submitting {
-                                        position: relative;
-                                    }
+                                                                            .submitting {
+                                                                                position: relative;
+                                                                            }
 
-                                    .submitting::after {
-                                        content: "";
-                                        position: absolute;
-                                        top: 0;
-                                        left: 0;
-                                        width: 100%;
-                                        height: 100%;
-                                        background-color: rgba(255, 255, 255, 0.7);
-                                        backdrop-filter: blur(3px);
-                                        z-index: 1000;
-                                        display: flex;
-                                        align-items: center;
-                                        justify-content: center;
-                                        font-size: 1.5rem;
-                                        color: var(--color-gold);
-                                        border-radius: var(--border-radius);
-                                    }
+                                                                            .submitting::after {
+                                                                                content: "";
+                                                                                position: absolute;
+                                                                                top: 0;
+                                                                                left: 0;
+                                                                                width: 100%;
+                                                                                height: 100%;
+                                                                                background-color: rgba(255, 255, 255, 0.7);
+                                                                                backdrop-filter: blur(3px);
+                                                                                z-index: 1000;
+                                                                                display: flex;
+                                                                                align-items: center;
+                                                                                justify-content: center;
+                                                                                font-size: 1.5rem;
+                                                                                color: var(--color-gold);
+                                                                                border-radius: var(--border-radius);
+                                                                            }
 
-                                    .shake-animation {
-                                        animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
-                                    }
+                                                                            .shake-animation {
+                                                                                animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
+                                                                            }
 
-                                    @keyframes shake {
-                                        10%, 90% { transform: translate3d(-1px, 0, 0); }
-                                        20%, 80% { transform: translate3d(2px, 0, 0); }
-                                        30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
-                                        40%, 60% { transform: translate3d(4px, 0, 0); }
-                                    }
+                                                                            @keyframes shake {
+                                                                                10%, 90% { transform: translate3d(-1px, 0, 0); }
+                                                                                20%, 80% { transform: translate3d(2px, 0, 0); }
+                                                                                30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
+                                                                                40%, 60% { transform: translate3d(4px, 0, 0); }
+                                                                            }
 
-                                    .error-message {
-                                        color: var(--color-error);
-                                        font-size: 0.8rem;
-                                        margin-top: 0.25rem;
-                                        animation: fadeIn 0.3s ease;
-                                    }
+                                                                            .error-message {
+                                                                                color: var(--color-error);
+                                                                                font-size: 0.8rem;
+                                                                                margin-top: 0.25rem;
+                                                                                animation: fadeIn 0.3s ease;
+                                                                            }
 
-                                    .is-invalid {
-                                        border-color: var(--color-error) !important;
-                                        background-color: rgba(244, 67, 54, 0.05) !important;
-                                    }
+                                                                            .is-invalid {
+                                                                                border-color: var(--color-error) !important;
+                                                                                background-color: rgba(244, 67, 54, 0.05) !important;
+                                                                            }
 
-                                    @keyframes fadeIn {
-                                        from { opacity: 0; transform: translateY(-10px); }
-                                        to { opacity: 1; transform: translateY(0); }
-                                    }
-                                `;
+                                                                            @keyframes fadeIn {
+                                                                                from { opacity: 0; transform: translateY(-10px); }
+                                                                                to { opacity: 1; transform: translateY(0); }
+                                                                            }
+                                                                        `;
                 document.head.appendChild(submitStyle);
             });
 
@@ -881,12 +902,12 @@
             // Añadir estilos para efectos de hover
             const hoverStyle = document.createElement('style');
             hoverStyle.textContent = `
-                                .hover-effect {
-                                    transform: translateY(-2px);
-                                    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-                                    transition: all 0.3s ease;
-                                }
-                            `;
+                                                                        .hover-effect {
+                                                                            transform: translateY(-2px);
+                                                                            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+                                                                            transition: all 0.3s ease;
+                                                                        }
+                                                                    `;
             document.head.appendChild(hoverStyle);
         });
     </script>

@@ -1,362 +1,954 @@
 @extends('layouts.app')
-@section('content')
-<div class="container">
-    <h1 class="mb-4">Tareas</h1>
-    <!-- Botones para cambiar la vista -->
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <div class="btn-group" role="group" aria-label="Vista de Tareas">
-            <button class="btn btn-success view-toggler" data-view="list">Lista</button>
-            <button class="btn btn-warning view-toggler" data-view="kanban">Tablero</button>
-            <button class="btn btn-primary view-toggler" data-view="timeline">Línea de Tiempo</button>
-            <button class="btn btn-secondary view-toggler" data-view="calendar">Calendario</button>
-        </div>
-        <!-- Botón para agregar nueva tarea -->
-        <button id="toggle-form" class="btn btn-warning"><i class="fa fa-tasks"></i>Administrar tareas</button>
-    </div>
-    <!-- Formulario para agregar nueva tarea (colapsable) -->
-    <div id="new-task-form" style="display:none;" class="mb-4">
-    <div id="tareas-pre-definidas" class="contenedor-gestor-tareas">
-    <form method="POST" action="{{ route('tareas.default') }}">
-        @csrf
-        <h3>Agregar Tareas Predefinidas</h3>
-        <!-- Tabla para mostrar las tareas generales y subtareas -->
-        <table class="table table-bordered table-striped mt-3 text-center">
-            <thead class="table-dark">
-                <tr>
-                    <th class="checkbox-header" style="width: 10px">
-                        <label for="select-all-subtasks" class="checkbox-label">
-                            <input type="checkbox" id="select-all-subtasks" />
-                            <span>Seleccionar Todo</span>
-                        </label>
-                    </th>
-                    <th>Etapa</th>
-                    <th><i class="fa-solid fa-thumbtack"></i> Nombre</th>
-                    <th style="width: 130px;"><i class="fa-solid fa-calendar-day"></i> Fecha Inicio</th>
-                    <th style="width: 130px;"><i class="fa-solid fa-calendar-check"></i> Fecha Fin</th>
-                    <th style="width: 130px;"><i class="fa-solid fa-bolt"></i> Prioridad</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach ($listaEtapa as $tareaGeneral)
-                    <!-- Mostrar la tarea general solo una vez -->
-                    <tr>
-                        <td colspan="1"></td>
-                        <td class="font-weight-bold" colspan="1" style="width: 14px"> <strong>{{ $tareaGeneral->nombre }}</strong> </td> <!-- Solo una vez -->
-                        <td colspan="4"></td> <!-- Vaciar las otras columnas para que se vea la tarea general -->
-                    </tr>
-                    @foreach ($tareaGeneral->predefinidas as $subtarea)
-                        <tr>
-                            <td class="checkbox-cell" style="width: 10px">
-                                <input 
-                                    type="checkbox" 
-                                    name="subtareas[]" 
-                                    value="{{ $subtarea->id }}" 
-                                    class="subtask-checkbox">
-                            </td>
-                            <td></td>
-                            <td>{{ $subtarea->nombre }}</td>
-                            <td>{{ $subtarea->fecha_inicio }}</td>
-                            <td>{{ $subtarea->fecha_limite }}</td>
-                            <td>{{ $subtarea->prioridad }}</td>
-                        </tr>
-                    @endforeach
-                @endforeach
-            </tbody>
-        </table>
-        <button type="submit" class="btn btn-primary">Agregar Subtareas Seleccionadas</button>
-    </form>
-</div>
 
-<form action="{{ route('tareas.store') }}" method="POST">
-    @csrf
-    <h3>Crear Tareas Personalizadas</h3>
-    <!-- Sección para la Tarea General -->
-    <div class="form-group">
-        <label for="tarea_general_id">Etapa</label>
-        <select name="tarea_general_id" id="tarea_general_id" class="form-control" required>
-            <option value="" disabled selected>Seleccione una Etapa</option>
-            @foreach($listaEtapa as $tarea)
-                <option value="{{ $tarea->id }}">{{ $tarea->nombre }}</option>
-            @endforeach
-        </select>
-    </div>
-        <!-- Sección para Subtareas -->
-            <div id="subtareas-container">
-                <h4>Tareas</h4>
-                <div class="subtarea" id="subtarea-template" style="display: none;">
-                    <div class="form-row align-items-center">
-                        <div class="col-md-2">
-                            <label>Prioridad</label>
-                            <select data-field="prioridad" class="form-control">
-                                <option value="no-prioritaria">No Prioritaria</option>
-                                <option value="baja">Baja</option>
-                                <option value="media">Media</option>
-                                <option value="alta">Alta</option>
-                                <option value="urgente">Urgente</option>
+@section('styles')
+    <link rel="stylesheet" href="{{ asset('css/apiario-theme.css') }}">
+@endsection
+
+@section('content')
+    <div class="apiario-container">
+        <div class="container">
+            <!-- Encabezado principal -->
+            <div class="apiario-header">
+                <h1 class="apiario-title"><span>Colmena de Tareas</span></h1>
+                <p class="apiario-subtitle">Organiza y gestiona tus tareas con eficiencia</p>
+                <small class="tip-sutil">Cada tarea completada es un paso hacia el éxito de tu proyecto</small>
+            </div>
+
+            <!-- Controles de vista -->
+            <div class="apiario-controls">
+                <div class="view-controls">
+                    <button class="btn-panal view-toggler" data-view="list" title="Ver en formato lista">Lista</button>
+                    <button class="btn-panal view-toggler" data-view="kanban"
+                        title="Ver en formato tablero">Tablero</button>
+                    <button class="btn-panal view-toggler" data-view="timeline" title="Ver en línea temporal">Línea de
+                        Tiempo</button>
+                    <button class="btn-panal view-toggler" data-view="calendar"
+                        title="Ver en calendario">Calendario</button>
+                </div>
+
+                <button id="toggle-form" class="btn-miel" title="Mostrar/ocultar panel de gestión">
+                    <i class="fa fa-tasks"></i> Administrar tareas
+                </button>
+            </div>
+
+            <!-- Formulario de gestión de tareas (colapsable) -->
+            <div id="new-task-form" style="display:none;" class="apiario-panel">
+                <!-- Sección de tareas predefinidas -->
+                <div class="tareas-predefinidas">
+                    <form method="POST" action="{{ route('tareas.default') }}">
+                        @csrf
+                        <h3 class="panel-titulo">Agregar Tareas Predefinidas</h3>
+                        <p class="section-description">Selecciona tareas ya establecidas para añadirlas a tu proyecto.</p>
+                        <small class="consejo-sutil">Consejo: Utiliza tareas predefinidas para ahorrar tiempo en la
+                            planificación</small>
+
+                        <table class="tabla-panal">
+                            <thead>
+                                <tr>
+                                    <th class="celda-check">
+                                        <label for="select-all-subtasks" class="check-label">
+                                            <input type="checkbox" id="select-all-subtasks" class="check-miel" />
+                                            <span>Seleccionar</span>
+                                        </label>
+                                    </th>
+                                    <th>Etapa</th>
+                                    <th><i class="fa-solid fa-thumbtack"></i> Nombre</th>
+                                    <th><i class="fa-solid fa-calendar-day"></i> Inicio</th>
+                                    <th><i class="fa-solid fa-calendar-check"></i> Fin</th>
+                                    <th><i class="fa-solid fa-bolt"></i> Prioridad</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($listaEtapa as $tareaGeneral)
+                                    <!-- Fila de etapa -->
+                                    <tr class="fila-etapa">
+                                        <td></td>
+                                        <td class="celda-etapa">
+                                            <strong>{{ $tareaGeneral->nombre }}</strong>
+                                        </td>
+                                        <td colspan="4"></td>
+                                    </tr>
+
+                                    <!-- Filas de subtareas -->
+                                    @foreach ($tareaGeneral->predefinidas as $subtarea)
+                                        <tr class="fila-tarea">
+                                            <td class="celda-check">
+                                                <input type="checkbox" name="subtareas[]" value="{{ $subtarea->id }}"
+                                                    class="check-miel subtask-checkbox">
+                                            </td>
+                                            <td></td>
+                                            <td>{{ $subtarea->nombre }}</td>
+                                            <td>{{ $subtarea->fecha_inicio }}</td>
+                                            <td>{{ $subtarea->fecha_limite }}</td>
+                                            <td>{{ $subtarea->prioridad }}</td>
+                                        </tr>
+                                    @endforeach
+                                @endforeach
+                            </tbody>
+                        </table>
+
+                        <div class="nota-sutil">Nota: Las tareas seleccionadas se añadirán con sus fechas y prioridades
+                            originales</div>
+
+                        <button type="submit" class="btn-miel-submit">Agregar Tareas Seleccionadas</button>
+                    </form>
+                </div>
+
+                <!-- Separador sutil -->
+                <div class="separador-sutil"></div>
+
+                <!-- Sección de tareas personalizadas -->
+                <div class="tareas-personalizadas">
+                    <form action="{{ route('tareas.store') }}" method="POST">
+                        @csrf
+                        <h3 class="panel-titulo">Crear Tareas Personalizadas</h3>
+                        <p class="section-description">Diseña tus propias tareas adaptadas a las necesidades de tu proyecto.
+                        </p>
+                        <small class="consejo-sutil">Consejo: Divide los grandes objetivos en tareas más pequeñas y
+                            manejables</small>
+
+                        <!-- Selector de etapa -->
+                        <div class="grupo-form">
+                            <label for="tarea_general_id" class="etiqueta-miel">Etapa del proyecto</label>
+                            <select name="tarea_general_id" id="tarea_general_id" class="select-miel" required>
+                                <option value="" disabled selected>Seleccione una etapa</option>
+                                @foreach($listaEtapa as $tarea)
+                                    <option value="{{ $tarea->id }}">{{ $tarea->nombre }}</option>
+                                @endforeach
                             </select>
                         </div>
-                        <div class="col-md-4">
-                            <label>Título de la tarea</label>
-                            <input type="text" data-field="nombre" class="form-control" placeholder="Ejemplo: Limpiar la zona">
+
+                        <!-- Contenedor de subtareas -->
+                        <div id="subtareas-container" class="contenedor-subtareas">
+                            <h4 class="subtitulo-panel">Definir Tareas</h4>
+                            <div class="mini-guia">
+                                <span class="guia-item"><strong>Prioridad alta:</strong> Tareas críticas para el
+                                    avance</span>
+                                <span class="guia-item"><strong>Fechas realistas:</strong> Considera imprevistos</span>
+                                <span class="guia-item"><strong>Títulos claros:</strong> Específicos y concisos</span>
+                            </div>
+
+                            <!-- Plantilla de subtarea (oculta) -->
+                            <div class="subtarea" id="subtarea-template" style="display: none;">
+                                <div class="fila-form">
+                                    <div class="columna-form">
+                                        <label class="etiqueta-miel">Prioridad</label>
+                                        <select data-field="prioridad" class="select-miel">
+                                            <option value="no-prioritaria">No Prioritaria</option>
+                                            <option value="baja">Baja</option>
+                                            <option value="media">Media</option>
+                                            <option value="alta">Alta</option>
+                                            <option value="urgente">Urgente</option>
+                                        </select>
+                                    </div>
+                                    <div class="columna-form">
+                                        <label class="etiqueta-miel">Título de la tarea</label>
+                                        <input type="text" data-field="nombre" class="input-miel"
+                                            placeholder="Ej: Preparar documentación">
+                                    </div>
+                                    <div class="columna-form">
+                                        <label class="etiqueta-miel">Fecha Inicio</label>
+                                        <input type="date" data-field="fecha_inicio" class="input-miel">
+                                    </div>
+                                    <div class="columna-form">
+                                        <label class="etiqueta-miel">Fecha Fin</label>
+                                        <input type="date" data-field="fecha_fin" class="input-miel">
+                                    </div>
+                                    <div class="columna-form">
+                                        <label class="etiqueta-miel">Estado</label>
+                                        <select data-field="estado" class="select-miel">
+                                            <option value="Pendiente">Pendiente</option>
+                                            <option value="En progreso">En Progreso</option>
+                                            <option value="completada">Completada</option>
+                                            <option value="Vencida">Vencida</option>
+                                        </select>
+                                    </div>
+                                    <button type="button" class="btn-eliminar remove-subtarea">Eliminar</button>
+                                </div>
+                            </div>
                         </div>
-                        <div class="col-md-3">
-                            <label>Fecha Inicio</label>
-                            <input type="date" data-field="fecha_inicio" class="form-control">
+
+                        <!-- Botones de acción -->
+                        <div class="acciones-form">
+                            <button type="button" id="add-subtarea" class="btn-agregar">
+                                Agregar Nueva Tarea
+                            </button>
+                            <button type="submit" class="btn-miel-submit">Guardar Todas las Tareas</button>
                         </div>
-                        <div class="col-md-3">
-                            <label>Fecha Fin</label>
-                            <input type="date" data-field="fecha_fin" class="form-control">
-                        </div>
-                        <div class="col-md-2">
-                            <label>Estado</label>
-                            <select data-field="estado" class="form-control">
-                                <option value="Pendiente">Pendiente</option>
-                                <option value="En progreso">En Progreso</option>
-                                <option value="completada">Completada</option>
-                                <option value="Vencida">Vencida</option>
-                            </select>
-                        </div>
-                        <button type="button" class="remove-subtarea">Eliminar</button>
-                    </div>
-                    <hr>
+                        <div class="nota-sutil">Nota: Puedes editar las tareas más tarde si necesitas hacer cambios</div>
+                    </form>
                 </div>
             </div>
-            <button type="button" id="add-subtarea" class="btn btn-secondary">Agregar Tarea</button>
-            <!-- Botón de Envío -->
-            <div class="form-group mt-4">
-                <button type="submit" class="btn btn-primary">Guardar Tareas</button>
+
+            <!-- Contenedor de vistas de tareas -->
+            <div id="task-view-container" class="contenedor-vistas">
+                <!-- Pequeña guía de vistas -->
+                <div class="vista-guia">
+                    <p class="vista-tip">Cambia entre las diferentes vistas para gestionar tus tareas según tus necesidades
+                    </p>
+                    <div class="vista-info">
+                        <span class="vista-info-item">Lista: Visión detallada</span>
+                        <span class="vista-info-item">Tablero: Organización por estados</span>
+                        <span class="vista-info-item">Línea de Tiempo: Secuencia cronológica</span>
+                        <span class="vista-info-item">Calendario: Planificación temporal</span>
+                    </div>
+                </div>
+
+                <!-- Vistas -->
+                <div class="view list active">
+                    @include('tareas.list')
+                </div>
+                <div class="view kanban">
+                    @include('tareas.kanban')
+                </div>
+                <div class="view timeline">
+                    @include('tareas.timeline')
+                </div>
+                <div class="view calendar">
+                    <div id="calendar"></div>
+                </div>
+
+                <!-- Consejo final -->
+                <div class="consejo-final">
+                    <p>Revisa regularmente tus tareas para mantener el progreso de tu proyecto</p>
+                </div>
             </div>
         </div>
-</form>
-    
-
-    <!-- Contenedor donde se cargan las vistas dinámicas -->
-    <div id="task-view-container">
-        <div class="view list active">
-            @include('tareas.list')
-        </div>
-        <div class="view kanban ">
-            @include('tareas.kanban')
-        </div>
-        <div class="view timeline">
-            @include('tareas.timeline')
-        </div>
-        <div class="view calendar">
-            <div id="calendar"></div>
-        </div>
     </div>
-</div>
 
-<script>
-
-    function actualizarKanban() {
-
-    }
-
-    
-
-
-document.addEventListener('DOMContentLoaded', function() {
-    // Obtén los elementos
-    const selectAllCheckbox = document.getElementById('select-all-subtasks');
-    const subtasksCheckboxes = document.querySelectorAll('.subtask-checkbox');
-    // Función para verificar si todos los checkboxes están seleccionados
-    function updateSelectAllCheckbox() {
-        const allChecked = Array.from(subtasksCheckboxes).every(checkbox => checkbox.checked);
-        selectAllCheckbox.checked = allChecked;
-        selectAllCheckbox.indeterminate = !allChecked && Array.from(subtasksCheckboxes).some(checkbox => checkbox.checked);
-    }
-    // Maneja el cambio en el checkbox "Seleccionar todo"
-    selectAllCheckbox.addEventListener('change', function () {
-        const isChecked = selectAllCheckbox.checked;
-        subtasksCheckboxes.forEach(checkbox => {
-            checkbox.checked = isChecked;
-        });
-    });
-    // Escuchar cambios en las subtareas
-    subtasksCheckboxes.forEach(checkbox => {
-        checkbox.addEventListener('change', updateSelectAllCheckbox);
-    });
-    // Inicializar el estado del "Seleccionar todo"
-    updateSelectAllCheckbox();
-
-document.body.addEventListener('click', (event) => {
-    console.log("clicando algún event");
-        const target = event.target.closest('.estado-badge');
-        if (target) {
-            console.log("Badge clickeado");
-            currentButton = target;
-            const subtareaId = currentButton.dataset.id;
-            const currentState = currentButton.dataset.currentState;
-
-            document.getElementById('subtareaId').value = subtareaId;
-            document.getElementById('nuevoEstado').value = currentState;
-
-            estadoModal.show();
-        }
-    });
-        // Confirmar el cambio de estado
-        document.getElementById('confirmarEstado').addEventListener('click', () => {
-            const subtareaId = document.getElementById('subtareaId').value;
-            const nuevoEstado = document.getElementById('nuevoEstado').value;
-
-            fetch(`/tareas/${subtareaId}/update-status`, {
-                method: 'PATCH',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                },
-                body: JSON.stringify({ estado: nuevoEstado })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    currentButton.textContent = nuevoEstado;
-                    currentButton.dataset.currentState = nuevoEstado;
-                    Swal.fire('¡Actualizado!', 'El estado de la subtarea ha sido actualizado.', 'success');
-                } else {
-                    Swal.fire('Error', 'Hubo un problema al actualizar el estado.', 'error');
-                }
-                estadoModal.hide();
-            });
-        });
-    });
-
-let subtareaIndex = 0; // Contador para los índices de subtareas
-
-document.getElementById('add-subtarea').addEventListener('click', function () {
-    const template = document.getElementById('subtarea-template');
-    const container = document.getElementById('subtareas-container');
-    const newSubtarea = template.cloneNode(true);
-
-    newSubtarea.style.display = 'block';
-    newSubtarea.removeAttribute('id');
-
-    // Actualizar los nombres de los inputs para que incluyan el índice
-    const inputs = newSubtarea.querySelectorAll('input, select');
-    inputs.forEach(input => {
-        const fieldName = input.getAttribute('data-field'); // Usa un atributo para identificar el campo
-        if (fieldName) {
-            input.name = `subtareas[${subtareaIndex}][${fieldName}]`;// Genera el nombre dinámico
-        }
-        input.required = true; // Agrega required donde sea necesario
-    });
-
-    container.appendChild(newSubtarea);
-    subtareaIndex++; // Incrementa el índice para la siguiente subtarea
-    });
-
-    document.addEventListener('click', function (e) {
-        if (e.target.classList.contains('remove-subtarea')) {
-            const subtarea = e.target.closest('.subtarea');
-            subtarea.remove();
-        }
-    });
-    // Mostrar la vista por defecto (Kanban)
-    const views = document.querySelectorAll('.view');
-    views.forEach(view => view.classList.remove('active'));
-    document.querySelector('.view.list').classList.add('active');
-
-    // Ocultar todas las vistas
-    const hideAllViews = () => {
-        views.forEach(view => {
-            if (!view.classList.contains('active')) {
-            view.style.display = 'none';
-        }
-        });
-    };
-    // Inicialmente, ocultamos todas las vistas
-    hideAllViews();
-
-    // Cambiar entre vistas
-    document.querySelectorAll('.view-toggler').forEach(button => {
-        button.addEventListener('click', function () {
-            const view = this.getAttribute('data-view');
-            views.forEach(v => v.classList.remove('active'));
-            document.querySelector(`.view.${view}`).classList.add('active');
-            hideAllViews();
-            const viewToShow= document.querySelector(`.view.${view}`);
-            if (viewToShow) {
-                viewToShow.style.display = '';
-            }
-            // Si se selecciona la vista de calendario, inicializar FullCalendar
-            if (view === 'calendar') {
-                initializeCalendar();
-            }
-        });
-    });
-
-    // Inicializar FullCalendar
-    function initializeCalendar() {
-        const calendarEl = document.getElementById('calendar');
-        console.log("Initializing calendar", calendarEl); // Verifica si el contenedor se está encontrando
-        if (calendarEl && !calendarEl.classList.contains('initialized')) {
-            calendarEl.classList.add('initialized');
-            new FullCalendar.Calendar(calendarEl, {
-                initialView: 'dayGridMonth',
-                events: [
-                    @foreach($subtareas as $task)
-                    {
-                        id: '{{ $task->id }}',
-                        title: '{{ $task->nombre }}',
-                        start: '{{ $task->fecha_inicio }}',
-                        end: '{{ $task->fecha_fin }}',
-                        extendedProps: {
-                            descripcion: '{{ $task->descripcion }}',
-                            tareaGeneral: '{{ $task->tareaGeneral->nombre }}',
-                            estado: '{{ $task->estado }}',
-                            prioridad: '{{ ucfirst($task->prioridad) }}'
-                        }
-                    },
-                    @endforeach
-                ],
-                eventClick: function (info) {
-                    const evento = info.event;
-                    document.getElementById('task-title').textContent = evento.title;
-                    document.getElementById('task-general').textContent = evento.extendedProps.tareaGeneral;
-                    document.getElementById('task-description').textContent = evento.extendedProps.descripcion;
-                    document.getElementById('task-status').textContent = evento.extendedProps.estado;
-                    document.getElementById('task-priority').textContent = evento.extendedProps.prioridad;
-                    const taskModal = new bootstrap.Modal(document.getElementById('taskModal'));
-                    taskModal.show();
-                }
-            }).render();
-        }
-    }
-
-    document.addEventListener('DOMContentLoaded', function () {
-        var quill;
-        // Mostrar/ocultar el formulario y asegurar que el editor esté inicializado
-        document.getElementById('toggle-form').addEventListener('click', function () {
-            const form = document.getElementById('new-task-form');
-            form.style.display = form.style.display === 'none' ? 'block' : 'none';
-        });
-        // Asegurar que el contenido del editor esté sincronizado al enviar el formulario
-        document.querySelector('form').addEventListener('submit', function () {
-            if (quill) {
-                document.querySelector('#description').value = quill.root.innerHTML;
-            }
-        });
-        // Escuchar el evento 'subtareaActualizada' y recargar las subtareas
-        escucharEvento('subtareaActualizada', () => {
-            recargarSubtareas(); // Esto actualizará la lista de subtareas
-            actualizarKanban(); // Actualizar el tablero Kanban
-            actualizarTimeline(); // Actualizar la línea de tiempo
-            initializeCalendar(); // Actualizar el calendario
-        });
-        
-    });
-
-    function emitirEvento(nombre, detalle = {}) {
-        const evento = new CustomEvent(nombre, { detail: detalle });
-        window.eventBus.dispatchEvent(evento);
-    }
-
-    function escucharEvento(nombre, callback) {
-        window.eventBus.addEventListener(nombre, callback);
-    }
-</script>
+    <!-- Script específico para tareas (mantenemos el original) -->
+    <script src="{{ asset('js/components/home-user/tareas.js') }}"></script>
 @endsection
+
 @section('optional-scripts')
-<script src="{{ asset('vendor/chatbot/js/chatbot.js') }}"></script>
+    <script src="{{ asset('vendor/chatbot/js/chatbot.js') }}"></script>
 @endsection
+
+<style>
+    /* Apiario Theme - Diseño sutil de colmena y miel */
+
+    /* Variables de colores */
+    :root {
+        --miel-claro: #fff8e1;
+        --miel-suave: #ffecb3;
+        --miel-medio: #ffe082;
+        --miel-dorado: #ffd54f;
+        --miel-ambar: #ffca28;
+        --miel-oscuro: #ffb300;
+        --panal-borde: #ffa000;
+        --abeja-negro: #3e2723;
+        --cera-suave: #bcaaa4;
+        --fondo-claro: #ffffff;
+        --texto-oscuro: #4e342e;
+        --texto-suave: #6d4c41;
+        --sombra-miel: rgba(255, 179, 0, 0.2);
+        --sombra-miel-hover: rgba(255, 179, 0, 0.3);
+    }
+
+    /* Estilos generales */
+    body {
+        background-color: var(--fondo-claro);
+        color: var(--texto-oscuro);
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        line-height: 1.6;
+    }
+
+    .apiario-container {
+        position: relative;
+        padding: 2rem 0;
+        background-color: var(--fondo-claro);
+        min-height: 100vh;
+    }
+
+    /* Encabezado */
+    .apiario-header {
+        text-align: center;
+        margin-bottom: 2.5rem;
+        position: relative;
+    }
+
+    .apiario-title {
+        color: var(--miel-oscuro);
+        font-size: 2.5rem;
+        font-weight: bold;
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+        position: relative;
+        display: inline-block;
+        padding: 0 2rem 0.8rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .apiario-title::before {
+        content: "❖";
+        position: absolute;
+        left: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--miel-ambar);
+        font-size: 1.5rem;
+    }
+
+    .apiario-title::after {
+        content: "❖";
+        position: absolute;
+        right: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--miel-ambar);
+        font-size: 1.5rem;
+    }
+
+    .apiario-title span {
+        position: relative;
+    }
+
+    .apiario-title span::after {
+        content: "";
+        position: absolute;
+        bottom: -10px;
+        left: 0;
+        width: 100%;
+        height: 4px;
+        background: linear-gradient(90deg, transparent, var(--miel-medio), var(--miel-dorado), var(--miel-medio), transparent);
+        border-radius: 2px;
+    }
+
+    .apiario-subtitle {
+        color: var(--texto-suave);
+        font-size: 1.1rem;
+        margin: 0 auto;
+    }
+
+    /* Controles de vista */
+    .apiario-controls {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+        flex-wrap: wrap;
+        gap: 1rem;
+        position: relative;
+    }
+
+    .apiario-controls::after {
+        content: "";
+        position: absolute;
+        bottom: -10px;
+        left: 0;
+        width: 100%;
+        height: 1px;
+        background: linear-gradient(90deg, transparent, var(--miel-suave), var(--miel-medio), var(--miel-suave), transparent);
+    }
+
+    .view-controls {
+        display: flex;
+        gap: 0.7rem;
+        flex-wrap: wrap;
+    }
+
+    /* Botones de panal */
+    .btn-panal {
+        background-color: var(--miel-medio);
+        color: var(--texto-oscuro);
+        border: none;
+        padding: 0.7rem 1.3rem;
+        font-weight: 600;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 2px 8px var(--sombra-miel);
+        z-index: 1;
+    }
+
+    .btn-panal::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(135deg, var(--miel-dorado), var(--miel-ambar));
+        opacity: 0;
+        z-index: -1;
+        transition: opacity 0.3s ease;
+    }
+
+    .btn-panal:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px var(--sombra-miel-hover);
+        color: var(--abeja-negro);
+    }
+
+    .btn-panal:hover::before {
+        opacity: 1;
+    }
+
+    .btn-panal:active {
+        transform: translateY(-1px);
+        box-shadow: 0 3px 6px var(--sombra-miel);
+    }
+
+    /* Botón de miel */
+    .btn-miel {
+        background: linear-gradient(135deg, var(--miel-ambar), var(--miel-oscuro));
+        color: var(--abeja-negro);
+        border: none;
+        padding: 0.8rem 1.5rem;
+        font-weight: 600;
+        border-radius: 25px;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        box-shadow: 0 3px 10px var(--sombra-miel);
+        position: relative;
+        overflow: hidden;
+        z-index: 1;
+    }
+
+    .btn-miel:hover {
+        color: white;
+        box-shadow: 0 5px 15px var(--sombra-miel-hover);
+        transform: translateY(-2px);
+    }
+
+    .btn-miel:active {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 8px var(--sombra-miel);
+    }
+
+    .btn-miel-submit {
+        background: linear-gradient(135deg, var(--miel-oscuro), var(--panal-borde));
+        color: white;
+        border: none;
+        padding: 0.8rem 1.5rem;
+        font-weight: 600;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        box-shadow: 0 3px 10px var(--sombra-miel);
+        margin-top: 1.5rem;
+    }
+
+    .btn-miel-submit:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px var(--sombra-miel-hover);
+    }
+
+    .btn-miel-submit:active {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 8px var(--sombra-miel);
+    }
+
+    /* Panel de apiario */
+    .apiario-panel {
+        background-color: white;
+        border-radius: 12px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.06);
+        border: 1px solid var(--miel-suave);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .apiario-panel::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 6px;
+        background: linear-gradient(90deg,
+                var(--miel-suave),
+                var(--miel-medio),
+                var(--miel-dorado),
+                var(--miel-medio),
+                var(--miel-suave));
+    }
+
+    /* Títulos de secciones */
+    .panel-titulo {
+        color: var(--miel-oscuro);
+        font-size: 1.8rem;
+        margin-bottom: 0.5rem;
+        padding-bottom: 0.5rem;
+        position: relative;
+        display: inline-block;
+    }
+
+    .section-description {
+        color: var(--texto-suave);
+        margin-bottom: 1.5rem;
+        font-size: 0.95rem;
+    }
+
+    .subtitulo-panel {
+        color: var(--texto-oscuro);
+        font-size: 1.4rem;
+        margin: 1.5rem 0 1rem;
+        position: relative;
+        padding-left: 1.5rem;
+    }
+
+    .subtitulo-panel::before {
+        content: "▶";
+        position: absolute;
+        left: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--miel-ambar);
+        font-size: 0.8rem;
+    }
+
+    /* Separador sutil */
+    .separador-sutil {
+        height: 1px;
+        background: linear-gradient(90deg, transparent, var(--miel-suave), var(--miel-medio), var(--miel-suave), transparent);
+        margin: 2rem 0;
+    }
+
+    /* Tabla de panal */
+    .tabla-panal {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+        margin-bottom: 1.5rem;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    }
+
+    .tabla-panal thead {
+        background: linear-gradient(135deg, var(--miel-dorado), var(--miel-ambar));
+        color: var(--abeja-negro);
+    }
+
+    .tabla-panal th {
+        padding: 1rem;
+        text-align: center;
+        font-weight: bold;
+        border-bottom: 2px solid var(--miel-oscuro);
+        font-size: 0.9rem;
+    }
+
+    .tabla-panal td {
+        padding: 0.8rem;
+        text-align: center;
+        border-bottom: 1px solid var(--miel-suave);
+        transition: all 0.3s ease;
+    }
+
+    .fila-etapa {
+        background-color: var(--miel-claro);
+    }
+
+    .celda-etapa {
+        font-weight: bold;
+        color: var(--abeja-negro);
+        font-size: 1.05rem;
+    }
+
+    .fila-tarea {
+        transition: all 0.3s ease;
+        position: relative;
+    }
+
+    .fila-tarea:hover {
+        background-color: var(--miel-suave);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        z-index: 1;
+    }
+
+    /* Checkboxes estilizados */
+    .celda-check {
+        width: 45px;
+    }
+
+    .check-miel {
+        appearance: none;
+        -webkit-appearance: none;
+        width: 20px;
+        height: 20px;
+        background-color: white;
+        border: 2px solid var(--miel-ambar);
+        border-radius: 5px;
+        cursor: pointer;
+        position: relative;
+        transition: all 0.3s ease;
+    }
+
+    .check-miel:checked {
+        background-color: var(--miel-ambar);
+        border-color: var(--miel-oscuro);
+    }
+
+    .check-miel:checked::after {
+        content: "✓";
+        position: absolute;
+        color: white;
+        font-size: 14px;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+
+    .check-miel:hover {
+        border-color: var(--miel-oscuro);
+    }
+
+    .check-label {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        cursor: pointer;
+        font-weight: 500;
+    }
+
+    /* Formularios */
+    .grupo-form {
+        margin-bottom: 1.5rem;
+    }
+
+    .fila-form {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+        margin-bottom: 1.2rem;
+        padding: 1.2rem;
+        background-color: var(--miel-claro);
+        border-radius: 10px;
+        position: relative;
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.03);
+        transition: all 0.3s ease;
+        border-left: 3px solid var(--miel-medio);
+    }
+
+    .fila-form:hover {
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        transform: translateY(-2px);
+        border-left-color: var(--miel-ambar);
+    }
+
+    .columna-form {
+        flex: 1;
+        min-width: 180px;
+    }
+
+    .etiqueta-miel {
+        display: block;
+        margin-bottom: 0.5rem;
+        color: var(--texto-oscuro);
+        font-weight: 600;
+        font-size: 0.9rem;
+    }
+
+    .input-miel,
+    .select-miel {
+        width: 100%;
+        padding: 0.8rem;
+        border: 2px solid var(--miel-medio);
+        border-radius: 6px;
+        background-color: white;
+        transition: all 0.3s ease;
+        font-size: 0.95rem;
+    }
+
+    .input-miel:focus,
+    .select-miel:focus {
+        border-color: var(--miel-ambar);
+        box-shadow: 0 0 0 3px rgba(255, 202, 40, 0.2);
+        outline: none;
+    }
+
+    .input-miel:hover,
+    .select-miel:hover {
+        border-color: var(--miel-dorado);
+    }
+
+    /* Contenedor de subtareas */
+    .contenedor-subtareas {
+        background-color: white;
+        border-radius: 10px;
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+        border: 1px dashed var(--miel-medio);
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.03);
+    }
+
+    /* Botones de acción */
+    .acciones-form {
+        display: flex;
+        gap: 1rem;
+        margin-top: 1.5rem;
+        flex-wrap: wrap;
+    }
+
+    .btn-agregar {
+        background: linear-gradient(135deg, var(--cera-suave), #a1887f);
+        color: white;
+        border: none;
+        padding: 0.8rem 1.5rem;
+        font-weight: 600;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+        height: 50px;
+        margin-top: 24px;
+    }
+
+    .btn-agregar:hover {
+        background: linear-gradient(135deg, #a1887f, #8d6e63);
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+    }
+
+    .btn-agregar:active {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .btn-eliminar {
+        background: linear-gradient(135deg, #ef5350, #e53935);
+        color: white;
+        border: none;
+        padding: 0.6rem 1rem;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        align-self: flex-end;
+        font-weight: 500;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .btn-eliminar:hover {
+        background: linear-gradient(135deg, #e53935, #d32f2f);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+    }
+
+    .btn-eliminar:active {
+        transform: translateY(-1px);
+        box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Contenedor de vistas */
+    .contenedor-vistas {
+        background-color: white;
+        border-radius: 12px;
+        padding: 2rem;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.06);
+        border: 1px solid var(--miel-suave);
+        min-height: 400px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .contenedor-vistas::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 6px;
+        background: linear-gradient(90deg,
+                var(--miel-suave),
+                var(--miel-medio),
+                var(--miel-dorado),
+                var(--miel-medio),
+                var(--miel-suave));
+    }
+
+    /* Secciones de tareas */
+    .tareas-predefinidas,
+    .tareas-personalizadas {
+        margin-bottom: 2rem;
+        position: relative;
+    }
+
+    /* Responsive */
+    @media (max-width: 992px) {
+        .apiario-title {
+            font-size: 2.2rem;
+        }
+
+        .panel-titulo {
+            font-size: 1.6rem;
+        }
+
+        .apiario-panel,
+        .contenedor-vistas {
+            padding: 1.8rem;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .apiario-controls {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .view-controls {
+            justify-content: center;
+            margin-bottom: 1rem;
+        }
+
+        .btn-miel {
+            width: 100%;
+            text-align: center;
+        }
+
+        .apiario-title {
+            font-size: 2rem;
+            padding: 0 1.5rem 0.6rem;
+        }
+
+        .apiario-title::before,
+        .apiario-title::after {
+            font-size: 1.3rem;
+        }
+
+        .fila-form {
+            flex-direction: column;
+            padding: 1rem;
+        }
+
+        .columna-form {
+            width: 100%;
+            margin-bottom: 0.8rem;
+        }
+
+        .acciones-form {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .btn-agregar,
+        .btn-miel-submit {
+            width: 100%;
+        }
+    }
+
+    @media (max-width: 576px) {
+
+        .apiario-panel,
+        .contenedor-vistas {
+            padding: 1.5rem;
+            border-radius: 10px;
+        }
+
+        .apiario-title {
+            font-size: 1.8rem;
+        }
+
+        .panel-titulo {
+            font-size: 1.5rem;
+        }
+
+        .tabla-panal {
+            font-size: 0.85rem;
+        }
+
+        .tabla-panal th,
+        .tabla-panal td {
+            padding: 0.7rem 0.4rem;
+        }
+    }
+
+    /* Añadir estos estilos al final del archivo CSS existente */
+
+    /* Estilos para consejos y notas sutiles */
+    .tip-sutil {
+        display: block;
+        color: var(--texto-suave);
+        font-size: 0.9rem;
+        margin-top: 0.5rem;
+        font-style: italic;
+    }
+
+    .consejo-sutil {
+        display: block;
+        color: var(--texto-suave);
+        font-size: 0.85rem;
+        margin: -0.5rem 0 1rem;
+        font-style: italic;
+    }
+
+    .nota-sutil {
+        color: var(--texto-suave);
+        font-size: 0.85rem;
+        margin: 0.8rem 0;
+        font-style: italic;
+    }
+
+    /* Mini guía de tareas */
+    .mini-guia {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+        margin-bottom: 1.2rem;
+        font-size: 0.85rem;
+    }
+
+    .guia-item {
+        background-color: var(--miel-claro);
+        padding: 0.4rem 0.8rem;
+        border-radius: 4px;
+        color: var(--texto-oscuro);
+    }
+
+    /* Guía de vistas */
+    .vista-guia {
+        margin-bottom: 1.5rem;
+        padding-bottom: 1rem;
+        border-bottom: 1px dashed var(--miel-suave);
+    }
+
+    .vista-tip {
+        color: var(--texto-oscuro);
+        font-size: 0.95rem;
+        margin-bottom: 0.8rem;
+    }
+
+    .vista-info {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+        font-size: 0.85rem;
+    }
+
+    .vista-info-item {
+        color: var(--texto-suave);
+        background-color: var(--miel-claro);
+        padding: 0.3rem 0.7rem;
+        border-radius: 4px;
+    }
+
+    /* Consejo final */
+    .consejo-final {
+        margin-top: 2rem;
+        padding-top: 1rem;
+        border-top: 1px dashed var(--miel-suave);
+        text-align: center;
+        font-size: 0.95rem;
+        color: var(--texto-suave);
+        font-style: italic;
+    }
+
+    /* Responsive para los nuevos elementos */
+    @media (max-width: 768px) {
+
+        .mini-guia,
+        .vista-info {
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .guia-item,
+        .vista-info-item {
+            font-size: 0.8rem;
+        }
+    }
+</style>

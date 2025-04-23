@@ -59,7 +59,7 @@
                   <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
                 </svg>
               </div>
-              <div class="feature-text">Conociemiento</div>
+              <div class="feature-text">Conocimiento</div>
             </div>
             <div class="feature-item">
               <div class="feature-icon">
