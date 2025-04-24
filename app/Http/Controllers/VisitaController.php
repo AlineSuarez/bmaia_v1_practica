@@ -134,165 +134,80 @@ class VisitaController extends Controller
     }
 
     public function storeSistemaExperto(Request $request)
-    {
-        $request->validate([
-            'actividad' => 'required|string',
-            'vigor' => 'required|string',
-            'presencia_nosemosis.signos_clinicos' => 'required|string',
-            'indice_cosecha.madurez_miel' => 'required|string',
-            'preparacion_invernada.control_sanitario' => 'required|string',
-            // ... agrega más si deseas validar todo
-        ]);
+{
+    // 1. Validaciones
+    $request->validate([
+        // PCC1 - Desarrollo de la Cámara de Cría
+        'desarrollo_cria.vigor_colmena' => 'nullable|string',
+        'desarrollo_cria.actividad_abejas' => 'nullable|string',
+        'desarrollo_cria.ingreso_polen' => 'nullable|string',
+        'desarrollo_cria.bloqueo_camara_cria' => 'nullable|string',
+        'desarrollo_cria.presencia_celdas_reales' => 'nullable|string',
+        // PCC2 - Calidad de la Reina
+        'calidad_reina.postura_reina' => 'nullable|string',
+        'calidad_reina.estado_cria' => 'nullable|string',
+        'calidad_reina.postura_zanganos' => 'nullable|string',
+        // PCC3 - Estado Nutricional
+        'estado_nutricional.reserva_miel_polen' => 'nullable|string',
+        'estado_nutricional.tipo_alimentacion' => 'nullable|string',
+        'estado_nutricional.fecha_aplicacion' => 'nullable|date',
+        'estado_nutricional.insumo_utilizado' => 'nullable|string',
+        'estado_nutricional.dosifiacion' => 'nullable|string',
+        'estado_nutricional.metodo_utilizado' => 'nullable|string',
+        'estado_nutricional.n_colmenas_tratadas' => 'nullable|integer',
+        // PCC4 - Varroa
+        'presencia_varroa.diagnostico_visual' => 'nullable|string',
+        'presencia_varroa.muestreo_abejas_adultas' => 'nullable|string',
+        'presencia_varroa.muestreo_cria_operculada' => 'nullable|string',
+        'presencia_varroa.tratamiento' => 'nullable|string',
+        'presencia_varroa.fecha_aplicacion' => 'nullable|date',
+        'presencia_varroa.dosificacion' => 'nullable|string',
+        'presencia_varroa.metodo_aplicacion' => 'nullable|string',
+        'presencia_varroa.n_colmenas_tratadas' => 'nullable|integer',
+        // PCC5 - Nosemosis
+        'presencia_nosemosis.signos_clinicos' => 'nullable|string',
+        'presencia_nosemosis.muestreo_laboratorio' => 'nullable|string',
+        'presencia_nosemosis.tratamiento' => 'nullable|string',
+        'presencia_nosemosis.fecha_aplicacion' => 'nullable|date',
+        'presencia_nosemosis.dosificacion' => 'nullable|string',
+        'presencia_nosemosis.metodo_aplicacion' => 'nullable|string',
+        'presencia_nosemosis.num_colmenas_tratadas' => 'nullable|integer',
+        // PCC6 - Índice de Cosecha
+        'indice_cosecha.madurez_miel' => 'nullable|string',
+        'indice_cosecha.num_alzadas' => 'nullable|numeric',
+        'indice_cosecha.marcos_miel' => 'nullable|numeric',
+        // PCC7 - Preparación Invernada
+        'preparacion_invernada.control_sanitario' => 'nullable|string',
+        'preparacion_invernada.fusion_colmenas' => 'nullable|string',
+        'preparacion_invernada.reserva_alimento' => 'nullable|string',
+    ]);
 
-        // Guardar PCCs
-        $nosemosis = \App\Models\PresenciaNosemosis::create($request->input('presencia_nosemosis'));
-        $cosecha = \App\Models\IndiceCosecha::create($request->input('indice_cosecha'));
-        $invernada = \App\Models\PreparacionInvernada::create($request->input('preparacion_invernada'));
+    // 2. Guardar cada PCC en su tabla y obtener ID
+    $desarrolloCria = \App\Models\DesarrolloCria::create($request->input('desarrollo_cria', []));
+    $calidadReina = \App\Models\CalidadReina::create($request->input('calidad_reina', []));
+    $estadoNutricional = \App\Models\EstadoNutricional::create($request->input('estado_nutricional', []));
+    $presenciaVarroa = \App\Models\PresenciaVarroa::create($request->input('presencia_varroa', []));
+    $presenciaNosemosis = \App\Models\PresenciaNosemosis::create($request->input('presencia_nosemosis', []));
+    $indiceCosecha = \App\Models\IndiceCosecha::create($request->input('indice_cosecha', []));
+    $preparacionInvernada = \App\Models\PreparacionInvernada::create($request->input('preparacion_invernada', []));
 
-        // Crear Visita
-        $visita = new Visita();
-        $visita->user_id = auth()->id();
-        $visita->tipo_visita = 'Sistema Experto';
-        $visita->fecha_visita = now();
-        $visita->actividad_colmena = $request->actividad;
-        $visita->vigor_de_colmena = $request->vigor;
+    // 3. Crear la visita principal y guardar los ID de cada PCC
+    $visita = \App\Models\Visita::create([
+        'user_id' => auth()->id(),
+        'apiario_id' => $request->apiario_id,
+        'fecha_visita' => now(),
+        'tipo_visita' => 'Sistema Experto',
+        'desarrollo_cria_id' => $desarrolloCria->id,
+        'calidad_reina_id' => $calidadReina->id,
+        'estado_nutricional_id' => $estadoNutricional->id,
+        'presencia_varroa_id' => $presenciaVarroa->id,
+        'presencia_nosemosis_id' => $presenciaNosemosis->id,
+        'indice_cosecha_id' => $indiceCosecha->id,
+        'preparacion_invernada_id' => $preparacionInvernada->id,
+    ]);
 
-        // Asociar FK
-        $visita->presencia_nosemosis_id = $nosemosis->id;
-        $visita->indice_cosecha_id = $cosecha->id;
-        $visita->preparacion_invernada_id = $invernada->id;
-
-        $visita->save();
-
-        return redirect()->route('sistemaexperto.index')->with('success', 'Registro guardado correctamente.');
-    }
-
-
-    /*
-    public function storeSistemaExperto(Request $request) {
-        $request->validate([
-            'actividad' => 'required|string',
-            'vigor' => 'required|string',
-    
-            // PCC1
-            'pcc1_vigor_total' => 'nullable|string',
-            'pcc1_activity_total' => 'nullable|string',
-            'pcc1_pollen_total' => 'nullable|string',
-            'pcc1_block_total' => 'nullable|string',
-            'pcc1_cells_total' => 'nullable|string',
-    
-            // PCC2
-            'pcc2_postura_total' => 'nullable|string',
-            'pcc2_cria_total' => 'nullable|string',
-            'pcc2_zanganos_total' => 'nullable|string',
-    
-            // PCC3
-            'pcc3_reserva_total' => 'nullable|string',
-    
-            // PCC4
-            'pcc4_varroa_total' => 'nullable|string',
-    
-            // PCC5
-            'pcc5_nosemosis' => 'nullable|string',
-    
-            // PCC6
-            'pcc6_cosecha_total' => 'nullable|string',
-    
-            // PCC7
-            'pcc7_preparacion_invernada' => 'nullable|string',
-        ]);
-    
-        $visita = new Visita();
-        $visita->user_id = auth()->id();
-        $visita->tipo_visita = 'Sistema Experto';
-        $visita->fecha_visita = now();
-    
-        // Campos generales
-        $visita->actividad = $request->actividad;
-        $visita->vigor = $request->vigor;
-    
-        // PCCs
-        $visita->pcc1_vigor_total = $request->pcc1_vigor_total;
-        $visita->pcc1_activity_total = $request->pcc1_activity_total;
-        $visita->pcc1_pollen_total = $request->pcc1_pollen_total;
-        $visita->pcc1_block_total = $request->pcc1_block_total;
-        $visita->pcc1_cells_total = $request->pcc1_cells_total;
-        $visita->pcc2_postura_total = $request->pcc2_postura_total;
-        $visita->pcc2_cria_total = $request->pcc2_cria_total;
-        $visita->pcc2_zanganos_total = $request->pcc2_zanganos_total;
-        $visita->pcc3_reserva_total = $request->pcc3_reserva_total;
-        $visita->pcc4_varroa_total = $request->pcc4_varroa_total;
-        $visita->pcc5_nosemosis = $request->pcc5_nosemosis;
-        $visita->pcc6_cosecha_total = $request->pcc6_cosecha_total;
-        $visita->pcc7_preparacion_invernada = $request->pcc7_preparacion_invernada;
-    
-        $visita->save();
-    
-        return redirect()->route('sistemaexperto.index')->with('success', 'Registro guardado correctamente.');
-    }
-
-    
-    /*
-    public function storeSistemaExperto(Request $request, Apiario $apiario){
-        $request->validate([
-            'fecha_visita' => 'required|date',
-            // PCC5
-            'pcc5_signos_clinicos' => 'nullable|string',
-            'pcc5_muestreo_laboratorio' => 'nullable|string',
-            'pcc5_tratamiento' => 'nullable|string',
-            'pcc5_fecha_aplicacion' => 'nullable|date',
-            'pcc5_dosificacion' => 'nullable|string',
-            'pcc5_metodo_aplicacion' => 'nullable|string',
-            'pcc5_colmenas_tratadas' => 'nullable|integer',
-            // PCC6
-            'pcc6_madurez_miel' => 'nullable|string',
-            'pcc6_num_alzadas' => 'nullable|string',
-            'pcc6_marcos_miel' => 'nullable|string',
-            // PCC7
-            'pcc7_control_sanitario' => 'nullable|string',
-            'pcc7_fusion_colmenas' => 'nullable|string',
-            'pcc7_reserva_alimento' => 'nullable|string',
-        ]);
-    
-        $nosemosis = \App\Models\PresenciaNosemosis::create($request->only([
-            'pcc5_signos_clinicos',
-            'pcc5_muestreo_laboratorio',
-            'pcc5_tratamiento',
-            'pcc5_fecha_aplicacion',
-            'pcc5_dosificacion',
-            'pcc5_metodo_aplicacion',
-            'pcc5_colmenas_tratadas',
-        ]));
-    
-        $cosecha = \App\Models\IndiceCosecha::create([
-            'madurez_miel' => $request->pcc6_madurez_miel,
-            'num_alzadas' => $request->pcc6_num_alzadas,
-            'marcos_miel' => $request->pcc6_marcos_miel,
-        ]);
-    
-        $invernada = \App\Models\PreparacionInvernada::create([
-            'control_sanitario' => $request->pcc7_control_sanitario,
-            'fusion_colmenas' => $request->pcc7_fusion_colmenas,
-            'reserva_alimento' => $request->pcc7_reserva_alimento,
-        ]);
-    
-        $visita = new Visita();
-        $visita->user_id = auth()->id();
-        $visita->apiario_id = $apiario->id;
-        $visita->tipo_visita = 'Sistema Experto';
-        $visita->fecha_visita = $request->fecha_visita;
-    
-        $visita->presencia_nosemosis_id = $nosemosis->id;
-        $visita->indice_cosecha_id = $cosecha->id;
-        $visita->preparacion_invernada_id = $invernada->id;
-    
-        $visita->save();
-    
-        return redirect()->route('sistemaexperto.index')->with('success', 'Registro del Sistema Experto guardado correctamente.');
-    }
-         */
-
-
+    return redirect()->route('sistemaexperto')->with('success', 'Registro guardado correctamente.');
+}
 
     public function showHistorial($apiarioId)
     {

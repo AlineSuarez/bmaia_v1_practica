@@ -25,6 +25,7 @@
                 <th>Nombre del Apiario</th>
                 <th>Número de Colmenas</th>
                 <th>Consejo</th>
+                <th>Acciones</th>
             </tr>
         </thead>
         <tbody id="consejosTableBody">
@@ -32,13 +33,11 @@
         </tbody>
     </table>
     <button class="btn btn-primary" id="regenerarConsejos">Regenerar Consejos</button>
-    <a href="{{ route('sistemaexperto.create') }}" class="btn btn-success">Crear PCC</a>
 </div>
 
 @endsection
 
 @section('optional-scripts')
-<script src="/js/VoiceCommands.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const loadingOverlay = document.getElementById('loadingOverlay');
@@ -64,6 +63,9 @@ document.addEventListener('DOMContentLoaded', function() {
                             <td>${apiario.nombre}</td>
                             <td>${apiario.num_colmenas}</td>
                             <td>${apiario.consejo}</td>
+                            <td>
+                                <a href="{{ route('sistemaexperto.create') }}" class="btn btn-success btn-sm">Crear PCC</a>
+                            </td>
                         `;
                         tableBody.appendChild(row);
                     });

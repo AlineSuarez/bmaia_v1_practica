@@ -44,14 +44,16 @@ class Visita extends Model
 
     public function toPrompt()
     {
-        return "Informe apícola:\n".
-            "- Actividad de la colmena: {$this->actividad_colmena}\n".
-            "- Vigor: {$this->vigor_de_colmena}\n".
-            "- Nosemosis: ".optional($this->presenciaNosemosis)->signos_clinicos."\n".
-            "- Cosecha: ".optional($this->indiceCosecha)->madurez_miel."\n".
-            "- Preparación para invernada: ".optional($this->preparacionInvernada)->control_sanitario."\n";
+        return "Informe Apícola:
+            - Desarrollo cámara cría: " . optional($this->desarrolloCria)->vigor_colmena . ", actividad: " . optional($this->desarrolloCria)->actividad_abejas . "
+            - Calidad de la reina: " . optional($this->calidadReina)->postura_reina . ", cría: " . optional($this->calidadReina)->estado_cria . "
+            - Estado nutricional: " . optional($this->estadoNutricional)->reserva_miel_polen . ", tipo alimentación: " . optional($this->estadoNutricional)->tipo_alimentacion . "
+            - Nivel de varroa: " . optional($this->presenciaVarroa)->diagnostico_visual . ", tratamiento: " . optional($this->presenciaVarroa)->tratamiento . "
+            - Nosemosis: " . optional($this->presenciaNosemosis)->signos_clinicos . "
+            - Cosecha: " . optional($this->indiceCosecha)->madurez_miel . ", alzas: " . optional($this->indiceCosecha)->num_alzadas . "
+            - Preparación invernada: " . optional($this->preparacionInvernada)->control_sanitario . "
+            ";
     }
-
     
     // Relaciones
     public function apiario()
@@ -91,27 +93,4 @@ class Visita extends Model
     public function indiceCosecha() {
         return $this->belongsTo(IndiceCosecha::class);
     }
-
-
-/*
-public function scopeSistemaExperto($query)
-    {
-        return $query->where('tipo_visita', 'Sistema Experto');
-    }
-
-    public function scopeInspeccion($query)
-    {
-        return $query->where('tipo_visita', 'Inspección');
-    }
-
-    public function scopeGeneral($query)
-    {
-        return $query->where('tipo_visita', 'Visita General');
-    }
-
-    public function scopeMedicamentos($query)
-    {
-        return $query->where('tipo_visita', 'Uso de Medicamentos');
-    }
- */
 }
