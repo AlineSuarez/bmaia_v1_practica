@@ -1,11 +1,9 @@
 @extends('layouts.app')
-
 @section('title', 'MaiA - Sistema Experto')
 
 @section('content')
-
 <!-- Pantalla de carga (overlay) -->
-<div id="loadingOverlay" class="loading-overlay">
+<div id="loadingOverlay" class="loading-overlay" style="display: none;">
     <div class="spinner-container">
         <div class="spinner-border text-primary" role="status">
             <span class="visually-hidden">Cargando...</span>
@@ -16,8 +14,6 @@
 
 <div class="container mt-4">
     <h1>Consejos Basados en los Registros</h1>
-
-    <!-- Tabla de Consejos -->
     <table class="table table-bordered">
         <thead>
             <tr>
@@ -28,88 +24,86 @@
                 <th>Acciones</th>
             </tr>
         </thead>
-        <tbody id="consejosTableBody">
-            <!-- Los datos se insertarán dinámicamente -->
+        <tbody>
+            @foreach($apiarios as $apiario)
+                <tr data-apiario="{{ $apiario->id }}">
+                    <td>{{ $apiario->id }}</td>
+                    <td>{{ $apiario->nombre }}</td>
+                    <td>{{ $apiario->num_colmenas }}</td>
+                    <td class="consejo-td">
+                        <span class="spinner-border spinner-border-sm text-primary d-none" role="status"></span>
+                        <span class="consejo-text"></span>
+                    </td>
+                    <td>
+                        <button class="btn btn-primary btn-sm btn-consejo" data-id="{{ $apiario->id }}" title="Regenerar Consejo">
+                            <i class="fas fa-sync" aria-label="Regenerar Consejo"></i>
+                        </button>
+                        <a href="{{ route('sistemaexperto.create', $apiario->id) }}" class="btn btn-success btn-sm" title="Registrar PCC">
+                            <i class="fas fa-plus" aria-label="Registrar PCC"></i>
+                        </a>
+                    </td>
+                </tr>
+            @endforeach
         </tbody>
     </table>
     <button class="btn btn-primary" id="regenerarConsejos">Regenerar Consejos</button>
 </div>
 
+<style>
+.loading-overlay {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: white; display: flex; justify-content: center; align-items: center; z-index: 9999;
+}
+.spinner-container { text-align: center; }
+</style>
 @endsection
 
 @section('optional-scripts')
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    const loadingOverlay = document.getElementById('loadingOverlay');
-    const tableBody = document.getElementById('consejosTableBody');
+function cargarConsejo(apiarioId, row) {
+    var consejoTd = row.find('.consejo-td');
+    consejoTd.find('.spinner-border').removeClass('d-none');
+    consejoTd.find('.consejo-text').text('');
+    $.ajax({
+        url: '/apiarios/' + apiarioId + '/obtener-consejo',
+        type: 'GET',
+        success: function(data){
+            consejoTd.find('.spinner-border').addClass('d-none');
+            if(data.success){
+                consejoTd.find('.consejo-text').text(data.consejo);
+            } else {
+                consejoTd.find('.consejo-text').html('<span class="text-warning">'+data.message+'</span> <a href="'+data.registrar_pcc_url+'" class="btn btn-link btn-sm">Registrar PCC</a>');
+            }
+        },
+        error: function(){
+            consejoTd.find('.spinner-border').addClass('d-none');
+            consejoTd.find('.consejo-text').html('<span class="text-danger">Error al obtener consejo</span>');
+        }
+    });
+}
 
-    function cargarConsejos() {
-        // Mostrar pantalla de carga
-        loadingOverlay.style.display = 'flex';
-
-        fetch("{{ route('consejos') }}")
-            .then(response => response.json())
-            .then(data => {
-                // Ocultar pantalla de carga
-                loadingOverlay.style.display = 'none';
-                tableBody.innerHTML = ''; // Limpiar tabla antes de llenar
-
-                // Verificar si hay datos
-                if (data.apiarios && data.apiarios.length > 0) {
-                    data.apiarios.forEach(apiario => {
-                        const row = document.createElement('tr');
-                        row.innerHTML = `
-                            <td>${apiario.id}</td>
-                            <td>${apiario.nombre}</td>
-                            <td>${apiario.num_colmenas}</td>
-                            <td>${apiario.consejo}</td>
-                            <td>
-                                <a href="{{ route('sistemaexperto.create') }}" class="btn btn-success btn-sm">Crear PCC</a>
-                            </td>
-                        `;
-                        tableBody.appendChild(row);
-                    });
-                } else {
-                    const row = document.createElement('tr');
-                    row.innerHTML = `<td colspan="4" class="text-center">No hay consejos disponibles actualmente.</td>`;
-                    tableBody.appendChild(row);
-                }
-            })
-            .catch(error => {
-                // Ocultar pantalla de carga
-                loadingOverlay.style.display = 'none';
-                console.error('Error al cargar los consejos:', error);
-                const row = document.createElement('tr');
-                row.innerHTML = `<td colspan="4" class="text-center text-danger">Error al cargar los consejos. Inténtalo nuevamente más tarde.</td>`;
-                tableBody.appendChild(row);
-            });
-    }
-
+$(document).ready(function(){
     // Cargar consejos al iniciar
-    cargarConsejos();
+    $('tr[data-apiario]').each(function(){
+        var apiarioId = $(this).data('apiario');
+        cargarConsejo(apiarioId, $(this));
+    });
 
-    // Recargar consejos al hacer clic en el botón
-    document.getElementById('regenerarConsejos').addEventListener('click', cargarConsejos);
+    // Botón Regenerar Consejo individual
+    $('.btn-consejo').click(function(){
+        var apiarioId = $(this).data('id');
+        var row = $(this).closest('tr');
+        cargarConsejo(apiarioId, row);
+    });
+
+    // Botón Regenerar Consejos global
+    $('#regenerarConsejos').click(function(){
+        $('tr[data-apiario]').each(function(){
+            var apiarioId = $(this).data('apiario');
+            cargarConsejo(apiarioId, $(this));
+        });
+    });
 });
 </script>
-
-<style>
-/* Estilos para la pantalla de carga */
-.loading-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: white;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 9999;
-}
-
-.spinner-container {
-    text-align: center;
-}
-</style>
 @endsection

@@ -79,13 +79,9 @@ class ApiarioController extends Controller
             $apiario->foto = $path;
         }
         $apiario->save();
-
-
-
         return redirect()->route('apiarios')->with('success', 'Apiario agregado con éxito');
-
     }
-
+    
     // Método para retornar comunas en función de la región
     public function getComunas($regionId)
     {
@@ -99,7 +95,6 @@ class ApiarioController extends Controller
         $apiario = Apiario::where('id', $apiarioId)
             ->where('user_id', auth()->id())
             ->first(); // Usa first() para obtener una instancia del modelo
-
         // Verifica si el apiario existe
         if ($apiario) {
             $apiario->delete(); // Elimina el apiario
@@ -118,7 +113,6 @@ class ApiarioController extends Controller
             // Elimina todos los apiarios con los IDs proporcionados
             Apiario::whereIn('id', $ids)->delete();
         }
-
         // Puedes regresar una respuesta JSON o redirigir
         return response()->json(['success' => true]);
     }
@@ -147,21 +141,17 @@ class ApiarioController extends Controller
             'longitud' => 'required|numeric',
             'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:1048' // Validación para la imagen
         ]);
-
         $apiario = Apiario::findOrFail($id);
-
         // Verificar si se ha subido una nueva foto
         if ($request->hasFile('foto')) {
             // Eliminar la foto anterior si existe
             if ($apiario->foto) {
                 Storage::delete('public/' . $apiario->foto);
             }
-
             // Guardar la nueva foto
             $path = $request->file('foto')->store('fotos_apiarios', 'public');
             $apiario->foto = $path;
         }
-
         // Actualizar otros campos del apiario
         $apiario->nombre = $request->nombre;
         $apiario->temporada_produccion = $request->temporada_produccion;
@@ -174,9 +164,94 @@ class ApiarioController extends Controller
         $apiario->comuna_id = $request->comuna;
         $apiario->latitud = $request->latitud;
         $apiario->longitud = $request->longitud;
-
         $apiario->save();
-
         return redirect()->route('apiarios')->with('success', 'Apiario actualizado exitosamente.');
+    }
+
+    // Listar apiarios y sus acciones
+    public function indexSistemaExperto()
+    {
+        $user = Auth::user();
+        $apiarios = Apiario::where('user_id', $user->id)->get();
+        return view('sistemaexperto.index', compact('apiarios'));
+    }
+
+    // Generar consejo basado en el último registro PCC del apiario
+    /**public function generarConsejo($apiario_id)
+    {
+        $apiario = Apiario::findOrFail($apiario_id);
+        $ultimaVisita = $apiario->visitas()->latest()->first();
+        // Validar que exista una visita y que tenga todos los PCC asociados
+        $requisitosPCC = [
+            'desarrollo_cria_id', 'calidad_reina_id', 'estado_nutricional_id',
+            'presencia_varroa_id', 'presencia_nosemosis_id', 'indice_cosecha_id', 'preparacion_invernada_id'
+        ];
+        $faltantes = collect($requisitosPCC)->filter(function($campo) use ($ultimaVisita) {
+            return !$ultimaVisita || !$ultimaVisita->$campo;
+        });
+        if ($faltantes->count() > 0) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Debes registrar un PCC completo antes de generar el consejo.',
+                'registrar_pcc_url' => route('sistemaexperto.pcc.create', $apiario->id)
+            ]);
+        }
+        // Armar contexto con datos del último registro (simplificado para MVP)
+        $context = [
+            'apiario' => [
+                'id' => $apiario->id,
+                'nombre' => $apiario->nombre,
+                'num_colmenas' => $apiario->num_colmenas,
+            ],
+            'pcc' => [
+                'desarrollo_cria' => $ultimaVisita->desarrolloCria,
+                'calidad_reina' => $ultimaVisita->calidadReina,
+                'estado_nutricional' => $ultimaVisita->estadoNutricional,
+                'presencia_varroa' => $ultimaVisita->presenciaVarroa,
+                'presencia_nosemosis' => $ultimaVisita->presenciaNosemosis,
+                'indice_cosecha' => $ultimaVisita->indiceCosecha,
+                'preparacion_invernada' => $ultimaVisita->preparacionInvernada,
+            ]
+        ];
+        // Aquí deberías llamar a la IA. Para MVP, simula el consejo:
+        // $consejo = llamarAOpenAI($context); // Llama tu función
+        $consejo = "Consejo generado en base al último registro del PCC para el apiario '{$apiario->nombre}'. Revisa el estado nutricional y la presencia de varroa.";
+        return response()->json([
+            'success' => true,
+            'consejo' => $consejo,
+            'apiario' => $apiario->nombre,
+        ]);
+    }
+     */
+
+    public function obtenerConsejo($apiario_id)
+    {
+        $apiario = \App\Models\Apiario::findOrFail($apiario_id);
+        // Buscar último registro completo de Sistema Experto
+        $ultimaVisita = $apiario->visitas()
+            ->where('tipo_visita', 'Sistema Experto')
+            ->latest()
+            ->first();
+        $requisitosPCC = [
+            'desarrollo_cria_id', 'calidad_reina_id', 'estado_nutricional_id',
+            'presencia_varroa_id', 'presencia_nosemosis_id', 'indice_cosecha_id', 'preparacion_invernada_id'
+        ];
+        $faltantes = collect($requisitosPCC)->filter(fn($c) => !$ultimaVisita || !$ultimaVisita->$c);
+        if ($faltantes->count() > 0) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Debes registrar un PCC completo antes de generar el consejo.',
+                'registrar_pcc_url' => route('sistemaexperto.pcc.create', $apiario->id)
+            ]);
+        }
+        // Simulación de consejo (aquí puedes usar lógica real o IA)
+        $consejo = "Consejo generado para el apiario '{$apiario->nombre}': revisa el estado nutricional y controla la varroa según el último PCC.";
+        // (Opcional: guardar consejo en visitas si quieres un historial real)
+        // $ultimaVisita->consejo = $consejo; $ultimaVisita->save();
+        return response()->json([
+            'success' => true,
+            'consejo' => $consejo,
+            'apiario' => $apiario->id,
+        ]);
     }
 }

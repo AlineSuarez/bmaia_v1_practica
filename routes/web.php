@@ -147,9 +147,14 @@ Route::post('/user/update-settings', [UserController::class, 'updateSettings'])-
 Route::post('/user/update-plan', [UserController::class, 'updatePlan'])->name('user.updatePlan');
 
 Route::middleware(['auth', 'check.payment'])->group(function () {
-Route::get('/sistemaexperto', [ChatbotController::class, 'sistemaExpertoIndex'])->name('sistemaexperto');
-Route::get('/sistemaexperto/create', [ChatbotController::class, 'sistemaExpertoCreate'])->name('sistemaexperto.create');
-Route::post('/sistemaexperto/guardar', [VisitaController::class, 'storeSistemaExperto'])->name('sistemaexperto.store');
+// La ruta de sistema experto que lista los apiarios
+Route::get('/sistemaexperto', [App\Http\Controllers\ApiarioController::class, 'indexSistemaExperto'])->name('sistemaexperto');
+// Formulario para registrar PCC (puede aceptar el id del apiario)
+Route::get('/sistemaexperto/{apiario}/create', [ChatbotController::class, 'sistemaExpertoCreate'])->name('sistemaexperto.create');
+// Guardar PCC
+Route::post('/sistemaexperto/guardar', [App\Http\Controllers\VisitaController::class, 'storeSistemaExperto'])->name('sistemaexperto.store');
+// AJAX individual: obtener consejo por apiario
+Route::get('/apiarios/{apiario}/obtener-consejo', [App\Http\Controllers\ApiarioController::class, 'obtenerConsejo']);
 });
 
 // Documentos y Emails

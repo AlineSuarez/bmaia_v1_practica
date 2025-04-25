@@ -16,7 +16,7 @@ class OpenAIController extends Controller
         try {
             // Enviar el mensaje a la API de OpenAI
             $response = OpenAI::chat()->create([
-                'model' => 'gpt-3.5-turbo', // Cambia por el modelo que prefieras
+                'model' => 'gpt-4', // Cambia por el modelo que prefieras (original:3.5-turbo)
                 'messages' => [
                     ['role' => 'user', 'content' => $request->message]
                 ],
