@@ -167,4 +167,65 @@ class ApiarioController extends Controller
         $apiario->save();
         return redirect()->route('apiarios')->with('success', 'Apiario actualizado exitosamente.');
     }
+
+    // Listar apiarios para sistema experto
+    public function indexSistemaExperto()
+    {
+        $user = Auth::user();
+        $apiarios = Apiario::where('user_id', $user->id)->get();
+        return view('sistemaexperto.index', compact('apiarios'));
+    }
+
+    // Obtener consejo (simulado) basado en registros PCC completos
+    public function obtenerConsejo($apiario_id)
+    {
+        $apiario = Apiario::findOrFail($apiario_id);
+
+        /*
+        // Solo visitas de tipo "Sistema Experto"
+        $ultimaVisita = $apiario->visitas()
+            ->where('tipo_visita', 'Sistema Experto')
+            ->latest()
+            ->first();
+
+        $requisitosPCC = [
+            'desarrollo_cria_id',
+            'calidad_reina_id',
+            'estado_nutricional_id',
+            'presencia_varroa_id',
+            'presencia_nosemosis_id',
+            'indice_cosecha_id',
+            'preparacion_invernada_id'
+        ];
+
+        $faltantes = collect($requisitosPCC)->filter(fn($campo) => !$ultimaVisita || !$ultimaVisita->$campo);
+        $puede_registrar_pcc = ($faltantes->count() > 0);
+
+        if ($puede_registrar_pcc) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Debes registrar un PCC completo antes de generar el consejo.',
+                'registrar_pcc_url' => route('sistemaexperto.create', $apiario->id),
+                'puede_registrar_pcc' => true,
+            ]);
+        }
+         */
+
+        // Consejo simulado aleatorio
+        $consejos = [
+            "Monitorea varroa y fortalece la alimentación proteica antes del invierno.",
+            "El apiario muestra buen desarrollo, revisa reservas y la postura de la reina.",
+            "Sugiero rotar cuadros y aplicar tratamiento preventivo para Nosema.",
+            "Estado general adecuado. Actualiza registros periódicamente.",
+            "Detectada baja actividad, revisa la calidad de la reina y alimentación.",
+            "Apiario saludable, recuerda monitorear enfermedades y reservas de miel."
+        ];
+        $consejo = $consejos[array_rand($consejos)];
+
+        return response()->json([
+            'success' => true,
+            'consejo' => $consejo,
+            'apiario' => $apiario->id,
+        ]);
+    }
 }
