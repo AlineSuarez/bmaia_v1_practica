@@ -1,0 +1,1161 @@
+/* Estilos generales */
+:root {
+    --primary: #f0941b;
+    --primary-dark: #d17d0e;
+    --primary-light: #ffcc80;
+    --secondary: #8e4e00;
+    --accent: #ffd54f;
+    --danger: #e74c3c;
+    --success: #2ecc71;
+    --info: #3498db;
+    --warning: #e67e22;
+    --dark: #333;
+    --light: #f9f9f9;
+    --gray: #6c757d;
+    --border-radius: 12px;
+    --box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+    --transition: all 0.3s ease;
+}
+
+body {
+    font-family: "Poppins", sans-serif;
+    color: var(--dark);
+    background-color: #f5f5f5;
+}
+
+.zonificacion-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 1rem 2rem;
+}
+
+/* Encabezado con efecto panal */
+.honeycomb-header {
+    position: relative;
+    height: 250px;
+    margin-bottom: 4rem;
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+    box-shadow: var(--box-shadow);
+}
+
+.honeycomb-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='100' viewBox='0 0 28 49'%3E%3Cpath d='M13.99 9.25l13 7.5v15l-13 7.5L1 31.75v-15l12.99-7.5zM3 17.9v12.7l10.99 6.34 11-6.35V17.9l-11-6.34L3 17.9zM0 15l12.98-7.5V0h-2v6.35L0 12.69v2.3zm0 18.5L12.98 41v8h-2v-6.85L0 35.81v-2.3zM15 0v7.5L27.99 15H28v-2.31h-.01L17 6.35V0h-2zm0 49v-8l12.99-7.5H28v2.31h-.01L17 42.15V49h-2z' fill='%23ffffff' fill-opacity='0.1'/%3E%3C/svg%3E");
+}
+
+.header-content {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    padding: 2rem;
+    text-align: center;
+}
+
+.zonificacion-title {
+    font-size: 3rem;
+    color: white;
+    margin-bottom: 1rem;
+    font-weight: 700;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    animation: fadeInDown 1s ease;
+}
+
+.zonificacion-subtitle {
+    font-size: 1.2rem;
+    color: rgba(255, 255, 255, 0.9);
+    max-width: 600px;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+    animation: fadeInUp 1s ease;
+}
+
+/* Tarjetas de estadísticas */
+.stats-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.stat-card {
+    display: flex;
+    align-items: center;
+    background: white;
+    padding: 1.5rem;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    transition: var(--transition);
+    position: relative;
+    overflow: hidden;
+}
+
+.stat-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 5px;
+    height: 100%;
+    background: var(--primary);
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+}
+
+.stat-icon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 60px;
+    height: 60px;
+    background: rgba(240, 148, 27, 0.1);
+    border-radius: 50%;
+    margin-right: 1rem;
+    flex-shrink: 0;
+}
+
+.stat-icon i {
+    font-size: 1.8rem;
+    color: var(--primary);
+}
+
+.stat-content h3 {
+    font-size: 0.9rem;
+    color: var(--gray);
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+}
+
+.stat-value {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--dark);
+    margin: 0;
+}
+
+/* Sección del mapa */
+.map-section {
+    background: white;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    margin-bottom: 2rem;
+    overflow: hidden;
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.section-title {
+    font-size: 1.5rem;
+    color: var(--primary);
+    margin: 0;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+}
+
+.section-title i {
+    margin-right: 0.5rem;
+}
+
+.map-controls {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+/* CORREGIDO: Botón de actualizar */
+.control-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--light);
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 50px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: var(--transition);
+    line-height: 1;
+    height: 38px;
+}
+
+.control-btn i {
+    margin-right: 0.5rem;
+    font-size: 1rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.control-btn:hover {
+    background: var(--primary-light);
+}
+
+/* CORREGIDO: Animación del botón de actualizar */
+@keyframes rotate-icon {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.refreshing i {
+    animation: rotate-icon 1s linear infinite;
+}
+
+.refreshing {
+    background-color: var(--primary-light);
+}
+
+.map-filter {
+    display: flex;
+    align-items: center;
+}
+
+.toggle-switch {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 24px;
+    margin-right: 0.5rem;
+}
+
+.toggle-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: 0.4s;
+    border-radius: 34px;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 18px;
+    width: 18px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: 0.4s;
+    border-radius: 50%;
+}
+
+input:checked + .slider {
+    background-color: var(--primary);
+}
+
+input:focus + .slider {
+    box-shadow: 0 0 1px var(--primary);
+}
+
+input:checked + .slider:before {
+    transform: translateX(26px);
+}
+
+.toggle-label {
+    font-weight: 500;
+    color: var(--primary);
+}
+
+#map-container {
+    position: relative;
+    height: 500px;
+}
+
+.apiary-map {
+    height: 100%;
+    width: 100%;
+    z-index: 1;
+}
+
+/* Leyenda oculta por defecto */
+.map-legend {
+    display: none;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s;
+    position: absolute;
+    bottom: 90px;
+    right: 30px;
+    z-index: 1200;
+    min-width: 220px;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+    padding: 1rem;
+}
+.map-legend.visible {
+    display: block;
+    opacity: 1;
+    pointer-events: auto;
+}
+
+/* Botón flotante para mostrar leyenda */
+.legend-toggle-btn {
+    position: absolute;
+    bottom: 30px;
+    right: 30px;
+    z-index: 1100;
+    background: var(--primary);
+    color: #fff;
+    border: none;
+    border-radius: 50%;
+    width: 48px;
+    height: 48px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    transition: background 0.2s, transform 0.2s;
+}
+
+.legend-toggle-btn:hover {
+    background: var(--primary-dark);
+    transform: scale(1.08);
+}
+
+.map-legend h4 {
+    margin-top: 0;
+    margin-bottom: 0.5rem;
+    font-size: 1rem;
+    color: var(--primary);
+    border-bottom: 2px solid var(--primary-light);
+    padding-bottom: 0.5rem;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.5rem;
+    font-size: 0.85rem;
+}
+
+.legend-color {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    margin-right: 0.5rem;
+}
+
+.legend-icon {
+    width: 16px;
+    text-align: center;
+    margin-right: 0.5rem;
+    color: var(--primary);
+}
+
+/* Sección de información de apiarios */
+.apiary-info-section {
+    background: white;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    margin-bottom: 2rem;
+    overflow: hidden;
+}
+
+/* CORREGIDO: Botones de vista */
+.view-controls {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.view-btn {
+    background: var(--light);
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 50px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: var(--transition);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 38px;
+    line-height: 1;
+}
+
+.view-btn i {
+    font-size: 1rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.view-btn:hover {
+    background: var(--primary-light);
+}
+
+.view-btn.active {
+    background: var(--primary);
+    color: white;
+}
+
+.view-container {
+    display: none;
+    padding: 1.5rem;
+}
+
+.view-container.active {
+    display: block;
+}
+
+/* Tabla de apiarios */
+.table-responsive {
+    overflow-x: auto;
+}
+
+.apiary-table {
+    width: 100%;
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+
+.apiary-table thead {
+    background-color: var(--primary);
+    color: white;
+}
+
+.apiary-table th {
+    padding: 1rem;
+    text-align: left;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.apiary-table th i {
+    margin-right: 0.5rem;
+}
+
+.apiary-table td {
+    padding: 1rem;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    vertical-align: middle;
+}
+
+.apiary-table tbody tr {
+    transition: var(--transition);
+}
+
+.apiary-table tbody tr:hover {
+    background-color: rgba(240, 148, 27, 0.05);
+}
+
+.apiary-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.apiary-image {
+    width: 80px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 6px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    transition: var(--transition);
+}
+
+.apiary-image:hover {
+    transform: scale(1.1);
+}
+
+.coordinates-tooltip {
+    cursor: help;
+    border-bottom: 1px dashed #ccc;
+}
+
+/* CORREGIDO: Botones de acción */
+.action-buttons {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.action-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: var(--transition);
+    padding: 0;
+    line-height: 1;
+}
+
+.action-btn i {
+    font-size: 0.9rem;
+}
+
+.view-btn {
+    background-color: var(--info);
+    color: white;
+}
+
+.edit-btn {
+    background-color: var(--warning);
+    color: white;
+}
+
+.locate-btn {
+    background-color: var(--primary);
+    color: white;
+}
+
+.action-btn:hover {
+    transform: scale(1.1);
+}
+
+/* Clases para datos del clima */
+.weather-data {
+    font-weight: 500;
+}
+
+.weather-data i {
+    margin-right: 0.5rem;
+}
+
+.temp-low {
+    color: var(--info);
+}
+
+.temp-high {
+    color: var(--danger);
+}
+
+.temp-optimal {
+    color: var(--success);
+}
+
+.humidity-low {
+    color: var(--warning);
+}
+
+.humidity-high {
+    color: var(--info);
+}
+
+.humidity-optimal {
+    color: var(--success);
+}
+
+/* Vista de tarjetas */
+.apiary-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+}
+
+.apiary-card {
+    background: white;
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    transition: var(--transition);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    position: relative;
+}
+
+.apiary-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.apiary-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 5px;
+    background: var(--primary);
+}
+
+.card-header {
+    padding: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.card-header h3 {
+    margin: 0;
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--dark);
+}
+
+/* CORREGIDO: Botones de acción en tarjetas */
+.card-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.card-action {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: var(--transition);
+    background-color: var(--primary);
+    color: white;
+    padding: 0;
+    line-height: 1;
+}
+
+.card-action i {
+    font-size: 0.9rem;
+}
+
+.card-action:hover {
+    transform: scale(1.1);
+}
+
+.card-image {
+    height: 180px;
+    overflow: hidden;
+}
+
+.card-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: var(--transition);
+}
+
+.card-image img:hover {
+    transform: scale(1.05);
+}
+
+.no-image {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f5f5f5;
+    color: #aaa;
+    font-size: 2rem;
+}
+
+.card-body {
+    padding: 1rem;
+}
+
+.card-info {
+    margin-bottom: 1rem;
+}
+
+.info-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+.info-item i {
+    width: 20px;
+    margin-right: 0.5rem;
+    color: var(--primary);
+}
+
+.weather-badge {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    background: rgba(240, 148, 27, 0.1);
+    border-radius: 50px;
+    font-weight: 500;
+    color: var(--primary);
+}
+
+.card-footer {
+    padding: 1rem;
+    border-top: 1px solid rgba(0, 0, 0, 0.05);
+    display: flex;
+    gap: 0.5rem;
+}
+
+.btn-primary,
+.btn-secondary {
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: var(--transition);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+}
+
+.btn-primary {
+    background: var(--primary);
+    color: white;
+    flex: 1;
+}
+
+.btn-secondary {
+    background: var(--light);
+    color: var(--dark);
+}
+
+.btn-primary:hover,
+.btn-secondary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Sección de análisis */
+.analytics-section {
+    background: white;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.analytics-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+    margin-top: 1.5rem;
+}
+
+.analytics-card {
+    background: var(--light);
+    border-radius: 8px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+.analytics-card h3 {
+    margin-top: 0;
+    margin-bottom: 1rem;
+    font-size: 1.2rem;
+    color: var(--primary);
+    text-align: center;
+}
+
+.chart-container {
+    height: 250px;
+}
+
+.full-width {
+    grid-column: 1 / -1;
+}
+
+.recommendations {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+}
+
+.recommendation-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+}
+
+.recommendation-icon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 50px;
+    height: 50px;
+    background: rgba(240, 148, 27, 0.1);
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.recommendation-icon i {
+    font-size: 1.5rem;
+    color: var(--primary);
+}
+
+.recommendation-content h4 {
+    margin-top: 0;
+    margin-bottom: 0.5rem;
+    font-size: 1.1rem;
+    color: var(--dark);
+}
+
+.recommendation-content p {
+    margin: 0;
+    color: var(--gray);
+    font-size: 0.9rem;
+}
+
+/* CORREGIDO: Estilos para popups del mapa */
+.custom-popup {
+    text-align: center;
+    width: 280px;
+    padding: 0;
+}
+
+.popup-image {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+    margin-bottom: 0;
+    display: block;
+}
+
+.custom-popup h3 {
+    margin: 0;
+    color: var(--primary);
+    font-size: 1.2rem;
+    padding: 1rem 1rem 0.5rem;
+}
+
+.popup-info {
+    text-align: left;
+    padding: 0 1rem 1rem;
+}
+
+.popup-info p {
+    margin: 0.5rem 0;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+}
+
+.popup-info i {
+    color: var(--primary);
+    width: 20px;
+    text-align: center;
+    margin-right: 0.5rem;
+    font-size: 1rem;
+}
+
+.popup-btn {
+    background: var(--primary);
+    color: white;
+    border: none;
+    padding: 0.75rem 1rem;
+    cursor: pointer;
+    font-weight: 500;
+    width: 100%;
+    margin: 0;
+    transition: var(--transition);
+    display: block;
+    border-top: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.popup-btn:hover {
+    background: var(--primary-dark);
+}
+
+.other-popup h3 {
+    color: var(--danger);
+}
+
+/* Animaciones */
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+.apiary-row {
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+/* CORREGIDO: Estilos para los controles del mapa */
+.leaflet-control-layers,
+.leaflet-control-zoom {
+    border: none !important;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1) !important;
+    border-radius: 8px !important;
+}
+
+.leaflet-control-layers-toggle,
+.leaflet-control-zoom-in,
+.leaflet-control-zoom-out {
+    border-radius: 4px !important;
+}
+
+.leaflet-popup-content-wrapper {
+    border-radius: 8px !important;
+    box-shadow: 0 3px 14px rgba(0, 0, 0, 0.2) !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+}
+
+.leaflet-popup-content {
+    margin: 0 !important;
+    width: auto !important;
+    min-width: 280px;
+}
+
+.leaflet-popup-close-button {
+    top: 10px !important;
+    right: 10px !important;
+    color: white !important;
+    text-shadow: 0 0 3px rgba(0, 0, 0, 0.5) !important;
+    z-index: 10 !important;
+}
+
+/* NUEVO: Mejoras adicionales */
+/* Efecto de brillo en hover para tarjetas */
+.stat-card:hover::before {
+    animation: glow 1.5s ease-in-out infinite alternate;
+}
+
+@keyframes glow {
+    from {
+        box-shadow: 0 0 5px var(--primary), 0 0 10px var(--primary);
+    }
+    to {
+        box-shadow: 0 0 10px var(--primary), 0 0 20px var(--primary);
+    }
+}
+
+/* Mejora en la tabla para filas alternas */
+.apiary-table tbody tr:nth-child(even) {
+    background-color: rgba(240, 148, 27, 0.03);
+}
+
+/* Mejora en los botones de acción */
+.action-btn,
+.card-action {
+    position: relative;
+    overflow: hidden;
+}
+
+.action-btn::after,
+.card-action::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    opacity: 0;
+    transition: width 0.3s, height 0.3s, opacity 0.3s;
+}
+
+.action-btn:active::after,
+.card-action:active::after {
+    width: 100%;
+    height: 100%;
+    opacity: 1;
+}
+
+/* Mejora en los popups del mapa */
+.popup-image {
+    position: relative;
+}
+
+.popup-image::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 40px;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.5), transparent);
+}
+
+/* Mejora en las tarjetas de apiarios */
+.apiary-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.apiary-card:hover {
+    transform: translateY(-5px) scale(1.02);
+}
+
+/* Mejora en los gráficos */
+.chart-container {
+    position: relative;
+    transition: transform 0.3s ease;
+}
+
+.chart-container:hover {
+    transform: scale(1.02);
+}
+
+/* Mejora en la leyenda del mapa */
+.map-legend {
+    transition: opacity 0.3s ease;
+    opacity: 0.85;
+}
+
+.map-legend:hover {
+    opacity: 1;
+}
+
+/* Mejora en los botones principales */
+.btn-primary {
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-primary::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.2),
+        transparent
+    );
+    transition: left 0.7s;
+}
+
+.btn-primary:hover::before {
+    left: 100%;
+}
+
+/* Diseño responsivo */
+@media (max-width: 1200px) {
+    .analytics-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 992px) {
+    .zonificacion-title {
+        font-size: 2.5rem;
+    }
+
+    .honeycomb-header {
+        height: 200px;
+    }
+
+    #map-container {
+        height: 400px;
+    }
+
+    .section-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .map-controls,
+    .view-controls {
+        margin-top: 1rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .zonificacion-title {
+        font-size: 2rem;
+    }
+
+    .zonificacion-subtitle {
+        font-size: 1rem;
+    }
+
+    .honeycomb-header {
+        height: 180px;
+        margin-bottom: 3rem;
+    }
+
+    .stats-container {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    #map-container {
+        height: 350px;
+    }
+
+    .recommendations {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 576px) {
+    .zonificacion-title {
+        font-size: 1.8rem;
+    }
+
+    .honeycomb-header {
+        height: 150px;
+    }
+
+    .stats-container {
+        grid-template-columns: 1fr;
+    }
+
+    #map-container {
+        height: 300px;
+    }
+
+    .map-legend {
+        bottom: 10px;
+        right: 10px;
+        max-width: 200px;
+        font-size: 0.8rem;
+    }
+
+    .apiary-cards {
+        grid-template-columns: 1fr;
+    }
+}
