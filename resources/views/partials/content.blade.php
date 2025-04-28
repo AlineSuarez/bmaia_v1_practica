@@ -741,10 +741,11 @@
 
 <!-- Sección de Cómo Funciona -->
 <section id="como-funciona" class="como-funciona-section">
+  <h2 class="section-title">¿Quieres saber más sobre MaiA?</h2>
   <div class="container">
     <div class="process-container collapsible-container" style="margin-bottom: 40px;">
       <div class="collapsible-header" style="position: relative; z-index: 2;">
-        <h2 class="section-title" style="margin-top: 20px;">Cómo funciona</h2>
+        <h2 class="section-title" style="margin-top: 20px; font-size: 30px !important;">¿Cómo funciona?</h2>
         <div class="collapse-icon">
           <i class="fa-solid fa-chevron-down"></i>
         </div>
@@ -1061,7 +1062,7 @@
 
     <div class="benefits-container collapsible-container" style="margin-bottom: 40px;">
       <div class="collapsible-header" style="position: relative; z-index: 2;">
-        <h2 class="section-title" style="margin-top: 20px;">Beneficios de MaiA</h2>
+        <h2 class="section-title" style="margin-top: 20px; font-size: 30px !important;">Beneficios de MaiA</h2>
         <div class="collapse-icon">
           <i class="fa-solid fa-chevron-down"></i>
         </div>
