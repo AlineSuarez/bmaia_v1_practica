@@ -10,9 +10,6 @@ use App\Models\Task;
 use App\Models\SubTarea;
 use App\Models\Visita;
 use Auth;
-use proj4php\Proj4php;
-use proj4php\Proj;
-use proj4php\Point;
 use Barryvdh\DomPDF\Facade\Pdf;
 
 class DocumentController extends Controller
@@ -67,6 +64,7 @@ class DocumentController extends Controller
                 $latitude = $apiario->latitud;
                 $longitude = $apiario->longitud;
 
+                /*
                 // Inicializar Proj4php
                 $proj4 = new Proj4php();
 
@@ -82,6 +80,7 @@ class DocumentController extends Controller
                 $utm_x = $pointDest->x;
                 $utm_y = $pointDest->y;
                 $utm_huso = 19; // Huso UTM según longitud (Chile está en 19S o 18S)
+                */
         $data = [
             'last_name' => $user->last_name,
             'nombre_usuario' => $user->name,
@@ -97,19 +96,17 @@ class DocumentController extends Controller
             'apiary_number' => '#00'.$apiario->id,
             'activity' => $apiario->objetivo_produccion,
             'installation_date' => $apiario->temporada_produccion,
-            'utm_x' =>  $utm_x,
-            'utm_y' =>   $utm_y,
-            'utm_huso' => $utm_huso,
+            'utm_x' => '-', // o null
+            'utm_y' => '-',
+            'utm_huso' => '-',
             'latitude' => $latitude,
             'longitude' => $longitude,
             'nomadic' => 'No',
             'hive_count' => $apiario->num_colmenas,
             'visits' => $visitas,
         ];
-
         // Renderizar la vista para el PDF
         $pdf = Pdf::loadView('documents.visit-record', compact('data'));
-
         // Descargar el PDF
         return $pdf->download('Cuaderno_De_Campo_Apiario_'.$apiario->nombre.'.pdf');
     }
@@ -175,7 +172,8 @@ class DocumentController extends Controller
         $latitude = $apiario->latitud;
         $longitude = $apiario->longitud;
 
-        $proj4 = new Proj4php();
+        /*
+                $proj4 = new Proj4php();
         $projWGS84 = new Proj('EPSG:4326', $proj4);
         $projUTM = new Proj('EPSG:32719', $proj4);
 
@@ -186,6 +184,7 @@ class DocumentController extends Controller
         $utm_y = $pointDest->y;
         $utm_huso = 19;
 
+        */
         return [
             'last_name' => $user->last_name,
             'nombre_usuario' => $user->name,
@@ -201,9 +200,9 @@ class DocumentController extends Controller
             'apiary_number' => '#00'.$apiario->id,
             'activity' => $apiario->objetivo_produccion,
             'installation_date' => $apiario->temporada_produccion,
-            'utm_x' => $utm_x,
-            'utm_y' => $utm_y,
-            'utm_huso' => $utm_huso,
+            'utm_x' => '-', // o null
+            'utm_y' => '-',
+            'utm_huso' => '-',
             'latitude' => $latitude,
             'longitude' => $longitude,
             'nomadic' => 'No',
