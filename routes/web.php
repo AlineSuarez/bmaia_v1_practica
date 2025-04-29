@@ -134,19 +134,16 @@ Route::post('apiarios/{apiario}/visitas', [VisitaController::class, 'store'])->n
 Route::post('apiarios/{apiario}/visitas1', [VisitaController::class, 'store1'])->name('visitas.store1');
 
 // Grupo de rutas protegidas por el middleware de autenticación y verificación de pago
-Route::middleware(['auth', 'check.payment'])->group(function () {
+//Route::middleware(['auth', 'check.payment'])->group(function () {});
 Route::get('/zonificacion', [ZonificacionController::class, 'index'])->name('zonificacion');
-
 //Usuarios
-});
 Route::get('/user/settings', [UserController::class, 'settings'])->name('user.settings');
 Route::patch('/user/update-name', [UserController::class, 'updateName'])->name('user.update.name');
 Route::patch('/user/update-avatar', [UserController::class, 'updateAvatar'])->name('user.update.avatar');
 Route::patch('/user/update-password', [UserController::class, 'updatePassword'])->name('user.update.password');
 Route::post('/user/update-settings', [UserController::class, 'updateSettings'])->name('user.updateSettings');
 Route::post('/user/update-plan', [UserController::class, 'updatePlan'])->name('user.updatePlan');
-
-Route::middleware(['auth', 'check.payment'])->group(function () {
+//(estas rutas estaban tambien dentro de un midleware de pago)
 // La ruta de sistema experto que lista los apiarios
 Route::get('/sistemaexperto', [App\Http\Controllers\ApiarioController::class, 'indexSistemaExperto'])->name('sistemaexperto');
 // Formulario para registrar PCC (puede aceptar el id del apiario)
@@ -155,7 +152,6 @@ Route::get('/sistemaexperto/{apiario}/create', [ChatbotController::class, 'siste
 Route::post('/sistemaexperto/guardar', [App\Http\Controllers\VisitaController::class, 'storeSistemaExperto'])->name('sistemaexperto.store');
 // AJAX individual: obtener consejo por apiario (simulado)
 Route::get('/apiarios/{apiario}/obtener-consejo', [App\Http\Controllers\ApiarioController::class, 'obtenerConsejo']);
-});
 
 // Documentos y Emails
 Route::get('/generate-document/{id}', [DocumentController::class, 'generateDocument'])->name('generate.document');
