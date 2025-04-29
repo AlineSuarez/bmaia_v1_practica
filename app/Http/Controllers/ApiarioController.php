@@ -122,7 +122,13 @@ class ApiarioController extends Controller
         $apiario = Apiario::findOrFail($id);
         $regiones = Region::all();
         $comunas = Comuna::all();
-        return view('apiarios.edit', compact('apiario', 'regiones', 'comunas'));
+
+        // Preparar coordenadas de comunas para el mapa
+        $comunasCoordenadas = $comunas->mapWithKeys(function ($comuna) {
+            return [$comuna->nombre => ['lat' => $comuna->lat, 'lon' => $comuna->lon]];
+        })->toArray();
+
+        return view('apiarios.edit', compact('apiario', 'regiones', 'comunas','comunasCoordenadas'));
     }
 
     public function update(Request $request, $id)

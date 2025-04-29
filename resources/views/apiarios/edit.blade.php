@@ -93,14 +93,16 @@
                 <div class="form-group col-md-6">
                     <label for="comuna" style="color: #FF8C00;">Comuna</label>
                     <select class="form-control" id="comuna" name="comuna" required style="border: 1px solid #FFB800;">
-                        <option value="">Selecciona una Región</option>
+                        <option value="">Selecciona una Comuna</option>
                         @foreach($comunas as $comuna)
-                            <option value="{{ $comuna->id }}" {{ $apiario->comuna_id == $comuna->id ? 'selected' : '' }}>
+                            <option value="{{ $comuna->id }}" data-nombre="{{ $comuna->nombre }}"
+                                {{ $apiario->comuna_id == $comuna->id ? 'selected' : '' }}>
                                 {{ $comuna->nombre }}
                             </option>
                         @endforeach
                     </select>
                 </div>
+                
             </div>
 
             <!-- Mapa y coordenadas -->
@@ -137,21 +139,19 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
     <script>
+        let comunasCoordenadas = @json($comunasCoordenadas);
+
         $(document).ready(function () {
             var map = L.map('map').setView([{{ $apiario->latitud }}, {{ $apiario->longitud }}], 8);
-
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 attribution: 'Map data © <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
             }).addTo(map);
-
             var marker = L.marker([{{ $apiario->latitud }}, {{ $apiario->longitud }}], { draggable: true }).addTo(map);
-
             marker.on('dragend', function (event) {
                 var position = marker.getLatLng();
                 $('#latitud').val(position.lat);
                 $('#longitud').val(position.lng);
             });
-
             map.on('click', function (e) {
                 var lat = e.latlng.lat;
                 var lng = e.latlng.lng;
@@ -159,8 +159,55 @@
                 $('#latitud').val(lat);
                 $('#longitud').val(lng);
             });
-
-
+            // maneja coordenadas
+            $('#comuna').change(function () {
+            const selectedComunaId = $(this).val();
+            const selectedOption = $(this).find('option:selected');
+            const comunaNombre = selectedOption.text().trim();
+            if (comunasCoordenadas[comunaNombre]) {
+                const { lat, lon } = comunasCoordenadas[comunaNombre];
+                // Centrar mapa y mover marcador
+                map.setView([lat, lon], 13);
+                marker.setLatLng([lat, lon]);
+                // Actualizar los campos de latitud y longitud
+                $('#latitud').val(lat.toFixed(6));
+                $('#longitud').val(lon.toFixed(6));
+                //Mostrar popup
+                const updatedPopupContent = `
+                    <div class="custom-popup">
+                        <h4><i class="fas fa-map-pin"></i> Comuna: ${comunaNombre}</h4>
+                        <p>Ubicación central de la comuna seleccionada.</p>
+                        <div class="popup-coordinates">
+                            <span><strong>Lat:</strong> ${lat.toFixed(6)}</span><br>
+                            <span><strong>Lng:</strong> ${lon.toFixed(6)}</span>
+                        </div>
+                    </div>
+                `;
+                marker.bindPopup(updatedPopupContent).openPopup();
+            }
+        });
+        // Cargar comunas dinámicamente al cambiar región
+        $('#region').change(function () {
+            var regionId = $(this).val();
+            if (regionId) {
+                $.ajax({
+                    url: '/comunas/' + regionId,
+                    type: "GET",
+                    dataType: "json",
+                    success: function (data) {
+                        $('#comuna').empty().append('<option value="">Selecciona una Comuna</option>');
+                        $.each(data, function (key, value) {
+                            $('#comuna').append('<option value="' + value.id + '" data-nombre="' + value.nombre + '">' + value.nombre + '</option>');
+                            if (value.id == {{ $apiario->comuna_id }}) {
+                                $('#comuna').val(value.id).trigger('change'); // fuerza actualización de lat/lon
+                            }
+                        });
+                    }
+                });
+            } else {
+                $('#comuna').empty().append('<option value="">Selecciona una Comuna</option>');
+            }
+        });
         });
     </script>
 
