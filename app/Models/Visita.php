@@ -10,7 +10,8 @@ class Visita extends Model
 
     protected $fillable = [
         'apiario_id',
-        'colmena_id', // Agregado
+        'user_id', // Agregado
+        'colmena_id', 
         'fecha_visita',
         'vigor_de_colmena',
         'actividad_colmena',
@@ -24,22 +25,27 @@ class Visita extends Model
         'presencia_varroa',
         'observaciones',
         'tipo_visita',
-        'num_colmenas_totales' ,
+        'num_colmenas_totales',
+        'num_colmenas_activas',
+        'num_colmenas_muertas',
         'num_colmenas_inspeccionadas',
         'num_colmenas_enfermas',
+        'flujo_nectar_polen', // Agregado
+        'nombre_revisor_apiario', // Agregado
+        'sospecha_enfermedad', // Agregado
         'observacion_primera_visita',
-        'num_colmenas_tratadas', // Agregado
-        'motivo_tratamiento', // Agregado
-        'nombre_comercial_medicamento', // Agregado
-        'principio_activo_medicamento', // Agregado
-        'periodo_resguardo', // Agregado
-        'responsable', // Agregado
-        'nombres', // Agregado
-        'apellidos', // Agregado
-        'rut', // Agregado
-        'motivo', // Agregado
-        'telefono', // Agregado
-        'firma', // Agregado
+        'num_colmenas_tratadas',
+        'motivo_tratamiento', 
+        'nombre_comercial_medicamento', 
+        'principio_activo_medicamento', 
+        'periodo_resguardo', 
+        'responsable', 
+        'nombres', 
+        'apellidos', 
+        'rut', 
+        'motivo',
+        'telefono',
+        'firma', 
     ];
 
     public function toPrompt()

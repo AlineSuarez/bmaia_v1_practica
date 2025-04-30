@@ -69,7 +69,7 @@ class VisitaController extends Controller
 
         Visita::create([
             'apiario_id' => $apiario->id,
-            'user_id' => auth()->id(),
+            //'user_id' => auth()->id(),
             'fecha_visita' => $validated['fecha_inspeccion'],
             'num_colmenas_totales' => $validated['num_colmenas_totales'],
             'num_colmenas_activas' => $validated['num_colmenas_activas'],
@@ -101,7 +101,7 @@ class VisitaController extends Controller
 
         Visita::create([
             'apiario_id' => $apiario->id,
-            'user_id' => auth()->id(),
+            //'user_id' => auth()->id(),
             'fecha_visita' => $validated['fecha'],
             'num_colmenas_tratadas' => $validated['num_colmenas_tratadas'],
             'motivo_tratamiento' => $validated['motivo_tratamiento'],
@@ -122,10 +122,9 @@ class VisitaController extends Controller
             'fecha' => 'required|date',
             'motivo' => 'required|string',
         ]);
-
         Visita::create([
             'apiario_id' => $apiario->id,
-            'user_id' => auth()->id(),
+            //'user_id' => auth()->id(),
             'fecha_visita' => $validated['fecha'],
             'motivo' => $validated['motivo'],
             'tipo_visita' => 'Visita General',
@@ -193,7 +192,7 @@ class VisitaController extends Controller
 
     // 3. Crear la visita principal y guardar los ID de cada PCC
     $visita = \App\Models\Visita::create([
-        'user_id' => auth()->id(),
+        //'user_id' => auth()->id(),
         'apiario_id' => $request->apiario_id,
         'fecha_visita' => now(),
         'tipo_visita' => 'Sistema Experto',
@@ -212,7 +211,7 @@ class VisitaController extends Controller
     public function showHistorial($apiarioId)
     {
         // Obtener el apiario y sus visitas
-        $apiario = Apiario::with('visitas')->findOrFail($apiarioId);
+        $apiario = Apiario::with('visitas.usuario')->findOrFail($apiarioId);
         // Retornar la vista de historial con los datos del apiario y sus visitas
         return view('visitas.historial', compact('apiario'));
     }

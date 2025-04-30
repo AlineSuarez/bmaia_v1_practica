@@ -41,12 +41,12 @@
                             @foreach($apiario->visitas->where('tipo_visita', 'Visita General') as $visita)
                                 <tr>
                                     <td>{{ \Carbon\Carbon::parse($visita->fecha_visita)->format('d/m/Y') }}</td>
-                                    <td>{{ $visita->usuario->name ?? 'N/A' }}</td>
-                                    <td>{{ $visita->usuario->last_name ?? 'N/A' }}</td>
-                                    <td>{{ $visita->usuario->rut ?? 'N/A' }}</td>
-                                    <td>{{ $visita->motivo ?? 'N/A' }}</td>
-                                    <td>{{ $visita->usuario->telefono ?? 'N/A' }}</td>
-                                    <td>{{ $visita->usuario->firma ?? 'N/A' }}</td>
+                                    <td>{{ auth()->user()->name }}</td>
+                                    <td>{{ auth()->user()->last_name }}</td>
+                                    <td>{{ auth()->user()->rut }}</td>
+                                    <td>{{ $visita->motivo }}</td>
+                                    <td>{{ auth()->user()->telefono }}</td>
+                                    <td>{{ auth()->user()->firma }}</td>
                                 </tr>
                             @endforeach
                         </tbody>

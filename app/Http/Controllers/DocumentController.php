@@ -29,6 +29,7 @@ class DocumentController extends Controller
             'address' => $user->direccion ?? '',
             'region' => $user->region->nombre ?? '',
             'commune' => $user->comuna->nombre ?? '',
+            'firma' => $user->firma ?? '',
         ];
     }
 
