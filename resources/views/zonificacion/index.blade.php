@@ -155,9 +155,11 @@
                                         </td>
                                         <td>
                                             <div class="action-buttons">
-                                                <button class="action-btn edit-btn" title="Editar apiario">
+                                                <a href="{{ route('apiarios.editar', $apiario->id) }}"
+                                                    class="action-btn edit-btn"
+                                                    title="Editar apiario">
                                                     <i class="fa-solid fa-pen-to-square"></i>
-                                                </button>
+                                                </a>
                                                 <button class="action-btn locate-btn" title="Localizar en mapa" 
                                                     data-lat="{{ $apiario->latitud }}" data-lon="{{ $apiario->longitud }}">
                                                     <i class="fa-solid fa-location-crosshairs"></i>
