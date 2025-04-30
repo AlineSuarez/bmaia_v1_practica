@@ -1,4 +1,3 @@
-/* Estilos base y variables - Paleta refinada */
 :root {
     --primary-color: #f5a700;
     --primary-light: #ffbe33;
@@ -14,6 +13,8 @@
     --background-color: #fffaf0;
     --card-bg: #ffffff;
     --border-color: #e8d5a7;
+    --border-light: rgba(232, 213, 167, 0.3);
+    --border-subtle: rgba(232, 213, 167, 0.15);
     --shadow-sm: 0 2px 8px rgba(194, 151, 38, 0.08);
     --shadow-md: 0 4px 12px rgba(194, 151, 38, 0.12);
     --shadow-lg: 0 8px 24px rgba(194, 151, 38, 0.15);
@@ -24,9 +25,12 @@
     --font-family: "Poppins", "Nunito", sans-serif;
     --honeycomb-color: rgba(249, 195, 50, 0.05);
     --honeycomb-accent: rgba(232, 176, 25, 0.08);
+    --tooltip-bg: #3d2e0f;
+    --tooltip-text: #ffffff;
+    --table-border: rgba(194, 151, 38, 0.15);
+    --table-border-header: rgba(255, 255, 255, 0.2);
 }
 
-/* Estilos generales */
 body {
     font-family: var(--font-family);
     background-color: var(--background-color);
@@ -232,18 +236,17 @@ body {
     box-shadow: var(--shadow-sm);
 }
 
-/* Tabla de apiarios */
 .apiarios-table-wrapper {
     background: var(--card-bg);
     border-radius: var(--radius-md);
     box-shadow: var(--shadow-md);
-    overflow: hidden;
+    overflow: visible;
     margin: 0 auto 2rem;
     border: 1px solid var(--border-color);
     padding: 0.5rem;
     max-width: 100%;
     position: relative;
-    min-height: 400px; /* Altura mínima aumentada para acomodar el estado vacío */
+    min-height: 400px;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -273,7 +276,6 @@ body {
     border-radius: 4px;
 }
 
-/* Ajuste para que el contenedor responsive funcione como contenedor del estado vacío */
 .table-responsive:empty {
     min-height: 400px;
     display: flex;
@@ -283,11 +285,12 @@ body {
     border: none;
 }
 
+/* Estilos de tabla con líneas divisoras sutiles */
 .apiarios-table {
     width: 100%;
     border-collapse: separate;
     border-spacing: 0;
-    overflow: hidden;
+    overflow: visible;
 }
 
 .apiarios-table thead {
@@ -303,34 +306,24 @@ body {
 }
 
 .apiarios-table th {
-    padding: 1.25rem 1rem;
-    font-weight: 600;
+    padding: 1.1rem 0.9rem;
+    font-weight: 800;
     text-transform: uppercase;
-    font-size: 0.875rem;
+    font-size: 0.85rem;
     letter-spacing: 0.5px;
     position: relative;
     text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.3);
     white-space: nowrap;
     text-align: center;
+    border-right: 1px solid var(--table-border-header);
 }
 
-.apiarios-table th::after {
-    content: "";
-    position: absolute;
-    right: 0;
-    top: 25%;
-    height: 50%;
-    width: 1px;
-    background-color: rgba(255, 255, 255, 0.3);
-}
-
-.apiarios-table th:last-child::after {
-    display: none;
+.apiarios-table th:last-child {
+    border-right: none;
 }
 
 .apiarios-table tbody tr {
     transition: var(--transition);
-    border-bottom: 1px solid var(--border-color);
 }
 
 .apiarios-table tbody tr:hover {
@@ -340,22 +333,26 @@ body {
 }
 
 .apiarios-table td {
-    padding: 1.25rem 1rem;
+    padding: 1.1rem 0.9rem;
     vertical-align: middle;
-    border-bottom: 1px solid var(--border-color);
     text-align: center;
+    font-size: 0.9rem;
+    border-right: 1px solid var(--table-border);
+    border-bottom: 1px solid var(--table-border);
+}
+
+.apiarios-table td:last-child {
+    border-right: none;
 }
 
 .apiarios-table tr:last-child td {
     border-bottom: none;
 }
 
-/* Asegurar que la tabla vacía no se muestre */
 .apiarios-table:empty {
     display: none;
 }
 
-/* Checkbox personalizado - estilo panal */
 .custom-checkbox {
     position: relative;
     display: inline-block;
@@ -413,7 +410,6 @@ body {
     transform: rotate(45deg);
 }
 
-/* Estilo para identificadores - ELIMINADO EL PSEUDO-ELEMENTO */
 .apiario-id {
     font-weight: 600;
     color: var(--primary-dark);
@@ -421,73 +417,54 @@ body {
     align-items: center;
     justify-content: center;
     padding: 0.5rem 1rem;
-    background-color: rgba(237, 168, 20, 0.1);
+    background-color: transparent;
     border-radius: var(--radius-sm);
-    font-size: 0.9rem;
-    box-shadow: 0 2px 4px rgba(194, 151, 38, 0.07);
-    border: 1px solid rgba(237, 168, 20, 0.2);
+    font-size: 0.85rem;
+    border: none;
+    box-shadow: none;
     position: relative;
     margin: 0 auto;
 }
 
-/* Tag para tipos y categorías - Estilos de panal */
 .tag {
     display: inline-block;
-    padding: 0.4rem 1rem;
-    border-radius: 50px;
-    font-size: 0.75rem;
+    padding: 0.35rem 0.9rem;
+    font-size: 0.7rem;
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    border: 1px solid transparent;
-    box-shadow: var(--shadow-sm);
-    transition: var(--transition);
     margin: 0 auto;
 }
 
-.tag:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-md);
-}
-
 .tag-primary {
-    background-color: rgba(237, 168, 20, 0.15);
     color: var(--primary-dark);
-    border-color: rgba(237, 168, 20, 0.3);
 }
 
 .tag-secondary {
-    background-color: rgba(255, 167, 38, 0.15);
     color: #a06a00;
-    border-color: rgba(255, 167, 38, 0.3);
 }
 
 .tag-warning {
-    background-color: rgba(255, 165, 0, 0.15);
     color: #a06a00;
-    border-color: rgba(255, 165, 0, 0.3);
 }
 
 .tag-info {
-    background-color: rgba(109, 84, 35, 0.15);
     color: #5c462b;
-    border-color: rgba(109, 84, 35, 0.3);
 }
 
-/* Contadores y cifras - ELIMINADO EL FONDO */
 .counter {
     font-weight: 700;
     color: var(--primary-dark);
-    font-size: 1.2rem;
+    font-size: 1.1rem;
     display: flex;
     align-items: center;
     justify-content: center;
     margin: 0 auto;
     position: relative;
     text-shadow: none;
+    background-color: transparent;
 }
 
-/* Ubicación geográfica */
 .location-info {
     display: flex;
     flex-direction: column;
@@ -505,12 +482,12 @@ body {
 .coordinates {
     font-family: "Roboto Mono", monospace;
     color: var(--text-color);
-    background-color: rgba(237, 168, 20, 0.1);
+    background-color: transparent;
     padding: 0.35rem 0.7rem;
     border-radius: var(--radius-sm);
     font-size: 0.75rem;
-    border: 1px solid rgba(237, 168, 20, 0.2);
-    box-shadow: var(--shadow-sm);
+    border: none;
+    box-shadow: none;
     display: inline-block;
     max-width: 100%;
     overflow: hidden;
@@ -526,7 +503,6 @@ body {
     box-shadow: var(--shadow-md);
 }
 
-/* Imagen de apiario */
 .apiario-image {
     position: relative;
     display: inline-block;
@@ -575,7 +551,6 @@ body {
     box-shadow: var(--shadow-md);
 }
 
-/* Botones de acción en tabla */
 .table-actions {
     display: flex;
     align-items: center;
@@ -583,6 +558,7 @@ body {
     gap: 0.75rem;
     flex-wrap: wrap;
     margin: 0 auto;
+    position: relative;
 }
 
 .btn-table-action {
@@ -636,55 +612,76 @@ body {
     color: white;
 }
 
-/* Tooltip personalizado - MEJORADO PARA EVITAR QUE SE CORTE */
+/* Tooltip completamente rediseñado */
+body:has([data-tooltip]:hover)::after {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 999998;
+    pointer-events: none;
+}
+
 [data-tooltip] {
     position: relative;
 }
 
-[data-tooltip]::after {
-    content: attr(data-tooltip);
-    position: absolute;
-    bottom: 125%;
-    left: 50%;
-    transform: translateX(-50%);
-    padding: 0.6rem 1rem;
-    background-color: var(--primary-dark);
-    color: white;
-    font-size: 0.75rem;
+/* Crear un contenedor para el tooltip que siempre esté en el body */
+body:has([data-tooltip]:hover)::before {
+    content: attr(data-tooltip-content);
+    position: fixed;
+    z-index: 999999;
+    background-color: var(--tooltip-bg);
+    color: var(--tooltip-text);
+    padding: 0.8rem 1.2rem;
     border-radius: var(--radius-sm);
+    font-size: 0.85rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    pointer-events: none;
     white-space: nowrap;
-    opacity: 0;
-    visibility: hidden;
-    transition: all 0.3s ease;
-    z-index: 1000; /* Valor muy alto para asegurar que esté por encima de todo */
-    box-shadow: var(--shadow-md);
-    border: 1px solid rgba(196, 138, 0, 0.6);
-    pointer-events: none; /* Evita que el tooltip interfiera con los clics */
-    min-width: max-content; /* Asegura que el contenido no se corte */
-    max-width: 250px; /* Limita el ancho máximo */
+    max-width: 300px;
     text-overflow: ellipsis;
     overflow: hidden;
+    font-weight: 500;
+    letter-spacing: 0.3px;
+    opacity: 0;
+    visibility: hidden;
 }
 
-/* Asegura que los tooltips no se salgan de la pantalla */
-[data-tooltip]:hover::after {
-    opacity: 1;
-    visibility: visible;
-    transform: translateX(-50%) translateY(-5px);
+/* Mostrar el tooltip */
+[data-tooltip]:hover {
+    z-index: 999999;
 }
 
-/* Ajuste para tooltips que podrían salirse por la derecha */
-.table-actions [data-tooltip]::after {
-    left: auto;
-    right: -5px;
-    transform: translateX(0);
+/* Usar JavaScript para posicionar el tooltip */
+.tooltip-visible {
+    opacity: 1 !important;
+    visibility: visible !important;
 }
 
-.table-actions [data-tooltip]:hover::after {
-    transform: translateX(0) translateY(-5px);
+/* Estilos para el tooltip */
+.custom-tooltip {
+    position: fixed;
+    z-index: 999999;
+    background-color: var(--tooltip-bg);
+    color: var(--tooltip-text);
+    padding: 0.8rem 1.2rem;
+    border-radius: var(--radius-sm);
+    font-size: 0.85rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    pointer-events: none;
+    white-space: nowrap;
+    max-width: 300px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    font-weight: 500;
+    letter-spacing: 0.3px;
 }
 
-/* Modales personalizados - Estilo panal */
 .custom-modal .modal-content {
     border: none;
     border-radius: var(--radius-lg);
@@ -749,7 +746,6 @@ body {
     gap: 1rem;
 }
 
-/* Botones en modal */
 .modal-btn {
     padding: 0.75rem 1.5rem;
     border-radius: var(--radius-md);
@@ -787,7 +783,6 @@ body {
     box-shadow: 0 4px 12px rgba(230, 57, 70, 0.2);
 }
 
-/* Animaciones */
 @keyframes fadeIn {
     from {
         opacity: 0;
@@ -815,7 +810,6 @@ body {
     animation: fadeIn 0.4s ease-out forwards;
 }
 
-/* Paginación - Estilo panal */
 .pagination {
     display: flex;
     justify-content: center;
@@ -855,7 +849,6 @@ body {
     box-shadow: var(--shadow-md);
 }
 
-/* Panel de filtros */
 .filters-panel {
     background-color: var(--card-bg);
     border-radius: var(--radius-md);
@@ -923,7 +916,6 @@ body {
     font-size: 1rem;
 }
 
-/* Selector de filtros - Estilo panal */
 .filter-select {
     padding: 0.85rem 2.5rem 0.85rem 1rem;
     border-radius: var(--radius-md);
@@ -952,7 +944,6 @@ body {
     border-color: var(--primary-color);
 }
 
-/* Estilos responsivos mejorados */
 @media (max-width: 1400px) {
     .apiarios-container {
         width: 95%;
@@ -1130,9 +1121,7 @@ body {
     }
 }
 
-/* Estados interactivos y de alerta */
 .empty-state {
-    /* Eliminar posicionamiento absoluto */
     position: relative;
     display: flex;
     flex-direction: column;
@@ -1142,15 +1131,14 @@ body {
     text-align: center;
     margin: 0 auto;
     width: 100%;
-    max-width: 550px; /* Reducción para que encaje mejor en la tabla */
+    max-width: 550px;
     border: none;
-    background: rgba(255, 255, 255, 0.5); /* Fondo más transparente */
+    background: rgba(255, 255, 255, 0.5);
     border-radius: var(--radius-md);
-    box-shadow: none; /* Quitar sombra para mejor integración */
+    box-shadow: none;
     z-index: 5;
 }
 
-/* Estilos mejorados para íconos y elementos dentro del estado vacío */
 .empty-state-icon {
     font-size: 4rem;
     color: var(--primary-color);
@@ -1179,7 +1167,6 @@ body {
     box-shadow: var(--shadow-lg);
 }
 
-/* Efecto de carga y estado de carga */
 .loading-overlay {
     position: absolute;
     top: 0;
@@ -1209,7 +1196,6 @@ body {
     }
 }
 
-/* Estado de error */
 .error-message {
     background-color: rgba(230, 57, 70, 0.1);
     border-left: 4px solid var(--danger-color);
@@ -1232,7 +1218,6 @@ body {
     font-size: 1.2rem;
 }
 
-/* Estado de éxito */
 .success-message {
     background-color: rgba(145, 176, 42, 0.1);
     border-left: 4px solid var(--success-color);
@@ -1255,7 +1240,6 @@ body {
     font-size: 1.2rem;
 }
 
-/* Mejora la accesibilidad para la navegación por teclado */
 a:focus,
 button:focus,
 input:focus {
@@ -1263,7 +1247,6 @@ input:focus {
     outline-offset: 2px;
 }
 
-/* Estilos para impresión */
 @media print {
     body {
         font-size: 12pt;
@@ -1293,7 +1276,6 @@ input:focus {
     }
 }
 
-/* Títulos mejorados para cada acción - ELIMINADOS LOS PSEUDO-ELEMENTOS */
 .action-title {
     font-size: 1.2rem;
     font-weight: 600;
@@ -1303,30 +1285,25 @@ input:focus {
     text-align: center;
 }
 
-/* Mejora adicional para los títulos de columnas - ELIMINADO EL PSEUDO-ELEMENTO */
 .column-title {
     display: block;
     position: relative;
     text-align: center;
 }
 
-/* Fondo de panal hexagonal sutil para contenedores */
 .hexagon-bg {
     position: relative;
 }
 
-/* Efectos de hover mejorados */
 .apiarios-table tbody tr:hover td {
     background-color: rgba(245, 167, 0, 0.05);
 }
 
-/* Efectos de transición suaves */
 .apiarios-table tbody tr {
     transition: transform 0.3s ease, box-shadow 0.3s ease,
         background-color 0.3s ease;
 }
 
-/* Mejoras de accesibilidad adicionales */
 .sr-only {
     position: absolute;
     width: 1px;
@@ -1339,14 +1316,12 @@ input:focus {
     border-width: 0;
 }
 
-/* Mejoras de contraste */
 .tag,
 .counter,
 .coordinates {
     text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
 }
 
-/* Mejoras para centrado en dispositivos móviles */
 @media (max-width: 480px) {
     .apiarios-table {
         min-width: 700px;
@@ -1376,12 +1351,12 @@ input:focus {
     }
 
     .apiario-id {
-        font-size: 0.85rem;
-        padding: 0.4rem 0.8rem;
+        font-size: 0.8rem;
+        padding: 0.35rem 0.7rem;
     }
 
     .coordinates {
-        font-size: 0.7rem;
-        padding: 0.3rem 0.6rem;
+        font-size: 0.65rem;
+        padding: 0.25rem 0.5rem;
     }
 }

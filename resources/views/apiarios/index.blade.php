@@ -49,17 +49,18 @@
                                         <span class="checkmark"></span>
                                     </label>
                                 </th>
-                                <th class="text-center"><span class="column-title">ID Apiario</span></th>
-                                <th class="text-center"><span class="column-title">Temporada de producción</span></th>
-                                <th class="text-center"><span class="column-title">N° Registro SAG</span></th>
-                                <th class="text-center"><span class="column-title">N° de colmenas</span></th>
-                                <th class="text-center"><span class="column-title">Tipo de apiario</span></th>
-                                <th class="text-center"><span class="column-title">Tipo de manejo</span></th>
-                                <th class="text-center"><span class="column-title">Objetivo de producción</span></th>
+                                <th class="text-center"><span class="column-title">Apiario</span></th>
+                                <th class="text-center"><span class="column-title">Temp. prod.</span></th>
+                                <th class="text-center"><span class="column-title">Reg. SAG</span></th>
+                                <th class="text-center"><span class="column-title">Colmenas</span></th>
+                                <th class="text-center"><span class="column-title">Tipo apiario</span></th>
+                                <th class="text-center"><span class="column-title">Manejo</span></th>
+                                <th class="text-center"><span class="column-title">Obj. prod.</span></th>
                                 <th class="text-center"><span class="column-title">Comuna</span></th>
-                                <th class="text-center"><span class="column-title">Localización</span></th>
-                                <th class="text-center"><span class="column-title">Fotografía</span></th>
-                                <th class="text-center"><span class="column-title">Acciones</span></th>
+                                <th class="text-center"><span class="column-title">Ubicación</span></th>
+                                <th class="text-center"><span class="column-title">Foto</span></th>
+                                <th class="text-center"><span class="column-title">Acción</span></th>
+
                             </tr>
                         </thead>
 
@@ -73,7 +74,7 @@
                                         </label>
                                     </td>
                                     <td class="text-center">
-                                        <span class="apiario-id">{{ $apiario->id }}-{{ $apiario->nombre }}</span>
+                                        <span class="apiario-id">{{ $apiario->nombre }}</span>
                                     </td>
                                     <td class="text-center">
                                         <span class="tag tag-primary">{{ $apiario->temporada_produccion }}</span>
@@ -402,6 +403,73 @@
             img.classList.add('clickable-image');
             img.title = "Clic para ampliar";
             img.style.cursor = "pointer";
+        });
+
+        document.addEventListener('DOMContentLoaded', function () {
+            // Crear un elemento para el tooltip
+            const tooltip = document.createElement('div');
+            tooltip.className = 'custom-tooltip';
+            tooltip.style.display = 'none';
+            document.body.appendChild(tooltip);
+
+            // Función para mostrar el tooltip
+            function showTooltip(e) {
+                const text = this.getAttribute('data-tooltip');
+                if (!text) return;
+
+                tooltip.textContent = text;
+                tooltip.style.display = 'block';
+
+                // Posicionar el tooltip encima del elemento
+                const rect = this.getBoundingClientRect();
+                tooltip.style.top = (rect.top - tooltip.offsetHeight - 10) + 'px';
+                tooltip.style.left = (rect.left + rect.width / 2 - tooltip.offsetWidth / 2) + 'px';
+
+                // Asegurar que el tooltip no se salga de la pantalla
+                const tooltipRect = tooltip.getBoundingClientRect();
+                if (tooltipRect.left < 10) {
+                    tooltip.style.left = '10px';
+                } else if (tooltipRect.right > window.innerWidth - 10) {
+                    tooltip.style.left = (window.innerWidth - tooltipRect.width - 10) + 'px';
+                }
+
+                if (tooltipRect.top < 10) {
+                    tooltip.style.top = (rect.bottom + 10) + 'px';
+                }
+            }
+
+            // Función para ocultar el tooltip
+            function hideTooltip() {
+                tooltip.style.display = 'none';
+            }
+
+            // Agregar eventos a todos los elementos con data-tooltip
+            document.querySelectorAll('[data-tooltip]').forEach(el => {
+                el.addEventListener('mouseenter', showTooltip);
+                el.addEventListener('mouseleave', hideTooltip);
+            });
+
+            // Actualizar los tooltips cuando se agregan nuevos elementos
+            const observer = new MutationObserver(mutations => {
+                mutations.forEach(mutation => {
+                    if (mutation.addedNodes.length) {
+                        mutation.addedNodes.forEach(node => {
+                            if (node.nodeType === 1) {
+                                if (node.hasAttribute('data-tooltip')) {
+                                    node.addEventListener('mouseenter', showTooltip);
+                                    node.addEventListener('mouseleave', hideTooltip);
+                                }
+                                node.querySelectorAll('[data-tooltip]').forEach(el => {
+                                    el.addEventListener('mouseenter', showTooltip);
+                                    el.addEventListener('mouseleave', hideTooltip);
+                                });
+                            }
+                        });
+                    }
+                });
+            });
+
+            observer.observe(document.body, { childList: true, subtree: true });
         });
     </script>
 @endsection

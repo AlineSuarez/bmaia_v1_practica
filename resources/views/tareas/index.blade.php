@@ -200,6 +200,11 @@
                 </div>
                 <div class="view kanban">
                     @include('tareas.kanban')
+                    <div class="kanban-column" data-estado="Pendiente">
+                        <div class="kanban-tasks-container">
+                            <!-- Aquí van las tareas .kanban-task -->
+                        </div>
+                    </div>
                 </div>
                 <div class="view timeline">
                     @include('tareas.timeline')
@@ -225,9 +230,6 @@
 @endsection
 
 <style>
-    /* Apiario Theme - Diseño sutil de colmena y miel */
-
-    /* Variables de colores */
     :root {
         --miel-claro: #fff8e1;
         --miel-suave: #ffecb3;
@@ -243,6 +245,25 @@
         --texto-suave: #6d4c41;
         --sombra-miel: rgba(255, 179, 0, 0.2);
         --sombra-miel-hover: rgba(255, 179, 0, 0.3);
+    }
+
+    .kanban-tasks-container {
+        min-height: 60px;
+        padding: 8px 0;
+        position: relative;
+        transition: background 0.2s;
+    }
+
+    .kanban-tasks-container:empty::after {
+        content: "Arrastra aquí";
+        color: #c2a13a;
+        opacity: 0.5;
+        font-size: 0.95em;
+        position: absolute;
+        left: 50%;
+        top: 20%;
+        transform: translate(-50%, 0);
+        pointer-events: none;
     }
 
     /* Estilos generales */

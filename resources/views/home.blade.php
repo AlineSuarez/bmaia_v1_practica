@@ -215,37 +215,37 @@
       <div class="section-content">
         <div class="activity-list">
         @if(isset($actividades) && count($actividades) > 0)
-      @foreach($actividades as $actividad)
-      <div class="activity-item">
-      <div class="activity-time-line">
-      <div class="activity-time">{{ $actividad->fecha ?? '10:30 AM' }}</div>
-      <div class="activity-line"></div>
+        @foreach($actividades as $actividad)
+        <div class="activity-item">
+        <div class="activity-time-line">
+        <div class="activity-time">{{ $actividad->fecha ?? '10:30 AM' }}</div>
+        <div class="activity-line"></div>
+        </div>
+        <div class="activity-content">
+        <div class="activity-icon {{ $actividad->tipo ?? 'inspeccion' }}">
+        <i
+        class="fas fa-{{ $actividad->tipo == 'tarea' ? 'tasks' : ($actividad->tipo == 'sistema' ? 'cog' : 'clipboard-check') }}"></i>
+        </div>
+        <div class="activity-details">
+        <div class="activity-text">{{ $actividad->descripcion ?? 'Inspección completada en Apiario Norte' }}
+        </div>
+        <div class="activity-meta">
+        <span class="activity-type">{{ ucfirst($actividad->tipo ?? 'Inspección') }}</span>
+        <span class="activity-user">{{ $actividad->usuario ?? 'Juan Pérez' }}</span>
+        </div>
+        </div>
+        </div>
+        </div>
+        @endforeach
+      @else
+      <div class="empty-state">
+        <div class="empty-icon">
+        <i class="fas fa-clipboard-list"></i>
+        </div>
+        <p>No hay actividades recientes</p>
+        <button class="btn-action">Crear actividad</button>
       </div>
-      <div class="activity-content">
-      <div class="activity-icon {{ $actividad->tipo ?? 'inspeccion' }}">
-      <i
-      class="fas fa-{{ $actividad->tipo == 'tarea' ? 'tasks' : ($actividad->tipo == 'sistema' ? 'cog' : 'clipboard-check') }}"></i>
-      </div>
-      <div class="activity-details">
-      <div class="activity-text">{{ $actividad->descripcion ?? 'Inspección completada en Apiario Norte' }}
-      </div>
-      <div class="activity-meta">
-      <span class="activity-type">{{ ucfirst($actividad->tipo ?? 'Inspección') }}</span>
-      <span class="activity-user">{{ $actividad->usuario ?? 'Juan Pérez' }}</span>
-      </div>
-      </div>
-      </div>
-      </div>
-    @endforeach
-    @else
-    <div class="empty-state">
-      <div class="empty-icon">
-      <i class="fas fa-clipboard-list"></i>
-      </div>
-      <p>No hay actividades recientes</p>
-      <button class="btn-action">Crear actividad</button>
-    </div>
-  @endif
+      @endif
         </div>
       </div>
       </div>
@@ -265,51 +265,51 @@
       <div class="section-content">
         <div class="tasks-list">
         @if(isset($proximasTareas) && count($proximasTareas) > 0)
-      @foreach($proximasTareas as $tarea)
-      <div class="task-item priority-{{ $tarea->prioridad ?? 'media' }}">
-      <div class="task-content">
-      <div class="task-header">
-      <div class="task-priority">
-      <span class="priority-indicator"></span>
-      <span class="priority-text">{{ ucfirst($tarea->prioridad ?? 'Media') }}</span>
-      </div>
-      <div class="task-date">
-      <i class="far fa-calendar-alt"></i>
-      <span>{{ $tarea->fecha_limite ?? 'Mañana' }}</span>
-      </div>
-      </div>
-      <div class="task-body">
-      <h3 class="task-title">{{ $tarea->titulo ?? 'Inspección de colmenas' }}</h3>
-      <p class="task-description">
-      {{ $tarea->descripcion ?? 'Revisar estado de las colmenas en el apiario principal' }}
-      </p>
-      </div>
-      <div class="task-footer">
-      <div class="task-status">
-      <span
-        class="status-badge {{ $tarea->estado ?? 'pendiente' }}">{{ ucfirst($tarea->estado ?? 'Pendiente') }}</span>
-      </div>
-      <div class="task-actions">
-      <button class="task-action-btn">
+        @foreach($proximasTareas as $tarea)
+        <div class="task-item priority-{{ $tarea->prioridad ?? 'media' }}">
+        <div class="task-content">
+        <div class="task-header">
+        <div class="task-priority">
+        <span class="priority-indicator"></span>
+        <span class="priority-text">{{ ucfirst($tarea->prioridad ?? 'Media') }}</span>
+        </div>
+        <div class="task-date">
+        <i class="far fa-calendar-alt"></i>
+        <span>{{ $tarea->fecha_limite ?? 'Mañana' }}</span>
+        </div>
+        </div>
+        <div class="task-body">
+        <h3 class="task-title">{{ $tarea->titulo ?? 'Inspección de colmenas' }}</h3>
+        <p class="task-description">
+        {{ $tarea->descripcion ?? 'Revisar estado de las colmenas en el apiario principal' }}
+        </p>
+        </div>
+        <div class="task-footer">
+        <div class="task-status">
+        <span
+          class="status-badge {{ $tarea->estado ?? 'pendiente' }}">{{ ucfirst($tarea->estado ?? 'Pendiente') }}</span>
+        </div>
+        <div class="task-actions">
+        <button class="task-action-btn">
+          <i class="fas fa-check-circle"></i>
+        </button>
+        <button class="task-action-btn">
+          <i class="fas fa-edit"></i>
+        </button>
+        </div>
+        </div>
+        </div>
+        </div>
+        @endforeach
+      @else
+      <div class="empty-state">
+        <div class="empty-icon">
         <i class="fas fa-check-circle"></i>
-      </button>
-      <button class="task-action-btn">
-        <i class="fas fa-edit"></i>
-      </button>
+        </div>
+        <p>No hay tareas pendientes</p>
+        <button class="btn-action">Crear tarea</button>
       </div>
-      </div>
-      </div>
-      </div>
-    @endforeach
-    @else
-    <div class="empty-state">
-      <div class="empty-icon">
-      <i class="fas fa-check-circle"></i>
-      </div>
-      <p>No hay tareas pendientes</p>
-      <button class="btn-action">Crear tarea</button>
-    </div>
-  @endif
+      @endif
         </div>
       </div>
       </div>

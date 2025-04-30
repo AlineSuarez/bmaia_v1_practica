@@ -1,5 +1,7 @@
 <head>
     <link href="{{ asset('./css/components/modals.css') }}" rel="stylesheet">
+    <!-- Agregar FontAwesome para el icono del ojo -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 
 <!-- Modal de inicio de sesión -->
@@ -23,13 +25,14 @@
                 </div>
             </div>
             <div class="form-group">
-                <div class="input-icon-wrapper">
+                <div class="input-icon-wrapper password-wrapper">
                     <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
                         <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
                     </svg>
-                    <input type="password" name="password" placeholder="Contraseña" required>
+                    <input type="password" name="password" id="login-password" placeholder="Contraseña" required>
+                    <i class="fa-solid fa-eye password-toggle" onclick="togglePassword('login-password', this)"></i>
                 </div>
             </div>
             <div class="form-options">
@@ -101,23 +104,27 @@
                 </div>
             </div>
             <div class="form-group">
-                <div class="input-icon-wrapper">
+                <div class="input-icon-wrapper password-wrapper">
                     <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
                         <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
                     </svg>
-                    <input type="password" name="password" placeholder="Contraseña" required>
+                    <input type="password" name="password" id="register-password" placeholder="Contraseña" required>
+                    <i class="fa-solid fa-eye password-toggle" onclick="togglePassword('register-password', this)"></i>
                 </div>
             </div>
             <div class="form-group">
-                <div class="input-icon-wrapper">
+                <div class="input-icon-wrapper password-wrapper">
                     <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
                         <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
                     </svg>
-                    <input type="password" name="password_confirmation" placeholder="Confirmar contraseña" required>
+                    <input type="password" name="password_confirmation" id="register-confirm-password"
+                        placeholder="Confirmar contraseña" required>
+                    <i class="fa-solid fa-eye password-toggle"
+                        onclick="togglePassword('register-confirm-password', this)"></i>
                 </div>
             </div>
 
@@ -252,6 +259,18 @@
         }
     }
 
+    // Función para mostrar/ocultar contraseña
+    function togglePassword(inputId, icon) {
+        const passwordInput = document.getElementById(inputId)
+        if (passwordInput.type === "password") {
+            passwordInput.type = "text"
+            icon.classList.replace("fa-eye", "fa-eye-slash")
+        } else {
+            passwordInput.type = "password"
+            icon.classList.replace("fa-eye-slash", "fa-eye")
+        }
+    }
+
     // Inicialización cuando el DOM está listo
     document.addEventListener("DOMContentLoaded", () => {
         // Cerrar modales al hacer clic fuera del contenido
@@ -281,6 +300,4 @@
             }
         })
     })
-
-
 </script>

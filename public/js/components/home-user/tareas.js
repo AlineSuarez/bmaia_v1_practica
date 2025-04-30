@@ -25,8 +25,15 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Función optimizada para actualizar el Kanban - esqueleto para futura implementación
     const actualizarKanban = () => {
-        // Implementación pendiente
         console.debug("Actualizando Kanban...");
+
+        // Aquí puedes agregar código para recargar los datos del Kanban si es necesario
+        // Por ejemplo, hacer una petición AJAX para obtener el estado actual
+
+        // Después reinicializar la funcionalidad de arrastrar y soltar
+        setTimeout(() => {
+            initializeKanban();
+        }, 300); // Pequeño retraso para asegurar que el DOM esté actualizado
     };
 
     // Función optimizada para actualizar la línea de tiempo - esqueleto para futura implementación
@@ -287,6 +294,11 @@ document.addEventListener("DOMContentLoaded", function () {
             if (viewName === "calendar") {
                 initializeCalendar();
             }
+
+            // Inicializar Kanban si se selecciona esa vista
+            if (viewName === "kanban") {
+                initializeKanban();
+            }
         });
     });
 
@@ -348,6 +360,227 @@ document.addEventListener("DOMContentLoaded", function () {
         } catch (error) {
             console.error("Error al inicializar el calendario:", error);
         }
+    }
+
+    // Implementación de funcionalidad de arrastrar y soltar para el Kanban
+    function initializeKanban() {
+        // Limpiar listeners previos
+        document.querySelectorAll(".kanban-task").forEach((t) => {
+            t.replaceWith(t.cloneNode(true));
+        });
+
+        const columnasKanban = document.querySelectorAll(".kanban-column");
+        const tareasKanban = document.querySelectorAll(".kanban-task");
+
+        // Hacer tareas arrastrables
+        tareasKanban.forEach((tarea) => {
+            tarea.setAttribute("draggable", "true");
+
+            tarea.addEventListener("dragstart", function (e) {
+                e.dataTransfer.setData(
+                    "text/plain",
+                    this.getAttribute("data-id")
+                );
+                e.dataTransfer.effectAllowed = "move";
+                this.classList.add("task-dragging");
+                setTimeout(() => {
+                    this.style.opacity = "0.4";
+                }, 0);
+            });
+
+            tarea.addEventListener("dragend", function () {
+                this.classList.remove("task-dragging");
+                this.style.opacity = "1";
+            });
+        });
+
+        // Función para añadir listeners a un área de drop (columna o contenedor interno)
+        function addDropListeners(area, columna) {
+            area.addEventListener("dragover", function (e) {
+                e.preventDefault();
+                e.dataTransfer.dropEffect = "move";
+                columna.classList.add("column-highlight");
+            });
+
+            area.addEventListener("dragleave", function () {
+                columna.classList.remove("column-highlight");
+            });
+
+            area.addEventListener("drop", function (e) {
+                e.preventDefault();
+                columna.classList.remove("column-highlight");
+
+                const tareaId = e.dataTransfer.getData("text/plain");
+                const nuevoEstado = columna.getAttribute("data-estado");
+                if (!tareaId || !nuevoEstado) return;
+
+                const tareaElement = document.querySelector(
+                    `.kanban-task[data-id="${tareaId}"]`
+                );
+                if (!tareaElement) return;
+
+                if (tareaElement.getAttribute("data-estado") === nuevoEstado)
+                    return;
+
+                // Mover visualmente la tarea
+                area.appendChild(tareaElement);
+
+                // Actualizar en backend
+                const csrfToken = document
+                    .querySelector('meta[name="csrf-token"]')
+                    ?.getAttribute("content");
+                if (!csrfToken) {
+                    mostrarNotificacion(
+                        "Error de seguridad. Refresca la página.",
+                        "error"
+                    );
+                    return;
+                }
+
+                tareaElement.classList.add("task-updating");
+
+                fetch(`/tareas/${tareaId}/update-status`, {
+                    method: "PATCH",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRF-TOKEN": csrfToken,
+                    },
+                    body: JSON.stringify({ estado: nuevoEstado }),
+                })
+                    .then((response) => {
+                        if (!response.ok)
+                            throw new Error(`Error HTTP: ${response.status}`);
+                        return response.json();
+                    })
+                    .then((data) => {
+                        if (data.success) {
+                            tareaElement.setAttribute(
+                                "data-estado",
+                                nuevoEstado
+                            );
+                            const estadoBadge =
+                                tareaElement.querySelector(".estado-badge");
+                            if (estadoBadge) {
+                                estadoBadge.textContent = nuevoEstado;
+                                estadoBadge.dataset.currentState = nuevoEstado;
+                                actualizarClaseEstado(estadoBadge, nuevoEstado);
+                            }
+                            mostrarNotificacion(
+                                "Tarea actualizada correctamente",
+                                "success"
+                            );
+                            emitirEvento("subtareaActualizada", {
+                                id: tareaId,
+                                estado: nuevoEstado,
+                            });
+                        } else {
+                            mostrarNotificacion(
+                                data.message ||
+                                    "Hubo un problema al actualizar el estado.",
+                                "error"
+                            );
+                            actualizarKanban();
+                        }
+                    })
+                    .catch((error) => {
+                        console.error("Error en la petición:", error);
+                        mostrarNotificacion(
+                            "Error al actualizar. Intenta de nuevo.",
+                            "error"
+                        );
+                        actualizarKanban();
+                    })
+                    .finally(() => {
+                        tareaElement.classList.remove("task-updating");
+                    });
+            });
+        }
+
+        // Añadir listeners a cada columna y a su contenedor interno (si existe)
+        columnasKanban.forEach((columna) => {
+            const container = columna.querySelector(".kanban-tasks-container");
+            if (container) {
+                addDropListeners(container, columna);
+            }
+            addDropListeners(columna, columna);
+        });
+    }
+
+    // Función para actualizar clases según el estado
+    function actualizarClaseEstado(elemento, estado) {
+        // Eliminar todas las clases de estado existentes
+        elemento.classList.remove(
+            "badge-pending",
+            "badge-progress",
+            "badge-completed",
+            "badge-cancelled"
+        );
+
+        // Añadir la clase correspondiente según el nuevo estado
+        switch (estado.toLowerCase()) {
+            case "pendiente":
+                elemento.classList.add("badge-pending");
+                break;
+            case "en progreso":
+            case "en proceso":
+                elemento.classList.add("badge-progress");
+                break;
+            case "completada":
+            case "completado":
+                elemento.classList.add("badge-completed");
+                break;
+            case "cancelada":
+            case "cancelado":
+                elemento.classList.add("badge-cancelled");
+                break;
+        }
+    }
+
+    // Función para mostrar notificaciones toast
+    function mostrarNotificacion(mensaje, tipo = "info") {
+        // Verificar si existe un contenedor para toasts, si no, crearlo
+        let toastContainer = document.querySelector(".toast-container");
+        if (!toastContainer) {
+            toastContainer = document.createElement("div");
+            toastContainer.className =
+                "toast-container position-fixed bottom-0 end-0 p-3";
+            document.body.appendChild(toastContainer);
+        }
+
+        // Crear el toast
+        const toastId = "toast-" + Date.now();
+        const toast = document.createElement("div");
+        toast.className = `toast toast-${tipo} align-items-center text-white bg-${
+            tipo === "info" ? "primary" : tipo
+        }`;
+        toast.id = toastId;
+        toast.setAttribute("role", "alert");
+        toast.setAttribute("aria-live", "assertive");
+        toast.setAttribute("aria-atomic", "true");
+
+        toast.innerHTML = `
+            <div class="d-flex">
+                <div class="toast-body">
+                    ${mensaje}
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        `;
+
+        toastContainer.appendChild(toast);
+
+        // Inicializar y mostrar el toast
+        const bsToast = new bootstrap.Toast(toast, {
+            animation: true,
+            autohide: true,
+            delay: 3000,
+        });
+        bsToast.show();
+
+        // Eliminar el toast después de ocultarse
+        toast.addEventListener("hidden.bs.toast", function () {
+            this.remove();
+        });
     }
 
     // Toggle del formulario con animación mejorada
@@ -432,4 +665,91 @@ document.addEventListener("DOMContentLoaded", function () {
     if (defaultViewToggler) {
         defaultViewToggler.click();
     }
+
+    // Llamar a la inicialización durante la carga inicial
+    if (document.querySelector(".view.kanban.active")) {
+        initializeKanban();
+    }
+
+    // Agregar estilos para mejorar la experiencia de arrastrar y soltar
+    const agregarEstilosKanban = () => {
+        // Verificar si ya existe el estilo
+        if (document.getElementById("kanban-drag-styles")) return;
+
+        const estilos = document.createElement("style");
+        estilos.id = "kanban-drag-styles";
+        estilos.textContent = `
+            .kanban-task {
+                cursor: grab;
+                transition: transform 0.2s, opacity 0.2s, box-shadow 0.2s;
+            }
+            .task-dragging {
+                cursor: grabbing;
+                box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23) !important;
+                z-index: 999;
+            }
+            .column-highlight {
+                background-color: rgba(255, 250, 230, 0.7);
+                border: 2px dashed var(--primary-color) !important;
+            }
+            .task-updating {
+                position: relative;
+                pointer-events: none;
+            }
+            .task-updating::after {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background-color: rgba(255, 255, 255, 0.7);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                z-index: 10;
+            }
+            .task-updating::before {
+                content: '';
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                width: 24px;
+                height: 24px;
+                border: 3px solid rgba(237, 168, 20, 0.2);
+                border-top-color: var(--primary-color);
+                border-radius: 50%;
+                animation: spin 1s linear infinite;
+                z-index: 11;
+            }
+            .toast-container {
+                z-index: 9999;
+            }
+            .toast {
+                opacity: 0;
+                animation: fadeInUp 0.3s ease forwards;
+            }
+            @keyframes fadeInUp {
+                from {
+                    opacity: 0;
+                    transform: translateY(20px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+            @keyframes spin {
+                to {
+                    transform: translate(-50%, -50%) rotate(360deg);
+                }
+            }
+        `;
+
+        document.head.appendChild(estilos);
+    };
+
+    // Llamar a la función para añadir estilos
+    agregarEstilosKanban();
 });

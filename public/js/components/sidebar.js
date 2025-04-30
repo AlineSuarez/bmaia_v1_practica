@@ -94,14 +94,19 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 
-    // Asegurar que el sidebar esté abierto por defecto
-    document.body.classList.remove("sidebar-collapsed");
+    // CAMBIO AQUÍ: Configurar estado inicial según el tamaño de pantalla
     if (window.innerWidth <= 992) {
-        document.body.classList.add("sidebar-active");
+        // En móvil, cerrar sidebar por defecto
+        document.body.classList.add("sidebar-collapsed");
+        document.body.classList.remove("sidebar-active");
+        // Guardar el estado inicial como colapsado para móvil
+        localStorage.setItem("sidebarState", "collapsed");
+    } else {
+        // En desktop, abrir sidebar por defecto
+        document.body.classList.remove("sidebar-collapsed");
+        // Guardar el estado inicial como expandido para desktop
+        localStorage.setItem("sidebarState", "expanded");
     }
-
-    // Guardar el estado inicial como expandido
-    localStorage.setItem("sidebarState", "expanded");
 
     // Manejar el cambio de tamaño de ventana
     window.addEventListener("resize", function () {
@@ -112,17 +117,19 @@ document.addEventListener("DOMContentLoaded", function () {
             document.body.classList.remove("sidebar-active");
             sidebarOverlay.style.visibility = "hidden";
         } else {
-            // En pantallas pequeñas, asegurar que el botón flotante sea visible
+            // En pantallas pequeñas, asegurar que el sidebar esté cerrado
             document.body.classList.add("sidebar-collapsed");
             document.body.classList.remove("sidebar-active");
-            updateFloatingButtonVisibility();
         }
+
+        // Actualizar visibilidad del botón flotante
+        updateFloatingButtonVisibility();
 
         // Restaurar el overflow después de un breve retraso
         setTimeout(restoreNormalScroll, 300);
     });
 
-    // Comprobar el estado inicial para mostrar u ocultar el botón flotante
+    // Actualizar la visibilidad del botón flotante al cargar
     updateFloatingButtonVisibility();
 
     // Función para actualizar la visibilidad del botón flotante

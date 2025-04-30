@@ -1,0 +1,972 @@
+/* Paleta de colores para el dashboard apícola - Versión Azul */
+.dashboard-container {
+    /* Nueva paleta de colores azules */
+    --blue-light: #e1f5fe;
+    --blue-soft: #81d4fa;
+    --blue-medium: #29b6f6;
+    --blue-primary: #0288d1;
+    --blue-dark: #01579b;
+    --blue-navy: #0d47a1;
+    --blue-accent: #00b0ff;
+    --blue-pale: #b3e5fc;
+    --blue-midnight: #002171;
+    --blue-gray: #eceff1;
+
+    padding: 30px 15px;
+    max-width: 1600px;
+    border-radius: 15px;
+}
+
+/* Header del Dashboard */
+.dashboard-container .dashboard-header {
+    padding: 30px 0;
+    margin-bottom: 40px;
+    position: relative;
+    border-radius: 15px;
+    background: linear-gradient(
+        135deg,
+        var(--blue-primary) 0%,
+        var(--blue-dark) 100%
+    );
+    box-shadow: 0 10px 20px rgba(1, 87, 155, 0.2);
+}
+
+.dashboard-container .dashboard-header::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M10 10h10v10H10V10zm15 0h10v10H25V10zm15 0h10v10H40V10zM10 25h10v10H10V25zm15 0h10v10H25V25zm15 0h10v10H40V25zM10 40h10v10H10V40zm15 0h10v10H25V40zm15 0h10v10H40V40z' fill='%23FFFFFF' fill-opacity='0.1' fill-rule='evenodd'/%3E%3C/svg%3E");
+    background-position: 0 0;
+    background-repeat: repeat;
+    background-size: 60px 60px;
+    opacity: 0.5;
+}
+
+.dashboard-container .dashboard-title {
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: white;
+    text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+    position: relative;
+}
+
+.dashboard-container .dashboard-title span {
+    color: var(--blue-light);
+    position: relative;
+}
+
+.dashboard-container .dashboard-title span::after {
+    content: "";
+    position: absolute;
+    bottom: -5px;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background-color: var(--blue-accent);
+    border-radius: 2px;
+}
+
+.dashboard-container .dashboard-subtitle {
+    font-size: 1.1rem;
+    color: white;
+    max-width: 800px;
+    margin: 0 auto;
+    opacity: 0.9;
+}
+
+/* Tarjetas de información */
+.dashboard-container .info-card {
+    background: linear-gradient(
+        to bottom right,
+        var(--blue-primary),
+        var(--blue-dark)
+    );
+    border-radius: 15px;
+    padding: 20px;
+    margin-bottom: 25px;
+    border: none;
+    box-shadow: 0 10px 20px rgba(1, 87, 155, 0.15);
+    transition: all 0.3s ease;
+    overflow: hidden;
+    position: relative;
+    height: 100%;
+    word-wrap: break-word;
+    min-height: 180px; /* Altura mínima para uniformidad */
+    display: flex;
+    flex-direction: column;
+}
+
+.dashboard-container .info-card {
+    background: linear-gradient(
+        to bottom right,
+        var(--blue-primary),
+        var(--blue-dark)
+    );
+    border-radius: 15px;
+    padding: 20px;
+    margin-bottom: 25px;
+    border: none;
+    box-shadow: 0 10px 20px rgba(1, 87, 155, 0.15);
+    transition: all 0.3s ease;
+    overflow: hidden;
+    position: relative;
+    height: 100%;
+    word-wrap: break-word;
+    min-height: 180px;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Fondo base con patrón SVG */
+.dashboard-container .info-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M51.2513,33.14236 C49.9214,32.38236 48.3482,32.00003 46.7264,32.00006 L39.3569,32.00006 C37.7351,32.00003 36.1619,32.38236 34.8319,33.14236 L28.4684,36.85775 C27.1384,37.61775 26.0651,38.69095 25.3049,39.9863 L21.5894,46.3083 C20.8294,47.6037 20.4471,49.1422 20.4471,50.7292 L20.4471,58.0282 C20.4471,59.6152 20.8294,61.1538 21.5894,62.4492 L25.3049,68.7711 C26.0651,70.0665 27.1384,71.1397 28.4684,71.8997 L34.8319,75.6151 C36.1619,76.3751 37.7351,76.7574 39.3569,76.7574 L46.7264,76.7574 C48.3482,76.7574 49.9214,76.3751 51.2513,75.6151 L57.6149,71.8997 C58.9449,71.1397 60.0182,70.0665 60.7783,68.7711 L64.4938,62.4492 C65.2538,61.1538 65.6361,59.6152 65.6361,58.0282 L65.6361,50.7292 C65.6361,49.1422 65.2538,47.6037 64.4938,46.3083 L60.7783,39.9863 C60.0182,38.69095 58.9449,37.61775 57.6149,36.85775 L51.2513,33.14236 Z' fill='%23FFFFFF' fill-opacity='0.08'/%3E%3C/svg%3E");
+    background-position: center;
+    background-size: 120px;
+    background-repeat: repeat;
+    opacity: 0.2;
+    pointer-events: none;
+}
+
+/* Círculo aleatorio 1 */
+.dashboard-container .info-card::after {
+    content: "";
+    position: absolute;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.1);
+    top: 15%;
+    left: 20%;
+    transform: translate(-50%, -50%) scale(0);
+    animation: randomCircle1 8s infinite ease-in-out;
+}
+
+/* Círculo aleatorio 2 - usando un nuevo pseudo elemento */
+.dashboard-container .info-card-title::before {
+    content: "";
+    position: absolute;
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.08);
+    top: 70%;
+    right: 15%;
+    z-index: 0;
+    transform: translate(50%, 50%) scale(0);
+    animation: randomCircle2 12s infinite ease-in-out 1s;
+}
+
+/* Círculo aleatorio 3 - usando otro pseudo elemento */
+.dashboard-container .info-card-value::after {
+    content: "";
+    position: absolute;
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.05);
+    bottom: 10%;
+    left: 40%;
+    z-index: 0;
+    transform: translate(-50%, 50%) scale(0);
+    animation: randomCircle3 15s infinite ease-in-out 3s;
+}
+
+/* Círculo aleatorio 4 - usando otro pseudo elemento */
+.dashboard-container .info-card-text::before {
+    content: "";
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.12);
+    top: 40%;
+    right: 10%;
+    z-index: 0;
+    transform: translate(0, 0) scale(0);
+    animation: randomCircle4 10s infinite ease-in-out 2s;
+}
+
+/* Animación para el círculo 1 */
+@keyframes randomCircle1 {
+    0%,
+    100% {
+        transform: translate(-50%, -50%) scale(0);
+        opacity: 0;
+    }
+    20%,
+    80% {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 1;
+    }
+    90% {
+        transform: translate(-60%, -60%) scale(0.5);
+        opacity: 0.3;
+    }
+}
+
+/* Animación para el círculo 2 */
+@keyframes randomCircle2 {
+    0%,
+    100% {
+        transform: translate(50%, 50%) scale(0);
+        opacity: 0;
+    }
+    30%,
+    70% {
+        transform: translate(30%, 30%) scale(1);
+        opacity: 1;
+    }
+    85% {
+        transform: translate(40%, 40%) scale(0.7);
+        opacity: 0.2;
+    }
+}
+
+/* Animación para el círculo 3 */
+@keyframes randomCircle3 {
+    0%,
+    100% {
+        transform: translate(-50%, 50%) scale(0);
+        opacity: 0;
+    }
+    25%,
+    75% {
+        transform: translate(-40%, 40%) scale(1);
+        opacity: 1;
+    }
+    88% {
+        transform: translate(-45%, 45%) scale(0.4);
+        opacity: 0.3;
+    }
+}
+
+/* Animación para el círculo 4 */
+@keyframes randomCircle4 {
+    0%,
+    100% {
+        transform: translate(0, 0) scale(0);
+        opacity: 0;
+    }
+    15%,
+    85% {
+        transform: translate(10%, 10%) scale(1);
+        opacity: 1;
+    }
+    92% {
+        transform: translate(5%, 5%) scale(0.6);
+        opacity: 0.2;
+    }
+}
+
+/* Animación para el patrón de fondo original */
+@keyframes floatingHexagons {
+    0% {
+        background-position: 0 0;
+    }
+    100% {
+        background-position: 400px 400px;
+    }
+}
+
+/* Aseguramos que el contenido esté por encima */
+.dashboard-container .info-card-title,
+.dashboard-container .info-card-value,
+.dashboard-container .info-card-icon {
+    position: relative;
+    z-index: 2;
+}
+
+.dashboard-container .info-card-text {
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.9);
+    line-height: 1.4;
+    margin-top: auto;
+    position: relative;
+    z-index: 2;
+}
+
+/* Efecto hover mejorado */
+.dashboard-container .info-card:hover::after,
+.dashboard-container .info-card:hover .info-card-title::before,
+.dashboard-container .info-card:hover .info-card-value::after,
+.dashboard-container .info-card:hover .info-card-text::before {
+    animation-play-state: paused;
+}
+
+.dashboard-container .info-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(1, 87, 155, 0.25);
+}
+
+.dashboard-container .info-card-icon {
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--blue-navy);
+    color: white;
+    border-radius: 50%;
+    margin-bottom: 15px;
+    font-size: 1.3rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.dashboard-container .info-card-icon::after {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle, var(--blue-accent) 0%, transparent 70%);
+    opacity: 0.5;
+}
+
+.dashboard-container .info-card-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 10px;
+    color: white;
+}
+
+.dashboard-container .info-card-value {
+    font-size: 2.2rem;
+    font-weight: 800;
+    margin-bottom: 15px;
+    color: white;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.dashboard-container .info-card-text {
+    font-size: 0.85rem;
+    color: rgba(0, 0, 0, 0.9);
+    line-height: 1.4;
+    margin-top: auto;
+}
+
+/* Tarjetas de gráficos */
+.dashboard-container .chart-card {
+    background: linear-gradient(135deg, white, var(--blue-light));
+    border-radius: 15px;
+    padding: 20px;
+    margin-bottom: 25px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
+    position: relative;
+    overflow: hidden;
+    border-left: 5px solid var(--blue-primary);
+    min-height: 280px; /* Altura mínima para uniformidad */
+    height: calc(
+        100% - 25px
+    ); /* Asegura que todas las tarjetas en la misma fila tengan la misma altura */
+    display: flex;
+    flex-direction: column;
+}
+
+.dashboard-container .chart-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 120px;
+    height: 120px;
+    background: var(--blue-primary);
+    opacity: 0.1;
+    clip-path: polygon(100% 0, 100% 100%, 0 0);
+}
+
+.dashboard-container .chart-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+
+.dashboard-container .chart-title-container {
+    flex: 1;
+    min-width: 70%;
+}
+
+.dashboard-container .chart-title {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--blue-dark);
+    margin-bottom: 5px;
+}
+
+.dashboard-container .chart-title i {
+    margin-right: 8px;
+    color: var(--blue-accent);
+}
+
+.dashboard-container .chart-subtitle {
+    font-size: 0.85rem;
+    color: #333;
+    opacity: 0.7;
+}
+
+.dashboard-container .chart-container {
+    position: relative;
+    height: 280px;
+    margin-bottom: 15px;
+    flex-grow: 1; /* Permite que el gráfico ocupe el espacio disponible */
+}
+
+.dashboard-container .chart-help {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background-color: var(--blue-accent);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 0.85rem;
+}
+
+.dashboard-container .tooltip-container {
+    position: relative;
+}
+
+.dashboard-container .tooltip-content {
+    position: absolute;
+    right: 0;
+    top: 30px;
+    width: 230px;
+    padding: 12px;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    font-size: 0.85rem;
+    color: #333;
+    display: none;
+    z-index: 100;
+    border: 2px solid var(--blue-primary);
+}
+
+.dashboard-container .tooltip-container:hover .tooltip-content {
+    display: block;
+}
+
+/* Sección educativa */
+.dashboard-container .edu-section {
+    background: linear-gradient(
+        to right,
+        var(--blue-medium),
+        var(--blue-primary)
+    );
+    border-radius: 15px;
+    padding: 25px;
+    margin-bottom: 30px;
+    box-shadow: 0 10px 25px rgba(1, 87, 155, 0.25);
+    position: relative;
+    overflow: hidden;
+}
+
+.dashboard-container .edu-section::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M54.627 0l.83.828-1.415 1.415L51.8 0h2.827zM5.373 0l-.83.828L5.96 2.243 8.2 0H5.374zM48.97 0l3.657 3.657-1.414 1.414L46.143 0h2.828zM11.03 0L7.372 3.657 8.787 5.07 13.857 0H11.03zm32.284 0L49.8 6.485 48.384 7.9l-7.9-7.9h2.83zM16.686 0L10.2 6.485 11.616 7.9l7.9-7.9h-2.83zm20.97 0l9.315 9.314-1.414 1.414L34.828 0h2.83zM22.344 0L13.03 9.314l1.414 1.414L25.172 0h-2.83zM32 0l12.142 12.142-1.414 1.414L30 .828 17.272 13.556l-1.414-1.414L28 0h4zM.284 0l28 28-1.414 1.414L0 2.544v2.83L25.456 30l-1.414 1.414L0 7.97v2.828L22.627 34.14l-1.414 1.414L0 13.4v2.83L19.8 34.97l-1.414 1.414L0 18.83v2.828L16.97 37.8l-1.414 1.414L0 24.257v2.83L13.8 43.656l-1.414 1.414L0 29.685v2.83L10.97 44.97l-1.414 1.414L0 35.113v2.83L8.142 48.37l-1.414 1.414L0 40.54v2.83L5.314 50.2l-1.414 1.414L0 45.97v2.828L2.486 53.03 1.07 54.444 0 53.376v2.83L0 60h60L60 57.377v-2.83l-1.07 1.07-1.414-1.415L60 51.47v-2.83l-3.9 3.9-1.414-1.414L60 46.043v-2.83l-6.728 6.728-1.414-1.414L60 40.456v-2.83L49.8 47.77l-1.414-1.414L60 34.884v-2.83L46.97 44.3l-1.414-1.414L60 29.314v-2.83L44.142 41.97l-1.414-1.414L60 23.744v-2.83L41.314 39.284l-1.414-1.414L60 18.142v-2.83L38.486 36.456l-1.414-1.414L60 12.514v-2.83L35.657 33.656l-1.414-1.414L60 6.9V4.07L32.828 31.242l-1.414-1.414L60 1.314v-2.83L29.314 28.97l-1.414-1.414L60-4.286v-2.83L25.97 26.314l-1.414-1.414L60-9.857v-2.83L22.627 23.657l-1.414-1.414L60-15.43v-2.827L19.285 21.015l-1.414-1.414L60-21v-2.827L15.94 18.385l-1.414-1.414L60-26.57v-2.83L12.6 15.77 11.186 14.356 60-32.14v-2.83L9.257 13.15 7.843 11.737 60-37.714v-2.827L5.914 10.52 4.5 9.105 60-43.285v-2.83L2.57 7.9 1.157 6.486 60-48.856v-2.83L-.83 5.37 0 6.2v-2.83l-1.414-1.414L0 0h.284zM0 0L0 60h60L60 0H0z' fill='%23ffffff' fill-opacity='0.08'/%3E%3C/svg%3E");
+    background-position: center center;
+    background-size: 120px 120px;
+    background-repeat: repeat;
+}
+
+.dashboard-container .edu-title {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: white;
+    margin-bottom: 25px;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
+    position: relative;
+    display: inline-block;
+}
+
+.dashboard-container .edu-title::after {
+    content: "";
+    position: absolute;
+    bottom: -10px;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background-color: white;
+    opacity: 0.5;
+    border-radius: 2px;
+}
+
+.dashboard-container .edu-content {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+}
+
+.dashboard-container .edu-item {
+    background-color: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(5px);
+    padding: 18px;
+    border-radius: 10px;
+    border-left: 4px solid var(--blue-navy);
+    transition: all 0.3s ease;
+    word-wrap: break-word;
+    min-height: 150px; /* Altura mínima para uniformidad */
+    display: flex;
+    flex-direction: column;
+}
+
+.dashboard-container .edu-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+    background-color: rgba(255, 255, 255, 0.3);
+}
+
+.dashboard-container .edu-item-title {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: white;
+    margin-bottom: 10px;
+}
+
+.dashboard-container .edu-item-title i {
+    margin-right: 8px;
+    color: var(--blue-light);
+}
+
+.dashboard-container .edu-item-text {
+    color: white;
+    font-size: 0.95rem;
+    line-height: 1.5;
+}
+
+/* Animaciones */
+.dashboard-container .animate {
+    opacity: 0;
+    transform: translateY(30px);
+    animation: honeycombFadeIn 0.8s ease forwards;
+}
+
+.dashboard-container .delay-1 {
+    animation-delay: 0.2s;
+}
+
+.dashboard-container .delay-2 {
+    animation-delay: 0.4s;
+}
+
+.dashboard-container .delay-3 {
+    animation-delay: 0.6s;
+}
+
+.dashboard-container .delay-4 {
+    animation-delay: 0.8s;
+}
+
+.dashboard-container .delay-5 {
+    animation-delay: 1s;
+}
+
+@keyframes honeycombFadeIn {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Sección de consejos */
+.dashboard-container .tips-section {
+    background: linear-gradient(
+        to bottom,
+        var(--blue-soft),
+        var(--blue-medium)
+    );
+    border-radius: 15px;
+    padding: 25px;
+    margin-bottom: 30px;
+    box-shadow: 0 10px 25px rgba(1, 87, 155, 0.2);
+    position: relative;
+    overflow: hidden;
+}
+
+.dashboard-container .tips-section::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0h20v20H0V0zm10 17a7 7 0 1 0 0-14 7 7 0 0 0 0 14zm20-17h20v20H30V0zm10 17a7 7 0 1 0 0-14 7 7 0 0 0 0 14zM0 40h20v20H0V40zm10 17a7 7 0 1 0 0-14 7 7 0 0 0 0 14zm20-17h20v20H30V40zm10 17a7 7 0 1 0 0-14 7 7 0 0 0 0 14zM60 0h20v20H60V0zm10 17a7 7 0 1 0 0-14 7 7 0 0 0 0 14zM60 40h20v20H60V40zm10 17a7 7 0 1 0 0-14 7 7 0 0 0 0 14zM0 80h20v20H0V80zm10 17a7 7 0 1 0 0-14 7 7 0 0 0 0 14zm20-17h20v20H30V80zm10 17a7 7 0 1 0 0-14 7 7 0 0 0 0 14zm20-17h20v20H60V80zm10 17a7 7 0 1 0 0-14 7 7 0 0 0 0 14z' fill='%23FFFFFF' fill-opacity='0.04'/%3E%3C/svg%3E");
+    background-position: 0 0;
+    background-size: 100px 100px;
+    background-repeat: repeat;
+}
+
+.dashboard-container .tips-title {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: white;
+    margin-bottom: 20px;
+    position: relative;
+    display: inline-block;
+}
+
+.dashboard-container .tips-title i {
+    color: var(--blue-navy);
+    margin-right: 10px;
+}
+
+.dashboard-container .tips-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 15px;
+}
+
+.dashboard-container .tip-item {
+    background-color: rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+    padding: 15px;
+    border-left: 3px solid var(--blue-navy);
+    transition: all 0.3s ease;
+    word-wrap: break-word;
+    min-height: 120px; /* Altura mínima para uniformidad */
+    display: flex;
+    flex-direction: column;
+}
+
+.dashboard-container .tip-item:hover {
+    transform: translateY(-3px);
+    background-color: rgba(255, 255, 255, 0.3);
+}
+
+.dashboard-container .tip-text {
+    color: white;
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+
+.dashboard-container .tip-text strong {
+    color: var(--blue-light);
+}
+
+/* Calendario apícola - Ajustes mejorados */
+.dashboard-container .calendar-container {
+    margin-top: 30px;
+    margin-bottom: 30px;
+}
+
+.dashboard-container .calendar-row {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* 2 columnas siempre */
+    grid-gap: 20px; /* Espaciado entre tarjetas */
+    margin: 0;
+}
+
+.dashboard-container .calendar-card {
+    flex: none; /* Anula el flex para usar grid */
+    margin: 0; /* Elimina el margen porque ahora lo maneja grid-gap */
+    background-color: var(--blue-light) !important;
+    border: 1px solid var(--blue-primary);
+    border-radius: 10px;
+    padding: 18px; /* Un poco más de padding para dar aire */
+    min-height: 150px; /* Altura fija para todas las tarjetas */
+    display: flex;
+    flex-direction: column;
+    transition: all 0.3s ease;
+    box-shadow: 0 5px 15px rgba(1, 87, 155, 0.1);
+}
+
+/* Estilos alternativos para el calendario cuando se use BG-Light */
+.dashboard-container .bg-light {
+    background-color: var(--blue-light) !important;
+    border: 1px solid var(--blue-primary);
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 20px;
+    transition: all 0.3s ease;
+    height: 100%;
+    min-height: 130px;
+    display: flex;
+    flex-direction: column;
+}
+
+.dashboard-container .bg-light:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 15px rgba(1, 87, 155, 0.15);
+    border-color: var(--blue-accent);
+}
+
+.dashboard-container .text-primary {
+    color: var(--blue-dark) !important;
+}
+
+.dashboard-container .text-success {
+    color: var(--blue-navy) !important;
+}
+
+.dashboard-container .text-warning {
+    color: var(--blue-accent) !important;
+}
+
+.dashboard-container .text-danger {
+    color: var(--blue-dark) !important;
+}
+
+/* Efectos honeycomb en carga */
+@keyframes honeycombFade {
+    0% {
+        opacity: 0;
+        transform: scale(0.95) translateY(15px);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+.dashboard-container .row {
+    position: relative;
+    margin-left: -15px;
+    margin-right: -15px;
+}
+
+.dashboard-container .row > div {
+    padding-left: 15px;
+    padding-right: 15px;
+    margin-bottom: 30px;
+    animation: honeycombFade 0.5s ease forwards;
+}
+
+/* Hover effect para las cards */
+.dashboard-container .chart-card:hover,
+.dashboard-container .info-card:hover,
+.dashboard-container .edu-item:hover,
+.dashboard-container .tip-item:hover,
+.dashboard-container .bg-light:hover {
+    box-shadow: 0 12px 25px rgba(1, 87, 155, 0.25);
+    border-color: var(--blue-accent);
+}
+
+/* Mejoras para tamaño uniforme en tarjetas */
+@media (max-width: 1200px) {
+    .dashboard-container .info-card-title {
+        font-size: 1rem;
+    }
+
+    .dashboard-container .info-card-value {
+        font-size: 2rem;
+    }
+
+    .dashboard-container .info-card-text {
+        font-size: 0.8rem;
+    }
+
+    .dashboard-container .calendar-card {
+        flex: 0 0 calc(50% - 20px); /* 2 columnas en pantallas medianas */
+    }
+}
+
+@media (max-width: 992px) {
+    .dashboard-container .dashboard-title {
+        font-size: 2.2rem;
+    }
+
+    .dashboard-container .chart-title {
+        font-size: 1.1rem;
+    }
+
+    .dashboard-container .chart-subtitle {
+        font-size: 0.8rem;
+    }
+
+    .dashboard-container .edu-title,
+    .dashboard-container .tips-title {
+        font-size: 1.5rem;
+    }
+
+    .dashboard-container .info-card-value {
+        font-size: 1.8rem;
+    }
+
+    .dashboard-container .edu-content,
+    .dashboard-container .tips-list {
+        grid-template-columns: repeat(2, 1fr); /* Dos columnas en tablets */
+    }
+
+    .dashboard-container .edu-item,
+    .dashboard-container .tip-item {
+        min-height: 160px;
+    }
+
+    .dashboard-container .calendar-row {
+        grid-template-columns: repeat(
+            2,
+            1fr
+        ); /* Mantiene 2 columnas en tablets */
+    }
+
+    .dashboard-container .calendar-card {
+        min-height: 160px; /* Un poco más de altura en dispositivos medianos */
+    }
+
+    /* Asegura que las tarjetas de gráficos pares tengan la misma altura */
+    .dashboard-container .row .chart-card {
+        min-height: 300px;
+    }
+}
+
+@media (max-width: 768px) {
+    .dashboard-container .dashboard-title {
+        font-size: 1.8rem;
+    }
+
+    .dashboard-container .dashboard-subtitle {
+        font-size: 0.9rem;
+    }
+
+    .dashboard-container .info-card {
+        padding: 15px;
+        min-height: 160px;
+        margin-bottom: 20px;
+    }
+
+    .dashboard-container .chart-card {
+        padding: 15px;
+        min-height: 220px;
+        margin-bottom: 20px;
+    }
+
+    .dashboard-container .info-card-icon {
+        width: 45px;
+        height: 45px;
+        font-size: 1.1rem;
+    }
+
+    .dashboard-container .info-card-value {
+        font-size: 1.6rem;
+        margin-bottom: 10px;
+    }
+
+    .dashboard-container .chart-container {
+        height: 220px;
+    }
+
+    .dashboard-container .edu-item-title {
+        font-size: 1.1rem;
+    }
+
+    .dashboard-container .edu-item-text,
+    .dashboard-container .tip-text {
+        font-size: 0.85rem;
+    }
+
+    .dashboard-container .edu-content,
+    .dashboard-container .tips-list {
+        grid-template-columns: 1fr; /* Una columna en móviles */
+        gap: 15px;
+    }
+
+    .dashboard-container .edu-item,
+    .dashboard-container .tip-item {
+        min-height: auto;
+        margin-bottom: 15px;
+    }
+
+    /* Separación clara entre elementos */
+    .dashboard-container .row + .row {
+        margin-top: 15px;
+    }
+
+    /* En móviles, una columna para el calendario también */
+    .dashboard-container .calendar-row {
+        grid-template-columns: 1fr;
+    }
+
+    .dashboard-container .calendar-card {
+        flex: 0 0 calc(100% - 20px); /* 1 columna en móviles */
+        min-height: 140px;
+    }
+}
+
+@media (max-width: 576px) {
+    .dashboard-container {
+        padding: 20px 10px;
+    }
+
+    .dashboard-container .dashboard-title {
+        font-size: 1.6rem;
+    }
+
+    .dashboard-container .info-card-title {
+        font-size: 0.9rem;
+    }
+
+    .dashboard-container .info-card-value {
+        font-size: 1.5rem;
+    }
+
+    .dashboard-container .chart-title {
+        font-size: 1rem;
+    }
+
+    .dashboard-container .chart-container {
+        height: 200px;
+    }
+
+    .dashboard-container .tooltip-content {
+        width: 200px;
+        right: -80px;
+    }
+
+    .dashboard-container .edu-title,
+    .dashboard-container .tips-title {
+        font-size: 1.3rem;
+    }
+
+    /* Mejora del espaciado en móviles pequeños */
+    .dashboard-container .row {
+        margin-left: -10px;
+        margin-right: -10px;
+    }
+
+    .dashboard-container .row > [class*="col-"] {
+        padding-left: 10px;
+        padding-right: 10px;
+        margin-bottom: 20px;
+    }
+
+    .dashboard-container .edu-item,
+    .dashboard-container .tip-item,
+    .dashboard-container .calendar-card {
+        padding: 15px;
+        margin-bottom: 15px;
+    }
+
+    .dashboard-container .calendar-row {
+        grid-gap: 15px;
+    }
+
+    .dashboard-container .calendar-card {
+        padding: 15px;
+        min-height: 130px;
+    }
+}
+
+.dashboard-container .row .col-md-6 .chart-card,
+.dashboard-container .row .col-lg-6 .chart-card {
+    height: 100%;
+}

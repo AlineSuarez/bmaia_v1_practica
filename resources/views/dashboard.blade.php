@@ -1,96 +1,253 @@
 @extends('layouts.app')
 
-@section('title', 'Maia - Dashboard')
+@section('title', 'Maia - Dashboard Apícola')
 
 @section('content')
-<div class="container mt-4">
-    <div class="row text-center mb-4">
-        <div class="col-md-12">
-            <h2 class="fw-bold text-primary">Resumen del Dashboard</h2>
-            <p class="text-muted">Visualiza el estado actual de tus apiarios y colmenas.</p>
+
+    <div class="container dashboard-container">
+        <!-- Header del Dashboard -->
+        <div class="row dashboard-header animate">
+            <div class="col-md-12 text-center">
+                <h1 class="dashboard-title">Panel de Control Apícola</h1>
+                <p class="dashboard-subtitle">Visualiza y analiza el estado actual de tus apiarios y colmenas. Obtén
+                    información valiosa para optimizar la producción y salud de tus abejas.</p>
+            </div>
+        </div>
+
+        <!-- Tarjetas de información clave -->
+        <div class="row mb-4">
+            <div class="col-md-4 animate delay-1">
+                <div class="info-card">
+                    <div class="info-card-icon">
+                        <i class="fas fa-archive"></i>
+                    </div>
+                    <h3 class="info-card-title">Total de Apiarios</h3>
+                    <div class="info-card-value">{{ array_sum(array_column($dataApiarios->toArray(), 'count')) }}</div>
+                    <p class="info-card-text" style="font-weight: 600; font-size: medium; color: white;">Un apiario bien
+                        gestionado puede
+                        albergar entre 15-30 colmenas dependiendo del
+                        espacio y recursos florales disponibles.</p>
+                </div>
+            </div>
+            <div class="col-md-4 animate delay-2">
+                <div class="info-card">
+                    <div class="info-card-icon">
+                        <i class="fas fa-th"></i>
+                    </div>
+                    <h3 class="info-card-title">Total de Colmenas</h3>
+                    <div class="info-card-value">{{ array_sum(array_column($dataApiarios->toArray(), 'count')) }}</div>
+                    <p class="info-card-text" style="font-weight: 600; font-size: medium; color: white;">Una colmena
+                        saludable puede contener hasta 60,000 abejas durante la temporada
+                        alta de producción.</p>
+                </div>
+            </div>
+            <div class="col-md-4 animate delay-3">
+                <div class="info-card">
+                    <div class="info-card-icon">
+                        <i class="fas fa-calendar-check"></i>
+                    </div>
+                    <h3 class="info-card-title">Visitas Realizadas</h3>
+                    <div class="info-card-value">{{ array_sum(array_column($dataApiarios->toArray(), 'count')) }}</div>
+                    <p class="info-card-text" style="font-weight: 600; font-size: medium; color: white;">Se recomienda
+                        visitar cada colmena al menos una vez cada 7-10 días durante la
+                        temporada activa.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Gráficos principales con información contextual -->
+        <div class="row">
+            <div class="col-md-6 animate delay-2">
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <div class="chart-title-container">
+                            <h5 class="chart-title"><i class="fas fa-chart-bar"></i> Cantidad de Colmenas por Apiario</h5>
+                            <p class="chart-subtitle">Distribución actual de colmenas en cada uno de tus apiarios
+                                registrados.</p>
+                        </div>
+                        <div class="tooltip-container">
+                            <div class="chart-help">?</div>
+                            <div class="tooltip-content">
+                                Este gráfico muestra la cantidad de colmenas en cada apiario. Un balance adecuado ayuda a
+                                optimizar recursos y prevenir la sobrepoblación.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="colmenasChart"></canvas>
+                    </div>
+                    <div class="mt-3">
+                        <p class="info-card-text">
+                            <i class="fas fa-info-circle text-primary"></i>
+                            La distribución ideal de colmenas depende de varios factores como la disponibilidad de recursos
+                            florales, el espacio del terreno y la capacidad de manejo del apicultor.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 animate delay-2">
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <div class="chart-title-container">
+                            <h5 class="chart-title"><i class="fas fa-chart-pie"></i> Temporadas de Producción</h5>
+                            <p class="chart-subtitle">Distribución de apiarios según su temporada principal de producción.
+                            </p>
+                        </div>
+                        <div class="tooltip-container">
+                            <div class="chart-help">?</div>
+                            <div class="tooltip-content">
+                                Este gráfico muestra qué temporadas son más productivas para tus apiarios. Ayuda a
+                                planificar actividades y recursos a lo largo del año.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="temporadasChart"></canvas>
+                    </div>
+                    <div class="mt-3">
+                        <p class="info-card-text">
+                            <i class="fas fa-info-circle text-primary"></i>
+                            La producción de miel varía según la temporada debido a la disponibilidad de flores, condiciones
+                            climáticas y el ciclo natural de las abejas.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sección educativa -->
+        <div class="row animate delay-3">
+            <div class="col-12">
+                <div class="edu-section">
+                    <h3 class="edu-title">¿Sabías que...?</h3>
+                    <div class="edu-content">
+                        <div class="edu-item">
+                            <h4 class="edu-item-title"><i class="fas fa-bug"></i> Vida de las Abejas</h4>
+                            <p class="edu-item-text">
+                                Una abeja obrera vive aproximadamente 6 semanas durante la temporada activa, mientras que
+                                las abejas nacidas en otoño pueden vivir hasta 6 meses para mantener la colonia durante el
+                                invierno.
+                            </p>
+                        </div>
+                        <div class="edu-item">
+                            <h4 class="edu-item-title"><i class="fas fa-temperature-high"></i> Temperatura de la Colmena
+                            </h4>
+                            <p class="edu-item-text">
+                                Las abejas mantienen la temperatura de la cámara de cría alrededor de 35°C (95°F),
+                                independientemente de la temperatura exterior, mediante la vibración de sus músculos
+                                torácicos.
+                            </p>
+                        </div>
+                        <div class="edu-item">
+                            <h4 class="edu-item-title"><i class="fas fa-tint"></i> Producción de Miel</h4>
+                            <p class="edu-item-text">
+                                Para producir 1 kg de miel, las abejas deben visitar aproximadamente 4 millones de flores y
+                                volar el equivalente a 4 veces alrededor del mundo.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Segunda fila de gráficos -->
+        <div class="row">
+            <div class="col-md-6 animate delay-3">
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <div class="chart-title-container">
+                            <h5 class="chart-title"><i class="fas fa-calendar-check"></i> Visitas por Apiario</h5>
+                            <p class="chart-subtitle">Frecuencia de visitas realizadas a cada apiario para monitoreo y
+                                mantenimiento.</p>
+                        </div>
+                        <div class="tooltip-container">
+                            <div class="chart-help">?</div>
+                            <div class="tooltip-content">
+                                Este gráfico muestra la frecuencia de visitas a cada apiario. Un monitoreo regular es
+                                esencial para detectar problemas a tiempo.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="visitasApiariosChart"></canvas>
+                    </div>
+                    <div class="mt-3">
+                        <p class="info-card-text">
+                            <i class="fas fa-info-circle text-primary"></i>
+                            La frecuencia de visitas debe aumentar durante la temporada de enjambrazón y cuando hay riesgos
+                            de plagas o enfermedades.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 animate delay-3">
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <div class="chart-title-container">
+                            <h5 class="chart-title"><i class="fas fa-clipboard-list"></i> Tipos de Visitas</h5>
+                            <p class="chart-subtitle">Distribución de las visitas según su propósito y actividades
+                                realizadas.</p>
+                        </div>
+                        <div class="tooltip-container">
+                            <div class="chart-help">?</div>
+                            <div class="tooltip-content">
+                                Este gráfico muestra los diferentes tipos de visitas realizadas. Ayuda a entender qué
+                                actividades demandan más tiempo y recursos.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="tiposVisitasChart"></canvas>
+                    </div>
+                    <div class="mt-3">
+                        <p class="info-card-text">
+                            <i class="fas fa-info-circle text-primary"></i>
+                            Cada tipo de visita tiene objetivos específicos. Las revisiones regulares son fundamentales para
+                            prevenir problemas, mientras que los tratamientos deben aplicarse solo cuando sea necesario.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sección de consejos -->
+        <div class="row animate delay-4">
+            <div class="col-12">
+                <div class="tips-section">
+                    <h3 class="tips-title"><i class="fas fa-lightbulb"></i> Consejos para Optimizar tu Apiario</h3>
+                    <div class="tips-list">
+                        <div class="tip-item">
+                            <p class="tip-text"><strong>Ubicación:</strong> Coloca tus colmenas en lugares con sombra
+                                parcial, protegidas del viento y con fácil acceso a fuentes de agua.</p>
+                        </div>
+                        <div class="tip-item">
+                            <p class="tip-text"><strong>Espacio:</strong> Mantén al menos 2-3 metros entre colmenas para
+                                reducir la deriva y facilitar el trabajo del apicultor.</p>
+                        </div>
+                        <div class="tip-item">
+                            <p class="tip-text"><strong>Alimentación:</strong> Proporciona alimentación suplementaria
+                                durante períodos de escasez de néctar para mantener colonias fuertes.</p>
+                        </div>
+                        <div class="tip-item">
+                            <p class="tip-text"><strong>Registros:</strong> Mantén registros detallados de cada visita,
+                                observaciones y tratamientos para tomar decisiones informadas.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
-    <div class="row mt-4">
-        <div class="col-md-6">
-            <div class="card shadow-sm p-3">
-                <h5 class="fw-bold">Cantidad de Colmenas por Apiario</h5>
-                <canvas id="colmenasChart"></canvas>
-            </div>
-        </div>
-        <div class="col-md-6">
-            <div class="card shadow-sm p-3">
-                <h5 class="fw-bold">Temporadas de Producción</h5>
-                <canvas id="temporadasChart"></canvas>
-            </div>
-        </div>
-    </div>
-
-    <div class="row mt-4">
-        <div class="col-md-6">
-            <div class="card shadow-sm p-3">
-                <h5 class="fw-bold">Visitas por Apiario</h5>
-                <canvas id="visitasApiariosChart"></canvas>
-            </div>
-        </div>
-        <div class="col-md-6">
-            <div class="card shadow-sm p-3">
-                <h5 class="fw-bold">Tipos de Visitas</h5>
-                <canvas id="tiposVisitasChart"></canvas>
-            </div>
-        </div>
-    </div>
-</div>
-
-<script>
-    const dataApiarios = @json($dataApiarios);
-    const dataVisitas = @json($dataVisitas);
-
-    document.addEventListener('DOMContentLoaded', function () {
-        const apiariosNames = dataApiarios.map(item => item.name);
-        const colmenasCount = dataApiarios.map(item => item.count);
-        const seasons = dataApiarios.map(item => item.season);
-
-        const colmenasCtx = document.getElementById('colmenasChart').getContext('2d');
-        const apiariosColors = apiariosNames.map(() => `rgba(${Math.floor(Math.random() * 256)}, ${Math.floor(Math.random() * 256)}, ${Math.floor(Math.random() * 256)}, 0.7)`);
-
-        new Chart(colmenasCtx, {
-            type: 'bar',
-            data: {
-                labels: apiariosNames,
-                datasets: [{
-                    label: 'Cantidad de Colmenas',
-                    data: colmenasCount,
-                    backgroundColor: apiariosColors,
-                    borderColor: apiariosColors.map(color => color.replace('0.7', '1')),
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                responsive: true,
-                scales: { y: { beginAtZero: true } }
-            }
-        });
-
-        const temporadasCtx = document.getElementById('temporadasChart').getContext('2d');
-        const seasonCounts = seasons.reduce((acc, season) => { acc[season] = (acc[season] || 0) + 1; return acc; }, {});
-
-        new Chart(temporadasCtx, {
-            type: 'pie',
-            data: {
-                labels: Object.keys(seasonCounts),
-                datasets: [{
-                    data: Object.values(seasonCounts),
-                    backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56']
-                }]
-            },
-            options: { responsive: true }
-        });
-    });
-</script>
+    <script>
+        const dataApiarios = @json($dataApiarios);
+        const dataVisitas = @json($dataVisitas);
+    </script>
 @endsection
 
 @section('optional-scripts')
-<script src="{{ asset('vendor/chatbot/js/chatbot.js') }}"></script>
-<script src="/js/VoiceCommands.js"></script>
+    <link href="{{ asset('./css/components/home-user/graficos.css') }}" rel="stylesheet">
+    <script src="{{ asset('js/components/home-user/graficos.js') }}"></script>
+    <script src="{{ asset('vendor/chatbot/js/chatbot.js') }}"></script>
+    <script src="/js/VoiceCommands.js"></script>
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
 @endsection

@@ -68,9 +68,6 @@
 
 
     <!-- Botón flotante para abrir el asistente virtual -->
-    <div id="virtual-assistant-button" class="floating-btn" onclick="toggleChat()">
-        <img src="/img/assistant_icon.svg" alt="Maya Asistente Virtual" class="img-fluid" style="width: 60px;">
-    </div>
 
     <!-- Chat flotante -->
     <div id="virtual-assistant-chat" class="assistant-chat" style="display:none;">

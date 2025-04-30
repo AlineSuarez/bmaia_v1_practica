@@ -22,7 +22,7 @@
       <div class="modal-particle modal-particle-4"></div>
 
       <div class="development-icon">
-        <i class="fa-solid fa-seedling "></i>
+        <img src="{{ asset('img/abeja.png') }}" width="160px" height="130px" alt="Fondo IA">
       </div>
       <p>¡Bienvenido a Ma<span class="highlight">iA</span>!</p>
       <p>Presentamos MaiA: el nuevo Agente de Inteligencia Artificial al servicio de la Apicultura Chilena
@@ -359,7 +359,7 @@
           Prueba MaiA gratis por 16 días y transforma la gestión de tus colmenas!
         </p>
         <div class="cta-buttons">
-          <a href="#descarga" class="cta-button primary">Solicitar demostración</a>
+          <a href="#descarga" class="cta-button primary">¡Descarga la app ahora!</a>
         </div>
 
         <!-- Enhanced honeycomb background for CTA -->

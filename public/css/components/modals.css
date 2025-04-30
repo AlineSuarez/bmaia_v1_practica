@@ -1208,8 +1208,30 @@ input:focus-visible {
     color: #718096;
 }
 
-/* Ajustes para el botón de Google en el modal de autenticación */
 #auth-modal .google-btn {
     width: 100%;
     justify-content: center;
+}
+
+.password-wrapper {
+    position: relative;
+}
+
+.password-toggle {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: #666;
+    z-index: 2;
+}
+
+.password-toggle:hover {
+    color: #333;
+}
+
+.password-wrapper input[type="password"],
+.password-wrapper input[type="text"] {
+    padding-right: 35px;
 }
