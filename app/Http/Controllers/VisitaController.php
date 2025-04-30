@@ -128,6 +128,11 @@ class VisitaController extends Controller
             'fecha_visita' => $validated['fecha'],
             'motivo' => $validated['motivo'],
             'tipo_visita' => 'Visita General',
+            'nombres'   => $request->user()->name,
+            'apellidos' => $request->user()->last_name,
+            'rut'       => $request->user()->rut,
+            'telefono'  => $request->user()->telefono,
+            'firma'     => $request->user()->firma,
         ]);
         return redirect()->route('visitas')->with('success', 'Registro de Visita General guardado correctamente.');
     }

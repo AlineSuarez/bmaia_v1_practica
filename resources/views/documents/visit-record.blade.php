@@ -117,12 +117,13 @@
         <tbody>
             @foreach ($data['visits'] as $visit)
                 <tr>
-                    <td>{{ $data['legal_representative'] }}</td>
-                    <td>{{ $data['last_name'] }}</td>
-                    <td>{{ $data['rut'] }}</td>
+                    <td>{{ $visit->fecha_visita}}</td>
+                    <td>{{ $visit->nombres }}</td>
+                    <td>{{ $visit->apellidos }}</td>
+                    <td>{{ $visit->rut }}</td>
                     <td>{{ $visit->motivo }}</td>
-                    <td>{{ $data['phone'] }}</td>
-                    <td>{{ $data['firma'] ?? '' }}</td>
+                    <td>{{ $visit->telefono }}</td>
+                    <td>{{ $visit->firma }}</td>
                 </tr>
             @endforeach
         </tbody>
