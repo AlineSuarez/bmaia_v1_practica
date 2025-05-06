@@ -53,7 +53,7 @@ class DashboardController extends Controller
         })->get()->map(function ($visita) {
             return [
                 'apiario' => $visita->apiario->nombre,
-                'type' => $visita->tipo
+                'tipo_visita' => $visita->tipo
             ];
         });
 
@@ -100,19 +100,13 @@ class DashboardController extends Controller
                 'season' => $apiario->temporada_produccion
             ];
         });
-
-
-
         return view('home', compact('totalApiarios', 'totalColmenas', 'ubicacionApiarios', 'clima', 'apiarioEnUso', 'visitas','t_progreso','t_pendientes','t_urgentes','dataApiarios','t_completadas','user'));
     }
-
 
         //cantidad de apiarios:
         public function cantidadApiarios()
         {
-            // Obtener la cantidad de apiarios para el usuario autenticado
-
-
+        // Obtener la cantidad de apiarios para el usuario autenticado
         // Pasar la cantidad a la vista
         return view('dashboard', compact('cantidadApiarios'));
         }

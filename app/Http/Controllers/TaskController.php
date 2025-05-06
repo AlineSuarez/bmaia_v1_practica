@@ -158,32 +158,25 @@ class TaskController extends Controller
     public function guardarCambios(Request $request, $id)
     {
         $request->validate([
-            'estado' => 'in:Pendiente,En progreso,Completada',
+            'estado'       => 'nullable|in:Pendiente,En progreso,Completada,Vencida',
+            'fecha_inicio' => 'nullable|date',
+            'fecha_limite' => 'nullable|date|after_or_equal:fecha_inicio',
+            'prioridad'    => 'nullable|in:baja,media,alta,urgente',
         ]);
         $subtarea = Subtarea::findOrFail($id);
-        if($request->estado){
-            $subtarea->update([
-                'estado' => $request->estado,
-            ]);
-        }
-        if($request->fecha_limite){
-            $subtarea->update([
-                'fecha_limite' => $request->fecha_limite,
-            ]);
-        }
-        if($request->fecha_inicio){
-            $subtarea->update([
-                'fecha_inicio' => $request->fecha_inicio,
-            ]);
-        }
-        if($request->prioridad){
-            $subtarea->update([
-                'prioridad' => $request->prioridad,
-            ]);
+        $data = array_filter($request->only([
+            'estado',
+            'fecha_inicio',
+            'fecha_limite',
+            'prioridad'
+        ]), fn($value) => !is_null($value));
+        $subtarea->update($data);
+        if ($request->ajax()) {
+            return response()->json(['message' => 'Tarea modificada con éxito.']);
         }
         return redirect()->route('tareas')->with('success', 'Tarea modificada con éxito');
-        
     }
+    
 
     public function updateStatus(Request $request, $id)
     {

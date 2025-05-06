@@ -4,6 +4,15 @@
 
 @section('content')
 
+    @php
+    // Opcional: si prefieres filtrar por los tres tipos “buenos”
+    $tiposOk = [
+        'Visita General',
+        'Inspección de Visita',
+        'Uso de Medicamentos',
+    ];
+    @endphp
+
     <div class="container dashboard-container">
         <!-- Header del Dashboard -->
         <div class="row dashboard-header animate">
@@ -22,7 +31,9 @@
                         <i class="fas fa-archive"></i>
                     </div>
                     <h3 class="info-card-title">Total de Apiarios</h3>
-                    <div class="info-card-value">{{ array_sum(array_column($dataApiarios->toArray(), 'count')) }}</div>
+                    <div class="info-card-value">
+                        {{ $dataApiarios->count() }}
+                    </div>
                     <p class="info-card-text" style="font-weight: 600; font-size: medium; color: white;">Un apiario bien
                         gestionado puede
                         albergar entre 15-30 colmenas dependiendo del
@@ -35,7 +46,9 @@
                         <i class="fas fa-th"></i>
                     </div>
                     <h3 class="info-card-title">Total de Colmenas</h3>
-                    <div class="info-card-value">{{ array_sum(array_column($dataApiarios->toArray(), 'count')) }}</div>
+                    <div class="info-card-value">
+                        {{ array_sum(array_column($dataApiarios->toArray(), 'count')) }}
+                    </div>
                     <p class="info-card-text" style="font-weight: 600; font-size: medium; color: white;">Una colmena
                         saludable puede contener hasta 60,000 abejas durante la temporada
                         alta de producción.</p>
@@ -47,7 +60,12 @@
                         <i class="fas fa-calendar-check"></i>
                     </div>
                     <h3 class="info-card-title">Visitas Realizadas</h3>
-                    <div class="info-card-value">{{ array_sum(array_column($dataApiarios->toArray(), 'count')) }}</div>
+                    <div class="info-card-value">
+                        {{ $dataVisitas
+                            ->reject(fn($v) => $v['tipo_visita'] === 'Sistema Experto')
+                            ->count() 
+                        }}
+                    </div>
                     <p class="info-card-text" style="font-weight: 600; font-size: medium; color: white;">Se recomienda
                         visitar cada colmena al menos una vez cada 7-10 días durante la
                         temporada activa.</p>
