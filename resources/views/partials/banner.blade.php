@@ -6,7 +6,7 @@
 <div class="navbar-container">
     <!-- Logo -->
     <a href="#" class="navbar-logo">
-        <img src="{{ asset('img/abeja.png') }}" width="35px" height="25px" style="margin-right:10px;" alt="bee">
+        <img src="{{ asset('img/abeja.png') }}" width="38px" height="32px" style="margin-right:10px;" alt="bee">
         <span class="logo-text">MaiA</span>
     </a>
 
@@ -43,7 +43,7 @@
     <!-- Botones de acción -->
     <div class="navbar-actions">
         <!-- Botón de Ingresar -->
-        <button class="action-button action-button-enter" style="background-color:#ecc100; color:rgb(255, 255, 255);"
+        <button class="action-button action-button-enter" style="background-color:#ecc100; color:rgb(255, 255, 255); justify-content: center;"
             onclick="openModal('login-modal')">
             Ingresar
         </button>
@@ -91,8 +91,4 @@
         </button>
     </div>
 </div>
-
-<script>
-
-</script>
 </header>

@@ -1235,3 +1235,105 @@ input:focus-visible {
 .password-wrapper input[type="text"] {
     padding-right: 35px;
 }
+
+.password-toggle {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: #666;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    font-size: 1em;
+}
+
+.password-toggle:hover {
+    color: #333;
+}
+
+.password-wrapper input[type="password"],
+.password-wrapper input[type="text"] {
+    padding-right: 35px;
+}
+
+/* Media query específico para móviles */
+@media (max-width: 480px) {
+    .password-toggle {
+        position: absolute;
+        right: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+        height: 20px;
+        width: 20px;
+        font-size: 1em;
+        padding: 0;
+        border: none;
+        background: transparent;
+    }
+
+    .password-wrapper {
+        display: flex;
+        align-items: center;
+    }
+
+    .password-wrapper input[type="password"],
+    .password-wrapper input[type="text"] {
+        padding-right: 35px;
+    }
+}
+
+/* Corrigiendo el posicionamiento del icono de ojo */
+.password-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.password-toggle {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: #666;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    font-size: 1rem;
+    background: transparent;
+    border: none;
+    padding: 0;
+}
+
+.password-toggle:hover {
+    color: #333;
+}
+
+.password-wrapper input[type="password"],
+.password-wrapper input[type="text"] {
+    padding-right: 35px;
+    width: 100%;
+}
+
+/* Media query más preciso para móviles */
+@media (max-width: 480px) {
+    .password-toggle {
+        right: 10px;
+        width: 18px;
+        height: 18px;
+        font-size: 0.9rem;
+    }
+
+    input[type="password"],
+    input[type="text"] {
+        font-size: 0.85rem !important;
+    }
+}

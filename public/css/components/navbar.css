@@ -660,7 +660,77 @@ body {
 
 /* Eliminar los botones de acción del menú móvil */
 .mobile-actions {
-    display: none; /* Ocultar completamente los botones de acción en el menú móvil */
+    display: flex; /* Cambiamos de none a flex */
+    flex-direction: column;
+    width: 100%;
+    max-width: 300px;
+    gap: 1rem;
+    margin-top: 2rem;
+    align-items: center;
+}
+
+.mobile-action-button {
+    padding: 0.8rem 1.5rem;
+    border-radius: var(--radius-full);
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all var(--transition-normal) var(--ease-bounce);
+    border: none;
+    outline: none;
+    letter-spacing: 0.3px;
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+    width: 100%;
+    text-align: center;
+}
+
+/* Estilos para el botón de login */
+.mobile-action-enter {
+    background: var(--primary-gradient);
+    color: var(--text-light);
+    border: none;
+    box-shadow: var(--shadow-sm);
+}
+
+.mobile-action-enter:hover {
+    background: var(--primary-gradient-hover);
+    transform: translateY(-3px) scale(1.03);
+    box-shadow: var(--shadow-primary), var(--shadow-glow);
+}
+
+/* Ocultar botones de acción en la barra de navegación en pantallas pequeñas */
+@media (max-width: 768px) {
+    .navbar-actions {
+        display: none; /* Oculta los botones en el navbar */
+    }
+}
+
+/* Animación para los botones en el menú móvil */
+.mobile-action-button {
+    transform: translateY(-30px) scale(0.9);
+    opacity: 0;
+    transition: all var(--transition-normal) var(--ease-bounce);
+    transition-delay: 0.5s; /* Aparece después de los enlaces del menú */
+}
+
+.mobile-menu.active .mobile-action-button {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+}
+
+/* Media query para ajustar los botones en pantallas muy pequeñas */
+@media (max-width: 399px) {
+    .mobile-action-button {
+        padding: 0.7rem 1.2rem;
+        font-size: 0.9rem;
+    }
+
+    .mobile-actions {
+        margin-top: 1.5rem;
+        max-width: 250px;
+    }
 }
 
 /* Ajustes para el contenido principal */
@@ -1295,7 +1365,7 @@ main {
     }
 
     .mobile-action-button {
-        padding: 0.7rem 1rem;
+        padding: 0.7rem 1.2rem;
         font-size: 0.9rem;
     }
 }
