@@ -17,51 +17,70 @@ class DashboardController extends Controller
     {
         $user = Auth::user();
         if (!$user) {
-            return redirect()->route('welcome')->with('error', 'Debe iniciar sesión para acceder al dashboard.');
+            return redirect()
+                ->route('welcome')
+                ->with('error', 'Debe iniciar sesión para acceder al dashboard.');
         }
 
-        $totalApiarios = Apiario::where('user_id', $user->id)->count() ?? 0;
-        $totalColmenas = Apiario::where('user_id', $user->id)->sum('num_colmenas') ?? 0;
+        // 1. Defino los tipos de visita que quiero contar
+        $tiposOk = [
+            'Visita General',
+            'Inspección de Visita',
+            'Uso de Medicamentos',
+        ];
 
-        $ubicacionApiarios = 'Zona Norte';
-        $clima = 'Soleado';
-        $apiarioEnUso = 'Apiario 1';
+        // 2. Conteo total de apiarios y colmenas (igual que antes)
+        $totalApiarios = Apiario::where('user_id', $user->id)->count();
+        $totalColmenas = Apiario::where('user_id', $user->id)->sum('num_colmenas');
 
-        $tasks = SubTarea::where('user_id', $user->id)->get();
-        $t_progreso = $tasks->where('estado', 'En progreso')->count() ?? 0;
-        $t_pendientes = $tasks->where('estado', 'Pendiente')->count() ?? 0;
-        $t_urgentes = $tasks->where('prioridad', 'urgente')->where('estado', '!=', 'Completada')->count() ?? 0;
-        $t_completadas = $tasks->where('estado', 'Completada')->count() ?? 0;
+        // 3. Ahora cuento SOLO las visitas de esos tipos
+        $visitas = Visita::whereHas('apiario', function ($q) use ($user) {
+                $q->where('user_id', $user->id);
+            })
+            ->whereIn('tipo_visita', $tiposOk)
+            ->count();
 
-        $totalVisitas = Visita::whereHas('apiario', function ($query) use ($user) {
-            $query->where('user_id', $user->id);
-        })->count();
-        $visitas = $totalVisitas ?? 0;
+        // 4. El resto de tu lógica (tasks, dataApiarios, etc.) no cambia
+        $tasks       = SubTarea::where('user_id', $user->id)->get();
+        $t_progreso  = $tasks->where('estado', 'En progreso')->count();
+        $t_pendientes= $tasks->where('estado', 'Pendiente')->count();
+        $t_urgentes  = $tasks->where('prioridad', 'urgente')
+                        ->where('estado','!=','Completada')
+                        ->count();
+        $t_completadas = $tasks->where('estado','Completada')->count();
 
         $apiarios = Apiario::where('user_id', $user->id)->get();
-        $dataApiarios = $apiarios->map(function ($apiario) {
-            return [
-                'name' => $apiario->nombre,
-                'count' => $apiario->num_colmenas,
-                'season' => $apiario->temporada_produccion
-            ];
-        });
+        $dataApiarios = $apiarios->map(fn($a) => [
+            'name'   => $a->nombre,
+            'count'  => $a->num_colmenas,
+            'season' => $a->temporada_produccion,
+        ]);
 
-        // Obtener visitas agrupadas por apiario y tipo
-        $dataVisitas = Visita::whereHas('apiario', function ($query) use ($user) {
-            $query->where('user_id', $user->id);
-        })->get()->map(function ($visita) {
-            return [
-                'apiario' => $visita->apiario->nombre,
-                'tipo_visita' => $visita->tipo
-            ];
-        });
+        // Si necesitas usar el detalle de visitas en gráficos, corrige también el mapeo:
+    $dataVisitas = Visita::whereHas('apiario', fn($q) => 
+            $q->where('user_id', $user->id)
+        )
+        ->whereIn('tipo_visita', $tiposOk)    // opcional: solo pasar esos tres tipos
+        ->get()
+        ->map(fn($v) => [
+            'apiario'     => $v->apiario->nombre,
+            'tipo_visita' => $v->tipo_visita,   // aquí estaba '$v->tipo'
+        ]);
 
-        return view('dashboard', compact(
-            'totalApiarios', 'totalColmenas', 'ubicacionApiarios', 'clima', 'apiarioEnUso', 'visitas',
-            't_progreso', 't_pendientes', 't_urgentes', 't_completadas', 'user', 'dataApiarios', 'dataVisitas'
-        ));
-    }
+    return view('dashboard', compact(
+        'totalApiarios',
+        'totalColmenas',
+        'visitas',           // ahora ya es el conteo filtrado
+        't_progreso',
+        't_pendientes',
+        't_urgentes',
+        't_completadas',
+        'dataApiarios',
+        'dataVisitas',
+        'user'
+    ));
+}
+
 
     public function home()
     {

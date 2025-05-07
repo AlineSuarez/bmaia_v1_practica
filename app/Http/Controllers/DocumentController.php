@@ -12,6 +12,10 @@ use App\Models\Visita;
 use Auth;
 use Barryvdh\DomPDF\Facade\Pdf;
 
+use proj4php\Proj4php;
+use proj4php\Proj;
+use proj4php\Point;
+
 class DocumentController extends Controller
 {
     // Metodo para obtener los datos del apicultor
@@ -53,6 +57,7 @@ class DocumentController extends Controller
 
 
     // Generar el documento PDF incluyendo todas las visitas
+    /*
     public function generateDocument($id)
     {
         $user = Auth::user();
@@ -64,54 +69,151 @@ class DocumentController extends Controller
           // Coordenadas de ejemplo
                 $latitude = $apiario->latitud;
                 $longitude = $apiario->longitud;
-
-                /*
                 // Inicializar Proj4php
                 $proj4 = new Proj4php();
-
                 // Definir sistemas de coordenadas
                 $projWGS84 = new Proj('EPSG:4326', $proj4); // Sistema WGS84
                 $projUTM = new Proj('EPSG:32719', $proj4); // Sistema UTM Zona 19 Sur (para Chile)
-
                 // Convertir coordenadas
                 $pointSource = new Point($longitude, $latitude, $projWGS84); // Longitud, Latitud
                 $pointDest = $proj4->transform($projUTM, $pointSource);
-
                 // Extraer coordenadas UTM
                 $utm_x = $pointDest->x;
                 $utm_y = $pointDest->y;
                 $utm_huso = 19; // Huso UTM según longitud (Chile está en 19S o 18S)
-                */
+                $data = [
+                    'last_name' => $user->last_name,
+                    'nombre_usuario' => $user->name,
+                    'address' => $user->dirección,
+                    'rut' => $user->rut,
+                    'phone' => $user->telefono,
+                    'region' => $user->region ? $user->region->nombre : 'No especificada',
+                    'commune' => $user->comuna ? $user->comuna->nombre : 'No especificada',
+                    'email' => $user->email,
+                    'legal_representative' => $user->representante_legal,
+                    'registration_number' => $user->numero_registro,
+                    'apiary_name' => $apiario->nombre,
+                    'apiary_number' => '#00'.$apiario->id,
+                    'activity' => $apiario->objetivo_produccion,
+                    'installation_date' => $apiario->temporada_produccion,
+                    'utm_x' => '-', // o null
+                    'utm_y' => '-',
+                    'utm_huso' => '-',
+                    'latitude' => $latitude,
+                    'longitude' => $longitude,
+                    'nomadic' => 'No',
+                    'hive_count' => $apiario->num_colmenas,
+                    'visits' => $visitas,
+                    'foto' => $apiario->foto,
+                ];
+                // Renderizar la vista para el PDF
+                $pdf = Pdf::loadView('documents.apiary-detail', compact('data'));
+                // Descargar el PDF
+                return $pdf->download('Detalles_Apiario_'.$apiario->nombre.'.pdf');
+            }
+        
+
+
+public function generateDocument($id)
+    {
+        $apiario = Apiario::findOrFail($id);
+        // 1. Lee latitud y longitud
+        $lat = $apiario->latitud;
+        $lng = $apiario->longitud;
+        // 2. Inicializa Proj4php y define sistemas
+        $proj4    = new Proj4php();
+        $wgs84    = new Proj('EPSG:4326', $proj4);
+        $utm19S   = new Proj('EPSG:32719', $proj4); // Zona 19S
+        // 3. Transforma
+        $sourcePoint = new Point($lng, $lat, $wgs84);
+        $utmPoint    = $proj4->transform($utm19S, $sourcePoint);
+        // 4. Extrae resultados
+        $utm_x    = $utmPoint->x;
+        $utm_y    = $utmPoint->y;
+        $utm_huso = 19;
+        // 5. Arma el array de datos
         $data = [
-            'last_name' => $user->last_name,
-            'nombre_usuario' => $user->name,
-            'address' => $user->dirección,
-            'rut' => $user->rut,
-            'phone' => $user->telefono,
-            'region' => $user->region ? $user->region->nombre : 'No especificada',
-            'commune' => $user->comuna ? $user->comuna->nombre : 'No especificada',
-            'email' => $user->email,
-            'legal_representative' => $user->representante_legal,
-            'registration_number' => $user->numero_registro,
-            'apiary_name' => $apiario->nombre,
-            'apiary_number' => '#00'.$apiario->id,
-            'activity' => $apiario->objetivo_produccion,
-            'installation_date' => $apiario->temporada_produccion,
-            'utm_x' => '-', // o null
-            'utm_y' => '-',
-            'utm_huso' => '-',
-            'latitude' => $latitude,
-            'longitude' => $longitude,
-            'nomadic' => 'No',
-            'hive_count' => $apiario->num_colmenas,
-            'visits' => $visitas,
-            'foto' => $apiario->foto,
+            // ... tus otros campos ...
+            'utm_x'  => number_format($utm_x, 2, ',', '.'),
+            'utm_y'  => number_format($utm_y, 2, ',', '.'),
+            'utm_huso' => $utm_huso,
+            'latitude'  => $lat,
+            'longitude' => $lng,
+            // ...
         ];
-        // Renderizar la vista para el PDF
+        // 6. Renderiza el PDF con esos valores
         $pdf = Pdf::loadView('documents.apiary-detail', compact('data'));
-        // Descargar el PDF
-        return $pdf->download('Detalles_Apiario_'.$apiario->nombre.'.pdf');
+        return $pdf->download("Detalles_Apiario_{$apiario->nombre}.pdf");
     }
+
+
+    */
+
+        public function generateDocument($id)
+    {
+        // Obtiene el apiario y el usuario
+        $apiario = Apiario::findOrFail($id);
+        $user     = Auth::user();
+
+        // Obtiene latitud y longitud
+        $lat = $apiario->latitud;
+        $lng = $apiario->longitud;
+
+        // Inicializa Proj4php y define sistemas de coordenadas
+        $proj4  = new Proj4php();
+        $wgs84  = new Proj('EPSG:4326', $proj4);
+        $utm19S = new Proj('EPSG:32719', $proj4); // Zona UTM 19S para Chile
+
+        // Crea el punto de origen y lo transforma
+        $sourcePoint = new Point($lng, $lat, $wgs84);
+        $utmPoint    = $proj4->transform($utm19S, $sourcePoint);
+
+        // Extrae coordenadas UTM
+        $utm_x    = $utmPoint->x;
+        $utm_y    = $utmPoint->y;
+        $utm_huso = 19;
+
+        // Recupera todas las visitas del apiario
+        $visitas = Visita::where('apiario_id', $id)->get();
+
+        // Prepara array de datos para la vista
+        $data = [
+            // Datos del apicultor
+            'legal_representative' => $user->name,
+            'last_name'            => $user->last_name ?? '',
+            'registration_number'  => $user->numero_registro ?? '',
+            'email'                => $user->email,
+            'rut'                  => $user->rut ?? '',
+            'phone'                => $user->telefono ?? '',
+            'address'              => $user->direccion ?? '',
+            'region'               => $user->region->nombre ?? '',
+            'commune'              => $user->comuna->nombre ?? '',
+
+            // Datos del apiario
+            'apiary_name'        => $apiario->nombre,
+            'apiary_number'      => '#00' . $apiario->id,
+            'activity'           => $apiario->objetivo_produccion ?? $apiario->actividad ?? '',
+            'installation_date'  => $apiario->fecha_instalacion
+                                        ? $apiario->fecha_instalacion->format('Y-m-d')
+                                        : '',
+            'utm_x'              => number_format($utm_x, 2, ',', '.'),
+            'utm_y'              => number_format($utm_y, 2, ',', '.'),
+            'utm_huso'           => $utm_huso,
+            'latitude'           => $lat,
+            'longitude'          => $lng,
+            'nomadic'            => $apiario->trashumante ? 'Sí' : 'No',
+            'hive_count'         => $apiario->num_colmenas ?? '',
+            'foto'               => $apiario->foto,
+
+            // Visitas
+            'visits'             => $visitas,
+        ];
+
+        // Genera y descarga el PDF
+        $pdf = Pdf::loadView('documents.apiary-detail', compact('data'));
+        return $pdf->download('Detalles_Apiario_' . $apiario->nombre . '.pdf');
+    }
+
 
     public function generateVisitasDocument($id)
     {
@@ -170,23 +272,16 @@ class DocumentController extends Controller
     {
         $user = Auth::user();
         $visitas = Visita::where('apiario_id', $apiario->id)->get();
-
         $latitude = $apiario->latitud;
         $longitude = $apiario->longitud;
-
-        /*
-                $proj4 = new Proj4php();
+        $proj4 = new Proj4php();
         $projWGS84 = new Proj('EPSG:4326', $proj4);
         $projUTM = new Proj('EPSG:32719', $proj4);
-
         $pointSource = new Point($longitude, $latitude, $projWGS84);
         $pointDest = $proj4->transform($projUTM, $pointSource);
-
         $utm_x = $pointDest->x;
         $utm_y = $pointDest->y;
         $utm_huso = 19;
-
-        */
         return [
             'last_name' => $user->last_name,
             'nombre_usuario' => $user->name,

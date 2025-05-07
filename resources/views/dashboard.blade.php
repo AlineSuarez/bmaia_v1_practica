@@ -61,10 +61,7 @@
                     </div>
                     <h3 class="info-card-title">Visitas Realizadas</h3>
                     <div class="info-card-value">
-                        {{ $dataVisitas
-                            ->reject(fn($v) => $v['tipo_visita'] === 'Sistema Experto')
-                            ->count() 
-                        }}
+                        {{ $visitas }}
                     </div>
                     <p class="info-card-text" style="font-weight: 600; font-size: medium; color: white;">Se recomienda
                         visitar cada colmena al menos una vez cada 7-10 días durante la
