@@ -101,21 +101,10 @@
             <td>NÚMERO DE COLMENAS:</td>
             <td>{{ $data['hive_count'] }}</td>
         </tr>
+        
     </table>
 
     <h2>REGISTRO DE INSPECCIÓN APIARIO</h2>
-
-    <p class="section-title">DATOS DEL APIARIO</p>
-    <table>
-        <tr>
-            <td style="width: 30%; font-weight: bold;" class="text-left">NOMBRE DEL APIARIO:</td>
-            <td style="width: 70%;" class="text-left">{{ $data['apiary_name'] ?? '' }}</td>
-        </tr>
-        <tr>
-            <td style="font-weight: bold;" class="text-left">NÚMERO DEL APIARIO:</td>
-            <td class="text-left">{{ $data['apiary_number'] ?? '' }}</td>
-        </tr>
-    </table>
 
     <p class="section-title">REGISTRO DE INSPECCIONES</p>
     <table>
@@ -149,6 +138,7 @@
                         <td>{{ $visit->sospecha_enfermedad ?? '' }}</td>
                         <td class="text-left">{{ $visit->observaciones ?? '' }}</td>
                     </tr>
+                    
                 @empty
                     <tr><td colspan="9">No hay registros de inspección.</td></tr>
                 @endforelse

@@ -105,11 +105,12 @@ class DocumentController extends Controller
             'nomadic' => 'No',
             'hive_count' => $apiario->num_colmenas,
             'visits' => $visitas,
+            'foto' => $apiario->foto,
         ];
         // Renderizar la vista para el PDF
-        $pdf = Pdf::loadView('documents.visit-record', compact('data'));
+        $pdf = Pdf::loadView('documents.apiary-detail', compact('data'));
         // Descargar el PDF
-        return $pdf->download('Cuaderno_De_Campo_Apiario_'.$apiario->nombre.'.pdf');
+        return $pdf->download('Detalles_Apiario_'.$apiario->nombre.'.pdf');
     }
 
     public function generateVisitasDocument($id)

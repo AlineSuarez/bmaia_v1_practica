@@ -18,7 +18,7 @@ use App\Http\Controllers\MailController;
 use App\Http\Controllers\PaymentController;
 
 Route::get('/tareas/search', [TaskController::class, 'search'])->name('tareas.search');
-Route::resource('tareas', TaskController::class);
+//Route::resource('tareas', TaskController::class);
 Route::get('/tareas/view/{view}', [TaskController::class, 'loadView'])->name('tareas.view');
 
 Route::get('auth/google', [GoogleController::class, 'redirectToGoogle'])->name('auth.google');
@@ -106,12 +106,12 @@ Route::get('apiarios/editar/{id}', [ApiarioController::class, 'edit'])->name('ap
 Route::post('apiarios/editar/{id}', [ApiarioController::class, 'update'])->name('apiarios.editar');
 Route::get('comunas/{region}', [ApiarioController::class, 'getComunas']);
 Route::delete('/apiarios/delete/{apiario}', [ApiarioController::class, 'deleterApiario'])->name('apiarios.destroy');
+Route::get('/apiarios/{id}', [ApiarioController::class, 'show'])->name('apiarios.show');
 
 // Historial de visitas de un apiario
 Route::get('apiarios/{apiario}/visitas', [VisitaController::class, 'showHistorial'])->name('visitas.historial');
 
 //Task
-Route::get('/datos-subtareas', [TaskController::class, 'obtenerSubtareasUsuarioJson'])->name('tareas.data');
 Route::delete('/tareas/{id}', [TaskController::class, 'destroy'])->name('tareas.destroy');
 Route::get('/tareas', [TaskController::class, 'index'])->name('tareas');
 Route::post('/tareas', [TaskController::class, 'store'])->name('tareas.store');
@@ -121,10 +121,12 @@ Route::patch('/tareas/{id}/update-status', [TaskController::class, 'updateStatus
 Route::get('/tareas/{id}', [TaskController::class, 'show'])->name('tareas.show');
 Route::post('/tareas/update/{id}', [TaskController::class, 'guardarCambios']);
 Route::patch('/tareas/{id}/update', [TaskController::class, 'updateTarea']);
-Route::get('/tareas/calendario', [TaskController::class, 'calendario'])->name('tareas.calendario');
-Route::get('/tareas/json', [TaskController::class, 'obtenerTareasJson'])->name('tareas.json');
-// Imprimir todas las tareas
 Route::get('/todas-las-tareas/imprimir', [TaskController::class, 'imprimirTodas'])->name('tareas.imprimirTodas');
+
+// 1) Pantalla del calendario
+Route::get('/tareas/calendario', [TaskController::class, 'calendario'])->name('tareas.calendario');
+// 2) JSON de eventos para FullCalendar
+Route::get('/tareas/json', [TaskController::class, 'obtenerEventosJson'])->name('tareas.json');
 
 
 

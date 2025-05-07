@@ -33,6 +33,11 @@ class SubTarea extends Model
         'user_id',
     ];
 
+    protected $casts = [
+        'fecha_inicio' => 'datetime',
+        'fecha_limite' => 'datetime',
+    ];
+
     /**
      * Relación con la tabla Tareas Generales.
      * Una subtarea pertenece a una Tarea General.

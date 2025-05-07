@@ -1,24 +1,45 @@
 document.addEventListener("DOMContentLoaded", function () {
-    var calendarEl = document.getElementById("calendar");
-
-    var calendar = new FullCalendar.Calendar(calendarEl, {
-        initialView: "dayGridMonth", // Vista inicial del calendario (puedes cambiarla a week o list)
+    const calendarEl = document.getElementById("calendar");
+    if (!calendarEl) return console.warn("No existe #calendar en la página.");
+    const calendar = new FullCalendar.Calendar(calendarEl, {
+        initialView: "dayGridMonth",
+        locale: "es",
         headerToolbar: {
-            left: "prev,next today",
+            left:   "prev,next today",
             center: "title",
-            right: "dayGridMonth,timeGridWeek,timeGridDay",
+            right:  "dayGridMonth,timeGridWeek,timeGridDay"
         },
-        events: "/tareas/json", // Ruta que devuelve las tareas en formato JSON
-        eventClick: function (info) {
+        // indica la URL de tu JSON
+        events: "/tareas/json",
+        // cuando pinchen en un evento, sacamos sus extendedProps
+        eventClick(info) {
+            const props = info.event.extendedProps;
             alert(
-                "Tarea: " +
-                    info.event.title +
-                    "\nDescripción: " +
-                    info.event.extendedProps.description
+            `Tarea: ${info.event.title}\n` +
+            `Estado: ${props.estado}\n` +
+            `Prioridad: ${props.prioridad}\n` +
+            `Descripción: ${props.description || '—'}`
             );
         },
-        locale: "es", // Para configurar el calendario en español
-    });
-
-    calendar.render();
-});
+        eventDidMount(info) {
+            const colores = {
+            urgente:        "#dc3545",
+            alta:           "#ffc107",
+            media:          "#0dcaf0",
+            baja:           "#198754",
+            "no-prioritaria":"#6c757d"
+            };
+            const pri = info.event.extendedProps.prioridad;
+            if (colores[pri]) {
+            info.el.style.backgroundColor = colores[pri];
+            }
+        },
+        navLinks:    true,
+        dayMaxEvents:true
+        });
+    
+        calendar.render();
+    
+        // DEBUG
+        console.log("Eventos cargados:", calendar.getEvents().map(e => e.toPlainObject()));
+    });  

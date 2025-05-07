@@ -119,7 +119,7 @@
                                                 <i class="fas fa-trash-alt"></i>
                                             </button>
                                             <a href="{{ route('generate.document', $apiario->id) }}"
-                                                class="btn-table-action btn-info" data-tooltip="Descargar reporte">
+                                                class="btn-table-action btn-info" data-tooltip="Descargar detalle PDF">
                                                 <i class="fas fa-download"></i>
                                             </a>
                                         </div>

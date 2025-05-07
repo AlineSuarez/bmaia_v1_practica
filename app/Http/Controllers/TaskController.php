@@ -201,21 +201,27 @@ class TaskController extends Controller
         return view('tareas.calendario');
     }
 
-    // Función para devolver tareas en formato JSON
-    public function obtenerTareasJson()
+    public function obtenerEventosJson()
     {
-        $tareas = Task::all(); // Si usas paginación o filtros, puedes ajustar esto
-        $eventos = [];
-        foreach ($tareas as $tarea) {
-            $eventos[] = [
-                'title' => $tarea->title,
-                'start' => $tarea->fecha_inicio, // Si tienes un campo de fecha de inicio en la DB
-                'end'   => $tarea->fecha_fin,    // Si tienes un campo de fecha de fin
-                'description' => $tarea->description,
-                'status' => $tarea->status,
+        // Trae las subtareas del usuario (o Task si prefieres)
+        $subtareas = SubTarea::where('user_id', Auth::id())->get();
+        // Mapea a lo que FullCalendar espera
+        $events = $subtareas->map(function($st) {
+            return [
+                'id'           => $st->id,
+                'title'        => $st->nombre,
+                // FullCalendar trata `end` como exclusivo, así que sumamos un día
+                'start'        => $st->fecha_inicio->toDateString(),
+                'end'          => $st->fecha_limite->copy()->addDay()->toDateString(),
+                // Todo lo extra va en extendedProps
+                'extendedProps'=> [
+                    'estado'      => $st->estado,
+                    'prioridad'   => $st->prioridad,
+                    'description' => $st->descripcion,
+                ],
             ];
-        }
-        return response()->json($eventos);
+        });
+        return response()->json($events);
     }
 
     public function default(Request $request)
@@ -320,6 +326,7 @@ class TaskController extends Controller
         return view('tareas.imprimir-todas', compact('subtareas'));
     }
 
+    /*
     public function obtenerSubtareasUsuarioJson()
     {
         $user = Auth::user();
@@ -334,4 +341,5 @@ class TaskController extends Controller
 
         return response()->json($tareasGenerales);
     }
+   */
 }
