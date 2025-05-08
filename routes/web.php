@@ -17,6 +17,7 @@ use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\MailController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\PermissionsController;
+use App\Http\Controllers\PreferencesController;
 
 Route::get('/tareas/search', [TaskController::class, 'search'])->name('tareas.search');
 //Route::resource('tareas', TaskController::class);
@@ -147,14 +148,16 @@ Route::middleware(['auth'])->group(function () {
     Route::patch('/user/update-password', [UserController::class, 'updatePassword'])->name('user.update.password');
     Route::post('/user/update-settings', [UserController::class, 'updateSettings'])->name('user.updateSettings');
     Route::post('/user/update-plan', [UserController::class, 'updatePlan'])->name('user.updatePlan');
-    // Mostrar estado actual
+    // permisos
     Route::get('/user/settings/permissions', [PermissionsController::class, 'index'])->name('permissions.index');
-
-    // Guardar cambios
     Route::post('/user/settings/permissions', [PermissionsController::class, 'update'])->name('permissions.update');
-
-    // Restablecer todos a OFF
     Route::post('/user/settings/permissions/reset', [PermissionsController::class, 'reset'])->name('permissions.reset');
+    // preferencias
+    Route::get('/user/settings/preferences',[PreferencesController::class, 'index'])->name('preferences.index');
+    Route::post('/user/settings/preferences',[PreferencesController::class, 'update'])->name('preferences.update');
+    Route::post('/user/settings/preferences/reset',[PreferencesController::class, 'reset'])->name('preferences.reset');
+
+    // utilidades
 }); 
 //(estas rutas estaban tambien dentro de un midleware de pago)
 // La ruta de sistema experto que lista los apiarios
