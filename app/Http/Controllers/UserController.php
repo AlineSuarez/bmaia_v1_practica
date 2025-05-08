@@ -26,21 +26,53 @@ class UserController extends Controller
 
     public function settings()
     {
-        $regiones = Region::with('comunas')->get();
         $user = Auth::user();
-        return view('user.settings',compact('regiones','user'));
+        $regiones = Region::with('comunas')->get();
+        return view('user.settings',compact('user', 'regiones'));
     }
+
+    public function updateProfile()
+    {
+        $data = $request->validate([
+            'rut'           => ['required','regex:/^\d{1,2}\.\d{3}\.\d{3}-[0-9Kk]{1}$/'],
+            'razon_social'  => ['nullable','string','max:100'],
+            'name'          => ['required','string','max:50'],
+            'last_name'     => ['nullable','string','max:50'],
+            'phone'         => ['required','digits:9'],
+            'email'         => ['required','email','max:100','unique:users,email,'.auth()->id()],
+            'id_region'     => ['nullable','exists:regions,id'],
+            'id_comuna'     => ['nullable','exists:comunas,id'],
+            'address'       => ['nullable','string','max:150'],
+            'nregistro'     => ['nullable','string','max:50'],
+        ]);
+        auth()->user()->update([
+            'rut'              => $data['rut'],
+            'razon_social'     => $data['razon_social'],
+            'name'             => $data['name'],
+            'last_name'        => $data['last_name'],
+            'telefono'         => $data['phone'],
+            'email'            => $data['email'],
+            'id_region'        => $data['id_region'],
+            'id_comuna'        => $data['id_comuna'],
+            'direccion'        => $data['address'],
+            'numero_registro'  => $data['nregistro'],
+        ]);
+        return back()->with('success_settings','Datos de perfil actualizados.');
+    }
+
     // Actualizar avatar del usuario
     public function updateAvatar(Request $request)
     {
         $request->validate([
             'avatar' => 'required|string',
         ]);
-
+        if($file = $request->file('profile_picture')){
+            $path = $file->store('avatars','public');
+            auth()->user()->update(['profile_picture' => $path]);
+        }
         $user = Auth::user();
         $user->avatar = $request->avatar; // Asegúrate de tener un campo 'avatar' en tu modelo User
         $user->save();
-
         return redirect()->back()->with('success', 'Avatar actualizado correctamente.');
     }
 
@@ -51,17 +83,162 @@ class UserController extends Controller
             'current_password' => 'required|string',
             'new_password' => 'required|string|min:8|confirmed',
         ]);
-
         $user = Auth::user();
-
         if (!Hash::check($request->current_password, $user->password)) {
             return redirect()->back()->withErrors(['current_password' => 'La contraseña actual es incorrecta.']);
         }
-
         $user->password = Hash::make($request->new_password);
         $user->save();
-
         return redirect()->back()->with('success_password', 'Contraseña actualizada correctamente.');
+    }
+
+    // Datos de facturacion
+    public function updateBilling(Request $request)
+    {
+        $data = $request->validate([
+            'billing_razon_social'    => ['nullable','string','max:100'],
+            'billing_rut'             => ['nullable','regex:/^\d{1,2}\.\d{3}\.\d{3}-[0-9Kk]{1}$/'],
+            'billing_giro'            => ['nullable','string','max:100'],
+            'billing_direccion'       => ['nullable','string','max:150'],
+            'billing_region'          => ['nullable','exists:regions,id'],
+            'billing_comuna'          => ['nullable','exists:comunas,id'],
+            'billing_ciudad'          => ['nullable','string','max:50'],
+            'billing_telefono'        => ['nullable','digits:9'],
+            'billing_email'           => ['nullable','email','max:100'],
+            'billing_authorize_email' => ['sometimes','accepted'],
+            'billing_email_dte'       => ['nullable','email','max:100'],
+        ]);
+        auth()->user()->update($data);
+        return back()->with('success_settings','Datos de facturación actualizados.');
+    }
+
+    // Actualizar permisos
+    public function updatePermissions(Request $request)
+    {
+        $data = $request->validate([
+            'allow_notifications' => ['nullable','boolean'],
+            'allow_camera'        => ['nullable','boolean'],
+            'allow_microphone'    => ['nullable','boolean'],
+            'allow_location'      => ['nullable','boolean'],
+            'allow_bluetooth'     => ['nullable','boolean'],
+        ]);
+        $user = auth()->user();
+        // Marcamos cada permiso según si el checkbox estuvo presente en el form
+        $user->allow_notifications = $request->has('allow_notifications');
+        $user->allow_camera        = $request->has('allow_camera');
+        $user->allow_microphone    = $request->has('allow_microphone');
+        $user->allow_location      = $request->has('allow_location');
+        $user->allow_bluetooth     = $request->has('allow_bluetooth');
+        $user->save();
+        
+        return redirect()->back()->with('success_settings','Permisos actualizados correctamente.');
+    }
+
+    // Preferncaias (tema, idioma,etc)
+    public function updatePreferences(Request $request)
+    {
+        $data = $request->validate([
+            'language'         => ['required','in:es_CL,en_US,pt_BR'],
+            'date_format'      => ['required','in:dd/mm/yyyy,mm/dd/yyyy,yyyy-mm-dd'],
+            'theme'            => ['required','in:light,dark,auto'],
+            'voice_preference' => ['required','in:female_1,female_2,male_1,male_2'],
+            'default_view'     => ['required','in:dashboard,apiaries,calendar,reports'],
+            'voice_match'      => ['boolean'],
+            'calendar_email'   => ['boolean'],
+            'calendar_push'    => ['boolean'],
+            'reminder_time'    => ['nullable','in:15,30,60,120,1440'],
+        ]);
+        $user = auth()->user();
+        $user->language         = $data['language'];
+        $user->date_format      = $data['date_format'];
+        $user->theme            = $data['theme'];
+        $user->voice_preference = $data['voice_preference'];
+        $user->default_view     = $data['default_view'];
+        $user->voice_match      = $request->has('voice_match');
+        $user->calendar_email   = $request->has('calendar_email');
+        $user->calendar_push    = $request->has('calendar_push');
+        $user->reminder_time    = $data['reminder_time'];
+        $user->save();
+        return back()->with('success_settings','Preferencias guardadas.');
+    }
+
+    public function updateUtilities(Request $request)
+    {
+        // Validamos primero qué tipo de utilidad estamos creando
+        $payload = $request->validate([
+            'type' => 'required|in:alert,reminder,important_date,emergency_contact',
+        ]);
+        $user = auth()->user();
+        switch ($payload['type']) {
+            case 'alert':
+                $data = $request->validate([
+                    'title'       => 'required|string|max:100',
+                    'description' => 'nullable|string',
+                    'type_alert'  => 'required|in:inspection,feeding,harvest,treatment,other',
+                    'date'        => 'required|date',
+                    'priority'    => 'required|in:low,medium,high',
+                ]);
+                $created = $user->alerts()->create([
+                    'title'       => $data['title'],
+                    'description' => $data['description'],
+                    'type'        => $data['type_alert'],
+                    'date'        => $data['date'],
+                    'priority'    => $data['priority'],
+                ]);
+                break;
+            case 'reminder':
+                $data = $request->validate([
+                    'title'  => 'required|string|max:100',
+                    'date'   => 'required|date',
+                    'time'   => 'nullable|date_format:H:i',
+                    'repeat' => 'required|in:none,daily,weekly,monthly',
+                    'notes'  => 'nullable|string',
+                ]);
+                $created = $user->reminders()->create($data);
+                break;
+            case 'important_date':
+                $data = $request->validate([
+                    'title'     => 'required|string|max:100',
+                    'type_date' => 'required|in:birthday,anniversary,flowering,event,other',
+                    'value'     => 'required|date',
+                    'recurring' => 'nullable|boolean',
+                    'notes'     => 'nullable|string',
+                ]);
+                $created = $user->importantDates()->create([
+                    'title'     => $data['title'],
+                    'type'      => $data['type_date'],
+                    'value'     => $data['value'],
+                    'recurring' => $request->has('recurring'),
+                    'notes'     => $data['notes'],
+                ]);
+                break;
+            case 'emergency_contact':
+                $data = $request->validate([
+                    'name'     => 'required|string|max:100',
+                    'relation' => 'required|in:family,friend,colleague,vet,emergency,supplier,other',
+                    'phone'    => 'required|regex:/^\d{9}$/',
+                    'email'    => 'nullable|email',
+                    'address'  => 'nullable|string',
+                    'notes'    => 'nullable|string',
+                ]);
+                $created = $user->emergencyContacts()->create($data);
+                break;
+        }
+        return response()->json($created, 201);
+    }
+
+    // Seleccion de plan
+    public function updatePlan(Request $request)
+    {
+        $data = $request->validate([
+            'plan' => ['required','in:drone,afc,me,ge,queen'],
+        ]);
+        $user = auth()->user();
+        $user->plan = $data['plan'];
+        $user->plan_start_date = now();
+        $user->plan_end_date   = now()->addYear();
+        $user->save();
+        return redirect()->route('user.settings')->with('success_settings','Plan actualizado a “'.strtoupper($data['plan']).'”.');
     }
 
     public function updateSettings(Request $request)

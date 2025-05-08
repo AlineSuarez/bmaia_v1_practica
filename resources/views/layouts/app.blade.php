@@ -52,6 +52,9 @@
 </head>
 
 <body>
+    <!-- Axios desde CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
 
     <!-- Header -->
     @include('partials.header')
@@ -159,6 +162,7 @@
     </script>
     <!-- Scripts opcionales específicos de vistas -->
     @yield('optional-scripts')
+    @stack('scripts')
 </body>
 
 </html>

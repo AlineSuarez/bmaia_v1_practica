@@ -16,6 +16,7 @@ use App\Http\Controllers\Auth\GoogleController;
 use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\MailController;
 use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\PermissionsController;
 
 Route::get('/tareas/search', [TaskController::class, 'search'])->name('tareas.search');
 //Route::resource('tareas', TaskController::class);
@@ -139,12 +140,22 @@ Route::post('apiarios/{apiario}/visitas1', [VisitaController::class, 'store1'])-
 //Route::middleware(['auth', 'check.payment'])->group(function () {});
 Route::get('/zonificacion', [ZonificacionController::class, 'index'])->name('zonificacion');
 //Usuarios
-Route::get('/user/settings', [UserController::class, 'settings'])->name('user.settings');
-Route::patch('/user/update-name', [UserController::class, 'updateName'])->name('user.update.name');
-Route::patch('/user/update-avatar', [UserController::class, 'updateAvatar'])->name('user.update.avatar');
-Route::patch('/user/update-password', [UserController::class, 'updatePassword'])->name('user.update.password');
-Route::post('/user/update-settings', [UserController::class, 'updateSettings'])->name('user.updateSettings');
-Route::post('/user/update-plan', [UserController::class, 'updatePlan'])->name('user.updatePlan');
+Route::middleware(['auth'])->group(function () {
+    Route::get('/user/settings', [UserController::class, 'settings'])->name('user.settings');
+    Route::patch('/user/update-name', [UserController::class, 'updateName'])->name('user.update.name');
+    Route::patch('/user/update-avatar', [UserController::class, 'updateAvatar'])->name('user.update.avatar');
+    Route::patch('/user/update-password', [UserController::class, 'updatePassword'])->name('user.update.password');
+    Route::post('/user/update-settings', [UserController::class, 'updateSettings'])->name('user.updateSettings');
+    Route::post('/user/update-plan', [UserController::class, 'updatePlan'])->name('user.updatePlan');
+    // Mostrar estado actual
+    Route::get('/user/settings/permissions', [PermissionsController::class, 'index'])->name('permissions.index');
+
+    // Guardar cambios
+    Route::post('/user/settings/permissions', [PermissionsController::class, 'update'])->name('permissions.update');
+
+    // Restablecer todos a OFF
+    Route::post('/user/settings/permissions/reset', [PermissionsController::class, 'reset'])->name('permissions.reset');
+}); 
 //(estas rutas estaban tambien dentro de un midleware de pago)
 // La ruta de sistema experto que lista los apiarios
 Route::get('/sistemaexperto', [App\Http\Controllers\ApiarioController::class, 'indexSistemaExperto'])->name('sistemaexperto');
