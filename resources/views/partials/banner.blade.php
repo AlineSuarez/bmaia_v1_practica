@@ -30,10 +30,10 @@
                 <a href="#como-funciona" style="color: rgb(212, 159, 0); font-weight: bold;" class="nav-link">Cómo
                     funciona</a>
             </li>
-            <li class="nav-item">
+            <!-- <li class="nav-item">
                 <a href="#testimonios" style="color: rgb(212, 159, 0); font-weight: bold;"
                     class="nav-link">Testimonios</a>
-            </li>
+            </li> -->
             <li class="nav-item">
                 <a href="#contacto" style="color: rgb(212, 159, 0); font-weight: bold;" class="nav-link">Contacto</a>
             </li>

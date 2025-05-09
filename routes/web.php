@@ -23,6 +23,11 @@ use App\Http\Controllers\ReminderController;
 use App\Http\Controllers\ImportantDateController;
 use App\Http\Controllers\EmergencyContactController;
 
+//Rutas de las policies 
+Route::view('/politicas-de-privacidad', 'legal.privacidad')->name('privacidad');
+Route::view('/terminos-de-uso', 'legal.terminos')->name('terminos');
+Route::view('/politica-de-cookies', 'legal.cookies')->name('cookies');
+
 Route::get('/tareas/search', [TaskController::class, 'search'])->name('tareas.search');
 //Route::resource('tareas', TaskController::class);
 Route::get('/tareas/view/{view}', [TaskController::class, 'loadView'])->name('tareas.view');
@@ -60,7 +65,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('apiarios/{apiario}/medicamentos-registro', [VisitaController::class, 'storeMedicamentos'])->name('apiarios.medicamentos-registro.store');
     Route::get('/generate-document/medicamentos/{apiarioId}', [DocumentController::class, 'generateMedicamentsDocument'])->name('generate.document.medicamentos');
 
-Route::post('/apiarios/massDelete', [ApiarioController::class, 'massDelete'])->name('apiarios.massDelete');
+    Route::post('/apiarios/massDelete', [ApiarioController::class, 'massDelete'])->name('apiarios.massDelete');
 });
 
 // Redirigir a Google para autenticación
@@ -157,32 +162,32 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/user/settings/permissions', [PermissionsController::class, 'update'])->name('permissions.update');
     Route::post('/user/settings/permissions/reset', [PermissionsController::class, 'reset'])->name('permissions.reset');
     // preferencias
-    Route::get('/user/settings/preferences',[PreferencesController::class, 'index'])->name('preferences.index');
-    Route::post('/user/settings/preferences',[PreferencesController::class, 'update'])->name('preferences.update');
-    Route::post('/user/settings/preferences/reset',[PreferencesController::class, 'reset'])->name('preferences.reset');
+    Route::get('/user/settings/preferences', [PreferencesController::class, 'index'])->name('preferences.index');
+    Route::post('/user/settings/preferences', [PreferencesController::class, 'update'])->name('preferences.update');
+    Route::post('/user/settings/preferences/reset', [PreferencesController::class, 'reset'])->name('preferences.reset');
 
     // UTILIDADES
     // utilidades - alertas
-    Route::get('/user/settings/alerts',[AlertController::class,'index'])->name('alerts.index');
-    Route::post('/user/settings/alerts',[AlertController::class,'store'])->name('alerts.store');
-    Route::put('/user/settings/alerts/{alert}',[AlertController::class,'update'])->name('alerts.update');
-    Route::delete('/user/settings/alerts/{alert}',[AlertController::class,'destroy'])->name('alerts.destroy');
+    Route::get('/user/settings/alerts', [AlertController::class, 'index'])->name('alerts.index');
+    Route::post('/user/settings/alerts', [AlertController::class, 'store'])->name('alerts.store');
+    Route::put('/user/settings/alerts/{alert}', [AlertController::class, 'update'])->name('alerts.update');
+    Route::delete('/user/settings/alerts/{alert}', [AlertController::class, 'destroy'])->name('alerts.destroy');
     // utilidades - recordatorios
-    Route::get('/user/settings/reminders',[ReminderController::class,'index'])->name('reminders.index');
-    Route::post('/user/settings/reminders',[ReminderController::class,'store'])->name('reminders.store');
-    Route::put('/user/settings/reminders/{reminder}',[ReminderController::class,'update'])->name('reminders.update');
-    Route::delete('/user/settings/reminders/{reminder}',[ReminderController::class,'destroy'])->name('reminders.destroy');
+    Route::get('/user/settings/reminders', [ReminderController::class, 'index'])->name('reminders.index');
+    Route::post('/user/settings/reminders', [ReminderController::class, 'store'])->name('reminders.store');
+    Route::put('/user/settings/reminders/{reminder}', [ReminderController::class, 'update'])->name('reminders.update');
+    Route::delete('/user/settings/reminders/{reminder}', [ReminderController::class, 'destroy'])->name('reminders.destroy');
     // utilidades - fechas importantes
-    Route::get('/user/settings/dates',[ImportantDateController::class,'index'])->name('dates.index');
-    Route::post('/user/settings/dates',[ImportantDateController::class,'store'])->name('dates.store');
-    Route::put ('/user/settings/dates/{date}',[ImportantDateController::class,'update'])->name('dates.update');
-    Route::delete('/user/settings/dates/{date}',[ImportantDateController::class,'destroy'])->name('dates.destroy');
+    Route::get('/user/settings/dates', [ImportantDateController::class, 'index'])->name('dates.index');
+    Route::post('/user/settings/dates', [ImportantDateController::class, 'store'])->name('dates.store');
+    Route::put('/user/settings/dates/{date}', [ImportantDateController::class, 'update'])->name('dates.update');
+    Route::delete('/user/settings/dates/{date}', [ImportantDateController::class, 'destroy'])->name('dates.destroy');
     // utilidades - contactos de emergencia
-    Route::get('/user/settings/contacts',          [EmergencyContactController::class,           'index'])->name('contacts.index');
-    Route::post('/user/settings/contacts',          [EmergencyContactController::class,           'store'])->name('contacts.store');
-    Route::put('/user/settings/contacts/{contact}',  [EmergencyContactController::class,           'update'])->name('contacts.update');
-    Route::delete('/user/settings/contacts/{contact}',  [EmergencyContactController::class,           'destroy'])->name('contacts.destroy');
-}); 
+    Route::get('/user/settings/contacts', [EmergencyContactController::class, 'index'])->name('contacts.index');
+    Route::post('/user/settings/contacts', [EmergencyContactController::class, 'store'])->name('contacts.store');
+    Route::put('/user/settings/contacts/{contact}', [EmergencyContactController::class, 'update'])->name('contacts.update');
+    Route::delete('/user/settings/contacts/{contact}', [EmergencyContactController::class, 'destroy'])->name('contacts.destroy');
+});
 //(estas rutas estaban tambien dentro de un midleware de pago)
 // La ruta de sistema experto que lista los apiarios
 Route::get('/sistemaexperto', [App\Http\Controllers\ApiarioController::class, 'indexSistemaExperto'])->name('sistemaexperto');

@@ -23,6 +23,11 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return view('home');
+        $mensaje = 'Prueba de conexión controlador-vista';
+        // Agrega aquí el resto de variables que usas en la vista
+        return view('home', [
+            'mensaje' => $mensaje,
+        ]);
     }
+
 }

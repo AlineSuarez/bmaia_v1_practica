@@ -7,7 +7,7 @@
 
 <button id="back-to-top" onclick="scrollToTop()"><span class="fa fa-arrow-up"></span></button>
 
-<!-- Modal de sitio en desarrollo (Diseño Mejorado) -->
+<!-- Modal de sitio en desarrollo -->
 <div id="development-modal" class="development-modal">
   <div class="development-modal-content">
     <div class="development-modal-header">
@@ -1060,7 +1060,7 @@
       </div>
     </div>
 
-    <div class="benefits-container collapsible-container" style="margin-bottom: 40px;">
+    <div class="benefits-container collapsible-container" style="margin-bottom: 70px;">
       <div class="collapsible-header" style="position: relative; z-index: 2;">
         <h2 class="section-title" style="margin-top: 20px; font-size: 30px !important;">Beneficios de MaiA</h2>
         <div class="collapse-icon">
@@ -1202,7 +1202,7 @@
     </div>
 </section>
 
-<!-- Sección de Testimonios -->
+<!-- Sección de Testimonios 
 <section id="testimonios" class="testimonios-section">
   <div class="container"></div>
   <div class="particles-container">
@@ -1223,7 +1223,6 @@
     </div>
 
     <div class="testimonios-grid">
-      <!-- Testimonio 1 -->
       <div class="testimonio-card">
         <div class="testimonio-inner">
           <div class="testimonio-header">
@@ -1263,7 +1262,6 @@
         </div>
       </div>
 
-      <!-- Testimonio 2 -->
       <div class="testimonio-card">
         <div class="testimonio-inner">
           <div class="testimonio-header">
@@ -1342,7 +1340,7 @@
       </div>
     </div>
   </div>
-</section>
+</section> -->
 
 <!-- Sección de Contacto -->
 <section id="contacto" class="contacto-section">
@@ -1350,6 +1348,7 @@
     <div class="honeycomb-pattern left"></div>
     <div class="honeycomb-pattern right"></div>
   </div>
+  <div class="footer-glow" style="justify-content: center; align-items: center; text-align: center;"></div>
 
   <div class="container">
     <div class="contacto-content">
@@ -1526,36 +1525,30 @@
     </div>
   </div>
 
-  <!-- Parte inferior del footer -->
   <div class="footer-bottom">
-    <!-- Efecto de onda decorativa -->
     <div class="footer-wave"></div>
 
     <div class="footer-bottom-content">
       <p class="copyright">&copy; {{ date(format: 'Y') }} MaiA. Todos los derechos reservados.</p>
       <div class="footer-bottom-links">
-        <a href="#">Política de Privacidad</a>
-        <a href="#">Términos de Uso</a>
-        <a href="#">Política de Cookies</a>
+        <a href="{{ route('privacidad') }}">Política de Privacidad</a>
+        <a href="{{ route('terminos') }}">Términos de Uso</a>
+        <a href="{{ route('cookies') }}">Política de Cookies</a>
       </div>
     </div>
   </div>
 </footer>
 
 <script>
-  // Modal de sitio en desarrollo
   document.addEventListener('DOMContentLoaded', function () {
-    // Mostrar el modal al cargar la página
     var modal = document.getElementById('development-modal');
     modal.style.display = "block";
 
-    // Cerrar el modal cuando se hace clic en el botón "Entendido"
     var closeModalBtn = document.getElementById('close-modal-btn');
     closeModalBtn.onclick = function () {
       modal.style.display = "none";
     }
 
-    // Cerrar el modal cuando se hace clic fuera del contenido
     window.onclick = function (event) {
       if (event.target == modal) {
         modal.style.display = "none";
@@ -1563,16 +1556,13 @@
     }
   });
 
-  // JavaScript para manejar tooltips en dispositivos táctiles
   document.addEventListener('DOMContentLoaded', function () {
     const benefitItems = document.querySelectorAll('.benefit-item');
 
     benefitItems.forEach(item => {
       item.addEventListener('click', function () {
-        // Toggle una clase activa para mostrar/ocultar el tooltip
         this.classList.toggle('tooltip-active');
 
-        // Ocultar otros tooltips activos
         benefitItems.forEach(otherItem => {
           if (otherItem !== this) {
             otherItem.classList.remove('tooltip-active');
@@ -1581,7 +1571,6 @@
       });
     });
 
-    // Cerrar tooltips al hacer clic en cualquier otro lugar
     document.addEventListener('click', function (e) {
       if (!e.target.closest('.benefit-item')) {
         benefitItems.forEach(item => {
@@ -1635,7 +1624,6 @@
     });
   });
 
-  // Agregar al archivo de script existente o dentro de un tag <script> al final de la página
   document.addEventListener('DOMContentLoaded', function () {
     const collapsibleHeaders = document.querySelectorAll('.collapsible-header');
 
@@ -1644,7 +1632,6 @@
         const container = this.closest('.collapsible-container');
         container.classList.toggle('active');
 
-        // Opcional: Cerrar otros contenedores cuando se abre uno
         if (container.classList.contains('active')) {
           collapsibleHeaders.forEach(otherHeader => {
             const otherContainer = otherHeader.closest('.collapsible-container');
@@ -1655,9 +1642,6 @@
         }
       });
     });
-
-    // Iniciar con el colapsable cerrado por defecto
-    // O comentar esta línea para iniciar abierto
     document.querySelector('.collapsible-container').classList.remove('active');
   });
 </script>

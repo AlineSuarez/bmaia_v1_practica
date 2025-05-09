@@ -1,59 +1,104 @@
-@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap");
 
-:root {
-    --sidebar-width: 280px;
-    --sidebar-collapsed-width: 0;
-    --primary-color: #ffb142;
-    --primary-hover: #ffa000;
-    --primary-transparent: rgba(255, 177, 66, 0.1);
-    --sidebar-bg: #2c3e50;
-    --sidebar-text: #ecf0f1;
-    --sidebar-hover: #34495e;
-    --sidebar-active: #1a252f;
-    --sidebar-divider: #4a6583;
-    --transition-speed: 0.3s;
-    --box-shadow: 0 4px 20px 0 rgba(0, 0, 0, 0.05);
-    --border-radius: 8px;
-}
+/*--------------------------------------------------------------
+# Variables específicas del sidebar - Aisladas del resto de la aplicación
+--------------------------------------------------------------*/
+.apicola-sidebar-container {
+    /* Dimensiones */
+    --apicola-sidebar-width: 300px;
+    --apicola-sidebar-collapsed-width: 0;
+    --apicola-header-height: 70px;
+    --apicola-footer-height: 120px;
 
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
+    /* Paleta de azules extendida */
+    --apicola-blue-50: #eef5ff;
+    --apicola-blue-100: #d9e7ff;
+    --apicola-blue-200: #b8d4ff;
+    --apicola-blue-300: #8abbff;
+    --apicola-blue-400: #589dff;
+    --apicola-blue-500: #3b82f6;
+    --apicola-blue-600: #2563eb;
+    --apicola-blue-700: #1d4ed8;
+    --apicola-blue-800: #1e40af;
+    --apicola-blue-900: #1e3a8a;
+    --apicola-blue-950: #0f2261;
 
-html,
-body {
-    overflow-x: hidden;
-    /* Previene scroll horizontal */
-    width: 100%;
+    /* Azules especiales */
+    --apicola-electric-blue: #00c3ff;
+    --apicola-deep-blue: #0a1e3c;
+    --apicola-navy-blue: #0f172a;
+    --apicola-royal-blue: #2563eb;
+    --apicola-sky-blue: #38bdf8;
+    --apicola-azure-blue: #0ea5e9;
+    --apicola-sapphire-blue: #0c4a6e;
+    --apicola-cobalt-blue: #1e40af;
+    --apicola-midnight-blue: #0f1729;
+    --apicola-steel-blue: #64748b;
+
+    /* Colores de fondo */
+    --apicola-sidebar-bg-from: var(--apicola-deep-blue);
+    --apicola-sidebar-bg-to: var(--apicola-navy-blue);
+    --apicola-sidebar-header-bg: rgba(10, 30, 60, 0.8);
+    --apicola-sidebar-footer-bg: rgba(10, 30, 60, 0.8);
+
+    /* Colores de texto */
+    --apicola-sidebar-text: #f8fafc;
+    --apicola-sidebar-text-muted: #94a3b8;
+    --apicola-sidebar-text-hover: #ffffff;
+
+    /* Colores de elementos */
+    --apicola-sidebar-item-hover: rgba(37, 99, 235, 0.15);
+    --apicola-sidebar-item-active: rgba(37, 99, 235, 0.2);
+    --apicola-sidebar-divider: rgba(148, 163, 184, 0.15);
+    --apicola-sidebar-icon-bg: rgba(37, 99, 235, 0.15);
+    --apicola-sidebar-icon-active-bg: var(--apicola-royal-blue);
+
+    /* Efectos y transiciones */
+    --apicola-transition-fast: 0.2s;
+    --apicola-transition-normal: 0.3s;
+    --apicola-transition-slow: 0.5s;
+    --apicola-cubic-bezier: cubic-bezier(0.16, 1, 0.3, 1);
+    --apicola-box-shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1),
+        0 1px 2px rgba(0, 0, 0, 0.06);
+    --apicola-box-shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+        0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --apicola-box-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+        0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    --apicola-box-shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
+        0 10px 10px -5px rgba(0, 0, 0, 0.04);
+
+    /* Bordes y radios */
+    --apicola-border-radius-sm: 6px;
+    --apicola-border-radius-md: 8px;
+    --apicola-border-radius-lg: 12px;
+    --apicola-border-radius-xl: 16px;
+    --apicola-border-radius-full: 9999px;
+
+    /* Aseguramos que el contenedor tenga posición relativa para el posicionamiento interno */
     position: relative;
-}
-
-body {
-    font-family: "Poppins", sans-serif;
-    background-color: #f5f7fa;
-    color: #333;
-    transition: all var(--transition-speed) ease;
-}
-
-.app-container {
     display: flex;
     min-height: 100vh;
-    position: relative;
-    overflow-x: hidden;
-    /* Previene scroll horizontal */
+    width: 100%;
+    font-family: "Outfit", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+        Helvetica, Arial, sans-serif;
 }
 
-/* Botón flotante para abrir sidebar */
-.floating-sidebar-toggle {
+/*--------------------------------------------------------------
+# Botón Flotante - Diseño Ultra Premium
+--------------------------------------------------------------*/
+.apicola-floating-toggle {
     position: fixed;
     bottom: 30px;
     left: 30px;
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    background-color: var(--primary-color);
+    width: 60px;
+    height: 60px;
+    border-radius: var(--apicola-border-radius-full);
+    background: conic-gradient(
+        from 225deg at 50% 50%,
+        var(--apicola-royal-blue),
+        var(--apicola-electric-blue),
+        var(--apicola-royal-blue)
+    );
     color: white;
     border: none;
     display: flex;
@@ -61,445 +106,1367 @@ body {
     justify-content: center;
     cursor: pointer;
     z-index: 999;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-    transition: all var(--transition-speed) ease;
+    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1),
+        0 0 15px rgba(37, 99, 235, 0.5), 0 0 30px rgba(37, 99, 235, 0.3),
+        inset 0 1px 1px rgba(255, 255, 255, 0.2),
+        inset 0 -1px 1px rgba(0, 0, 0, 0.1);
+    transition: all var(--apicola-transition-normal) var(--apicola-cubic-bezier);
     opacity: 0;
     visibility: hidden;
     transform: scale(0.8) translateY(20px);
+    overflow: hidden;
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
 }
 
-.floating-sidebar-toggle i {
-    font-size: 20px;
+.apicola-floating-icon {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    transition: transform var(--apicola-transition-normal)
+        var(--apicola-cubic-bezier);
 }
 
-.floating-sidebar-toggle:hover {
-    background-color: var(--primary-hover);
-    transform: scale(1.1);
+.apicola-floating-toggle i {
+    font-size: 24px;
+    transition: transform var(--apicola-transition-normal)
+        var(--apicola-cubic-bezier);
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.5));
 }
 
-body.sidebar-collapsed .floating-sidebar-toggle {
+.apicola-floating-toggle::before {
+    content: "";
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: conic-gradient(
+        from 180deg at 50% 50%,
+        transparent,
+        var(--apicola-electric-blue),
+        transparent
+    );
+    border-radius: var(--apicola-border-radius-full);
+    z-index: -1;
     opacity: 0;
+    transition: opacity var(--apicola-transition-normal)
+        var(--apicola-cubic-bezier);
+    animation: apicola-rotate 4s linear infinite;
+}
+
+@keyframes apicola-rotate {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.apicola-floating-toggle:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.15),
+        0 0 20px rgba(37, 99, 235, 0.6), 0 0 40px rgba(37, 99, 235, 0.4),
+        inset 0 1px 1px rgba(255, 255, 255, 0.3),
+        inset 0 -1px 1px rgba(0, 0, 0, 0.2);
+}
+
+.apicola-floating-toggle:hover::before {
+    opacity: 1;
+}
+
+.apicola-floating-toggle:hover i {
+    transform: rotate(90deg);
+    filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.8));
+}
+
+.apicola-floating-pulse {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(
+        circle,
+        transparent 30%,
+        rgba(255, 255, 255, 0.15) 30%
+    );
+    transform: scale(0);
+    animation: apicola-pulse-ring 2s cubic-bezier(0.455, 0.03, 0.515, 0.955)
+        infinite;
+}
+
+@keyframes apicola-pulse-ring {
+    0% {
+        transform: scale(0.7);
+        opacity: 0.5;
+    }
+    50% {
+        transform: scale(1.2);
+        opacity: 0;
+    }
+    100% {
+        transform: scale(0.7);
+        opacity: 0;
+    }
+}
+
+body.sidebar-collapsed .apicola-floating-toggle {
+    opacity: 1;
     visibility: visible;
     transform: scale(1);
 }
 
-/* Sidebar Overlay */
-.sidebar-overlay {
+/*--------------------------------------------------------------
+# Overlay - Efecto de Cristal Ultra Premium
+--------------------------------------------------------------*/
+.apicola-sidebar-overlay {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    z-index: 999;
+    background-color: rgba(10, 30, 60, 0.7);
+    z-index: 998;
     opacity: 0;
     visibility: hidden;
-    transition: opacity var(--transition-speed) ease,
-        visibility var(--transition-speed) ease;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    transition: all var(--apicola-transition-normal) var(--apicola-cubic-bezier);
 }
 
-body.sidebar-active .sidebar-overlay {
-    opacity: 0;
+body.sidebar-active .apicola-sidebar-overlay {
+    opacity: 1;
     visibility: visible;
 }
 
-/* Sidebar Styles */
-.sidebar {
-    background-color: var(--sidebar-bg);
-    color: var(--sidebar-text);
-    width: var(--sidebar-width);
+/*--------------------------------------------------------------
+# Sidebar Principal - Diseño Ultra Premium
+--------------------------------------------------------------*/
+.apicola-sidebar {
+    background: linear-gradient(
+            135deg,
+            var(--apicola-sidebar-bg-from) 0%,
+            var(--apicola-sidebar-bg-to) 100%
+        ),
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Cg fill-rule='evenodd'%3E%3Cg fill='%232563eb' fill-opacity='0.05'%3E%3Cpath opacity='.5' d='M96 95h4v1h-4v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9zm-1 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm9-10v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm9-10v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm9-10v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9z'/%3E%3Cpath d='M6 5V0H5v5H0v1h5v94h1V6h94V5H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    color: var(--apicola-sidebar-text);
+    width: var(--apicola-sidebar-width);
     height: 100vh;
     position: fixed;
     left: 0;
     top: 0;
-    transition: all var(--transition-speed) cubic-bezier(0.4, 0, 0.2, 1);
-    overflow-x: hidden;
-    overflow-y: auto;
-    z-index: 1000;
-    box-shadow: 2px 0 20px rgba(0, 0, 0, 0.2);
+    transition: all var(--apicola-transition-normal) var(--apicola-cubic-bezier);
+    overflow: hidden;
+    z-index: 999;
+    box-shadow: 5px 0 30px rgba(0, 0, 0, 0.25),
+        inset 1px 0 0 rgba(255, 255, 255, 0.05);
     display: flex;
     flex-direction: column;
+    border-right: 1px solid rgba(255, 255, 255, 0.03);
 }
 
-.sidebar::-webkit-scrollbar {
+.apicola-sidebar::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 100%;
+    background: radial-gradient(
+            circle at 20% 30%,
+            rgba(0, 195, 255, 0.05) 0%,
+            transparent 50%
+        ),
+        radial-gradient(
+            circle at 80% 70%,
+            rgba(37, 99, 235, 0.05) 0%,
+            transparent 50%
+        );
+    pointer-events: none;
+    opacity: 0.8;
+}
+
+/* Scrollbar personalizado */
+.apicola-sidebar-content::-webkit-scrollbar {
     width: 5px;
 }
 
-.sidebar::-webkit-scrollbar-thumb {
-    background-color: rgba(255, 255, 255, 0.2);
-    border-radius: 10px;
+.apicola-sidebar-content::-webkit-scrollbar-thumb {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: var(--apicola-border-radius-full);
 }
 
-.sidebar::-webkit-scrollbar-track {
+.apicola-sidebar-content::-webkit-scrollbar-track {
     background-color: transparent;
 }
 
-.sidebar-header {
-    padding: 20px;
+/*--------------------------------------------------------------
+# Header del Sidebar - Diseño Ultra Premium
+--------------------------------------------------------------*/
+.apicola-sidebar-header {
+    height: var(--apicola-header-height);
+    padding: 0 20px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    background: var(--apicola-sidebar-header-bg);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    position: relative;
+    z-index: 10;
 }
 
-.sidebar-header h3 {
-    color: var(--primary-color);
+.apicola-sidebar-header::before {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(37, 99, 235, 0.5),
+        transparent
+    );
+}
+
+.apicola-logo-container {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.apicola-logo-icon {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: conic-gradient(
+        from 225deg at 50% 50%,
+        var(--apicola-royal-blue),
+        var(--apicola-electric-blue),
+        var(--apicola-royal-blue)
+    );
+    border-radius: var(--apicola-border-radius-md);
+    box-shadow: 0 0 15px rgba(37, 99, 235, 0.5), 0 0 30px rgba(37, 99, 235, 0.3),
+        inset 0 1px 1px rgba(255, 255, 255, 0.2),
+        inset 0 -1px 1px rgba(0, 0, 0, 0.1);
+    position: relative;
+    overflow: hidden;
+}
+
+.apicola-logo-icon::before {
+    content: "";
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(
+        to bottom right,
+        rgba(255, 255, 255, 0) 0%,
+        rgba(255, 255, 255, 0.3) 50%,
+        rgba(255, 255, 255, 0) 100%
+    );
+    transform: rotate(45deg);
+    animation: apicola-shine 3s infinite;
+}
+
+@keyframes apicola-shine {
+    0% {
+        transform: translateX(-100%) rotate(45deg);
+    }
+    20%,
+    100% {
+        transform: translateX(100%) rotate(45deg);
+    }
+}
+
+.apicola-logo-icon i {
+    font-size: 20px;
+    color: white;
+    filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.5));
+}
+
+.apicola-logo-text {
+    color: white;
     font-weight: 600;
     margin: 0;
-    font-size: 1.4rem;
-    transition: opacity var(--transition-speed) ease;
+    font-size: 1.25rem;
+    letter-spacing: -0.025em;
+    position: relative;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
 
-/* Modificado: Reposicionado y rediseñado el botón de cierre */
-.sidebar-toggle-inside {
-    background-color: var(--primary-color);
+.apicola-logo-version {
+    font-size: 0.7rem;
+    font-weight: 500;
+    background: linear-gradient(
+        90deg,
+        var(--apicola-electric-blue),
+        var(--apicola-royal-blue)
+    );
+    padding: 2px 6px;
+    border-radius: var(--apicola-border-radius-full);
+    color: white;
+    letter-spacing: 0;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.apicola-logo-text::after {
+    content: "";
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+    width: 40%;
+    height: 2px;
+    background: linear-gradient(
+        90deg,
+        var(--apicola-electric-blue),
+        transparent
+    );
+    border-radius: 2px;
+}
+
+.apicola-toggle-inside {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.1);
     color: white;
     border: none;
-    border-radius: 50%;
-    width: 30px;
-    height: 30px;
+    border-radius: var(--apicola-border-radius-full);
+    cursor: pointer;
+    transition: all var(--apicola-transition-normal) var(--apicola-cubic-bezier);
+    position: relative;
+    overflow: hidden;
+    box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.1),
+        inset 0 -1px 1px rgba(0, 0, 0, 0.1);
+}
+
+.apicola-toggle-inside i {
+    font-size: 16px;
+    transition: transform var(--apicola-transition-normal)
+        var(--apicola-cubic-bezier);
+    z-index: 2;
+    filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.2));
+}
+
+.apicola-toggle-ripple {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(
+        circle,
+        rgba(255, 255, 255, 0.2) 0%,
+        rgba(255, 255, 255, 0) 70%
+    );
+    transform: scale(0);
+    transition: transform var(--apicola-transition-normal)
+        var(--apicola-cubic-bezier);
+}
+
+.apicola-toggle-inside:hover {
+    background: rgba(255, 255, 255, 0.2);
+    box-shadow: 0 0 15px rgba(37, 99, 235, 0.3);
+}
+
+.apicola-toggle-inside:hover i {
+    transform: rotate(90deg);
+}
+
+.apicola-toggle-inside:hover .apicola-toggle-ripple {
+    transform: scale(2);
+}
+
+/*--------------------------------------------------------------
+# Perfil de Usuario - Nuevo Componente
+--------------------------------------------------------------*/
+.apicola-user-profile {
+    display: flex;
+    align-items: center;
+    padding: 20px;
+    background: rgba(10, 30, 60, 0.5);
+    margin: 15px;
+    border-radius: var(--apicola-border-radius-lg);
+    position: relative;
+    overflow: hidden;
+    box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.05),
+        inset 0 -1px 1px rgba(0, 0, 0, 0.05);
+}
+
+.apicola-user-profile::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(37, 99, 235, 0.1), transparent);
+    pointer-events: none;
+}
+
+.apicola-user-avatar {
+    width: 45px;
+    height: 45px;
+    border-radius: var(--apicola-border-radius-full);
+    background: linear-gradient(
+        135deg,
+        var(--apicola-royal-blue),
+        var(--apicola-cobalt-blue)
+    );
     display: flex;
     align-items: center;
     justify-content: center;
-    cursor: pointer;
-    transition: all var(--transition-speed) ease;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-    margin-left: 10px;
+    margin-right: 12px;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2),
+        inset 0 1px 1px rgba(255, 255, 255, 0.2),
+        inset 0 -1px 1px rgba(0, 0, 0, 0.1);
 }
 
-.sidebar-toggle-inside:hover {
-    background-color: var(--primary-hover);
-    transform: scale(1.1);
+.apicola-user-avatar i {
+    font-size: 18px;
+    color: white;
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.2));
 }
 
-.sidebar-content {
+.apicola-user-info {
+    flex: 1;
+}
+
+.apicola-user-name {
+    margin: 0;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: white;
+    line-height: 1.2;
+}
+
+.apicola-user-role {
+    margin: 0;
+    font-size: 0.8rem;
+    color: var(--apicola-sidebar-text-muted);
+    line-height: 1.2;
+}
+
+.apicola-user-status {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.apicola-status-indicator {
+    width: 10px;
+    height: 10px;
+    border-radius: var(--apicola-border-radius-full);
+    background-color: #10b981;
+    box-shadow: 0 0 10px rgba(16, 185, 129, 0.5);
+}
+
+.apicola-user-status.online .apicola-status-indicator {
+    background-color: #10b981;
+    box-shadow: 0 0 10px rgba(16, 185, 129, 0.5);
+}
+
+.apicola-user-status.away .apicola-status-indicator {
+    background-color: #f59e0b;
+    box-shadow: 0 0 10px rgba(245, 158, 11, 0.5);
+}
+
+.apicola-user-status.offline .apicola-status-indicator {
+    background-color: #ef4444;
+    box-shadow: 0 0 10px rgba(239, 68, 68, 0.5);
+}
+
+/*--------------------------------------------------------------
+# Buscador - Nuevo Componente
+--------------------------------------------------------------*/
+.apicola-search-container {
+    padding: 0 15px 15px;
+}
+
+.apicola-search-input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.apicola-search-icon {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--apicola-sidebar-text-muted);
+    font-size: 14px;
+    pointer-events: none;
+}
+
+.apicola-search-input {
+    width: 100%;
+    height: 40px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: var(--apicola-border-radius-md);
+    padding: 0 15px 0 35px;
+    color: var(--apicola-sidebar-text);
+    font-size: 0.9rem;
+    transition: all var(--apicola-transition-normal) var(--apicola-cubic-bezier);
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1),
+        0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.apicola-search-input:focus {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(37, 99, 235, 0.5);
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2),
+        inset 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.apicola-search-input::placeholder {
+    color: var(--apicola-sidebar-text-muted);
+    opacity: 0.7;
+}
+
+/*--------------------------------------------------------------
+# Secciones de Navegación - Nuevo Componente
+--------------------------------------------------------------*/
+.apicola-nav-section {
+    margin-bottom: 15px;
+    padding: 0 15px;
+}
+
+.apicola-section-title {
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    color: var(--apicola-sidebar-text-muted);
+    margin: 0 0 10px 5px;
+    letter-spacing: 0.05em;
+    position: relative;
+    display: inline-block;
+}
+
+.apicola-section-title::after {
+    content: "";
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+    width: 30px;
+    height: 2px;
+    background: linear-gradient(
+        90deg,
+        var(--apicola-electric-blue),
+        transparent
+    );
+    border-radius: 2px;
+}
+
+/*--------------------------------------------------------------
+# Contenido del Sidebar - Diseño Ultra Premium
+--------------------------------------------------------------*/
+.apicola-sidebar-content {
     flex: 1;
     overflow-y: auto;
-    padding: 15px 0;
-}
-
-.sidebar-divider {
+    padding: 0 0 20px;
     position: relative;
-    padding: 0 20px;
-    margin: 15px 0 10px;
-    display: flex;
-    align-items: center;
-    opacity: 0.7;
-    transition: opacity var(--transition-speed) ease;
 }
 
-.sidebar-divider::before {
-    content: "";
-    flex: 1;
-    height: 1px;
-    background-color: var(--sidebar-divider);
-    margin-right: 10px;
+.apicola-sidebar-nav {
+    position: relative;
 }
 
-.sidebar-divider::after {
-    content: "";
-    flex: 1;
-    height: 1px;
-    background-color: var(--sidebar-divider);
-    margin-left: 10px;
-}
-
-.sidebar-divider span {
-    font-size: 12px;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    font-weight: 500;
-    white-space: nowrap;
-}
-
-.sidebar-menu {
+.apicola-sidebar-menu {
     list-style: none;
     padding: 0;
-    margin: 0 0 15px 0;
+    margin: 0;
 }
 
-.sidebar-item {
+.apicola-sidebar-item {
     position: relative;
+    margin-bottom: 5px;
 }
 
-.sidebar-link {
-    display: flex;
-    align-items: center;
-    padding: 12px 25px;
-    color: var(--sidebar-text);
-    text-decoration: none;
-    transition: all var(--transition-speed) ease;
+.apicola-sidebar-divider {
+    padding: 15px 0;
     position: relative;
-    border-radius: 0;
-    margin: 2px 8px;
-}
-
-.icon-container {
-    position: relative;
-    min-width: 35px;
-    height: 35px;
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: 8px;
-    transition: all var(--transition-speed) ease;
-    z-index: 1;
 }
 
-.sidebar-link i {
-    font-size: 18px;
-    transition: all var(--transition-speed) ease;
+.apicola-divider-line {
+    width: 80%;
+    height: 1px;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        var(--apicola-sidebar-divider),
+        transparent
+    );
 }
 
-.sidebar-link:before {
+/*--------------------------------------------------------------
+# Enlaces del Sidebar - Diseño Ultra Premium
+--------------------------------------------------------------*/
+.apicola-sidebar-link {
+    display: flex;
+    align-items: center;
+    padding: 12px 15px;
+    color: var(--apicola-sidebar-text);
+    text-decoration: none;
+    transition: all var(--apicola-transition-normal) var(--apicola-cubic-bezier);
+    position: relative;
+    border-radius: var(--apicola-border-radius-md);
+    margin: 2px 0;
+    overflow: hidden;
+}
+
+.apicola-sidebar-link::before {
     content: "";
     position: absolute;
     top: 0;
     left: 0;
     width: 0%;
     height: 100%;
-    background-color: var(--primary-transparent);
-    border-radius: var(--border-radius);
-    transition: all var(--transition-speed) ease;
+    background-color: var(--apicola-sidebar-item-hover);
+    border-radius: var(--apicola-border-radius-md);
+    transition: all var(--apicola-transition-normal) var(--apicola-cubic-bezier);
     z-index: 0;
 }
 
-.sidebar-link:hover:before {
+.apicola-sidebar-link:hover::before {
     width: 100%;
 }
 
-.sidebar-link:hover {
-    color: var(--primary-color);
-}
-
-.sidebar-link:hover .icon-container {
-    background-color: var(--primary-color);
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(255, 177, 66, 0.4);
-}
-
-.sidebar-link:hover i {
-    color: var(--sidebar-bg);
-}
-
-.active-indicator {
+.apicola-sidebar-link::after {
+    content: "";
     position: absolute;
+    top: 0;
+    left: 0;
+    width: 3px;
+    height: 0;
+    background: linear-gradient(
+        to bottom,
+        var(--apicola-electric-blue),
+        var(--apicola-royal-blue)
+    );
+    border-radius: 0 2px 2px 0;
+    transition: height var(--apicola-transition-normal)
+        var(--apicola-cubic-bezier);
+    box-shadow: 0 0 10px rgba(37, 99, 235, 0.5);
+}
+
+.apicola-sidebar-link.active::after {
+    height: 100%;
+}
+
+.apicola-sidebar-link:hover {
+    color: var(--apicola-sidebar-text-hover);
+    transform: translateX(3px);
+}
+
+.apicola-icon-container {
+    position: relative;
+    min-width: 38px;
+    height: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--apicola-border-radius-md);
+    transition: all var(--apicola-transition-normal) var(--apicola-cubic-bezier);
+    z-index: 1;
+    background: var(--apicola-sidebar-icon-bg);
+    box-shadow: var(--apicola-box-shadow-sm),
+        inset 0 1px 1px rgba(255, 255, 255, 0.1),
+        inset 0 -1px 1px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+.apicola-icon-background {
+    position: absolute;
+    top: 0;
+    left: 0;
     right: 0;
+    bottom: 0;
+    background: linear-gradient(
+        135deg,
+        rgba(37, 99, 235, 0.2),
+        rgba(37, 99, 235, 0)
+    );
+    opacity: 0;
+    transition: opacity var(--apicola-transition-normal)
+        var(--apicola-cubic-bezier);
+}
+
+.apicola-sidebar-link:hover .apicola-icon-background {
+    opacity: 1;
+}
+
+.apicola-sidebar-link i {
+    font-size: 16px;
+    transition: all var(--apicola-transition-normal) var(--apicola-cubic-bezier);
+    color: var(--apicola-sidebar-text-muted);
+    z-index: 1;
+    filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.2));
+}
+
+.apicola-sidebar-link:hover .apicola-icon-container {
+    background: linear-gradient(
+        135deg,
+        var(--apicola-royal-blue),
+        var(--apicola-cobalt-blue)
+    );
+    transform: translateY(-2px) scale(1.05);
+    box-shadow: 0 5px 15px rgba(37, 99, 235, 0.4),
+        inset 0 1px 1px rgba(255, 255, 255, 0.2),
+        inset 0 -1px 1px rgba(0, 0, 0, 0.1);
+}
+
+.apicola-sidebar-link:hover i {
+    color: white;
+    transform: scale(1.1);
+}
+
+.apicola-active-indicator {
+    position: absolute;
+    right: 15px;
     top: 50%;
     transform: translateY(-50%);
     width: 6px;
     height: 6px;
-    background-color: var(--primary-color);
-    border-radius: 50%;
+    background-color: var(--apicola-electric-blue);
+    border-radius: var(--apicola-border-radius-full);
     opacity: 0;
-    transition: all var(--transition-speed) ease;
+    transition: all var(--apicola-transition-normal) var(--apicola-cubic-bezier);
+    box-shadow: 0 0 10px rgba(0, 195, 255, 0.7);
 }
 
-.sidebar-link.active .active-indicator {
+.apicola-sidebar-link.active .apicola-active-indicator {
     opacity: 1;
+    box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.2),
+        0 0 0 8px rgba(37, 99, 235, 0.1), 0 0 10px rgba(0, 195, 255, 0.7);
 }
 
-.sidebar-link.active:before {
-    width: 100%;
-}
-
-.sidebar-link.active {
-    color: var(--primary-color);
+.apicola-sidebar-link.active {
+    background-color: var(--apicola-sidebar-item-active);
+    color: white;
     font-weight: 500;
+    box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.05),
+        inset 0 -1px 1px rgba(0, 0, 0, 0.05);
 }
 
-.sidebar-link.active .icon-container {
-    background-color: var(--primary-color);
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(255, 177, 66, 0.4);
+.apicola-sidebar-link.active .apicola-icon-container {
+    background: linear-gradient(
+        135deg,
+        var(--apicola-royal-blue),
+        var(--apicola-cobalt-blue)
+    );
+    box-shadow: 0 5px 15px rgba(37, 99, 235, 0.4),
+        inset 0 1px 1px rgba(255, 255, 255, 0.2),
+        inset 0 -1px 1px rgba(0, 0, 0, 0.1);
 }
 
-.sidebar-link.active i {
-    color: var(--sidebar-bg);
+.apicola-sidebar-link.active i {
+    color: white;
 }
 
-.menu-text {
-    margin-left: 12px;
+.apicola-menu-text {
+    margin-left: 15px;
     white-space: nowrap;
     opacity: 1;
     visibility: visible;
-    transition: opacity var(--transition-speed) ease,
-        visibility var(--transition-speed) ease;
+    transition: all var(--apicola-transition-normal) var(--apicola-cubic-bezier);
+    z-index: 1;
+    font-size: 0.9375rem;
+    letter-spacing: 0.01em;
+    font-weight: 400;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+}
+
+.apicola-sidebar-link.active .apicola-menu-text {
+    font-weight: 500;
+}
+
+/*--------------------------------------------------------------
+# Badges y Notificaciones - Nuevo Componente
+--------------------------------------------------------------*/
+.apicola-menu-badge {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 0.7rem;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: var(--apicola-border-radius-full);
+    background: linear-gradient(
+        135deg,
+        var(--apicola-electric-blue),
+        var(--apicola-royal-blue)
+    );
+    color: white;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
     z-index: 1;
 }
 
-/* Main Content Styles */
-.main-content {
+.apicola-menu-badge.premium {
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2), 0 0 10px rgba(245, 158, 11, 0.3);
+}
+
+.apicola-menu-notification {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    min-width: 20px;
+    height: 20px;
+    border-radius: var(--apicola-border-radius-full);
+    background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+    color: white;
+    font-size: 0.7rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2), 0 0 10px rgba(37, 99, 235, 0.3);
+    z-index: 1;
+}
+
+.apicola-menu-notification.urgent {
+    background: linear-gradient(135deg, #ef4444, #b91c1c);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2), 0 0 10px rgba(239, 68, 68, 0.3);
+    animation: apicola-pulse 2s infinite;
+}
+
+@keyframes apicola-pulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.5);
+    }
+    70% {
+        box-shadow: 0 0 0 10px rgba(239, 68, 68, 0);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(239, 68, 68, 0);
+    }
+}
+
+/*--------------------------------------------------------------
+# Footer del Sidebar - Diseño Ultra Premium
+--------------------------------------------------------------*/
+.apicola-sidebar-footer {
+    padding: 15px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+    background: var(--apicola-sidebar-footer-bg);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    position: relative;
+}
+
+.apicola-sidebar-footer::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(37, 99, 235, 0.5),
+        transparent
+    );
+}
+
+.apicola-system-status {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    background: rgba(10, 30, 60, 0.5);
+    padding: 10px 15px;
+    border-radius: var(--apicola-border-radius-md);
+    position: relative;
+    overflow: hidden;
+}
+
+.apicola-system-status::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(37, 99, 235, 0.1), transparent);
+    pointer-events: none;
+}
+
+.apicola-status-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.8rem;
+}
+
+.apicola-status-item i {
+    color: var(--apicola-electric-blue);
+    font-size: 0.9rem;
+}
+
+.apicola-status-text {
+    color: var(--apicola-sidebar-text-muted);
+}
+
+.apicola-status-value {
+    color: var(--apicola-sidebar-text);
+    font-weight: 500;
+}
+
+.apicola-footer-content {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+}
+
+.apicola-footer-icon {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: var(--apicola-border-radius-md);
+    box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.05),
+        inset 0 -1px 1px rgba(0, 0, 0, 0.05);
+}
+
+.apicola-footer-icon i {
+    font-size: 14px;
+    color: var(--apicola-electric-blue);
+    filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.2));
+}
+
+.apicola-footer-text {
+    font-size: 0.8125rem;
+    color: var(--apicola-sidebar-text-muted);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
     flex: 1;
-    margin-left: var(--sidebar-width);
-    transition: margin-left var(--transition-speed) cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.apicola-footer-version {
+    font-size: 0.7rem;
+    color: var(--apicola-electric-blue);
+    font-weight: 600;
+}
+
+/*--------------------------------------------------------------
+# Contenido Principal - Diseño Ultra Premium
+--------------------------------------------------------------*/
+.apicola-main-content {
+    flex: 1;
+    margin-left: var(--apicola-sidebar-width);
+    transition: margin-left var(--apicola-transition-normal)
+        var(--apicola-cubic-bezier);
     padding: 0;
     min-height: 100vh;
     display: flex;
     flex-direction: column;
-    background-color: #f5f7fa;
-    width: calc(100% - var(--sidebar-width));
-    /* Evita scroll horizontal */
+    width: calc(100% - var(--apicola-sidebar-width));
 }
 
-.top-bar {
-    display: flex;
-    align-items: center;
-    padding: 15px 25px;
-    background-color: white;
-    box-shadow: var(--box-shadow);
-    position: sticky;
-    top: 0;
-    z-index: 990;
-}
-
-.page-title {
-    flex: 1;
-}
-
-.page-title h1 {
-    font-size: 1.5rem;
-    font-weight: 500;
-    color: #333;
-}
-
-.content-area {
+.apicola-content-area {
     flex: 1;
     padding: 25px;
-    background-color: #f5f7fa;
-    transition: all var(--transition-speed) ease;
+    transition: all var(--apicola-transition-normal) var(--apicola-cubic-bezier);
 }
 
-/* Sidebar Collapsed State */
-body.sidebar-collapsed .sidebar {
-    width: var(--sidebar-collapsed-width);
+/*--------------------------------------------------------------
+# Estados del Sidebar - Diseño Ultra Premium
+--------------------------------------------------------------*/
+/* Sidebar Colapsado */
+body.sidebar-collapsed .apicola-sidebar {
+    width: var(--apicola-sidebar-collapsed-width);
     transform: translateX(-100%);
-    /* Asegura que esté completamente fuera de la vista */
 }
 
-body.sidebar-collapsed .sidebar-header h3,
-body.sidebar-collapsed .sidebar-divider span,
-body.sidebar-collapsed .menu-text,
-body.sidebar-collapsed .active-indicator {
+body.sidebar-collapsed .apicola-logo-text,
+body.sidebar-collapsed .apicola-menu-text,
+body.sidebar-collapsed .apicola-active-indicator,
+body.sidebar-collapsed .apicola-footer-text {
     opacity: 0;
     visibility: hidden;
 }
 
-body.sidebar-collapsed .main-content {
-    margin-left: var(--sidebar-collapsed-width);
+body.sidebar-collapsed .apicola-main-content {
+    margin-left: var(--apicola-sidebar-collapsed-width);
     width: 100%;
-    /* Usa todo el ancho disponible */
 }
 
-/* Mobile Responsive */
+/*--------------------------------------------------------------
+# Animaciones - Diseño Ultra Premium
+--------------------------------------------------------------*/
+@keyframes apicola-subtle-pulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(37, 99, 235, 0.6);
+    }
+    70% {
+        box-shadow: 0 0 0 10px rgba(37, 99, 235, 0);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(37, 99, 235, 0);
+    }
+}
+
+.apicola-sidebar-link.active .apicola-icon-container {
+    animation: apicola-subtle-pulse 2.5s infinite;
+}
+
+@keyframes apicola-shimmer {
+    0% {
+        background-position: 100% 0;
+    }
+    100% {
+        background-position: -100% 0;
+    }
+}
+
+.apicola-sidebar-link.active::before {
+    background: linear-gradient(
+        90deg,
+        rgba(37, 99, 235, 0.1) 0%,
+        rgba(37, 99, 235, 0.2) 50%,
+        rgba(37, 99, 235, 0.1) 100%
+    );
+    background-size: 200% 100%;
+    animation: apicola-shimmer 2s infinite;
+    width: 100%;
+}
+
+.apicola-sidebar-link.active .apicola-icon-container::after {
+    content: "";
+    position: absolute;
+    top: -5px;
+    left: -5px;
+    right: -5px;
+    bottom: -5px;
+    border-radius: 15px;
+    background: radial-gradient(
+        circle at center,
+        rgba(37, 99, 235, 0.4) 0%,
+        rgba(37, 99, 235, 0) 70%
+    );
+    z-index: -1;
+    opacity: 0.7;
+}
+
+/* Efecto de partículas para el ítem activo */
+.apicola-sidebar-link.active::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: radial-gradient(
+            circle at 10% 20%,
+            rgba(37, 99, 235, 0.1) 0%,
+            transparent 20%
+        ),
+        radial-gradient(
+            circle at 90% 80%,
+            rgba(37, 99, 235, 0.1) 0%,
+            transparent 20%
+        ),
+        radial-gradient(
+            circle at 50% 50%,
+            rgba(37, 99, 235, 0.05) 0%,
+            transparent 30%
+        ),
+        radial-gradient(
+            circle at 80% 10%,
+            rgba(37, 99, 235, 0.05) 0%,
+            transparent 30%
+        );
+    opacity: 0.8;
+    z-index: 0;
+}
+
+/* Efecto de destello para los elementos activos - MEJORADO */
+.apicola-sidebar-link.active .apicola-icon-container::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(
+        circle at center,
+        rgba(255, 255, 255, 0.3) 0%,
+        rgba(255, 255, 255, 0) 70%
+    );
+    opacity: 0;
+    animation: apicola-icon-pulse 3s ease-in-out infinite;
+    border-radius: var(--apicola-border-radius-md);
+}
+
+@keyframes apicola-icon-pulse {
+    0% {
+        opacity: 0;
+        transform: scale(0.5);
+    }
+    50% {
+        opacity: 0.8;
+        transform: scale(1.2);
+    }
+    100% {
+        opacity: 0;
+        transform: scale(0.5);
+    }
+}
+
+/* Efecto de neón para el elemento activo */
+.apicola-sidebar-link.active {
+    box-shadow: 0 0 5px rgba(37, 99, 235, 0.2);
+}
+
+.apicola-sidebar-link.active .apicola-icon-container {
+    box-shadow: 0 0 5px rgba(37, 99, 235, 0.5), 0 0 10px rgba(37, 99, 235, 0.3),
+        inset 0 0 2px rgba(255, 255, 255, 0.5);
+}
+
+/* Efecto de borde brillante para el elemento activo */
+.apicola-sidebar-link.active {
+    border: 1px solid transparent;
+    background-clip: padding-box;
+    position: relative;
+}
+
+.apicola-sidebar-link.active::before {
+    content: "";
+    position: absolute;
+    top: -1px;
+    left: -1px;
+    right: -1px;
+    bottom: -1px;
+    background: linear-gradient(
+        135deg,
+        rgba(0, 195, 255, 0.5),
+        rgba(37, 99, 235, 0.1) 50%,
+        rgba(37, 99, 235, 0)
+    );
+    border-radius: calc(var(--apicola-border-radius-md) + 1px);
+    z-index: -1;
+    animation: apicola-border-glow 2s infinite;
+}
+
+@keyframes apicola-border-glow {
+    0% {
+        opacity: 0.5;
+    }
+    50% {
+        opacity: 0.8;
+    }
+    100% {
+        opacity: 0.5;
+    }
+}
+
+/* Efecto de ondas de energía */
+.apicola-sidebar-link.active::after {
+    animation: apicola-energy-wave 2s infinite;
+}
+
+@keyframes apicola-energy-wave {
+    0% {
+        box-shadow: 0 0 5px rgba(0, 195, 255, 0.5);
+    }
+    50% {
+        box-shadow: 0 0 15px rgba(0, 195, 255, 0.8);
+    }
+    100% {
+        box-shadow: 0 0 5px rgba(0, 195, 255, 0.5);
+    }
+}
+
+/*--------------------------------------------------------------
+# Responsive - Diseño Ultra Premium
+--------------------------------------------------------------*/
 @media (max-width: 992px) {
-    .sidebar {
+    .apicola-sidebar {
         transform: translateX(-100%);
-        width: var(--sidebar-width);
+        width: var(--apicola-sidebar-width);
     }
 
-    .main-content {
+    .apicola-main-content {
         margin-left: 0;
         width: 100%;
     }
 
-    .floating-sidebar-toggle {
+    .apicola-floating-toggle {
         opacity: 1;
         visibility: visible;
         transform: scale(1);
     }
 
-    body.sidebar-active .sidebar {
+    body.sidebar-active .apicola-sidebar {
         transform: translateX(0);
-        width: var(--sidebar-width);
+        width: var(--apicola-sidebar-width);
     }
 
-    body.sidebar-active .main-content {
+    body.sidebar-active .apicola-main-content {
         margin-left: 0;
     }
 
-    body.sidebar-active .floating-sidebar-toggle {
+    body.sidebar-active .apicola-floating-toggle {
         opacity: 0;
         visibility: hidden;
         transform: scale(0.8) translateY(20px);
     }
 
-    body.sidebar-collapsed .sidebar {
+    body.sidebar-collapsed .apicola-sidebar {
         transform: translateX(-100%);
     }
 
-    body.sidebar-active.sidebar-collapsed .sidebar {
+    body.sidebar-active.sidebar-collapsed .apicola-sidebar {
         transform: translateX(0);
-        width: var(--sidebar-width);
+        width: var(--apicola-sidebar-width);
     }
 
-    body.sidebar-active.sidebar-collapsed .sidebar-header h3,
-    body.sidebar-active.sidebar-collapsed .sidebar-divider span,
-    body.sidebar-active.sidebar-collapsed .menu-text {
+    body.sidebar-active.sidebar-collapsed .apicola-logo-text,
+    body.sidebar-active.sidebar-collapsed .apicola-menu-text,
+    body.sidebar-active.sidebar-collapsed .apicola-footer-text {
         opacity: 1;
         visibility: visible;
     }
 }
 
 @media (max-width: 576px) {
-    .top-bar {
-        padding: 10px 15px;
-    }
-
-    .page-title h1 {
-        font-size: 1.2rem;
-    }
-
-    .content-area {
+    .apicola-content-area {
         padding: 15px;
     }
 
-    .floating-sidebar-toggle {
+    .apicola-floating-toggle {
         left: 20px;
         bottom: 20px;
-        width: 45px;
-        height: 45px;
+        width: 50px;
+        height: 50px;
+    }
+
+    .apicola-sidebar-header {
+        height: 60px;
+    }
+
+    .apicola-sidebar-footer {
+        padding: 10px 15px;
+    }
+
+    .apicola-icon-container {
+        min-width: 34px;
+        height: 34px;
+    }
+
+    .apicola-sidebar-link {
+        padding: 10px 15px;
+    }
+
+    .apicola-user-profile {
+        padding: 15px;
+        margin: 10px;
+    }
+
+    .apicola-search-container {
+        padding: 0 10px 10px;
     }
 }
 
-/* Animaciones */
-@keyframes pulse {
-    0% {
-        box-shadow: 0 0 0 0 rgba(255, 177, 66, 0.7);
-    }
+/* Estilos para el efecto ripple */
+.apicola-ripple-effect {
+    position: absolute;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.3);
+    width: 100px;
+    height: 100px;
+    transform: translate(-50%, -50%) scale(0);
+    animation: apicola-ripple 0.6s linear;
+    pointer-events: none;
+    z-index: 0;
+}
 
-    70% {
-        box-shadow: 0 0 0 10px rgba(255, 177, 66, 0);
-    }
-
-    100% {
-        box-shadow: 0 0 0 0 rgba(255, 177, 66, 0);
+@keyframes apicola-ripple {
+    to {
+        transform: translate(-50%, -50%) scale(3);
+        opacity: 0;
     }
 }
 
-.sidebar-link.active .icon-container {
-    animation: pulse 2s infinite;
+/* Efectos de iluminación avanzados */
+.apicola-sidebar::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+            135deg,
+            rgba(0, 195, 255, 0.03) 0%,
+            transparent 50%
+        ),
+        linear-gradient(225deg, rgba(37, 99, 235, 0.03) 0%, transparent 50%);
+    pointer-events: none;
 }
 
-/* Animación para el botón flotante */
-@keyframes bounce {
-    0%,
-    20%,
-    50%,
-    80%,
-    100% {
-        transform: translateY(0) scale(1);
-    }
-
-    40% {
-        transform: translateY(-10px) scale(1.05);
-    }
-
-    60% {
-        transform: translateY(-5px) scale(1.02);
-    }
-}
-
-.floating-sidebar-toggle {
-    animation: bounce 2s infinite;
+/* Efecto de partículas flotantes */
+.apicola-sidebar-content::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: radial-gradient(
+            circle at 20% 30%,
+            rgba(0, 195, 255, 0.05) 0%,
+            transparent 10%
+        ),
+        radial-gradient(
+            circle at 80% 40%,
+            rgba(37, 99, 235, 0.05) 0%,
+            transparent 15%
+        ),
+        radial-gradient(
+            circle at 40% 70%,
+            rgba(0, 195, 255, 0.05) 0%,
+            transparent 12%
+        ),
+        radial-gradient(
+            circle at 70% 90%,
+            rgba(37, 99, 235, 0.05) 0%,
+            transparent 10%
+        );
+    pointer-events: none;
 }

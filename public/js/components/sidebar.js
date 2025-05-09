@@ -1,12 +1,12 @@
-document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener("DOMContentLoaded", () => {
     // Elementos DOM
     const sidebarToggleInside = document.getElementById("sidebarToggleInside");
     const floatingSidebarToggle = document.getElementById(
         "floatingSidebarToggle"
     );
     const sidebar = document.getElementById("sidebar");
-    const sidebarOverlay = document.querySelector(".sidebar-overlay");
-    const sidebarLinks = document.querySelectorAll(".sidebar-link");
+    const sidebarOverlay = document.querySelector(".apicola-sidebar-overlay");
+    const sidebarLinks = document.querySelectorAll(".apicola-sidebar-link");
     const htmlElement = document.documentElement;
     const bodyElement = document.body;
 
@@ -84,7 +84,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Responsive: cerrar sidebar al hacer clic en un enlace en pantallas pequeñas
     sidebarLinks.forEach((link) => {
-        link.addEventListener("click", function () {
+        link.addEventListener("click", () => {
             if (window.innerWidth <= 992) {
                 preventHorizontalScroll();
                 document.body.classList.remove("sidebar-active");
@@ -109,7 +109,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     // Manejar el cambio de tamaño de ventana
-    window.addEventListener("resize", function () {
+    window.addEventListener("resize", () => {
         // Prevenir scroll horizontal durante la transición
         preventHorizontalScroll();
 
@@ -147,8 +147,8 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     // Observar cambios en las clases del body para actualizar el botón flotante
-    const observer = new MutationObserver(function (mutations) {
-        mutations.forEach(function (mutation) {
+    const observer = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
             if (mutation.attributeName === "class") {
                 updateFloatingButtonVisibility();
             }
@@ -156,4 +156,40 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     observer.observe(document.body, { attributes: true });
+
+    // Añadir efecto de ondas al hacer clic en los elementos del menú
+    sidebarLinks.forEach((link) => {
+        link.addEventListener("click", function (e) {
+            const ripple = document.createElement("span");
+            ripple.classList.add("apicola-ripple-effect");
+
+            const rect = this.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+
+            ripple.style.left = x + "px";
+            ripple.style.top = y + "px";
+
+            this.appendChild(ripple);
+
+            setTimeout(() => {
+                ripple.remove();
+            }, 600);
+        });
+    });
+
+    // Añadir estilos para la animación de ondas
+    if (!document.getElementById("ripple-style")) {
+        const style = document.createElement("style");
+        style.id = "ripple-style";
+        style.textContent = `
+              @keyframes ripple {
+                  to {
+                      transform: translate(-50%, -50%) scale(3);
+                      opacity: 0;
+                  }
+              }
+          `;
+        document.head.appendChild(style);
+    }
 });
