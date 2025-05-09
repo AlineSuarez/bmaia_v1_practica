@@ -9,6 +9,10 @@ use App\Models\Apiario;
 use App\Models\Colmena;
 use App\Models\Region;
 use App\Models\Comuna;
+use App\Models\EmergencyContact;
+use App\Models\Reminder;
+use App\Models\Alert;
+use App\Models\ImportantDate;
 
 class User extends Authenticatable
 {
@@ -88,7 +92,23 @@ class User extends Authenticatable
     }
 
     public function payments()
-{
-    return $this->hasMany(Payment::class);
-}
+    {
+        return $this->hasMany(Payment::class);
+    }
+    public function alerts()
+    {
+        return $this->hasMany(\App\Models\Alert::class);
+    }
+    public function reminders()
+    {
+        return $this->hasMany(\App\Models\Reminder::class);
+    }
+    public function importantDates()
+    {
+        return $this->hasMany(ImportantDate::class);
+    }
+    public function contacts()
+    {
+        return $this->hasMany(\App\Models\Contact::class);
+    }
 }

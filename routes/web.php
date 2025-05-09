@@ -18,6 +18,10 @@ use App\Http\Controllers\MailController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\PermissionsController;
 use App\Http\Controllers\PreferencesController;
+use App\Http\Controllers\AlertController;
+use App\Http\Controllers\ReminderController;
+use App\Http\Controllers\ImportantDateController;
+use App\Http\Controllers\EmergencyContactController;
 
 Route::get('/tareas/search', [TaskController::class, 'search'])->name('tareas.search');
 //Route::resource('tareas', TaskController::class);
@@ -157,7 +161,27 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/user/settings/preferences',[PreferencesController::class, 'update'])->name('preferences.update');
     Route::post('/user/settings/preferences/reset',[PreferencesController::class, 'reset'])->name('preferences.reset');
 
-    // utilidades
+    // UTILIDADES
+    // utilidades - alertas
+    Route::get('/user/settings/alerts',[AlertController::class,'index'])->name('alerts.index');
+    Route::post('/user/settings/alerts',[AlertController::class,'store'])->name('alerts.store');
+    Route::put('/user/settings/alerts/{alert}',[AlertController::class,'update'])->name('alerts.update');
+    Route::delete('/user/settings/alerts/{alert}',[AlertController::class,'destroy'])->name('alerts.destroy');
+    // utilidades - recordatorios
+    Route::get('/user/settings/reminders',[ReminderController::class,'index'])->name('reminders.index');
+    Route::post('/user/settings/reminders',[ReminderController::class,'store'])->name('reminders.store');
+    Route::put('/user/settings/reminders/{reminder}',[ReminderController::class,'update'])->name('reminders.update');
+    Route::delete('/user/settings/reminders/{reminder}',[ReminderController::class,'destroy'])->name('reminders.destroy');
+    // utilidades - fechas importantes
+    Route::get('/user/settings/dates',[ImportantDateController::class,'index'])->name('dates.index');
+    Route::post('/user/settings/dates',[ImportantDateController::class,'store'])->name('dates.store');
+    Route::put ('/user/settings/dates/{date}',[ImportantDateController::class,'update'])->name('dates.update');
+    Route::delete('/user/settings/dates/{date}',[ImportantDateController::class,'destroy'])->name('dates.destroy');
+    // utilidades - contactos de emergencia
+    Route::get('/user/settings/contacts',          [EmergencyContactController::class,           'index'])->name('contacts.index');
+    Route::post('/user/settings/contacts',          [EmergencyContactController::class,           'store'])->name('contacts.store');
+    Route::put('/user/settings/contacts/{contact}',  [EmergencyContactController::class,           'update'])->name('contacts.update');
+    Route::delete('/user/settings/contacts/{contact}',  [EmergencyContactController::class,           'destroy'])->name('contacts.destroy');
 }); 
 //(estas rutas estaban tambien dentro de un midleware de pago)
 // La ruta de sistema experto que lista los apiarios
