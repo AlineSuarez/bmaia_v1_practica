@@ -10,7 +10,6 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> <!-- jQuery -->
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="{{ asset('css/welcome/styles.css') }}">
     <style>
         body {
             margin: 0;
@@ -457,80 +456,85 @@
         document.addEventListener("DOMContentLoaded", function () {
             const menuToggle = document.querySelector(".menu-toggle");
             const menu = document.querySelector("nav ul");
+            if (menuToggle && menu) {
+                menuToggle.addEventListener("click", function () {
+                    menu.classList.toggle("show");
+                });
+            }
 
-            menuToggle.addEventListener("click", function () {
-                menu.classList.toggle("show");
-            });
-        });
+            const menuToggleById = document.getElementById('menu-toggle');
+            const menuById = document.getElementById('menu');
+            if (menuToggleById && menuById) {
+                menuToggleById.addEventListener('click', function () {
+                    menuById.classList.toggle('show');
+                });
+            }
 
-        document.getElementById('menu-toggle').addEventListener('click', function () {
-            const menu = document.getElementById('menu');
-            menu.classList.toggle('show');
-        });
+            const testimonios = document.querySelectorAll('.testimonio-card');
+            const prevButton = document.querySelector('.carousel-control.prev');
+            const nextButton = document.querySelector('.carousel-control.next');
 
-        const testimonios = document.querySelectorAll('.testimonio-card');
-        const prevButton = document.querySelector('.carousel-control.prev');
-        const nextButton = document.querySelector('.carousel-control.next');
+            let currentIndex = 0;
 
-        let currentIndex = 0;
+            function showTestimonio(index) {
+                testimonios.forEach((testimonio, i) => {
+                    testimonio.classList.remove('active');
+                    if (i === index) {
+                        testimonio.classList.add('active');
+                    }
+                });
+            }
 
-        function showTestimonio(index) {
-            // Ocultar todos los testimonios
-            testimonios.forEach((testimonio, i) => {
-                testimonio.classList.remove('active');
-                if (i === index) {
-                    testimonio.classList.add('active');
+            function prevTestimonio() {
+                currentIndex = (currentIndex === 0) ? testimonios.length - 1 : currentIndex - 1;
+                showTestimonio(currentIndex);
+            }
+
+            function nextTestimonio() {
+                currentIndex = (currentIndex === testimonios.length - 1) ? 0 : currentIndex + 1;
+                showTestimonio(currentIndex);
+            }
+
+            if (prevButton && nextButton && testimonios.length > 0) {
+                prevButton.addEventListener('click', prevTestimonio);
+                nextButton.addEventListener('click', nextTestimonio);
+
+                // Rotación automática
+                setInterval(() => {
+                    nextTestimonio();
+                }, 5000);
+            }
+
+            function openModal(element) {
+                $('#' + element).show();
+            }
+
+            function closeModal(element) {
+                $('#' + element).hide();
+            }
+
+
+            // Detecta el desplazamiento y muestra el botón
+            $(window).scroll(function () {
+                if ($(this).scrollTop() > 200) { // Muestra el botón cuando el usuario se ha desplazado 200px hacia abajo
+                    $('#back-to-top').fadeIn();
+                } else {
+                    $('#back-to-top').fadeOut();
                 }
             });
-        }
 
-        function prevTestimonio() {
-            currentIndex = (currentIndex === 0) ? testimonios.length - 1 : currentIndex - 1;
-            showTestimonio(currentIndex);
-        }
-
-        function nextTestimonio() {
-            currentIndex = (currentIndex === testimonios.length - 1) ? 0 : currentIndex + 1;
-            showTestimonio(currentIndex);
-        }
-
-        prevButton.addEventListener('click', prevTestimonio);
-        nextButton.addEventListener('click', nextTestimonio);
-
-        // Rotación automática
-        setInterval(() => {
-            nextTestimonio();
-        }, 5000); // Cambia cada 5 segundos
-
-        function openModal(element) {
-            $('#' + element).show();
-        }
-
-        function closeModal(element) {
-            $('#' + element).hide();
-        }
-
-
-        // Detecta el desplazamiento y muestra el botón
-        $(window).scroll(function () {
-            if ($(this).scrollTop() > 200) { // Muestra el botón cuando el usuario se ha desplazado 200px hacia abajo
-                $('#back-to-top').fadeIn();
-            } else {
-                $('#back-to-top').fadeOut();
+            // Función para volver al inicio de la página
+            function scrollToTop() {
+                $('html, body').animate({ scrollTop: 0 }, 'slow');
             }
-        });
+            function openTermsModal(event) {
+                event.preventDefault();
+                document.getElementById('terms-modal').style.display = 'block';
+            }
 
-        // Función para volver al inicio de la página
-        function scrollToTop() {
-            $('html, body').animate({ scrollTop: 0 }, 'slow');
-        }
-        function openTermsModal(event) {
-            event.preventDefault();
-            document.getElementById('terms-modal').style.display = 'block';
-        }
-
-        document.getElementById('terms-check').addEventListener('change', function () {
-            document.getElementById('register-btn').disabled = !this.checked;
+            document.getElementById('terms-check').addEventListener('change', function () {
+                document.getElementById('register-btn').disabled = !this.checked;
+            });
         });
     </script>
 </body>

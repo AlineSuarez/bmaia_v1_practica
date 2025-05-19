@@ -225,10 +225,6 @@
     <script src="{{ asset('js/components/home-user/tareas.js') }}"></script>
 @endsection
 
-@section('optional-scripts')
-    <script src="{{ asset('vendor/chatbot/js/chatbot.js') }}"></script>
-@endsection
-
 <style>
     :root {
         --miel-claro: #fff8e1;

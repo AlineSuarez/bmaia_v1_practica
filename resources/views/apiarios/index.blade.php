@@ -17,12 +17,6 @@
                     <i class="fas fa-search search-icon"></i>
                     <input type="text" class="search-input" placeholder="Buscar apiarios..." id="searchInput">
                 </div>
-                <select class="filter-select" id="filterTipo">
-                    <option value="">Todos los tipos</option>
-                    <option value="Producción">Producción</option>
-                    <option value="Polinización">Polinización</option>
-                    <option value="Crianza">Crianza</option>
-                </select>
             </div>
         </div>
 
@@ -212,19 +206,13 @@
 @endsection
 
 @section('optional-scripts')
-    <script src="{{ asset('vendor/chatbot/js/chatbot.js') }}"></script>
-    <script src="/js/VoiceCommands.js"></script>
-    <script src="/js/apiarios.js"></script>
 
-    <!-- Script adicional para mejorar interacciones de UI -->
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            // Manejar selección de filas
             const selectAll = document.getElementById('selectAll');
             const checkboxes = document.querySelectorAll('.select-checkbox');
             const multiDeleteButton = document.getElementById('multiDeleteButton');
 
-            // Actualizar estado del botón de eliminación múltiple
             function updateMultiDeleteButton() {
                 const checkedBoxes = document.querySelectorAll('.select-checkbox:checked');
                 multiDeleteButton.disabled = checkedBoxes.length === 0;
@@ -468,7 +456,6 @@
                     }
                 });
             });
-
             observer.observe(document.body, { childList: true, subtree: true });
         });
     </script>

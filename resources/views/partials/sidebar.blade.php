@@ -19,7 +19,7 @@
                 <div class="apicola-logo-icon">
                     <i class="fas fa-home"></i>
                 </div>
-                <h3 class="apicola-logo-text">Menú</h3>
+                <h3 class="apicola-logo-text">Bienvenido</h3>
             </div>
             <button id="sidebarToggleInside" class="apicola-toggle-inside" aria-label="Cerrar menú">
                 <i class="fas fa-times"></i>
@@ -43,7 +43,6 @@
 
             <nav class="apicola-sidebar-nav">
                 <div class="apicola-nav-section">
-                    <h5 class="apicola-section-title">Principal</h5>
                     <ul class="apicola-sidebar-menu">
                         <li class="apicola-sidebar-item">
                             <a class="apicola-sidebar-link {{ request()->routeIs('home') ? 'active' : '' }}"
@@ -82,12 +81,8 @@
                     </ul>
                 </div>
 
-                <div class="apicola-sidebar-divider">
-                    <span class="apicola-divider-line"></span>
-                </div>
 
                 <div class="apicola-nav-section">
-                    <h5 class="apicola-section-title">Gestión</h5>
                     <ul class="apicola-sidebar-menu">
                         <li class="apicola-sidebar-item">
                             <a class="apicola-sidebar-link {{ request()->routeIs('tareas') ? 'active' : '' }}"
@@ -115,12 +110,7 @@
                     </ul>
                 </div>
 
-                <div class="apicola-sidebar-divider">
-                    <span class="apicola-divider-line"></span>
-                </div>
-
                 <div class="apicola-nav-section">
-                    <h5 class="apicola-section-title">Análisis</h5>
                     <ul class="apicola-sidebar-menu">
                         <li class="apicola-sidebar-item">
                             <a class="apicola-sidebar-link {{ request()->routeIs('sistemaexperto') ? 'active' : '' }}"

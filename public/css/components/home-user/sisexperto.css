@@ -1,0 +1,270 @@
+/* Variables de colores para tema apícola */
+:root {
+    --honey-yellow: #f9c846;
+    --honey-dark: #e4a913;
+    --honey-light: #ffeeb2;
+    --bee-black: #292826;
+    --bee-white: #fffef7;
+    --honeycomb-bg: #fbf7e8;
+    --pollen-orange: #e28743;
+    --propolis-brown: #6e4c1e;
+    --wax-beige: #f5e7c1;
+}
+
+/* Estilos generales y de página */
+body {
+    background-color: var(--honeycomb-bg);
+    color: var(--bee-black);
+}
+
+.page-title {
+    color: var(--propolis-brown);
+    font-weight: 700;
+    border-bottom: 3px solid var(--honey-yellow);
+    padding-bottom: 0.5rem;
+    position: relative;
+}
+
+.page-title::after {
+    content: "🐝";
+    position: absolute;
+    right: 0;
+    bottom: 5px;
+}
+
+.lead {
+    color: var(--propolis-brown);
+    font-style: italic;
+}
+
+/* Estilos para la pantalla de carga */
+.loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(249, 200, 70, 0.3);
+    backdrop-filter: blur(5px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+.spinner-container {
+    text-align: center;
+    background-color: var(--bee-white);
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    border: 2px solid var(--honey-yellow);
+}
+
+.spinner-border.text-primary {
+    color: var(--honey-dark) !important;
+    width: 3rem;
+    height: 3rem;
+}
+
+/* Estilos para la tarjeta de consejos */
+.card {
+    background-color: var(--bee-white);
+    border: none;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(110, 76, 30, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 18px rgba(110, 76, 30, 0.15);
+}
+
+.card-header {
+    background-color: var(--honey-yellow) !important;
+    color: var(--propolis-brown);
+    font-weight: 600;
+    border-bottom: 2px solid var(--honey-dark);
+    padding: 1rem 1.5rem;
+}
+
+.card-footer {
+    background-color: var(--wax-beige) !important;
+    border-top: 1px solid rgba(110, 76, 30, 0.1);
+}
+
+/* Estilos para la tabla */
+.table {
+    margin-bottom: 0;
+}
+
+.table thead th {
+    background-color: var(--honey-light);
+    color: var(--propolis-brown);
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    vertical-align: middle;
+    padding: 0.75rem 1rem;
+    border-bottom: 2px solid var(--honey-yellow);
+}
+
+.table tbody tr {
+    transition: background-color 0.2s ease;
+}
+
+.table tbody tr:hover {
+    background-color: rgba(249, 200, 70, 0.1);
+}
+
+.table tbody td {
+    vertical-align: middle;
+    padding: 1rem;
+    border-color: rgba(110, 76, 30, 0.1);
+}
+
+/* Estilos específicos para consejos */
+.consejo-td {
+    position: relative;
+}
+
+.consejo-text {
+    line-height: 1.5;
+    color: var(--bee-black);
+    padding: 0.25rem 0;
+    min-height: 40px;
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+/* Estilización de botones */
+.btn-primary {
+    background-color: var(--honey-yellow);
+    border-color: var(--honey-dark);
+    color: var(--propolis-brown);
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover,
+.btn-primary:focus {
+    background-color: var(--honey-dark);
+    border-color: var(--propolis-brown);
+    color: var(--bee-white);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(110, 76, 30, 0.2);
+}
+
+.btn-outline-primary {
+    color: var(--propolis-brown);
+    border-color: var(--honey-yellow);
+    transition: all 0.3s ease;
+}
+
+.btn-outline-primary:hover,
+.btn-outline-primary:focus {
+    background-color: var(--honey-light);
+    color: var(--propolis-brown);
+    border-color: var(--honey-dark);
+}
+
+.btn-success {
+    background-color: var(--pollen-orange);
+    border-color: var(--propolis-brown);
+    transition: all 0.3s ease;
+}
+
+.btn-success:hover,
+.btn-success:focus {
+    background-color: var(--propolis-brown);
+    border-color: var(--pollen-orange);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(110, 76, 30, 0.2);
+}
+
+/* Estilos para alertas */
+.alert-info {
+    background-color: var(--honey-light);
+    color: var(--propolis-brown);
+    border-color: var(--honey-yellow);
+    border-left: 5px solid var(--honey-dark);
+}
+
+.alert-warning {
+    background-color: rgba(226, 135, 67, 0.1);
+    border-color: var(--pollen-orange);
+    color: var(--propolis-brown);
+}
+
+.alert-danger {
+    background-color: #fff1f0;
+    border-color: #ff6b6b;
+    color: #d63031;
+}
+
+/* Estilos para íconos */
+.fa-lightbulb,
+.fa-info-circle {
+    color: var(--honey-dark);
+}
+
+.fa-sync {
+    transition: transform 0.5s ease;
+}
+
+.fa-sync:hover {
+    transform: rotate(180deg);
+}
+
+/* Animaciones */
+@keyframes honeyDrip {
+    0% {
+        transform: translateY(-10px);
+        opacity: 0;
+    }
+    100% {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.consejo-text:not(:empty) {
+    animation: honeyDrip 0.5s ease forwards;
+}
+
+/* Honeycomb pattern para mensajes vacíos */
+.table tbody tr.empty-row td {
+    background-image: repeating-linear-gradient(
+        60deg,
+        rgba(249, 200, 70, 0.05) 0px,
+        rgba(249, 200, 70, 0.05) 20px,
+        transparent 20px,
+        transparent 40px
+    );
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .card-header {
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .page-title::after {
+        display: none;
+    }
+
+    .table thead th {
+        font-size: 0.75rem;
+        padding: 0.5rem;
+    }
+}
+
+/* Mejoras de accesibilidad - focus visible */
+button:focus,
+a:focus {
+    outline: 3px solid var(--honey-dark);
+    outline-offset: 2px;
+}

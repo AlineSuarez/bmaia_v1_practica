@@ -56,9 +56,6 @@
                 <div class="section-header">
                     <h2 class="section-title"><i class="fa-solid fa-map"></i> Mapa de Apiarios</h2>
                     <div class="map-controls">
-                        <button id="refresh-weather" class="control-btn">
-                            <i class="fa-solid fa-rotate"></i> Actualizar Clima
-                        </button>
                         <div class="map-filter">
                             <label class="toggle-switch">
                                 <input type="checkbox" id="toggle-others">
@@ -244,7 +241,6 @@
 @endsection
 
 @section('optional-scripts')
-    <script src="{{ asset('vendor/chatbot/js/chatbot.js') }}"></script>
     <script>
         document.addEventListener("DOMContentLoaded", function () {
             // Inicialización del mapa
@@ -418,7 +414,6 @@
                                     ${weatherIcons[data.weather[0].icon] || ''} ${weatherEs[data.weather[0].main] || data.weather[0].main}
                                 `;
                             }
-
                             // Actualizar estadísticas
                             totalTemp += data.main.temp;
                             totalHumidity += data.main.humidity;
@@ -431,11 +426,6 @@
                             if (countWithData > 0) {
                                 document.getElementById('avg-temp').textContent = `${(totalTemp / countWithData).toFixed(1)}°C`;
                                 document.getElementById('avg-humidity').textContent = `${Math.round(totalHumidity / countWithData)}%`;
-                            }
-
-                            // Actualizar gráficos si todos los datos están cargados
-                            if (countWithData === apiarios.filter(a => a.latitud && a.longitud).length) {
-                                initCharts(tempData, humidityData);
                             }
                         }
                     })
@@ -537,172 +527,12 @@
                 });
             });
 
-            // Botón de actualizar clima
-            document.getElementById('refresh-weather').addEventListener('click', function () {
-                // Reiniciar estadísticas
-                totalTemp = 0;
-                totalHumidity = 0;
-                countWithData = 0;
-                tempData = [];
-                humidityData = [];
-
-                // Actualizar datos de clima para cada apiario
-                apiarios.forEach(apiario => {
-                    if (apiario.latitud && apiario.longitud) {
-                        fetchWeatherData(apiario);
-                    }
-                });
-
-                // Mostrar animación de actualización (solo gira el ícono)
-                this.classList.add('refreshing');
-                setTimeout(() => {
-                    this.classList.remove('refreshing');
-                }, 1000);
-            });
-
-            // Inicializar gráficos
-            function initCharts(tempData, humidityData) {
-                // Gráfico de temperaturas
-                const tempCtx = document.getElementById('tempChart').getContext('2d');
-                new Chart(tempCtx, {
-                    type: 'bar',
-                    data: {
-                        labels: apiarios.filter(a => a.latitud && a.longitud).map(a => a.nombre),
-                        datasets: [{
-                            label: 'Temperatura (°C)',
-                            data: tempData,
-                            backgroundColor: tempData.map(temp => {
-                                if (temp < 18) return '#3498db'; // Frío
-                                if (temp > 32) return '#e74c3c'; // Caliente
-                                return '#f0941b'; // Óptimo
-                            }),
-                            borderColor: '#333',
-                            borderWidth: 1
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false, // Importante para responsividad
-                        plugins: {
-                            legend: {
-                                display: false
-                            },
-                            tooltip: {
-                                callbacks: {
-                                    label: function(context) {
-                                        const temp = context.raw;
-                                        let status = 'Óptima';
-                                        if (temp < 18) status = 'Baja';
-                                        if (temp > 32) status = 'Alta';
-                                        return `Temperatura: ${temp}°C (${status})`;
-                                    }
-                                }
-                            }
-                        },
-                        scales: {
-                            y: {
-                                beginAtZero: false,
-                                min: Math.min(...tempData) - 5,
-                                max: Math.max(...tempData) + 5,
-                                grid: {
-                                    color: 'rgba(0, 0, 0, 0.1)'
-                                },
-                                ticks: {
-                                    font: {
-                                        size: window.innerWidth < 768 ? 10 : 12
-                                    }
-                                }
-                            },
-                            x: {
-                                grid: {
-                                    display: false
-                                },
-                                ticks: {
-                                    maxRotation: 45, // Rota etiquetas en móvil
-                                    minRotation: window.innerWidth < 768 ? 45 : 0,
-                                    font: {
-                                        size: window.innerWidth < 768 ? 10 : 12
-                                    }
-                                }
-                            }
-                        }
-                    }
-                });
-
-                // Gráfico de humedad
-                const humidityCtx = document.getElementById('humidityChart').getContext('2d');
-                new Chart(humidityCtx, {
-                    type: 'bar',
-                    data: {
-                        labels: apiarios.filter(a => a.latitud && a.longitud).map(a => a.nombre),
-                        datasets: [{
-                            label: 'Humedad (%)',
-                            data: humidityData,
-                            backgroundColor: humidityData.map(humidity => {
-                                if (humidity < 40) return '#e67e22'; // Seco
-                                if (humidity > 60) return '#3498db'; // Húmedo
-                                return '#2ecc71'; // Óptimo
-                            }),
-                            borderColor: '#333',
-                            borderWidth: 1
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false, // Importante para responsividad
-                        plugins: {
-                            legend: {
-                                display: false
-                            },
-                            tooltip: {
-                                callbacks: {
-                                    label: function(context) {
-                                        const humidity = context.raw;
-                                        let status = 'Óptima';
-                                        if (humidity < 40) status = 'Baja';
-                                        if (humidity > 60) status = 'Alta';
-                                        return `Humedad: ${humidity}% (${status})`;
-                                    }
-                                }
-                            }
-                        },
-                        scales: {
-                            y: {
-                                beginAtZero: false,
-                                min: 0,
-                                max: 100,
-                                grid: {
-                                    color: 'rgba(0, 0, 0, 0.1)'
-                                },
-                                ticks: {
-                                    font: {
-                                        size: window.innerWidth < 768 ? 10 : 12
-                                    }
-                                }
-                            },
-                            x: {
-                                grid: {
-                                    display: false
-                                },
-                                ticks: {
-                                    maxRotation: 45, // Rota etiquetas en móvil
-                                    minRotation: window.innerWidth < 768 ? 45 : 0,
-                                    font: {
-                                        size: window.innerWidth < 768 ? 10 : 12
-                                    }
-                                }
-                            }
-                        }
-                    }
-                });
-            }
-
             // Mostrar/ocultar leyenda del mapa
             const legendBtn = document.getElementById('toggle-legend');
-const legend = document.querySelector('.map-legend');
-legendBtn.addEventListener('click', function () {
-    legend.classList.toggle('visible');
-});
+            const legend = document.querySelector('.map-legend');
+            legendBtn.addEventListener('click', function () {
+                legend.classList.toggle('visible');
+            });
         });
     </script>
 @endsection

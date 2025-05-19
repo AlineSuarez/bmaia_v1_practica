@@ -5,7 +5,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 
-<button id="back-to-top" onclick="scrollToTop()"><span class="fa fa-arrow-up"></span></button>
+<button id="back-to-top"><span class="fa fa-arrow-up"></span></button>
 
 <!-- Modal de sitio en desarrollo -->
 <div id="development-modal" class="development-modal">
@@ -1642,6 +1642,9 @@
         }
       });
     });
-    document.querySelector('.collapsible-container').classList.remove('active');
+    const firstCollapsible = document.querySelector('.collapsible-container');
+    if (firstCollapsible) {
+      firstCollapsible.classList.remove('active');
+    }
   });
 </script>

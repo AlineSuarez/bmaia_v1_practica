@@ -1,13 +1,15 @@
 document.addEventListener("DOMContentLoaded", () => {
     const navbar = document.querySelector(".navbar");
 
-    window.addEventListener("scroll", () => {
-        if (window.scrollY > 50) {
-            navbar.classList.add("scrolled");
-        } else {
-            navbar.classList.remove("scrolled");
-        }
-    });
+    if (navbar) {
+        window.addEventListener("scroll", () => {
+            if (window.scrollY > 50) {
+                navbar.classList.add("scrolled");
+            } else {
+                navbar.classList.remove("scrolled");
+            }
+        });
+    }
 
     // Add floating particles dynamically
     const particles = document.querySelector(".floating-particles");
@@ -23,5 +25,14 @@ document.addEventListener("DOMContentLoaded", () => {
             particle.style.animationDelay = `${Math.random() * 5}s`;
             particles.appendChild(particle);
         }
+    }
+
+    // Funcionalidad para el botón "back to top"
+    const backToTopBtn = document.getElementById("back-to-top");
+    if (backToTopBtn) {
+        backToTopBtn.addEventListener("click", function (e) {
+            e.preventDefault();
+            window.scrollTo({ top: 0, behavior: "smooth" });
+        });
     }
 });

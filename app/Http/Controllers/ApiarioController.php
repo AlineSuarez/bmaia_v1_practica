@@ -81,7 +81,7 @@ class ApiarioController extends Controller
         $apiario->save();
         return redirect()->route('apiarios')->with('success', 'Apiario agregado con éxito');
     }
-    
+
     // Método para retornar comunas en función de la región
     public function getComunas($regionId)
     {
@@ -128,7 +128,7 @@ class ApiarioController extends Controller
             return [$comuna->nombre => ['lat' => $comuna->lat, 'lon' => $comuna->lon]];
         })->toArray();
 
-        return view('apiarios.edit', compact('apiario', 'regiones', 'comunas','comunasCoordenadas'));
+        return view('apiarios.edit', compact('apiario', 'regiones', 'comunas', 'comunasCoordenadas'));
     }
 
     public function update(Request $request, $id)

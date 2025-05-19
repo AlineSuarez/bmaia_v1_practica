@@ -262,7 +262,5 @@
 @section('optional-scripts')
     <link href="{{ asset('./css/components/home-user/graficos.css') }}" rel="stylesheet">
     <script src="{{ asset('js/components/home-user/graficos.js') }}"></script>
-    <script src="{{ asset('vendor/chatbot/js/chatbot.js') }}"></script>
-    <script src="/js/VoiceCommands.js"></script>
     <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
 @endsection

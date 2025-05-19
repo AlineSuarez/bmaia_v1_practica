@@ -1,3 +1,6 @@
+/* Importar fuente Poppins */
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap");
+
 /* Variables de colores - Paleta mejorada */
 :root {
     /* Paleta principal - Azul más vibrante */
@@ -64,9 +67,6 @@
         Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue",
         sans-serif;
 }
-
-/* Importar fuente Poppins */
-@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap");
 
 /* Estilos base para los modales */
 .modal {
