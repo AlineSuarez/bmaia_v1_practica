@@ -686,4 +686,87 @@
     }
     });
   </script>
+
+  <style>
+    /* Estilo mejorado para input de fecha (compatible con iOS) */
+    #weather-date-picker {
+    -webkit-appearance: none;
+    appearance: none;
+    background-color: #f0f6ff;
+    border: 2px solid #5b9df9;
+    border-radius: 8px;
+    color: #2156a5;
+    padding: 8px 14px;
+    padding-right: 30px;
+    font-size: 16px;
+    /* Tamaño mínimo para evitar zoom en iOS */
+    font-family: inherit;
+    position: relative;
+    margin-right: 10px;
+    min-width: 140px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%235b9df9' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3' y='4' width='18' height='18' rx='2' ry='2'%3E%3C/rect%3E%3Cline x1='16' y1='2' x2='16' y2='6'%3E%3C/line%3E%3Cline x1='8' y1='2' x2='8' y2='6'%3E%3C/line%3E%3Cline x1='3' y1='10' x2='21' y2='10'%3E%3C/line%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: calc(100% - 8px) center;
+    }
+
+    #weather-date-picker:hover,
+    #weather-date-picker:focus {
+    border-color: #2156a5;
+    background-color: #e3f0ff;
+    box-shadow: 0 0 0 3px rgba(91, 157, 249, 0.25);
+    outline: none;
+    }
+
+    /* Para Safari en iOS */
+    #weather-date-picker::-webkit-datetime-edit {
+    color: #2156a5;
+    padding: 0;
+    margin: 0;
+    }
+
+    #weather-date-picker::-webkit-calendar-picker-indicator {
+    opacity: 0;
+    /* Ocultamos el indicador nativo porque ya tenemos nuestro ícono SVG */
+    width: 30px;
+    height: 100%;
+    position: absolute;
+    right: 0;
+    cursor: pointer;
+    }
+
+    /* Para mostrar placeholder cuando está vacío - fixes Safari/iOS */
+    #weather-date-picker:invalid {
+    color: #2156a5;
+    }
+
+    /* Botón de refrescar estilizado para combinar */
+    .btn-refresh {
+    background-color: #f0f6ff;
+    color: #2156a5;
+    border: 2px solid #5b9df9;
+    border-radius: 8px;
+    height: 38px;
+    width: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    }
+
+    .btn-refresh:hover {
+    background-color: #5b9df9;
+    color: white;
+    }
+
+    /* Arreglo para dispositivos pequeños */
+    @media (max-width: 480px) {
+    #weather-date-picker {
+      min-width: 110px;
+      padding: 8px 28px 8px 8px;
+    }
+    }
+  </style>
 @endsection
