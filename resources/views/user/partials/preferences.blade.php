@@ -218,38 +218,53 @@ document.addEventListener('DOMContentLoaded', function() {
     // 1) Cargar preferencias
     async function loadPreferences() {
         try {
-        const { data } = await axios.get(URL_GET);
-        fields.forEach(f => {
-            const el = form.querySelector(`[name="${f}"]`);
-            if (!el) return;
-            if (el.type === 'checkbox')      el.checked = !!data[f];
-            else if (el.type === 'radio')    { if (el.value === data[f]) el.checked = true; }
-            else                              el.value   = data[f];
-        });
+            const { data } = await axios.get(URL_GET);
+            fields.forEach(f => {
+                const elList = form.querySelectorAll(`[name="${f}"]`);
+                if (!elList.length) return;
+
+                if (elList[0].type === 'checkbox') {
+                    elList[0].checked = !!data[f];
+                } else if (elList[0].type === 'radio') {
+                    elList.forEach(r => {
+                        r.checked = (r.value === data[f]);
+                    });
+                } else {
+                    elList[0].value = data[f];
+                }
+            });
         } catch (e) {
-        console.error(e);
-        toastr.error('Error cargando preferencias');
-        }
+            console.error(e);
+            toastr.error('Error cargando preferencias');
+            }
     }
 
     // 2) Guardar cambios
     async function savePreferences() {
         const payload = {};
         fields.forEach(f => {
-        const el = form.querySelector(`[name="${f}"]`);
-        if (!el) return;
-        payload[f] = (el.type === 'checkbox') ? el.checked : el.value;
+            const elList = form.querySelectorAll(`[name="${f}"]`);
+            if (!elList.length) return;
+
+            if (elList[0].type === 'checkbox') {
+                payload[f] = elList[0].checked;
+            } else if (elList[0].type === 'radio') {
+                const checkedRadio = [...elList].find(r => r.checked);
+                if (checkedRadio) payload[f] = checkedRadio.value;
+            } else {
+                payload[f] = elList[0].value;
+            }
         });
 
         saveBtn.disabled = true;
         try {
-        await axios.post(URL_POST, payload);
-        toastr.success('Preferencias guardadas');
+            await axios.post(URL_POST, payload);
+            toastr.success('Preferencias guardadas');
         } catch (e) {
-        console.error(e);
-        toastr.error('No se pudieron guardar');
+            console.error(e);
+            toastr.error('No se pudieron guardar');
         } finally {
-        saveBtn.disabled = false;
+            saveBtn.disabled = false;
         }
     }
 
