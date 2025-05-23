@@ -3,6 +3,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 use Auth;
 use App\Models\User;
 use App\Models\Region;
@@ -44,19 +45,34 @@ class UserController extends Controller
             'id_comuna'     => ['nullable','exists:comunas,id'],
             'address'       => ['nullable','string','max:150'],
             'nregistro'     => ['nullable','string','max:50'],
+            'profile_picture' => ['nullable','image','mimes:jpg,jpeg,png','max:2048'],
         ]);
-        auth()->user()->update([
-            'rut'              => $data['rut'],
-            'razon_social'     => $data['razon_social'],
-            'name'             => $data['name'],
-            'last_name'        => $data['last_name'],
-            'telefono'         => $data['phone'],
-            'email'            => $data['email'],
-            'id_region'        => $data['id_region'],
-            'id_comuna'        => $data['id_comuna'],
-            'direccion'        => $data['address'],
-            'numero_registro'  => $data['nregistro'],
-        ]);
+        $user = auth()->user();
+
+        // Si vienen datos de archivo, guarda avatar
+        if ($request->hasFile('profile_picture')) {
+            // elimina anterior si existe
+            if ($user->profile_picture) {
+                \Storage::disk('public')->delete($user->profile_picture);
+            }
+            // almacena el nuevo
+            $path = $request->file('profile_picture')->store('avatars','public');
+            $user->profile_picture = $path;
+        }
+
+        // ahora actualiza los demás campos
+        $user->rut             = $data['rut'];
+        $user->razon_social    = $data['razon_social'];
+        $user->name            = $data['name'];
+        $user->last_name       = $data['last_name'];
+        $user->telefono        = $data['phone'];
+        $user->email           = $data['email'];
+        $user->id_region       = $data['id_region'];
+        $user->id_comuna       = $data['id_comuna'];
+        $user->direccion       = $data['address'];
+        $user->numero_registro = $data['nregistro'];
+        
+        $user->save();
         return back()->with('success_settings','Datos de perfil actualizados.');
     }
 
@@ -64,16 +80,21 @@ class UserController extends Controller
     public function updateAvatar(Request $request)
     {
         $request->validate([
-            'avatar' => 'required|string',
+            'profile_picture' => ['required','image','mimes:jpg,jpeg,png','max:2048'],
         ]);
-        if($file = $request->file('profile_picture')){
-            $path = $file->store('avatars','public');
-            auth()->user()->update(['profile_picture' => $path]);
-        }
+
         $user = Auth::user();
-        $user->avatar = $request->avatar; // Asegúrate de tener un campo 'avatar' en tu modelo User
-        $user->save();
-        return redirect()->back()->with('success', 'Avatar actualizado correctamente.');
+
+        // Eliminar avatar anterior si existe
+        if ($user->profile_picture) {
+            Storage::disk('public')->delete($user->profile_picture);
+        }
+
+        // Guardar el archivo nuevo
+        $path = $request->file('profile_picture')->store('avatars','public');
+        $user->update(['profile_picture' => $path]);
+
+        return back()->with('success', 'Avatar actualizado correctamente.');
     }
 
     // Restablecer contraseña del usuario

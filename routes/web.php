@@ -153,7 +153,10 @@ Route::get('/zonificacion', [ZonificacionController::class, 'index'])->name('zon
 Route::middleware(['auth'])->group(function () {
     Route::get('/user/settings', [UserController::class, 'settings'])->name('user.settings');
     Route::patch('/user/update-name', [UserController::class, 'updateName'])->name('user.update.name');
-    Route::patch('/user/update-avatar', [UserController::class, 'updateAvatar'])->name('user.update.avatar');
+    //Route::patch('/user/update-avatar', [UserController::class, 'updateAvatar'])->name('user.update.avatar');
+    Route::post('/user/avatar', [UserController::class, 'updateAvatar'])
+     ->name('user.updateAvatar')
+     ->middleware('auth');
     Route::patch('/user/update-password', [UserController::class, 'updatePassword'])->name('user.update.password');
     Route::post('/user/update-settings', [UserController::class, 'updateSettings'])->name('user.updateSettings');
     Route::post('/user/update-plan', [UserController::class, 'updatePlan'])->name('user.updatePlan');

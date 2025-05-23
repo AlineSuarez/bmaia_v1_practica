@@ -23,7 +23,12 @@
             <div class="navbar-user">
                 <div class="user-dropdown">
                     <button class="user-button" id="userDropdownBtn" aria-expanded="false">
-                        <img src="/img/avatar/avatar_03.svg" alt="Usuario" class="user-avatar">
+                   
+                    <img src="{{ auth()->user()->profile_picture
+                            ? Storage::url(auth()->user()->profile_picture)
+                            : asset('img/avatar/avatar_03.svg') }}"
+                    alt="{{ auth()->user()->name }}"
+                    class="user-avatar">
                         <span class="user-name">Mi Cuenta</span>
                         <i class="fas fa-chevron-down"></i>
                     </button>
