@@ -36,14 +36,15 @@ class DocumentController extends Controller
     // Metodo para obtener los datos del apiario
     private function getApiaryData(Apiario $apiario)
     {
+        $comuna = $apiario->comuna;
         return [
             'apiary_name' => $apiario->nombre,
             'apiary_number' => '#00' . $apiario->id,
             'activity' => $apiario->objetivo_produccion ?? $apiario->actividad ?? '',
-            'installation_date' => $apiario->fecha_instalacion ? $apiario->fecha_instalacion->format('Y-m-d') : '',
-            'utm_x' => $apiario->utm_x ?? '',
-            'utm_y' => $apiario->utm_y ?? '',
-            'utm_huso' => $apiario->utm_huso ?? '19',
+            'installation_date' => $apiario->temporada_produccion ?? '',
+            'utm_x'             => optional($comuna)->utm_x    ?? '',
+            'utm_y'             => optional($comuna)->utm_y    ?? '',
+            'utm_huso'          => optional($comuna)->utm_huso ?? '',
             'latitude' => $apiario->latitud ?? '',
             'longitude' => $apiario->longitud ?? '',
             'nomadic' => $apiario->trashumante ? 'Sí' : 'No',
@@ -61,52 +62,15 @@ class DocumentController extends Controller
         $visitas = Visita::whereHas('apiario', function ($query) use ($id) {
             $query->where('id', $id);
         })->get();
-          // Coordenadas de ejemplo
-                $latitude = $apiario->latitud;
-                $longitude = $apiario->longitud;
+          
+        $beekeeperData = $this->getBeekeeperData();
+        $apiaryData    = $this->getApiaryData($apiario);
 
-                /*
-                // Inicializar Proj4php
-                $proj4 = new Proj4php();
-
-                // Definir sistemas de coordenadas
-                $projWGS84 = new Proj('EPSG:4326', $proj4); // Sistema WGS84
-                $projUTM = new Proj('EPSG:32719', $proj4); // Sistema UTM Zona 19 Sur (para Chile)
-
-                // Convertir coordenadas
-                $pointSource = new Point($longitude, $latitude, $projWGS84); // Longitud, Latitud
-                $pointDest = $proj4->transform($projUTM, $pointSource);
-
-                // Extraer coordenadas UTM
-                $utm_x = $pointDest->x;
-                $utm_y = $pointDest->y;
-                $utm_huso = 19; // Huso UTM según longitud (Chile está en 19S o 18S)
-                */
-        $data = [
-            'last_name' => $user->last_name,
-            'nombre_usuario' => $user->name,
-            'address' => $user->dirección,
-            'rut' => $user->rut,
-            'phone' => $user->telefono,
-            'region' => $user->region ? $user->region->nombre : 'No especificada',
-            'commune' => $user->comuna ? $user->comuna->nombre : 'No especificada',
-            'email' => $user->email,
-            'legal_representative' => $user->representante_legal,
-            'registration_number' => $user->numero_registro,
-            'apiary_name' => $apiario->nombre,
-            'apiary_number' => '#00'.$apiario->id,
-            'activity' => $apiario->objetivo_produccion,
-            'installation_date' => $apiario->temporada_produccion,
-            'utm_x' => '-', // o null
-            'utm_y' => '-',
-            'utm_huso' => '-',
-            'latitude' => $latitude,
-            'longitude' => $longitude,
-            'nomadic' => 'No',
-            'hive_count' => $apiario->num_colmenas,
-            'visits' => $visitas,
-            'foto' => $apiario->foto,
-        ];
+        $data = array_merge(
+            $beekeeperData,
+            $apiaryData,
+            ['visits' => $visitas]
+        );
         // Renderizar la vista para el PDF
         $pdf = Pdf::loadView('documents.apiary-detail', compact('data'));
         // Descargar el PDF
@@ -163,53 +127,5 @@ class DocumentController extends Controller
 
         $pdf = Pdf::loadView('documents.medicaments-record', compact('data'));
         return $pdf->download('Medicamentos_Apiario_' . $apiario->nombre . '.pdf');
-    }
-
-
-    private function getApiarioData($apiario)
-    {
-        $user = Auth::user();
-        $visitas = Visita::where('apiario_id', $apiario->id)->get();
-
-        $latitude = $apiario->latitud;
-        $longitude = $apiario->longitud;
-
-        /*
-                $proj4 = new Proj4php();
-        $projWGS84 = new Proj('EPSG:4326', $proj4);
-        $projUTM = new Proj('EPSG:32719', $proj4);
-
-        $pointSource = new Point($longitude, $latitude, $projWGS84);
-        $pointDest = $proj4->transform($projUTM, $pointSource);
-
-        $utm_x = $pointDest->x;
-        $utm_y = $pointDest->y;
-        $utm_huso = 19;
-
-        */
-        return [
-            'last_name' => $user->last_name,
-            'nombre_usuario' => $user->name,
-            'address' => $user->dirección,
-            'rut' => $user->rut,
-            'phone' => $user->telefono,
-            'region' => $user->region ? $user->region->nombre : 'No especificada',
-            'commune' => $user->comuna ? $user->comuna->nombre : 'No especificada',
-            'email' => $user->email,
-            'legal_representative' => $user->representante_legal,
-            'registration_number' => $user->numero_registro,
-            'apiary_name' => $apiario->nombre,
-            'apiary_number' => '#00'.$apiario->id,
-            'activity' => $apiario->objetivo_produccion,
-            'installation_date' => $apiario->temporada_produccion,
-            'utm_x' => '-', // o null
-            'utm_y' => '-',
-            'utm_huso' => '-',
-            'latitude' => $latitude,
-            'longitude' => $longitude,
-            'nomadic' => 'No',
-            'hive_count' => $apiario->num_colmenas,
-            'visits' => $visitas,
-        ];
     }
 }

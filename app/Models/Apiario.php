@@ -38,17 +38,14 @@ class Apiario extends Model
     }
 
     public function visitas()
-{
-    return $this->hasMany(Visita::class);
-}
-public function comuna()
-{
-    return $this->belongsTo(Comuna::class);
-}
+    {
+        return $this->hasMany(Visita::class);
+    }
+    
+    public function comuna()
+    {
+        return $this->belongsTo(Comuna::class);
+    }
 
 
-
-    /**
-     * Otros métodos adicionales si es necesario
-     */
 }

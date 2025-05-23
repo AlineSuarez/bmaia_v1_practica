@@ -94,6 +94,7 @@
             <th>Huso UTM</th>
             <td>{{ $data['utm_huso'] }}</td>
         </tr>
+
         <tr>
             <th>Trashumante</th>
             <td>{{ $data['nomadic'] }}</td>
