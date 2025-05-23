@@ -252,11 +252,9 @@
     </div>
 
     <script>
-        // Variables globales
         let activeDropdown = null;
         let activeMenu = null;
 
-        // Filtrar apiarios por nombre
         function filterApiaries() {
             const searchInput = document.getElementById('apiarySearch');
             const clearButton = document.querySelector('.clear-search');
@@ -266,12 +264,10 @@
             const resultsCount = document.getElementById('resultsCount');
             const container = document.getElementById('apiariesContainer');
 
-            // Mostrar/ocultar botón de limpiar
             clearButton.style.display = filter ? 'flex' : 'none';
 
             let count = 0;
 
-            // Aplicar filtro
             apiaryCards.forEach(card => {
                 const apiaryName = card.getAttribute('data-name');
                 if (apiaryName.includes(filter)) {

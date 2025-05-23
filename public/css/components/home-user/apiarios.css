@@ -31,28 +31,6 @@
     --table-border-header: rgba(255, 255, 255, 0.2);
 }
 
-body {
-    font-family: var(--font-family);
-    background-color: var(--background-color);
-    color: var(--text-color);
-    line-height: 1.6;
-    background-image: repeating-linear-gradient(
-            60deg,
-            var(--honeycomb-color) 0,
-            var(--honeycomb-accent) 1px,
-            transparent 0,
-            transparent 40px
-        ),
-        repeating-linear-gradient(
-            120deg,
-            var(--honeycomb-color) 0,
-            var(--honeycomb-accent) 1px,
-            transparent 0,
-            transparent 40px
-        );
-    background-attachment: fixed;
-}
-
 .apiarios-container {
     background: var(--card-bg);
     border-radius: var(--radius-lg);

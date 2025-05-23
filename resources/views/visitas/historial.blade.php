@@ -1,149 +1,473 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container">
-    <h2>Historial de Visitas del Apiario: {{ $apiario->nombre }}</h2>
-    <p><strong>Ubicación:</strong> {{ $apiario->ubicacion }}</p>
+<head>
+    <link rel="stylesheet" href="{{ asset('css/components/home-user/record.css') }}">
+</head>
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-12">
+                    <!-- Header Section -->
+                    <div class="header-section mb-4">
+                        <div class="d-flex align-items-center justify-content-between mb-3">
+                            <div class="d-flex align-items-center">
+                                <div class="header-icon me-3">
+                                    <i class="fas fa-clipboard-list"></i>
+                                </div>
+                                <div>
+                                    <h2 class="page-title mb-1">Historial de Visitas</h2>
+                                    <p class="subtitle mb-0">{{ $apiario->nombre }}</p>
+                                </div>
+                            </div>
+                            <!-- Statistics Cards -->
+                            <div class="stats-container d-none d-lg-flex">
+                                <div class="stat-card">
+                                    <div class="stat-number">{{ $apiario->visitas->count() }}</div>
+                                    <div class="stat-label">Total Visitas</div>
+                                </div>
+                                <div class="stat-card">
+                                    <div class="stat-number">{{ $apiario->visitas->where('tipo_visita', 'Visita General')->count() }}</div>
+                                    <div class="stat-label">Generales</div>
+                                </div>
+                                <div class="stat-card">
+                                    <div class="stat-number">{{ $apiario->visitas->where('tipo_visita', 'Inspección de Visita')->count() }}</div>
+                                    <div class="stat-label">Inspecciones</div>
+                                </div>
+                                <div class="stat-card">
+                                    <div class="stat-number">{{ $apiario->visitas->where('tipo_visita', 'Uso de Medicamentos')->count() }}</div>
+                                    <div class="stat-label">Medicamentos</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
-    @if($apiario->visitas->isEmpty())
-        <p class="alert alert-warning">No hay visitas registradas para este apiario.</p>
-    @else
-        <ul class="nav nav-tabs" id="visitTabs" role="tablist">
-            <li class="nav-item" role="presentation">
-                <button class="nav-link active" id="general-tab" data-bs-toggle="tab" data-bs-target="#general" type="button" role="tab" aria-controls="general" aria-selected="true">Visitas Generales</button>
-            </li>
-            <li class="nav-item" role="presentation">
-                <button class="nav-link" id="inspeccion-tab" data-bs-toggle="tab" data-bs-target="#inspeccion" type="button" role="tab" aria-controls="inspeccion" aria-selected="false">Inspecciones</button>
-            </li>
-            <li class="nav-item" role="presentation">
-                <button class="nav-link" id="medicamentos-tab" data-bs-toggle="tab" data-bs-target="#medicamentos" type="button" role="tab" aria-controls="medicamentos" aria-selected="false">Uso de Medicamentos</button>
-            </li>
-        </ul>
+                    @if($apiario->visitas->isEmpty())
+                        <div class="empty-state">
+                            <div class="empty-icon">
+                                <i class="fas fa-inbox"></i>
+                            </div>
+                            <h4>No hay visitas registradas</h4>
+                            <p>Este apiario aún no tiene visitas registradas en el sistema.</p>
+                            <a href="{{ route('visitas') }}" class="btn btn-primary mt-3">
+                                <i class="fas fa-plus me-2"></i>Registrar Primera Visita
+                            </a>
+                        </div>
+                    @else
+                        <!-- Filter and Search Bar -->
+                        <div class="filter-section mb-4">
+                            <div class="row align-items-center">
+                                <div class="col-md-6 col-lg-4">
+                                    <div class="search-box">
+                                        <i class="fas fa-search"></i>
+                                        <input type="text" id="searchInput" placeholder="Buscar en todas las visitas..." class="form-control">
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-lg-4">
+                                    <div class="date-filter">
+                                        <select id="dateFilter" class="form-select">
+                                            <option value="">Todas las fechas</option>
+                                            <option value="last-week">Última semana</option>
+                                            <option value="last-month">Último mes</option>
+                                            <option value="last-3-months">Últimos 3 meses</option>
+                                            <option value="last-year">Último año</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
 
-        <div class="tab-content mt-3" id="visitTabsContent">
-            <div class="tab-pane fade show active" id="general" role="tabpanel" aria-labelledby="general-tab">
-                @if($apiario->visitas->where('tipo_visita', 'Visita General')->isEmpty())
-                    <p>No hay visitas generales registradas.</p>
-                @else
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th>Fecha</th>
-                                <th>Nombres</th>
-                                <th>Apellidos</th>
-                                <th>RUT</th>
-                                <th>Motivo</th>
-                                <th>Teléfono</th>
-                                <th>Firma</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach($apiario->visitas->where('tipo_visita', 'Visita General') as $visita)
-                                <tr>
-                                    <td>{{ \Carbon\Carbon::parse($visita->fecha_visita)->format('d/m/Y') }}</td>
-                                    <td>{{ $visita->nombres }}</td>
-                                    <td>{{ $visita->apellidos }}</td>
-                                    <td>{{ $visita->rut }}</td>
-                                    <td>{{ $visita->motivo }}</td>
-                                    <td>{{ $visita->telefono }}</td>
-                                    <td>{{ $visita->firma }}</td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                @endif
-            </div>
+                        <!-- Mobile Statistics Cards -->
+                        <div class="mobile-stats d-lg-none mb-4">
+                            <div class="row">
+                                <div class="col-3">
+                                    <div class="mobile-stat-card">
+                                        <div class="mobile-stat-number">{{ $apiario->visitas->count() }}</div>
+                                        <div class="mobile-stat-label">Total</div>
+                                    </div>
+                                </div>
+                                <div class="col-3">
+                                    <div class="mobile-stat-card">
+                                        <div class="mobile-stat-number">{{ $apiario->visitas->where('tipo_visita', 'Visita General')->count() }}</div>
+                                        <div class="mobile-stat-label">General</div>
+                                    </div>
+                                </div>
+                                <div class="col-3">
+                                    <div class="mobile-stat-card">
+                                        <div class="mobile-stat-number">{{ $apiario->visitas->where('tipo_visita', 'Inspección de Visita')->count() }}</div>
+                                        <div class="mobile-stat-label">Inspect.</div>
+                                    </div>
+                                </div>
+                                <div class="col-3">
+                                    <div class="mobile-stat-card">
+                                        <div class="mobile-stat-number">{{ $apiario->visitas->where('tipo_visita', 'Uso de Medicamentos')->count() }}</div>
+                                        <div class="mobile-stat-label">Medic.</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
 
-            <div class="tab-pane fade" id="inspeccion" role="tabpanel" aria-labelledby="inspeccion-tab">
-                @if($apiario->visitas->where('tipo_visita', 'Inspección de Visita')->isEmpty())
-                    <p>No hay inspecciones registradas.</p>
-                @else
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th>Fecha</th>
-                                <th>N° Colmenas Totales</th>
-                                <th>N° Colmenas Activas</th>
-                                <th>N° Colmenas Enfermas</th>
-                                <th>N° Colmenas Muertas</th>
-                                <th>Colmenas Inspeccionadas</th>
-                                <th>Flujo Néctar/Polen</th>
-                                <th>Revisor</th>
-                                <th>Sospecha Enfermedad</th>
-                                <th>Observaciones</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach($apiario->visitas->where('tipo_visita', 'Inspección de Visita') as $visita)
-                                <tr>
-                                    <td>{{ \Carbon\Carbon::parse($visita->fecha_visita)->format('d/m/Y') }}</td>
-                                    <td>{{ $visita->num_colmenas_totales ?? 'N/A' }}</td>
-                                    <td>{{ $visita->num_colmenas_activas ?? 'N/A' }}</td>
-                                    <td>{{ $visita->num_colmenas_enfermas ?? 'N/A' }}</td>
-                                    <td>{{ $visita->num_colmenas_muertas ?? 'N/A' }}</td>
-                                    <td>{{ $visita->num_colmenas_inspeccionadas ?? 'N/A' }}</td>
-                                    <td>
-                                        {{ $visita->flujo_nectar_polen ?? 'N/A' }} <!-- manera 1 de mostrar flujo po -->
+                        <!-- Custom Tabs -->
+                        <div class="custom-tabs-container mb-4">
+                            <ul class="custom-nav-tabs" id="visitTabs" role="tablist">
+                                <li class="custom-nav-item" role="presentation">
+                                    <button class="custom-nav-link active" id="general-tab" data-bs-toggle="tab" data-bs-target="#general" type="button" role="tab">
+                                        <i class="fas fa-users me-2"></i>
+                                        <span class="tab-text">Visitas Generales</span>
+                                        <span class="tab-badge">{{ $apiario->visitas->where('tipo_visita', 'Visita General')->count() }}</span>
+                                    </button>
+                                </li>
+                                <li class="custom-nav-item" role="presentation">
+                                    <button class="custom-nav-link" id="inspeccion-tab" data-bs-toggle="tab" data-bs-target="#inspeccion" type="button" role="tab">
+                                        <i class="fas fa-search me-2"></i>
+                                        <span class="tab-text">Inspecciones</span>
+                                        <span class="tab-badge">{{ $apiario->visitas->where('tipo_visita', 'Inspección de Visita')->count() }}</span>
+                                    </button>
+                                </li>
+                                <li class="custom-nav-item" role="presentation">
+                                    <button class="custom-nav-link" id="medicamentos-tab" data-bs-toggle="tab" data-bs-target="#medicamentos" type="button" role="tab">
+                                        <i class="fas fa-pills me-2"></i>
+                                        <span class="tab-text">Medicamentos</span>
+                                        <span class="tab-badge">{{ $apiario->visitas->where('tipo_visita', 'Uso de Medicamentos')->count() }}</span>
+                                    </button>
+                                </li>
+                            </ul>
+                        </div>
 
-                                    </td>
-                                    <td>{{ $visita->nombre_revisor_apiario ?? 'N/A' }}</td>
-                                    <td>{{ $visita->sospecha_enfermedad ?? 'N/A' }}</td>
-                                    <td>{{ $visita->observaciones ?? 'N/A' }}</td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                @endif
-            </div>
+                        <div class="tab-content custom-tab-content" id="visitTabsContent">
+                            <!-- Visitas Generales Tab -->
+                            <div class="tab-pane fade show active" id="general" role="tabpanel">
+                                @if($apiario->visitas->where('tipo_visita', 'Visita General')->isEmpty())
+                                    <div class="no-data-message">
+                                        <i class="fas fa-info-circle me-2"></i>
+                                        No hay visitas generales registradas.
+                                    </div>
+                                @else
+                                    <div class="table-container">
+                                        <div class="table-header">
+                                            <h5><i class="fas fa-users me-2"></i>Visitas Generales ({{ $apiario->visitas->where('tipo_visita', 'Visita General')->count() }} registros)</h5>
+                                            <small class="text-muted">Registro de todas las visitas generales al apiario</small>
+                                        </div>
+                                        <div class="table-responsive">
+                                            <table class="custom-table" id="generalTable">
+                                                <thead>
+                                                    <tr>
+                                                        <th><i class="fas fa-calendar me-1"></i> Fecha</th>
+                                                        <th><i class="fas fa-user me-1"></i> Nombres</th>
+                                                        <th><i class="fas fa-user me-1"></i> Apellidos</th>
+                                                        <th><i class="fas fa-id-card me-1"></i> RUT</th>
+                                                        <th><i class="fas fa-comment me-1"></i> Motivo</th>
+                                                        <th><i class="fas fa-phone me-1"></i> Teléfono</th>
+                                                        <th><i class="fas fa-signature me-1"></i> Firma</th>
+                                                        <th><i class="fas fa-clock me-1"></i> Duración</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @foreach($apiario->visitas->where('tipo_visita', 'Visita General')->sortByDesc('fecha_visita') as $visita)
+                                                        <tr class="table-row" data-date="{{ $visita->fecha_visita }}">
+                                                            <td class="date-cell">
+                                                                <div class="date-container">
+                                                                    <span class="date-main">{{ \Carbon\Carbon::parse($visita->fecha_visita)->format('d/m/Y') }}</span>
+                                                                </div>
+                                                            </td>
+                                                            <td class="visitor-name">{{ $visita->nombres }}</td>
+                                                            <td class="visitor-surname">{{ $visita->apellidos }}</td>
+                                                            <td class="rut-cell">{{ $visita->rut }}</td>
+                                                            <td class="motivo-cell">
+                                                                <span class="motivo-text">{{ $visita->motivo }}</span>
+                                                            </td>
+                                                            <td class="phone-cell">{{ $visita->telefono }}</td>
+                                                            <td class="signature-cell">{{ $visita->firma }}</td>
+                                                            <td class="duration-cell">
+                                                                <span class="duration-badge">
+                                                                    {{ $visita->duracion_visita ?? 'No especificado' }}
+                                                                </span>
+                                                            </td>
+                                                        </tr>
+                                                    @endforeach
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                @endif
+                            </div>
 
-            <div class="tab-pane fade" id="medicamentos" role="tabpanel" aria-labelledby="medicamentos-tab">
-                @if($apiario->visitas->where('tipo_visita', 'Uso de Medicamentos')->isEmpty())
-                    <p>No hay registros de uso de medicamentos.</p>
-                @else
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th>Fecha</th>
-                                <th>N° Colmenas Tratadas</th>
-                                <th>Motivo del Tratamiento</th>
-                                <th>Nombre Comercial</th>
-                                <th>Principio Activo</th>
-                                <th>Período de Resguardo</th>
-                                <th>Responsable</th>
-                                <th>Observaciones</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach($apiario->visitas->where('tipo_visita', 'Uso de Medicamentos') as $visita)
-                                <tr>
-                                    <td>{{ \Carbon\Carbon::parse($visita->fecha_visita)->format('d/m/Y') }}</td>
-                                    <td>{{ $visita->num_colmenas_tratadas ?? 'N/A' }}</td>
-                                    <td>{{ $visita->motivo_tratamiento ?? 'N/A' }}</td>
-                                    <td>{{ $visita->nombre_comercial_medicamento ?? 'N/A' }}</td>
-                                    <td>{{ $visita->principio_activo_medicamento ?? 'N/A' }}</td>
-                                    <td>{{ $visita->periodo_resguardo ?? 'N/A' }}</td>
-                                    <td>{{ $visita->responsable ?? 'N/A' }}</td>
-                                    <td>{{ $visita->observaciones ?? 'N/A' }}</td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                @endif
+                            <!-- Inspecciones Tab -->
+                            <div class="tab-pane fade" id="inspeccion" role="tabpanel">
+                                @if($apiario->visitas->where('tipo_visita', 'Inspección de Visita')->isEmpty())
+                                    <div class="no-data-message">
+                                        <i class="fas fa-info-circle me-2"></i>
+                                        No hay inspecciones registradas.
+                                    </div>
+                                @else
+                                    <div class="table-container">
+                                        <div class="table-header">
+                                            <h5><i class="fas fa-search me-2"></i>Inspecciones ({{ $apiario->visitas->where('tipo_visita', 'Inspección de Visita')->count() }} registros)</h5>
+                                            <small class="text-muted">Control y seguimiento del estado de las colmenas</small>
+                                        </div>
+                                        <div class="table-responsive">
+                                            <table class="custom-table inspection-table" id="inspectionTable">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Fecha</th>
+                                                        <th>Totales</th>
+                                                        <th>Activas</th>
+                                                        <th>Enfermas</th>
+                                                        <th>Muertas</th>
+                                                        <th>Inspeccionadas</th>
+                                                        <th>Flujo N/P</th>
+                                                        <th>Revisor</th>
+                                                        <th>Sospecha</th>
+                                                        <th>Observaciones</th>
+                                                        <th>Estado</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @foreach($apiario->visitas->where('tipo_visita', 'Inspección de Visita')->sortByDesc('fecha_visita') as $visita)
+                                                        <tr class="table-row" data-date="{{ $visita->fecha_visita }}">
+                                                            <td class="date-cell">
+                                                                <div class="date-container">
+                                                                    <span class="date-main">{{ \Carbon\Carbon::parse($visita->fecha_visita)->format('d/m/Y') }}</span>
+                                                                </div>
+                                                            </td>
+                                                            <td class="number-cell">{{ $visita->num_colmenas_totales ?? 'N/A' }}</td>
+                                                            <td class="number-cell active">{{ $visita->num_colmenas_activas ?? 'N/A' }}</td>
+                                                            <td class="number-cell sick">{{ $visita->num_colmenas_enfermas ?? 'N/A' }}</td>
+                                                            <td class="number-cell dead">{{ $visita->num_colmenas_muertas ?? 'N/A' }}</td>
+                                                            <td class="number-cell">{{ $visita->num_colmenas_inspeccionadas ?? 'N/A' }}</td>
+                                                            <td class="flujo-cell">
+                                                                <span class="flujo-badge flujo-{{ strtolower(str_replace(' ', '-', $visita->flujo_nectar_polen ?? 'normal')) }}">
+                                                                    {{ $visita->flujo_nectar_polen ?? 'N/A' }}
+                                                                </span>
+                                                            </td>
+                                                            <td class="revisor-cell">{{ $visita->nombre_revisor_apiario ?? 'N/A' }}</td>
+                                                            <td class="suspicion-cell">
+                                                                @if($visita->sospecha_enfermedad && $visita->sospecha_enfermedad != 'N/A')
+                                                                    <span class="suspicion-badge suspicion-yes">{{ $visita->sospecha_enfermedad }}</span>
+                                                                @else
+                                                                    <span class="suspicion-badge suspicion-no">Sin sospecha</span>
+                                                                @endif
+                                                            </td>
+                                                            <td class="observations-cell">{{ $visita->observaciones ?? 'N/A' }}</td>
+                                                            <td class="status-cell">
+                                                                @php
+                $totalColmenas = $visita->num_colmenas_totales ?? 0;
+                $colmenasEnfermas = $visita->num_colmenas_enfermas ?? 0;
+                $colmenasMuertas = $visita->num_colmenas_muertas ?? 0;
+
+                if ($colmenasEnfermas > 0 || $colmenasMuertas > 0) {
+                    $status = 'Requiere Atención';
+                    $statusClass = 'warning';
+                } elseif ($totalColmenas > 0) {
+                    $status = 'Saludable';
+                    $statusClass = 'success';
+                } else {
+                    $status = 'Sin Datos';
+                    $statusClass = 'secondary';
+                }
+                                                                @endphp
+                                                                <span class="status-badge status-{{ $statusClass }}">{{ $status }}</span>
+                                                            </td>
+                                                        </tr>
+                                                    @endforeach
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                @endif
+                            </div>
+
+                            <!-- Medicamentos Tab -->
+                            <div class="tab-pane fade" id="medicamentos" role="tabpanel">
+                                @if($apiario->visitas->where('tipo_visita', 'Uso de Medicamentos')->isEmpty())
+                                    <div class="no-data-message">
+                                        <i class="fas fa-info-circle me-2"></i>
+                                        No hay registros de uso de medicamentos.
+                                    </div>
+                                @else
+                                    <div class="table-container">
+                                        <div class="table-header">
+                                            <h5><i class="fas fa-pills me-2"></i>Uso de Medicamentos ({{ $apiario->visitas->where('tipo_visita', 'Uso de Medicamentos')->count() }} registros)</h5>
+                                            <small class="text-muted">Historial de tratamientos y medicamentos aplicados</small>
+                                        </div>
+                                        <div class="table-responsive">
+                                            <table class="custom-table medication-table" id="medicationTable">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Fecha</th>
+                                                        <th>Colmenas Tratadas</th>
+                                                        <th>Motivo</th>
+                                                        <th>Nombre Comercial</th>
+                                                        <th>Principio Activo</th>
+                                                        <th>Período Resguardo</th>
+                                                        <th>Responsable</th>
+                                                        <th>Observaciones</th>
+                                                        <th>Estado</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @foreach($apiario->visitas->where('tipo_visita', 'Uso de Medicamentos')->sortByDesc('fecha_visita') as $visita)
+                                                        <tr class="table-row" data-date="{{ $visita->fecha_visita }}">
+                                                            <td class="date-cell">
+                                                                <div class="date-container">
+                                                                    <span class="date-main">{{ \Carbon\Carbon::parse($visita->fecha_visita)->format('d/m/Y') }}</span>
+                                                                </div>
+                                                            </td>
+                                                            <td class="number-cell">{{ $visita->num_colmenas_tratadas ?? 'N/A' }}</td>
+                                                            <td class="motivo-treatment">{{ $visita->motivo_tratamiento ?? 'N/A' }}</td>
+                                                            <td class="medication-name">{{ $visita->nombre_comercial_medicamento ?? 'N/A' }}</td>
+                                                            <td class="active-ingredient">{{ $visita->principio_activo_medicamento ?? 'N/A' }}</td>
+                                                            <td class="period-cell">
+                                                                @if($visita->periodo_resguardo && $visita->periodo_resguardo != 'N/A')
+                                                                    <span class="period-badge">{{ $visita->periodo_resguardo }}</span>
+                                                                @else
+                                                                    <span class="period-badge period-na">No especificado</span>
+                                                                @endif
+                                                            </td>
+                                                            <td class="responsible-cell">{{ $visita->responsable ?? 'N/A' }}</td>
+                                                            <td class="observations-cell">{{ $visita->observaciones ?? 'N/A' }}</td>
+                                                            <td class="status-cell">
+                                                                @php
+                $fechaTratamiento = \Carbon\Carbon::parse($visita->fecha_visita);
+                $periodoResguardo = $visita->periodo_resguardo ?? '';
+
+                if (preg_match('/(\d+)/', $periodoResguardo, $matches)) {
+                    $dias = (int) $matches[1];
+                    $fechaFin = $fechaTratamiento->copy()->addDays($dias);
+
+                    if (now() < $fechaFin) {
+                        $status = 'En Resguardo';
+                        $statusClass = 'danger';
+                    } else {
+                        $status = 'Finalizado';
+                        $statusClass = 'success';
+                    }
+                } else {
+                    $status = 'Sin Periodo';
+                    $statusClass = 'secondary';
+                }
+                                                                @endphp
+                                                                <span class="status-badge status-{{ $statusClass }}">{{ $status }}</span>
+                                                            </td>
+                                                        </tr>
+                                                    @endforeach
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                @endif
+                            </div>
+                        </div>
+                    @endif
+
+                    <div class="action-section mt-4">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <a href="{{ route('visitas') }}" class="custom-btn-back">
+                                <i class="fas fa-arrow-left me-2"></i>
+                                Volver a Mis Apiarios
+                            </a>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
-    @endif
-
-    <a href="{{ route('visitas') }}" class="btn btn-secondary mt-3">Volver a Mis Apiarios</a>
-</div>
 @endsection
 
 @section('scripts')
     <script>
-        // Activar la pestaña por defecto (Visitas Generales)
-        var firstTabEl = document.querySelector('#general-tab')
-        if (firstTabEl) {
-            var tab = new bootstrap.Tab(firstTabEl);
-            tab.show();
-        }
+        document.addEventListener('DOMContentLoaded', function () {
+            // Inicializar tabs de Bootstrap
+            var triggerTabList = [].slice.call(document.querySelectorAll('#visitTabs button'))
+            triggerTabList.forEach(function (triggerEl) {
+                var tabTrigger = new bootstrap.Tab(triggerEl)
+
+                triggerEl.addEventListener('click', function (event) {
+                    event.preventDefault()
+                    tabTrigger.show()
+                })
+            })
+
+            // Activar la primera pestaña
+            var firstTab = document.querySelector('#general-tab');
+            if (firstTab) {
+                var tab = new bootstrap.Tab(firstTab);
+                tab.show();
+            }
+
+            // Función de búsqueda
+            const searchInput = document.getElementById('searchInput');
+            if (searchInput) {
+                searchInput.addEventListener('input', function() {
+                    const searchTerm = this.value.toLowerCase();
+                    const tables = document.querySelectorAll('.custom-table tbody');
+                    
+                    tables.forEach(table => {
+                        const rows = table.querySelectorAll('tr');
+                        rows.forEach(row => {
+                            const text = row.textContent.toLowerCase();
+                            if (text.includes(searchTerm)) {
+                                row.style.display = '';
+                            } else {
+                                row.style.display = 'none';
+                            }
+                        });
+                    });
+                });
+            }
+
+            // Filtro por fecha
+            const dateFilter = document.getElementById('dateFilter');
+            if (dateFilter) {
+                dateFilter.addEventListener('change', function() {
+                    const filterValue = this.value;
+                    const rows = document.querySelectorAll('.table-row');
+                    const now = new Date();
+                    
+                    rows.forEach(row => {
+                        const dateStr = row.getAttribute('data-date');
+                        const rowDate = new Date(dateStr);
+                        let show = true;
+                        
+                        switch(filterValue) {
+                            case 'last-week':
+                                const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+                                show = rowDate >= weekAgo;
+                                break;
+                            case 'last-month':
+                                const monthAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+                                show = rowDate >= monthAgo;
+                                break;
+                            case 'last-3-months':
+                                const threeMonthsAgo = new Date(now.getTime() - 90 * 24 * 60 * 60 * 1000);
+                                show = rowDate >= threeMonthsAgo;
+                                break;
+                            case 'last-year':
+                                const yearAgo = new Date(now.getTime() - 365 * 24 * 60 * 60 * 1000);
+                                show = rowDate >= yearAgo;
+                                break;
+                            default:
+                                show = true;
+                        }
+                        
+                        row.style.display = show ? '' : 'none';
+                    });
+                });
+            }
+
+            // Animaciones suaves al cambiar tabs
+            document.querySelectorAll('#visitTabs button').forEach(function (button) {
+                button.addEventListener('shown.bs.tab', function (event) {
+                    var target = document.querySelector(event.target.getAttribute('data-bs-target'));
+                    if (target) {
+                        target.style.opacity = '0';
+                        target.style.transform = 'translateY(20px)';
+
+                        setTimeout(function () {
+                            target.style.opacity = '1';
+                            target.style.transform = 'translateY(0)';
+                        }, 50);
+                    }
+                });
+            });
+        });
     </script>
 @endsection

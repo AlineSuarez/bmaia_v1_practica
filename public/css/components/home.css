@@ -251,7 +251,6 @@ body {
     );
     -webkit-background-clip: text;
     background-clip: text;
-    color: transparent;
     animation: text-reveal 1.8s cubic-bezier(0.19, 1, 0.22, 1) forwards;
     position: relative;
     line-height: 1.1;
@@ -3672,19 +3671,6 @@ body {
     object-fit: fill;
 }
 
-.phone-notch {
-    position: absolute;
-    top: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 150px;
-    height: 30px;
-    background-color: #1a1a1a;
-    border-bottom-left-radius: 15px;
-    border-bottom-right-radius: 15px;
-    z-index: 3;
-}
-
 .phone-button {
     position: absolute;
     bottom: 20px;
@@ -5999,7 +5985,6 @@ footer::before {
     padding: 35px 0;
     border-top: 1px solid rgba(252, 211, 77, 0.2);
     z-index: 1;
-    background-color: rgba(255, 251, 235, 0.7);
     width: 100%;
 }
 

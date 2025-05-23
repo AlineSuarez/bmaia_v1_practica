@@ -1526,7 +1526,6 @@
   </div>
 
   <div class="footer-bottom">
-    <div class="footer-wave"></div>
 
     <div class="footer-bottom-content">
       <p class="copyright">&copy; {{ date(format: 'Y') }} MaiA. Todos los derechos reservados.</p>

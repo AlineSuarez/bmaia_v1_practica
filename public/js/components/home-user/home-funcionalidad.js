@@ -1,8 +1,8 @@
-document.addEventListener("DOMContentLoaded", function () {
-    const userDropdownBtn = document.getElementById("userDropdownBtn");
-    const userDropdownMenu = document.getElementById("userDropdownMenu");
-    const navbar = document.querySelector(".standard-navbar");
-    const userAvatar = document.querySelector(".user-avatar");
+document.addEventListener("DOMContentLoaded", () => {
+    const userDropdownBtn = document.getElementById("apiarioUserDropdownBtn");
+    const userDropdownMenu = document.getElementById("apiarioUserDropdownMenu");
+    const navbar = document.querySelector(".apiario-navbar");
+    const userAvatar = document.querySelector(".apiario-user-avatar");
 
     let lastScrollTop = 0;
     let isDropdownOpen = false;
@@ -10,9 +10,11 @@ document.addEventListener("DOMContentLoaded", function () {
     function wrapDropdownContent() {
         if (!userDropdownMenu) return;
 
-        if (!userDropdownMenu.querySelector(".dropdown-menu-container")) {
+        if (
+            !userDropdownMenu.querySelector(".apiario-dropdown-menu-container")
+        ) {
             const container = document.createElement("div");
-            container.className = "dropdown-menu-container";
+            container.className = "apiario-dropdown-menu-container";
             while (userDropdownMenu.firstChild) {
                 container.appendChild(userDropdownMenu.firstChild);
             }
@@ -24,13 +26,15 @@ document.addEventListener("DOMContentLoaded", function () {
     function wrapAvatar() {
         if (!userDropdownBtn) return;
 
-        const avatar = userDropdownBtn.querySelector(".user-avatar");
+        const avatar = userDropdownBtn.querySelector(".apiario-user-avatar");
         if (
             avatar &&
-            !avatar.parentElement.classList.contains("user-avatar-container")
+            !avatar.parentElement.classList.contains(
+                "apiario-user-avatar-container"
+            )
         ) {
             const container = document.createElement("div");
-            container.className = "user-avatar-container";
+            container.className = "apiario-user-avatar-container";
 
             avatar.parentNode.insertBefore(container, avatar);
             container.appendChild(avatar);
@@ -52,7 +56,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
             createHoneycombParticles(15, userDropdownBtn);
 
-            const items = userDropdownMenu.querySelectorAll(".dropdown-item");
+            const items = userDropdownMenu.querySelectorAll(
+                ".apiario-dropdown-item"
+            );
             items.forEach((item, index) => {
                 item.style.opacity = "0";
                 item.style.transform = "translateX(-10px)";
@@ -68,7 +74,9 @@ document.addEventListener("DOMContentLoaded", function () {
         } else {
             createHoneycombParticles(10, userDropdownBtn);
 
-            const items = userDropdownMenu.querySelectorAll(".dropdown-item");
+            const items = userDropdownMenu.querySelectorAll(
+                ".apiario-dropdown-item"
+            );
             items.forEach((item) => {
                 item.style.opacity = "0";
                 item.style.transform = "translateX(10px)";
@@ -86,11 +94,13 @@ document.addEventListener("DOMContentLoaded", function () {
     function addRippleEffect(e) {
         if (!userDropdownBtn) return;
 
-        const oldRipples = userDropdownBtn.querySelectorAll(".ripple-effect");
+        const oldRipples = userDropdownBtn.querySelectorAll(
+            ".apiario-ripple-effect"
+        );
         oldRipples.forEach((ripple) => ripple.remove());
 
         const ripple = document.createElement("span");
-        ripple.classList.add("ripple-effect");
+        ripple.classList.add("apiario-ripple-effect");
         userDropdownBtn.appendChild(ripple);
 
         const rect = userDropdownBtn.getBoundingClientRect();
@@ -137,7 +147,9 @@ document.addEventListener("DOMContentLoaded", function () {
             isDropdownOpen = false;
             userDropdownBtn.setAttribute("aria-expanded", "false");
 
-            const items = userDropdownMenu.querySelectorAll(".dropdown-item");
+            const items = userDropdownMenu.querySelectorAll(
+                ".apiario-dropdown-item"
+            );
             items.forEach((item) => {
                 item.style.opacity = "0";
                 item.style.transform = "translateX(10px)";
@@ -158,7 +170,9 @@ document.addEventListener("DOMContentLoaded", function () {
             isDropdownOpen = false;
             userDropdownBtn.setAttribute("aria-expanded", "false");
 
-            const items = userDropdownMenu.querySelectorAll(".dropdown-item");
+            const items = userDropdownMenu.querySelectorAll(
+                ".apiario-dropdown-item"
+            );
             items.forEach((item) => {
                 item.style.opacity = "0";
                 item.style.transform = "translateX(10px)";
@@ -174,7 +188,9 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function addMenuItemEffects() {
-        const dropdownItems = document.querySelectorAll(".dropdown-item");
+        const dropdownItems = document.querySelectorAll(
+            ".apiario-dropdown-item"
+        );
 
         dropdownItems.forEach((item) => {
             item.addEventListener("click", function (e) {
@@ -206,7 +222,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         for (let i = 0; i < count; i++) {
             const particle = document.createElement("div");
-            particle.className = "honeycomb-particle";
+            particle.className = "apiario-honeycomb-particle";
             document.body.appendChild(particle);
 
             const angle = Math.random() * Math.PI * 2;
@@ -252,7 +268,6 @@ document.addEventListener("DOMContentLoaded", function () {
         if (userDropdownBtn) {
             userDropdownBtn.addEventListener("click", toggleDropdown);
             userDropdownBtn.setAttribute("aria-expanded", "false");
-            userDropdownBtn.addEventListener("click", function (e) {});
         }
 
         document.addEventListener("click", handleOutsideClick);
@@ -267,42 +282,42 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const styleElement = document.createElement("style");
     styleElement.textContent = `
-        @keyframes ripple {
-            to {
-                transform: scale(2);
-                opacity: 0;
-            }
-        }
-        
-        @keyframes float {
-            0% { transform: translateY(0px); }
-            50% { transform: translateY(-5px); }
-            100% { transform: translateY(0px); }
-        }
-        
-        @keyframes pulse {
-            0% { 
-                box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.4), 0 0 0 0 rgba(251, 191, 36, 0.4);
-                transform: scale(1);
-            }
-            50% { 
-                box-shadow: 0 0 10px 3px rgba(245, 158, 11, 0.2), 0 0 15px 5px rgba(251, 191, 36, 0.1);
-                transform: scale(1.05);
-            }
-            100% { 
-                box-shadow: 0 0 0 0 rgba(245, 158, 11, 0), 0 0 0 0 rgba(251, 191, 36, 0);
-                transform: scale(1);
-            }
-        }
-        
-        .navbar-logo {
-            animation: float 6s ease-in-out infinite;
-        }
-        
-        .user-avatar-container {
-            animation: pulse 3s infinite;
-            border-radius: 50% !important; /* Forzar forma circular */
-        }
-    `;
+          @keyframes apiario-ripple {
+              to {
+                  transform: scale(2);
+                  opacity: 0;
+              }
+          }
+          
+          @keyframes apiario-float {
+              0% { transform: translateY(0px); }
+              50% { transform: translateY(-5px); }
+              100% { transform: translateY(0px); }
+          }
+          
+          @keyframes apiario-pulse {
+              0% { 
+                  box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.4), 0 0 0 0 rgba(251, 191, 36, 0.4);
+                  transform: scale(1);
+              }
+              50% { 
+                  box-shadow: 0 0 10px 3px rgba(245, 158, 11, 0.2), 0 0 15px 5px rgba(251, 191, 36, 0.1);
+                  transform: scale(1.05);
+              }
+              100% { 
+                  box-shadow: 0 0 0 0 rgba(245, 158, 11, 0), 0 0 0 0 rgba(251, 191, 36, 0);
+                  transform: scale(1);
+              }
+          }
+          
+          .apiario-navbar-logo {
+              animation: apiario-float 6s ease-in-out infinite;
+          }
+          
+          .apiario-user-avatar-container {
+              animation: apiario-pulse 3s infinite;
+              border-radius: 50% !important; /* Forzar forma circular */
+          }
+      `;
     document.head.appendChild(styleElement);
 });

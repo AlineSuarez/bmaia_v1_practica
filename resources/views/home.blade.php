@@ -14,7 +14,7 @@
     <div class="honeycomb-loader">
       <div class="honeycomb-glow"></div>
       <div class="honeycomb-grid">
-      @for ($i = 1; $i <= 16; $i++)
+      @for ($i = 1; $i <= 13; $i++)
       <div class="honeycomb-cell" style="--i:{{ $i }}"></div>
     @endfor
       </div>
@@ -24,10 +24,6 @@
       <div class="bee-wing left"></div>
       <div class="bee-wing right"></div>
       </div>
-    @endfor
-      <!-- Gotas de miel -->
-      @for ($i = 1; $i <= 3; $i++)
-      <div class="honey-drop"></div>
     @endfor
     </div>
     <div class="loader-brand">MaiA</div>
@@ -241,9 +237,6 @@
             <a href="#" class="dashboard-dropdown-item">Sistema</a>
           </div>
           </div>
-          <button class="btn-refresh">
-          <i class="fas fa-sync-alt"></i>
-          </button>
         </div>
         </div>
         <div class="section-content">
@@ -356,9 +349,6 @@
       <h2 id="weather-title-js"></h2>
       <div class="section-actions" style="display: flex; align-items: center;">
         <input type="date" id="weather-date-picker" style="margin-right:10px;">
-        <button class="btn-refresh" onclick="location.reload()">
-        <i class="fas fa-sync-alt"></i>
-        </button>
       </div>
       </div>
       <div id="weather-cards-js" class="weather-cards">
@@ -496,7 +486,8 @@
       'Snow': 'fa-snowflake',
       'Mist': 'fa-smog'
     };
-    const dias = ['Hoy', 'Mañana'];
+    // Cambiar a 4 días en lugar de 2
+    const dias = ['Hoy', 'Mañana', 'Pasado mañana', 'En 3 días'];
 
     function reverseGeocode(lat, lon, callback) {
       fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&zoom=10&addressdetails=1`)
@@ -520,7 +511,8 @@
 
     function renderMainCards() {
       let html = '';
-      for (let i = 0; i < 2; i++) {
+      // Cambiar de 2 a 4 tarjetas
+      for (let i = 0; i < 4; i++) {
       if (!daysArray[i]) continue;
       const day = daysArray[i];
       const main = day.weather[0].main;

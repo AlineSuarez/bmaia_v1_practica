@@ -11,12 +11,6 @@
     --wax-beige: #f5e7c1;
 }
 
-/* Estilos generales y de página */
-body {
-    background-color: var(--honeycomb-bg);
-    color: var(--bee-black);
-}
-
 .page-title {
     color: var(--propolis-brown);
     font-weight: 700;

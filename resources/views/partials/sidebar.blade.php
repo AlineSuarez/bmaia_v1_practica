@@ -64,7 +64,6 @@
                                 </div>
                                 <span class="apicola-menu-text">Apiarios</span>
                                 <span class="apicola-active-indicator"></span>
-                                <span class="apicola-menu-notification">5</span>
                             </a>
                         </li>
                         <li class="apicola-sidebar-item">
@@ -78,12 +77,6 @@
                                 <span class="apicola-active-indicator"></span>
                             </a>
                         </li>
-                    </ul>
-                </div>
-
-
-                <div class="apicola-nav-section">
-                    <ul class="apicola-sidebar-menu">
                         <li class="apicola-sidebar-item">
                             <a class="apicola-sidebar-link {{ request()->routeIs('tareas') ? 'active' : '' }}"
                                 href="{{ route('tareas') }}">
@@ -93,7 +86,6 @@
                                 </div>
                                 <span class="apicola-menu-text">Tareas</span>
                                 <span class="apicola-active-indicator"></span>
-                                <span class="apicola-menu-notification urgent">3</span>
                             </a>
                         </li>
                         <li class="apicola-sidebar-item">
@@ -107,11 +99,6 @@
                                 <span class="apicola-active-indicator"></span>
                             </a>
                         </li>
-                    </ul>
-                </div>
-
-                <div class="apicola-nav-section">
-                    <ul class="apicola-sidebar-menu">
                         <li class="apicola-sidebar-item">
                             <a class="apicola-sidebar-link {{ request()->routeIs('sistemaexperto') ? 'active' : '' }}"
                                 href="{{ route('sistemaexperto') }}">

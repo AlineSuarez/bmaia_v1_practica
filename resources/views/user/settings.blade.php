@@ -141,7 +141,8 @@
                                         <select id="region" class="form-select" name="id_region">
                                             <option value="">Seleccione una región</option>
                                             @foreach($regiones as $region)
-                                                <option value="{{ $region->id }}" {{ $user->id_region == $region->id ? 'selected' : '' }}>
+                                                <option
+                                                    value="{{ $region->id }} {{ $user->id_region == $region->id ? 'selected' : '' }}">
                                                     {{ $region->nombre }}
                                                 </option>
                                             @endforeach
@@ -718,7 +719,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
                 </div>
                 <div class="modal-body">
-                    <form id="alertForm">
+                    <form id="alertFormModal">
                         <div class="mb-3">
                             <label for="alertTitle" class="form-label">Título de la Alerta</label>
                             <input type="text" class="form-control" id="alertTitle" placeholder="Ej: Alerta de inspección">
@@ -768,7 +769,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
                 </div>
                 <div class="modal-body">
-                    <form id="reminderForm">
+                    <form id="reminderFormModal">
                         <div class="mb-3">
                             <label for="reminderTitle" class="form-label">Título del Recordatorio</label>
                             <input type="text" class="form-control" id="reminderTitle"

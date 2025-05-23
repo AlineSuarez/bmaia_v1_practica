@@ -43,7 +43,8 @@
     <!-- Botones de acción -->
     <div class="navbar-actions">
         <!-- Botón de Ingresar -->
-        <button class="action-button action-button-enter" style="background-color:#ecc100; color:rgb(255, 255, 255); justify-content: center;"
+        <button class="action-button action-button-enter"
+            style="background-color:#ecc100; color:rgb(255, 255, 255); justify-content: center;"
             onclick="openModal('login-modal')">
             Ingresar
         </button>
