@@ -13,6 +13,7 @@ use App\Models\EmergencyContact;
 use App\Models\Reminder;
 use App\Models\Alert;
 use App\Models\ImportantDate;
+use App\Models\Invoice;
 
 class User extends Authenticatable
 {
@@ -63,6 +64,7 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'invoice_email_opt_in'=> 'boolean',
         ];
     }
 
@@ -111,5 +113,9 @@ class User extends Authenticatable
     public function contacts()
     {
         return $this->hasMany(\App\Models\Contact::class);
+    }
+    public function invoices()
+    {
+        return $this->hasMany(Invoice::class);
     }
 }

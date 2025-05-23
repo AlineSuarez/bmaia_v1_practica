@@ -25,12 +25,7 @@ class UserController extends Controller
         return redirect()->back()->with('success', 'Nombre actualizado correctamente.');
     }
 
-    public function settings()
-    {
-        $user = Auth::user();
-        $regiones = Region::with('comunas')->get();
-        return view('user.settings',compact('user', 'regiones'));
-    }
+    // Removed duplicate settings method to avoid redeclaration error.
 
     public function updateProfile()
     {
@@ -95,6 +90,30 @@ class UserController extends Controller
         $user->update(['profile_picture' => $path]);
 
         return back()->with('success', 'Avatar actualizado correctamente.');
+    }
+
+    public function updateInvoiceSettings(Request $request)
+    {
+        $data = $request->validate([
+            'invoice_company_name'  => 'nullable|string|max:100',
+            'invoice_rut'           => ['nullable','regex:/^\d{1,2}\.\d{3}\.\d{3}-[0-9Kk]{1}$/'],
+            'invoice_activity'      => 'nullable|string|max:100',
+            'invoice_address'       => 'nullable|string|max:150',
+            'invoice_region'        => 'nullable|exists:regions,id',
+            'invoice_comuna'        => 'nullable|exists:comunas,id',
+            'invoice_city'          => 'nullable|string|max:50',
+            'invoice_phone'         => 'nullable|digits:9',
+            'invoice_email'         => 'nullable|email|max:100',
+            'invoice_email_opt_in'  => 'nullable|boolean',
+            'invoice_email_dte'     => 'nullable|email|max:100',
+        ]);
+
+        Auth::user()->update($data);
+
+        if ($request->wantsJson()) {
+            return response()->json(['message'=>'Invoice settings guardados']);
+        }
+        return back()->with('success_settings','Invoice settings actualizados');
     }
 
     // Restablecer contraseña del usuario

@@ -160,6 +160,9 @@ Route::middleware(['auth'])->group(function () {
     Route::patch('/user/update-password', [UserController::class, 'updatePassword'])->name('user.update.password');
     Route::post('/user/update-settings', [UserController::class, 'updateSettings'])->name('user.updateSettings');
     Route::post('/user/update-plan', [UserController::class, 'updatePlan'])->name('user.updatePlan');
+    // FACTURACION
+    Route::patch('/user/settings/invoice-settings',[UserController::class, 'updateInvoiceSettings'])->name('user.update.invoiceSettings');
+    Route::get('/user/invoices',[InvoiceController::class, 'index'])->name('user.invoices');
     // permisos
     Route::get('/user/settings/permissions', [PermissionsController::class, 'index'])->name('permissions.index');
     Route::post('/user/settings/permissions', [PermissionsController::class, 'update'])->name('permissions.update');
