@@ -25,7 +25,12 @@ class UserController extends Controller
         return redirect()->back()->with('success', 'Nombre actualizado correctamente.');
     }
 
-    // Removed duplicate settings method to avoid redeclaration error.
+    public function settings()
+    {
+        $user = Auth::user();
+        $regiones = Region::with('comunas')->get();
+        return view('user.settings',compact('user', 'regiones'));
+    }
 
     public function updateProfile()
     {
