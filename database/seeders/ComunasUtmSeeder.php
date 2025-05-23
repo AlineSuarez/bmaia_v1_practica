@@ -9,7 +9,7 @@ class ComunasUtmSeeder extends Seeder
 {
     public function run()
     {
-        $path = storage_path('app/comunas-utm.json');
+        $path = database_path('seeders/data/comunas-utm.json');
 
         if (!file_exists($path)) {
             $this->command->error("❌ No se encontró el archivo: {$path}");
