@@ -13,7 +13,6 @@ use App\Models\EmergencyContact;
 use App\Models\Reminder;
 use App\Models\Alert;
 use App\Models\ImportantDate;
-use App\Models\Invoice;
 
 class User extends Authenticatable
 {
@@ -40,19 +39,7 @@ class User extends Authenticatable
         'plan',
         'fecha_vencimiento',
         'webpay_status',
-        'direccion',
-        // Campos de invoice settings
-        'invoice_company_name',
-        'invoice_rut',
-        'invoice_activity',
-        'invoice_address',
-        'invoice_region',
-        'invoice_comuna',
-        'invoice_city',
-        'invoice_phone',
-        'invoice_email',
-        'invoice_email_opt_in',
-        'invoice_email_dte',
+        'direccion', //añadido
     ];
 
     /**
@@ -75,7 +62,6 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
-            'invoice_email_opt_in'=> 'boolean',
         ];
     }
 
@@ -124,9 +110,5 @@ class User extends Authenticatable
     public function contacts()
     {
         return $this->hasMany(\App\Models\Contact::class);
-    }
-    public function invoices()
-    {
-        return $this->hasMany(Invoice::class);
     }
 }
