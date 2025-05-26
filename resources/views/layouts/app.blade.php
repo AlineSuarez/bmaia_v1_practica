@@ -40,6 +40,20 @@
 </head>
 
 <body>
+
+    @auth
+    <script>
+        window.appLocale     = "{{ app()->getLocale() }}";
+    window.appDateFormat = "{{ config('app.date_format', 'DD/MM/YYYY') }}";
+        window.translations = {!! json_encode(__('messages')) !!};
+
+        window.trans = function (key) {
+            return window.translations[key] || key;
+        };
+    </script>
+    @endauth
+
+
     <!-- Axios desde CDN -->
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 

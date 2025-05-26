@@ -179,34 +179,6 @@ class UserController extends Controller
         return redirect()->back()->with('success_settings','Permisos actualizados correctamente.');
     }
 
-    // Preferncaias (tema, idioma,etc)
-    public function updatePreferences(Request $request)
-    {
-        $data = $request->validate([
-            'language'         => ['required','in:es_CL,en_US,pt_BR'],
-            'date_format'      => ['required','in:dd/mm/yyyy,mm/dd/yyyy,yyyy-mm-dd'],
-            'theme'            => ['required','in:light,dark,auto'],
-            'voice_preference' => ['required','in:female_1,female_2,male_1,male_2'],
-            'default_view'     => ['required','in:dashboard,apiaries,calendar,reports'],
-            'voice_match'      => ['boolean'],
-            'calendar_email'   => ['boolean'],
-            'calendar_push'    => ['boolean'],
-            'reminder_time'    => ['nullable','in:15,30,60,120,1440'],
-        ]);
-        $user = auth()->user();
-        $user->language         = $data['language'];
-        $user->date_format      = $data['date_format'];
-        $user->theme            = $data['theme'];
-        $user->voice_preference = $data['voice_preference'];
-        $user->default_view     = $data['default_view'];
-        $user->voice_match      = $request->has('voice_match');
-        $user->calendar_email   = $request->has('calendar_email');
-        $user->calendar_push    = $request->has('calendar_push');
-        $user->reminder_time    = $data['reminder_time'];
-        $user->save();
-        return back()->with('success_settings','Preferencias guardadas.');
-    }
-
     public function updateUtilities(Request $request)
     {
         // Validamos primero qué tipo de utilidad estamos creando

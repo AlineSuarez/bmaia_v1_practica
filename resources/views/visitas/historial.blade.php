@@ -166,7 +166,8 @@
                                                         <tr class="table-row" data-date="{{ $visita->fecha_visita }}">
                                                             <td class="date-cell">
                                                                 <div class="date-container">
-                                                                    <span class="date-main">{{ \Carbon\Carbon::parse($visita->fecha_visita)->format('d/m/Y') }}</span>
+                                                                    <!--<span class="date-main">{{ \Carbon\Carbon::parse($visita->fecha_visita)->format('d/m/Y') }}</span>-->
+                                                                    <span class="date-main">@date($visita->fecha_visita)</span>
                                                                 </div>
                                                             </td>
                                                             <td class="visitor-name">{{ $visita->nombres }}</td>

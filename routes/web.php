@@ -45,7 +45,17 @@ Route::get('login/google/callback', [LoginController::class, 'handleGoogleCallba
 
 // Rutas para apicultores
 Route::middleware(['auth'])->group(function () {
-    Route::get('/home', [ApiarioController::class, 'home'])->name('home');
+    //Route::get('/home', [ApiarioController::class, 'home'])->name('home');
+    Route::get('/home', function () {
+        $default = optional(Auth::user()->preference)->default_view ?? 'dashboard';
+        return redirect()->route(match ($default) {
+            'dashboard' => 'dashboard',
+            'apiaries' => 'apiarios',
+            'calendar' => 'agenda.index',
+            'reports' => 'reportes.index',
+            default => 'dashboard',
+        });
+    })->middleware(['auth']);
     Route::resource('apiarios', ApiarioController::class);
 
     Route::resource('visita', VisitaController::class);
@@ -171,6 +181,31 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/user/settings/preferences', [PreferencesController::class, 'index'])->name('preferences.index');
     Route::post('/user/settings/preferences', [PreferencesController::class, 'update'])->name('preferences.update');
     Route::post('/user/settings/preferences/reset', [PreferencesController::class, 'reset'])->name('preferences.reset');
+
+    // formato flobal de fechas test
+    Route::get('/user/settings/preferences/demo', [PreferencesController::class, 'dateFormatDemo'])
+        ->name('preferences.demo')
+        ->middleware('auth');
+
+    Route::post('/user/settings/preferences/date-format', [PreferencesController::class, 'updateDateFormat'])
+        ->name('preferences.updateDateFormat')
+        ->middleware('auth');
+
+    Route::get('/debug-date', function () {
+        return [
+            'auth_user'     => Auth::check() ? Auth::user()->email : 'no user',
+            'date_format'   => config('app.date_format'),
+            'from_model'    => optional(Auth::user()->preference)->date_format,
+        ];
+    });
+
+    
+    // test cambio idioma
+    Route::get('/test-lang', function () {
+        return view('apiarios.test-lang');
+    })->middleware(['auth']);
+
+
 
     // UTILIDADES
     // utilidades - alertas

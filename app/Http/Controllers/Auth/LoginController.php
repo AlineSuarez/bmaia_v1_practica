@@ -22,10 +22,25 @@ class LoginController extends Controller
             'password' => 'required',
         ]);
 
-        // Intentar iniciar sesión
         if (Auth::attempt($credentials)) {
+            // ¡Login OK!
+            // Ahora elegimos la ruta final según la preferencia:
+            $defaultView = Auth::user()->preference->default_view ?? 'dashboard';
+
+            // Mapa de keys → route names (falta analizar que los nombres coincidan)
+            $map = [
+                'dashboard' => 'dashboard',
+                'apiaries'  => 'apiarios',
+                'calendar'  => 'agenda.index',
+                'reports'   => 'reportes.index',
+            ];
+
+            // Si por alguna razón no existe en el mapa, vamos a dashboard
+            $routeName = $map[$defaultView] ?? 'dashboard';
+
+            // redirect()->intended() usa la "intended URL" si venías de un middleware auth,
             // Redirigir a la página de inicio si las credenciales son correctas
-            return redirect()->intended('/home'); // Cambia a la ruta que desees
+            return redirect()->route($routeName); // valor calculado 
         }
 
         // Si falla, redirigir de nuevo al formulario con un mensaje de error

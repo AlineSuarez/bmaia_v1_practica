@@ -13,7 +13,7 @@ use App\Models\EmergencyContact;
 use App\Models\Reminder;
 use App\Models\Alert;
 use App\Models\ImportantDate;
-use App\Models\Invoice;
+use App\Models\Preference;
 
 class User extends Authenticatable
 {
@@ -98,24 +98,29 @@ class User extends Authenticatable
     {
         return $this->hasMany(Payment::class);
     }
+    
     public function alerts()
     {
         return $this->hasMany(\App\Models\Alert::class);
     }
+
     public function reminders()
     {
         return $this->hasMany(\App\Models\Reminder::class);
     }
+
     public function importantDates()
     {
         return $this->hasMany(ImportantDate::class);
     }
+
     public function contacts()
     {
-        return $this->hasMany(\App\Models\Contact::class);
+        return $this->hasMany(\App\Models\EmergencyContact::class);
     }
-    public function invoices()
+
+    public function preference()
     {
-        return $this->hasMany(Invoice::class);
+        return $this->hasOne(\App\Models\Preference::class);
     }
 }

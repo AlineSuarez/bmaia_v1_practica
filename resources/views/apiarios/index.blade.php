@@ -9,9 +9,14 @@
 </head>
 
 @section('content')
+
+<!-- TEST idioma: <p>Idioma activo: {{ app()->getLocale() }}</p>  -->    
+
+
     <div class="apiarios-container animated-element hexagon-bg">
         <div class="page-header">
-            <h1 class="page-title">Mis Apiarios</h1>
+            <h1 class="page-title"></h1>
+
             <div class="filters-panel">
                 <div class="search-container">
                     <i class="fas fa-search search-icon"></i>

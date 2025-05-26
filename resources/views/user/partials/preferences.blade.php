@@ -33,9 +33,9 @@
                 <div class="form-group mb-4">
                 <label for="date_format"><strong>Formato de Fecha</strong></label>
                 <select class="form-select" id="date_format" name="date_format">
-                    <option value="dd/mm/yyyy">DD/MM/AAAA</option>
-                    <option value="mm/dd/yyyy">MM/DD/AAAA</option>
-                    <option value="yyyy-mm-dd">AAAA-MM-DD</option>
+                    <option value="DD/MM/YYYY">DD/MM/AAAA</option>
+                    <option value="MM/DD/YYYY">MM/DD/AAAA</option>
+                    <option value="YYYY-MM-DD">AAAA-MM-DD</option>
                 </select>
                 <small class="form-text text-muted">
                     Define cómo se mostrarán las fechas en la aplicación.

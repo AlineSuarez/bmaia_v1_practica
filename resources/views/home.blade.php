@@ -7,6 +7,10 @@
   <head>
     <link href="{{ asset('./css/components/home-user/dashboard.css') }}" rel="stylesheet">
   </head>
+<!-- Verificar carga del middleware -->
+  <p>Formato en config: {{ config('app.date_format') }}</p>
+  <p>Fecha renderizada: @date(now())</p>
+  
 
   <!-- Loader con animación de panal (fuera del contenedor principal) -->
   <div id="dashboard-loader">
@@ -48,7 +52,8 @@
         </div>
         <div class="stat-info">
         <span class="stat-label">Hoy</span>
-        <span class="stat-value">{{ date('d M, Y') }}</span>
+       <!-- <span class="stat-value">{{ date('d M, Y') }}</span> -->
+        <span class="stat-value">@date(now())</span>
         </div>
       </div>
       <div class="quick-stat">
