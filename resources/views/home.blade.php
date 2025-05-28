@@ -7,10 +7,13 @@
   <head>
     <link href="{{ asset('./css/components/home-user/dashboard.css') }}" rel="stylesheet">
   </head>
-<!-- Verificar carga del middleware -->
-  <p>Formato en config: {{ config('app.date_format') }}</p>
-  <p>Fecha renderizada: @date(now())</p>
-  
+  <!-- Verificar carga del middleware 
+      <p>Formato en config: {{ config('app.date_format') }}</p>
+  <p>Hoy es: @date(now())</p>
+
+   
+  -->
+
 
   <!-- Loader con animación de panal (fuera del contenedor principal) -->
   <div id="dashboard-loader">

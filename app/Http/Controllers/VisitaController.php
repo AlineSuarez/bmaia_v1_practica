@@ -48,7 +48,8 @@ class VisitaController extends Controller
         $user = auth()->user();
         $apiario = Apiario::where('user_id', auth()->id())->where('id', $id_apiario)->firstOrFail();
         $visita = Visita::where('apiario_id', $id_apiario)->where('tipo_visita', 'Visita General')->first();
-    return view('visitas.create1', compact('apiario','visita','user'));
+        $userFormat = config('app.date_format', 'DD/MM/YYYY');
+        return view('visitas.create1', compact('apiario','visita','user','userFormat'));
     }
 
     public function store(Request $request, Apiario $apiario)
@@ -117,10 +118,15 @@ class VisitaController extends Controller
 
     public function storeGeneral(Request $request, Apiario $apiario)
     {
+        
+        
         // Lógica para guardar el registro de visita general (visitas.create1)
         $validated = $request->validate([
-            'fecha' => 'required|date',
+            'fecha' => 'required|date_format:Y-m-d',
             'motivo' => 'required|string',
+        ]);
+        $request->merge([
+            'fecha' => \Carbon\Carbon::createFromFormat(config('app.date_format'), $request->input('fecha'))->format('Y-m-d')
         ]);
         Visita::create([
             'apiario_id' => $apiario->id,

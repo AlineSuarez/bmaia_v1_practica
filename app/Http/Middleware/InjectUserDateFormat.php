@@ -3,20 +3,14 @@
 namespace App\Http\Middleware;
 
 use Closure;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Config;
-use App\Models\Preference;
 
 class InjectUserDateFormat
 {
-    public function handle(Request $request, Closure $next)
+    public function handle($request, Closure $next)
     {
         if (Auth::check()) {
-            $pref = Auth::user()->preference;
-            if ($pref && $pref->date_format) {
-                Config::set('app.date_format', strtoupper($pref->date_format));
-            }
+            config(['app.date_format' => Auth::user()->preference->date_format ?? 'DD/MM/YYYY']);
         }
 
         return $next($request);

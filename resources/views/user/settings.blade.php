@@ -198,7 +198,7 @@
             </section>
 
             <!-- SECCIÓN: DATOS DE FACTURACIÓN -->
-            <section class="tab-pane fade" id="billing" role="tabpanel" aria-labelledby="billing-tab">
+            <section class="tab-pane fade" id="billing" role="tabpanel" aria-labelledby="billing-tab" disabled>
                 <div class="card settings-card mb-4">
                     <div class="card-header">
                         <h3>Datos de Facturación</h3>

@@ -27,10 +27,23 @@
                 <div class="card-body">
                     <form action="{{ route('apiarios.visitas-general.store', $apiario) }}" method="POST">
                         @csrf
+                        @php
+                            $userFormat = config('app.date_format', 'DD/MM/YYYY');
+                        @endphp
                         <!-- Input para fecha de la inspección -->
                         <div class="mb-3">
                             <label for="fecha" class="form-label">Fecha</label>
-                            <input type="date" class="form-control" name="fecha" required>
+                            <!--<input type="date" class="form-control" name="fecha" required> -->
+                            <input
+                                type="text"
+                                id="fecha"
+                                name="fecha"
+                                class="form-control"
+                                placeholder="{{ $userFormat }}"
+                                value="{{ old('fecha') }}"
+                                autocomplete="off"
+                                required
+                            >
                         </div>
                 
                         <div class="mb-3">
@@ -72,3 +85,19 @@
     </div>
 </div>
 @endsection
+
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    let fmt = "{{ $userFormat }}"
+        .replace(/DD/g, 'd')
+        .replace(/MM/g, 'm')
+        .replace(/YYYY/g, 'Y');
+
+    flatpickr("#fecha", {
+        dateFormat: fmt,
+        locale: "es", // puedes usar app()->getLocale() para hacerlo dinámico
+    });
+});
+</script>
+@endpush
