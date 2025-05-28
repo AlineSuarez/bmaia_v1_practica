@@ -77,14 +77,17 @@
                                             <i class="fas fa-history"></i> Ver historial
                                         </a>
                                         <hr class="menu-divider">
-                                    
+
                                         {{-- Formulario para la acción de eliminar --}}
                                         {{-- Usa la ruta 'apiarios.destroy' y el método DELETE simulado --}}
-                                        <form action="{{ route('apiarios.destroy', $apiario->id) }}" method="POST" onsubmit="return confirm('¿Estás seguro de que quieres eliminar este apiario? Esta acción no se puede deshacer.');">
+                                        <form action="{{ route('apiarios.destroy', $apiario->id) }}" method="POST"
+                                            onsubmit="return confirm('¿Estás seguro de que quieres eliminar este apiario? Esta acción no se puede deshacer.');">
                                             @csrf
                                             @method('DELETE') {{-- Esto le dice a Laravel que es una solicitud DELETE --}}
-                                            {{-- Usamos un botón con los estilos del elemento del menú para que se vea como un enlace --}}
-                                            <button type="submit" class="menu-item text-danger" style="border: none; background: none; width: 100%; text-align: left; padding: 0.5rem 1rem; cursor: pointer;">
+                                            {{-- Usamos un botón con los estilos del elemento del menú para que se vea como un
+                                            enlace --}}
+                                            <button type="submit" class="menu-item text-danger"
+                                                style="border: none; background: none; width: 100%; text-align: left; padding: 0.5rem 1rem; cursor: pointer;">
                                                 <i class="fas fa-trash"></i> Eliminar
                                             </button>
                                         </form>

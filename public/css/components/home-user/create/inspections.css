@@ -1,0 +1,699 @@
+:root {
+    /* Paleta principal */
+    --honey-50: #fef7e0;
+    --honey-100: #fdecc8;
+    --honey-200: #fbd38d;
+    --honey-300: #f6ad55;
+    --honey-400: #ed8936;
+    --honey-500: #ffc800;
+    --honey-600: #d69e2e;
+    --honey-700: #b7791f;
+    --honey-800: #975a16;
+    --honey-900: #744210;
+    --honey-950: #5a2e0a;
+
+    /* Grises */
+    --gray-50: #f9fafb;
+    --gray-100: #f3f4f6;
+    --gray-200: #e5e7eb;
+    --gray-300: #d1d5db;
+    --gray-400: #9ca3af;
+    --gray-500: #6b7280;
+    --gray-600: #4b5563;
+    --gray-700: #374151;
+    --gray-800: #1f2937;
+    --gray-900: #111827;
+
+    /* Estados */
+    --success: #10b981;
+    --warning: #f59e0b;
+    --error: #ef4444;
+    --info: #3b82f6;
+
+    /* Sombras */
+    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08);
+    --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 8px 15px rgba(0, 0, 0, 0.12);
+    --shadow-xl: 0 16px 32px rgba(0, 0, 0, 0.15);
+    --shadow-honey: 0 6px 16px rgba(255, 200, 0, 0.2);
+
+    /* Espaciado compacto */
+    --spacing-xs: 0.375rem;
+    --spacing-sm: 0.75rem;
+    --spacing-md: 1rem;
+    --spacing-lg: 1.5rem;
+    --spacing-xl: 2rem;
+    --spacing-2xl: 2.5rem;
+
+    /* Bordes */
+    --radius-sm: 6px;
+    --radius-md: 8px;
+    --radius-lg: 12px;
+    --radius-xl: 16px;
+
+    /* Transiciones */
+    --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-bounce: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+/* ===================================
+       BASE OPTIMIZADA
+       =================================== */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI",
+        sans-serif;
+    line-height: 1.5;
+    color: var(--gray-800);
+    background: linear-gradient(
+        135deg,
+        var(--honey-50) 0%,
+        var(--honey-100) 100%
+    );
+    min-height: 100vh;
+    font-size: 14px;
+}
+
+/* ===================================
+       CONTENEDOR PRINCIPAL EXPANDIDO
+       =================================== */
+.inspection-container {
+    max-width: 1600px;
+    /* Ampliado considerablemente */
+    margin: 0 auto;
+    padding: var(--spacing-xl) var(--spacing-lg);
+    animation: containerFadeIn 0.6s ease-out;
+}
+
+@keyframes containerFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ===================================
+       HEADER COMPACTO
+       =================================== */
+.inspection-header {
+    text-align: center;
+    margin-bottom: var(--spacing-xl);
+    padding: var(--spacing-xl) var(--spacing-lg);
+    background: linear-gradient(135deg, white 0%, var(--honey-50) 100%);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-md);
+    position: relative;
+    overflow: hidden;
+    border: 1px solid var(--honey-200);
+}
+
+.header-decoration {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(
+        90deg,
+        var(--honey-400),
+        var(--honey-500),
+        var(--honey-600)
+    );
+    animation: shimmer 3s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+    0%,
+    100% {
+        opacity: 0.8;
+    }
+
+    50% {
+        opacity: 1;
+    }
+}
+
+.header-pattern {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 30px;
+    background: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffc800' fill-opacity='0.08'%3E%3Ccircle cx='20' cy='20' r='2'/%3E%3C/g%3E%3C/svg%3E");
+    opacity: 0.5;
+}
+
+.inspection-title {
+    font-size: clamp(1.75rem, 4vw, 2.5rem);
+    font-weight: 800;
+    background: linear-gradient(135deg, var(--honey-700), var(--honey-500));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: var(--spacing-xs);
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+}
+
+.inspection-subtitle {
+    font-size: clamp(0.875rem, 2vw, 1rem);
+    color: var(--honey-700);
+    font-weight: 500;
+    opacity: 0.9;
+}
+
+/* ===================================
+       FORMULARIO OPTIMIZADO
+       =================================== */
+.inspection-form {
+    background: white;
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-lg);
+    overflow: hidden;
+    border: 1px solid var(--honey-200);
+    animation: formSlideUp 0.6s ease-out 0.1s both;
+}
+
+@keyframes formSlideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ===================================
+       SECCIONES COMPACTAS
+       =================================== */
+.form-section {
+    padding: var(--spacing-xl) var(--spacing-2xl);
+    border-bottom: 1px solid var(--honey-100);
+    transition: var(--transition);
+}
+
+.form-section:last-child {
+    border-bottom: none;
+}
+
+.form-section:hover {
+    background: linear-gradient(135deg, var(--honey-50) 0%, white 100%);
+}
+
+/* ===================================
+       HEADERS CON ICONOS PROFESIONALES
+       =================================== */
+.section-header {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    margin-bottom: var(--spacing-lg);
+}
+
+.section-icon {
+    width: 40px;
+    height: 40px;
+    background: linear-gradient(135deg, var(--honey-400), var(--honey-500));
+    padding: var(--spacing-sm);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-sm);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.section-icon svg {
+    width: 20px;
+    height: 20px;
+}
+
+.section-title {
+    font-size: clamp(1.25rem, 3vw, 1.5rem);
+    font-weight: 700;
+    color: var(--honey-800);
+    flex: 1;
+}
+
+.section-decoration {
+    width: 60px;
+    height: 3px;
+    background: linear-gradient(90deg, var(--honey-400), var(--honey-600));
+    border-radius: 2px;
+}
+
+/* ===================================
+       GRID DE COLMENAS EXPANDIDO
+       =================================== */
+.colmenas-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: var(--spacing-md);
+}
+
+.colmena-card {
+    background: linear-gradient(135deg, white 0%, var(--honey-50) 100%);
+    border: 1px solid var(--honey-200);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-lg);
+    position: relative;
+    overflow: hidden;
+    transition: var(--transition-bounce);
+    cursor: pointer;
+}
+
+.colmena-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    transition: var(--transition);
+}
+
+.colmena-card.totales::before {
+    background: linear-gradient(90deg, var(--honey-400), var(--honey-500));
+}
+
+.colmena-card.activas::before {
+    background: linear-gradient(90deg, var(--success), #059669);
+}
+
+.colmena-card.enfermas::before {
+    background: linear-gradient(90deg, var(--warning), #d97706);
+}
+
+.colmena-card.muertas::before {
+    background: linear-gradient(90deg, var(--error), #dc2626);
+}
+
+.colmena-card.inspeccionadas::before {
+    background: linear-gradient(90deg, var(--info), #2563eb);
+}
+
+.colmena-card:hover {
+    transform: translateY(-4px) scale(1.01);
+    box-shadow: var(--shadow-md);
+    border-color: var(--honey-300);
+}
+
+.colmena-card:hover::before {
+    height: 4px;
+}
+
+.card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: var(--spacing-sm);
+}
+
+.card-icon {
+    width: 28px;
+    height: 28px;
+    background: var(--honey-100);
+    padding: 6px;
+    border-radius: var(--radius-sm);
+    color: var(--honey-700);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.card-icon svg {
+    width: 16px;
+    height: 16px;
+}
+
+.card-badge {
+    padding: 4px var(--spacing-sm);
+    border-radius: var(--radius-sm);
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.card-badge.total {
+    background: var(--honey-200);
+    color: var(--honey-800);
+}
+
+.card-badge.active {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.card-badge.sick {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.card-badge.dead {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+.card-badge.inspected {
+    background: #dbeafe;
+    color: #1e40af;
+}
+
+/* ===================================
+       CAMPOS COMPACTOS
+       =================================== */
+.field-group {
+    display: grid;
+    gap: var(--spacing-lg);
+}
+
+.general-info .field-group {
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+}
+
+.health-grid {
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: var(--spacing-lg);
+}
+
+.form-field {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+}
+
+.field-label {
+    display: flex;
+    gap: var(--spacing-xs);
+    font-weight: 600;
+    color: var(--gray-700);
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.label-icon {
+    width: 14px;
+    height: 14px;
+    color: var(--honey-600);
+}
+
+.label-icon svg {
+    width: 100%;
+    height: 100%;
+}
+
+/* ===================================
+       INPUTS OPTIMIZADOS
+       =================================== */
+.field-input {
+    padding: var(--spacing-sm) var(--spacing-md);
+    border: 1px solid var(--honey-200);
+    border-radius: var(--radius-md);
+    font-size: 0.9rem;
+    font-weight: 500;
+    background: white;
+    color: var(--gray-800);
+    transition: var(--transition);
+    font-family: inherit;
+}
+
+.field-input:focus {
+    outline: none;
+    border-color: var(--honey-500);
+    background: var(--honey-50);
+    box-shadow: 0 0 0 3px rgba(255, 200, 0, 0.1);
+    transform: translateY(-1px);
+}
+
+.field-input:hover:not(:focus) {
+    border-color: var(--honey-400);
+    transform: translateY(-0.5px);
+}
+
+.number-input {
+    text-align: center;
+    font-weight: 700;
+    font-size: 1.25rem;
+    color: var(--honey-700);
+}
+
+/* ===================================
+       SELECT PROFESIONAL
+       =================================== */
+.select-wrapper {
+    position: relative;
+}
+
+.field-select {
+    width: 100%;
+    padding: var(--spacing-sm) 2.5rem var(--spacing-sm) var(--spacing-md);
+    border: 1px solid var(--honey-200);
+    border-radius: var(--radius-md);
+    font-size: 0.9rem;
+    font-weight: 500;
+    background: white;
+    color: var(--gray-800);
+    cursor: pointer;
+    transition: var(--transition);
+    appearance: none;
+    font-family: inherit;
+}
+
+.field-select:focus {
+    outline: none;
+    border-color: var(--honey-500);
+    background: var(--honey-50);
+    box-shadow: 0 0 0 3px rgba(255, 200, 0, 0.1);
+}
+
+.select-arrow {
+    position: absolute;
+    right: var(--spacing-md);
+    top: 50%;
+    transform: translateY(-50%);
+    width: 16px;
+    height: 16px;
+    color: var(--honey-500);
+    pointer-events: none;
+    transition: var(--transition-bounce);
+}
+
+.field-select:focus + .select-arrow {
+    color: var(--honey-700);
+    transform: translateY(-50%) rotate(180deg);
+}
+
+/* ===================================
+       TEXTAREA COMPACTA
+       =================================== */
+.field-textarea {
+    padding: var(--spacing-sm) var(--spacing-md);
+    border: 1px solid var(--honey-200);
+    border-radius: var(--radius-md);
+    font-size: 0.9rem;
+    font-weight: 500;
+    background: white;
+    color: var(--gray-800);
+    font-family: inherit;
+    resize: vertical;
+    min-height: 80px;
+    transition: var(--transition);
+}
+
+.field-textarea:focus {
+    outline: none;
+    border-color: var(--honey-500);
+    background: var(--honey-50);
+    box-shadow: 0 0 0 3px rgba(255, 200, 0, 0.1);
+}
+
+/* ===================================
+       HELPER TEXT
+       =================================== */
+.field-helper {
+    font-size: 0.75rem;
+    color: var(--honey-700);
+    font-style: italic;
+    opacity: 0.8;
+}
+
+/* ===================================
+       BOTONES PROFESIONALES
+       =================================== */
+.form-actions {
+    background: linear-gradient(
+        135deg,
+        var(--honey-100) 0%,
+        var(--honey-200) 100%
+    );
+    padding: var(--spacing-lg) var(--spacing-2xl);
+    border-top: 1px solid var(--honey-200);
+}
+
+.actions-container {
+    display: flex;
+    gap: var(--spacing-sm);
+    justify-content: flex-end;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.btn {
+    display: inline-flex;
+    gap: var(--spacing-xs);
+    padding: var(--spacing-sm) var(--spacing-md);
+    border-radius: var(--radius-md);
+    font-weight: 600;
+    font-size: 0.8rem;
+    text-decoration: none;
+    border: 1px solid transparent;
+    cursor: pointer;
+    transition: var(--transition-bounce);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    position: relative;
+    overflow: hidden;
+    min-width: 120px;
+    justify-content: center;
+}
+
+.btn-icon {
+    width: 16px;
+    height: 16px;
+    transition: var(--transition);
+}
+
+.btn-icon svg {
+    width: 100%;
+    height: 100%;
+}
+
+.btn:hover .btn-icon {
+    transform: scale(1.1);
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, var(--honey-500), var(--honey-600));
+    color: white;
+    box-shadow: var(--shadow-honey);
+}
+
+.btn-primary:hover {
+    background: linear-gradient(135deg, var(--honey-600), var(--honey-700));
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(255, 200, 0, 0.3);
+}
+
+.btn-secondary {
+    background: white;
+    color: var(--honey-700);
+    border-color: var(--honey-300);
+}
+
+.btn-secondary:hover {
+    background: var(--honey-50);
+    border-color: var(--honey-400);
+    transform: translateY(-1px);
+}
+
+.btn-outline {
+    background: transparent;
+    color: var(--honey-600);
+    border-color: var(--honey-400);
+}
+
+.btn-outline:hover {
+    background: var(--honey-100);
+    border-color: var(--honey-500);
+    color: var(--honey-700);
+    transform: translateY(-1px);
+}
+
+/* ===================================
+       RESPONSIVE OPTIMIZADO
+       =================================== */
+@media (max-width: 1200px) {
+    .inspection-container {
+        max-width: 1200px;
+        padding: var(--spacing-lg) var(--spacing-md);
+    }
+}
+
+@media (max-width: 768px) {
+    .inspection-container {
+        padding: var(--spacing-md) var(--spacing-sm);
+    }
+
+    .form-section {
+        padding: var(--spacing-lg) var(--spacing-md);
+    }
+
+    .section-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--spacing-sm);
+    }
+
+    .colmenas-grid {
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    }
+
+    .general-info .field-group,
+    .health-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .actions-container {
+        flex-direction: column;
+    }
+
+    .btn {
+        width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .inspection-container {
+        padding: var(--spacing-sm) var(--spacing-xs);
+    }
+
+    .colmenas-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .number-input {
+        font-size: 1rem;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+.btn:focus-visible,
+.field-input:focus-visible,
+.field-select:focus-visible,
+.field-textarea:focus-visible {
+    outline: 2px solid var(--honey-500);
+    outline-offset: 2px;
+}

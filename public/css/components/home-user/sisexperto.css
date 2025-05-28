@@ -255,10 +255,3 @@
         padding: 0.5rem;
     }
 }
-
-/* Mejoras de accesibilidad - focus visible */
-button:focus,
-a:focus {
-    outline: 3px solid var(--honey-dark);
-    outline-offset: 2px;
-}

@@ -19,7 +19,7 @@
         let currentSection = '';
 
         sections.forEach(section => {
-            const sectionTop = section.offsetTop - 60; // Ajuste para compensar el banner fijo
+            const sectionTop = section.offsetTop - 60;
             const sectionHeight = section.offsetHeight;
 
             if (pageYOffset >= sectionTop && pageYOffset < sectionTop + sectionHeight) {

@@ -789,7 +789,7 @@ input[type="file"] {
     font-size: 0.875rem;
     color: var(--color-text-light);
     transition: var(--transition-color);
-    padding: 0.75rem 1.25rem;
+    padding: 0.75rem 0.5rem;
     background-color: rgba(226, 162, 51, 0.05);
     border-radius: var(--border-radius);
     display: inline-block;
@@ -1215,11 +1215,11 @@ input[type="file"] {
 }
 
 .signature-logo::before {
-    left: -30px;
+    left: -6px;
 }
 
 .signature-logo::after {
-    right: -30px;
+    right: -10px;
     animation-delay: 1s;
 }
 

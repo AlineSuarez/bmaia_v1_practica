@@ -17,9 +17,9 @@
         <div class="apicola-sidebar-header">
             <div class="apicola-logo-container">
                 <div class="apicola-logo-icon">
-                    <i class="fas fa-home"></i>
+                    <i class="fas fas fa-user"></i>
                 </div>
-                <h3 class="apicola-logo-text">Bienvenido</h3>
+                <h3 class="apicola-logo-text">Usuario</h3>
             </div>
             <button id="sidebarToggleInside" class="apicola-toggle-inside" aria-label="Cerrar menú">
                 <i class="fas fa-times"></i>
@@ -28,19 +28,6 @@
         </div>
 
         <div class="apicola-sidebar-content">
-            <div class="apicola-user-profile">
-                <div class="apicola-user-avatar">
-                    <i class="fas fa-user"></i>
-                </div>
-                <div class="apicola-user-info">
-                    <h4 class="apicola-user-name">Usuario Apícola</h4>
-                    <p class="apicola-user-role">Administrador</p>
-                </div>
-                <div class="apicola-user-status online">
-                    <span class="apicola-status-indicator"></span>
-                </div>
-            </div>
-
             <nav class="apicola-sidebar-nav">
                 <div class="apicola-nav-section">
                     <ul class="apicola-sidebar-menu">
@@ -125,25 +112,6 @@
                     </ul>
                 </div>
             </nav>
-        </div>
-
-        <div class="apicola-sidebar-footer">
-            <div class="apicola-system-status">
-                <div class="apicola-status-item">
-                    <i class="fas fa-server"></i>
-                    <span class="apicola-status-text">Sistema: <span class="apicola-status-value">Activo</span></span>
-                </div>
-                <div class="apicola-status-item">
-                    <i class="fas fa-wifi"></i>
-                    <span class="apicola-status-text">Red: <span class="apicola-status-value">Estable</span></span>
-                </div>
-            </div>
-            <div class="apicola-footer-content">
-                <div class="apicola-footer-icon">
-                    <i class="fas fa-info-circle"></i>
-                </div>
-                <span class="apicola-footer-text">Sistema de Gestión Apícola</span>
-            </div>
         </div>
     </aside>
 

@@ -1218,13 +1218,6 @@ body:has([data-tooltip]:hover)::before {
     font-size: 1.2rem;
 }
 
-a:focus,
-button:focus,
-input:focus {
-    outline: 2px solid var(--primary-color);
-    outline-offset: 2px;
-}
-
 @media print {
     body {
         font-size: 12pt;
