@@ -38,7 +38,7 @@ class PreferencesController extends Controller
             'date_format'     => 'required|string',
             'theme'           => 'required|in:light,dark,auto',
             'voice_preference'=> 'required|in:female_1,female_2,male_1,male_2',
-            'default_view'    => 'required|in:dashboard,apiaries,calendar,reports',
+            'default_view' => 'required|in:dashboard,apiaries,calendar,reports,home,cuaderno,tareas,zonificacion,sistemaexperto',
             'voice_match'     => 'nullable|boolean',
             'calendar_email'  => 'nullable|boolean',
             'calendar_push'   => 'nullable|boolean',
