@@ -234,4 +234,55 @@ class ApiarioController extends Controller
             'apiario' => $apiario->id,
         ]);
     }
+
+    public function createTemporal(Request $request)
+    {
+        $tipo = $request->get('tipo'); // 'traslado' o 'retorno'
+        $apiarios = $request->get('apiarios'); // IDs separados por coma
+
+        if (!$apiarios) {
+            return redirect()->route('apiarios.index')->with('error', 'No se seleccionaron apiarios.');
+        }
+
+        $apiarioIds = explode(',', $apiarios);
+
+        // Obtener los datos de los apiarios seleccionados
+        $apiariosData = Apiario::whereIn('id', $apiarioIds)->get();
+
+        if ($apiariosData->isEmpty()) {
+            return redirect()->route('apiarios.index')->with('error', 'No se encontraron los apiarios seleccionados.');
+        }
+
+        return view('apiarios.create-temporal', compact('tipo', 'apiariosData'));
+    }
+
+    // Método show que falta
+    public function show($id)
+    {
+        $apiario = Apiario::findOrFail($id);
+
+        // Verificar que el apiario pertenece al usuario autenticado
+        if ($apiario->user_id !== auth()->id()) {
+            return redirect()->route('apiarios.index')->with('error', 'No tienes permisos para ver este apiario.');
+        }
+
+        return view('apiarios.show', compact('apiario'));
+    }
+
+    // Método destroy que también falta (diferente al deleterApiario)
+    public function destroy($id)
+    {
+        $apiario = Apiario::where('id', $id)
+            ->where('user_id', auth()->id())
+            ->firstOrFail();
+
+        // Eliminar la foto si existe
+        if ($apiario->foto) {
+            Storage::disk('public')->delete($apiario->foto);
+        }
+
+        $apiario->delete();
+
+        return redirect()->route('apiarios.index')->with('success', 'Apiario eliminado con éxito');
+    }
 }

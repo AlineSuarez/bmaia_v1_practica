@@ -56,6 +56,7 @@ Route::middleware(['auth'])->group(function () {
             default => 'dashboard',
         });
     })->middleware(['auth']);
+    Route::get('/apiarios/create-temporal', [ApiarioController::class, 'createTemporal'])->name('apiarios.createTemporal');
     Route::resource('apiarios', ApiarioController::class);
 
     Route::resource('visita', VisitaController::class);
@@ -100,7 +101,7 @@ Route::get('login/google/callback', function () {
         $user = User::create([
             'name' => $googleUser->getName(),
             'email' => $googleUser->getEmail(),
-            'password' => bcrypt(str_random(16)), // O usa un método diferente para generar la contraseña
+            'password' => bcrypt(str_random(16)),
         ]);
     }
     // Autentica al usuario
@@ -165,14 +166,13 @@ Route::middleware(['auth'])->group(function () {
     Route::patch('/user/update-name', [UserController::class, 'updateName'])->name('user.update.name');
     //Route::patch('/user/update-avatar', [UserController::class, 'updateAvatar'])->name('user.update.avatar');
     Route::post('/user/avatar', [UserController::class, 'updateAvatar'])
-     ->name('user.updateAvatar')
-     ->middleware('auth');
+        ->name('user.updateAvatar')
+        ->middleware('auth');
     Route::patch('/user/update-password', [UserController::class, 'updatePassword'])->name('user.update.password');
     Route::post('/user/update-settings', [UserController::class, 'updateSettings'])->name('user.updateSettings');
     Route::post('/user/update-plan', [UserController::class, 'updatePlan'])->name('user.updatePlan');
     // FACTURACION
-    Route::patch('/user/settings/invoice-settings',[UserController::class, 'updateInvoiceSettings'])->name('user.update.invoiceSettings');
-    Route::get('/user/invoices',[InvoiceController::class, 'index'])->name('user.invoices');
+    Route::patch('/user/settings/invoice-settings', [UserController::class, 'updateInvoiceSettings'])->name('user.update.invoiceSettings');
     // permisos
     Route::get('/user/settings/permissions', [PermissionsController::class, 'index'])->name('permissions.index');
     Route::post('/user/settings/permissions', [PermissionsController::class, 'update'])->name('permissions.update');
@@ -193,13 +193,13 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/debug-date', function () {
         return [
-            'auth_user'     => Auth::check() ? Auth::user()->email : 'no user',
-            'date_format'   => config('app.date_format'),
-            'from_model'    => optional(Auth::user()->preference)->date_format,
+            'auth_user' => Auth::check() ? Auth::user()->email : 'no user',
+            'date_format' => config('app.date_format'),
+            'from_model' => optional(Auth::user()->preference)->date_format,
         ];
     });
 
-    
+
     // test cambio idioma
     Route::get('/test-lang', function () {
         return view('apiarios.test-lang');
