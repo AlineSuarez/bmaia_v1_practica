@@ -114,12 +114,14 @@
                 <div class="form-group mb-4">
                 <label for="default_view"><strong>Vista Predeterminada</strong></label>
                 <select class="form-select" id="default_view" name="default_view">
-                    <option value="dashboard">Panel de Control</option>
+                    <option value="home">Panel de Control</option>
                     <option value="apiaries">Apiarios</option>
-                    <option value="calendar">Calendario</option>
+                    <!--<option value="calendar">Calendario</option>-->
                     <option value="reports">Informes</option>
-                    <!--<option value="home">Inicio</option> -->
-                    <!--<option value="tasks">Tareas</option> -->
+                    <option value="cuaderno">Cuaderno de Campo</option>
+                    <option value="tareas">Tareas</option>
+                    <option value="zonificacion">Zonificación</option>
+                    <option value="sistemaexperto">Sistema Experto</option>
                 </select>
                 <small class="form-text text-muted">
                     Selecciona la pantalla que se mostrará al iniciar la aplicación.

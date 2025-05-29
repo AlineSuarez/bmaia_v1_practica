@@ -29,10 +29,15 @@ class LoginController extends Controller
 
             // Mapa de keys → route names (falta analizar que los nombres coincidan)
             $map = [
-                'dashboard' => 'dashboard',
-                'apiaries'  => 'apiarios',
-                'calendar'  => 'agenda.index',
-                'reports'   => 'reportes.index',
+                'dashboard'      => 'dashboard',
+                'apiaries'       => 'apiarios',
+                'calendar'       => 'tareas.calendario',
+                'reports'        => 'dashboard', 
+                'home'           => 'home',
+                'cuaderno'       => 'visitas.index',
+                'tareas'         => 'tareas',
+                'zonificacion'   => 'zonificacion',
+                'sistemaexperto' => 'sistemaexperto',
             ];
 
             // Si por alguna razón no existe en el mapa, vamos a dashboard
