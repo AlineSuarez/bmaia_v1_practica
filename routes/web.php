@@ -47,20 +47,21 @@ Route::get('login/google/callback', [LoginController::class, 'handleGoogleCallba
 Route::middleware(['auth'])->group(function () {
     //Route::get('/home', [ApiarioController::class, 'home'])->name('home');
     Route::get('/home', function () {
-    $default = optional(Auth::user()->preference)->default_view ?? 'dashboard';
-    $routes = [
-        'dashboard'      => 'dashboard',
-        'apiaries'       => 'apiarios',
-        'calendar'       => 'tareas.calendario',
-        'reports'        => 'dashboard',
-        'home'           => 'home',
-        'cuaderno'       => 'visitas.index',
-        'tareas'         => 'tareas',
-        'zonificacion'   => 'zonificacion',
-        'sistemaexperto' => 'sistemaexperto',
-    ];
-    return redirect()->route($routes[$default] ?? 'dashboard');
-})->middleware(['auth']);
+        $default = optional(Auth::user()->preference)->default_view ?? 'dashboard';
+        $routes = [
+            'dashboard' => 'dashboard',
+            'apiaries' => 'apiarios',
+            'calendar' => 'tareas.calendario',
+            'reports' => 'dashboard',
+            'home' => 'home',
+            'cuaderno' => 'visitas.index',
+            'tareas' => 'tareas',
+            'zonificacion' => 'zonificacion',
+            'sistemaexperto' => 'sistemaexperto',
+        ];
+        return redirect()->route($routes[$default] ?? 'dashboard');
+    })->middleware(['auth']);
+    Route::get('/apiarios/create-temporal', [ApiarioController::class, 'createTemporal'])->name('apiarios.createTemporal');
     Route::resource('apiarios', ApiarioController::class);
 
     Route::resource('visita', VisitaController::class);
