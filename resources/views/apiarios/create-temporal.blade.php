@@ -31,10 +31,24 @@
 
                 <!-- Formulario Wizard Compacto -->
                 <div class="wizard-container">
-                    <form>
+                    <form action="{{ route('apiarios.storeTrashumante') }}" method="POST">
                         @csrf
                         <input type="hidden" name="tipo" value="{{ $tipo }}">
                         <input type="hidden" name="apiarios_ids" value="{{ $apiariosData->pluck('id')->implode(',') }}">
+
+                        <div class="mb-3">
+                            <label for="nombreTemporal">Nombre Apiario Temporal</label>
+                            <input type="text" id="nombreTemporal" name="nombre" class="form-control" placeholder="Ej: Apiario trashumante Mayo 2025" required>
+                        </div>
+
+                        @foreach($apiariosData as $apiario)
+                            <input type="hidden" name="apiarios_base[]" value="{{ $apiario->id }}">
+                        @endforeach
+
+                        
+                        <input type="hidden" name="region_id" value="{{ $apiariosData->first()->region_id }}">
+                        <input type="hidden" name="comuna_id" value="{{ $apiariosData->first()->comuna_id }}">
+
 
                         <!-- PASO 1: COLMENAS -->
                         <div class="wizard-step active" id="step-1">
@@ -200,12 +214,12 @@
                                     <div class="form-row">
                                         <div class="form-col">
                                             <label>Fecha Inicio</label>
-                                            <input type="date" class="form-input" name="fecha_inicio"
+                                            <input type="date" class="form-input" name="fecha_inicio_mov"
                                                 value="{{ date('Y-m-d') }}">
                                         </div>
                                         <div class="form-col">
                                             <label>Fecha Término</label>
-                                            <input type="date" class="form-input" name="fecha_termino"
+                                            <input type="date" class="form-input" name="fecha_termino_mov"
                                                 value="{{ date('Y-m-d', strtotime('+7 days')) }}">
                                         </div>
                                         <div class="form-col">
@@ -323,7 +337,7 @@
                                         </div>
                                     </button>
 
-                                    <button type="button" class="nav-btn nav-btn-submit" id="submitBtn"
+                                    <button type="submit" class="nav-btn nav-btn-submit" id="submitBtn"
                                         style="display: none;">
                                         <div class="btn-icon">
                                             <i class="fas fa-check"></i>
@@ -533,21 +547,13 @@
             // Manejo del botón de confirmación
             submitBtn.addEventListener('click', function () {
                 const selectedColmenas = document.querySelectorAll('.colmena-check:checked');
-
                 if (selectedColmenas.length === 0) {
                     alert('Debes seleccionar al menos una colmena.');
-                    return false;
+                    return;
                 }
 
-                const confirmMessage = `¿Confirmas el {{ $tipo }} de ${selectedColmenas.length} colmenas?`;
-
-                if (confirm(confirmMessage)) {
-                    submitBtn.classList.add('loading');
-                    submitBtn.innerHTML = '<div class="btn-icon"><i class="fas fa-spinner fa-spin"></i></div><span class="btn-text">Procesando...</span>';
-
-                    setTimeout(function () {
-                        window.location.href = '{{ route("apiarios") }}';
-                    }, 2000);
+                if (!confirm(`¿Confirmas el trasl​ado de ${selectedColmenas.length} colmenas?`)) {
+                    return;
                 }
             });
 

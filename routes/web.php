@@ -3,6 +3,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\ApiarioController;
+use App\Http\Controllers\TrashumanciaController;
+
 use App\Http\Controllers\VisitaController;
 use App\Http\Controllers\DashboardController;
 use Laravel\Socialite\Facades\Socialite;
@@ -22,6 +24,7 @@ use App\Http\Controllers\AlertController;
 use App\Http\Controllers\ReminderController;
 use App\Http\Controllers\ImportantDateController;
 use App\Http\Controllers\EmergencyContactController;
+//use App\Http\Controllers\MovimientoColmenaController;
 
 //Rutas de las policies 
 Route::view('/politicas-de-privacidad', 'legal.privacidad')->name('privacidad');
@@ -61,8 +64,12 @@ Route::middleware(['auth'])->group(function () {
         ];
         return redirect()->route($routes[$default] ?? 'dashboard');
     })->middleware(['auth']);
-    Route::get('/apiarios/create-temporal', [ApiarioController::class, 'createTemporal'])->name('apiarios.createTemporal');
-    Route::resource('apiarios', ApiarioController::class);
+
+
+
+
+
+
 
     Route::resource('visita', VisitaController::class);
     Route::get('/visitas', [VisitaController::class, 'index'])->name('visitas.index');
@@ -134,6 +141,16 @@ Route::post('apiarios/editar/{id}', [ApiarioController::class, 'update'])->name(
 Route::get('comunas/{region}', [ApiarioController::class, 'getComunas']);
 Route::delete('/apiarios/delete/{apiario}', [ApiarioController::class, 'deleterApiario'])->name('apiarios.destroy');
 Route::get('/apiarios/{id}', [ApiarioController::class, 'show'])->name('apiarios.show');
+
+// Nuevo store sólo para apiarios fijos
+Route::post('/apiarios/store-fijo', [ApiarioController::class, 'storeFijo'])->name('apiarios.storeFijo');
+Route::get('/apiarios/create-temporal', [TrashumanciaController::class, 'create'])->name('apiarios.createTemporal');
+Route::post('/apiarios/store-trashumante', [TrashumanciaController::class, 'store'])->name('apiarios.storeTrashumante');
+// Archivar apiario temporal(POST)
+Route::post('/apiarios-trashumantes/{id}/archivar', [TrashumanciaController::class, 'archivar'])->name('apiarios-trashumantes.archivar');
+
+// 1.3 Movimientos de colmenas 
+//Route::post('/movimientos-colmena', [MovimientoColmenaController::class, 'store'])->name('movimientos-colmena.store');
 
 // Historial de visitas de un apiario
 Route::get('apiarios/{apiario}/visitas', [VisitaController::class, 'showHistorial'])->name('visitas.historial');

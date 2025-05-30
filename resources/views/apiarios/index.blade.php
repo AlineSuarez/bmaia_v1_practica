@@ -46,7 +46,7 @@
                 <!-- Tabla de Apiarios Fijos -->
                 <div class="apiarios-table-wrapper">
                     <div class="table-responsive">
-                        @if(count($apiarios) > 0)
+                        @if(count($apiariosFijos) > 0)
                             <table id="apiariosTable" class="apiarios-table">
                                 <thead>
                                     <tr>
@@ -70,7 +70,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach ($apiarios as $apiario)
+                                    @foreach ($apiariosFijos as $apiario)
                                         <tr>
                                             <td class="text-center">
                                                 <label class="custom-checkbox">
@@ -168,7 +168,7 @@
                     </h3>
                     <div class="apiarios-table-wrapper">
                         <div class="table-responsive">
-                            @if(count($apiarios) > 0)
+                            @if(count($apiariosBase) > 0)
                                 <table id="apiariosTableTrashumante" class="apiarios-table">
                                     <thead>
                                         <tr>
@@ -192,7 +192,7 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @foreach ($apiarios as $apiario)
+                                        @foreach ($apiariosBase as $apiario)
                                             <tr>
                                                 <td class="text-center">
                                                     <label class="custom-checkbox">
@@ -299,18 +299,33 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {{-- Aquí irían los datos de los apiarios temporales cuando los tengas --}}
-                                    {{-- Por ahora muestro un ejemplo de fila vacía --}}
-                                    <tr>
-                                        <td colspan="10" class="text-center text-muted">
-                                            <div class="empty-state">
-                                                <div class="empty-state-icon">
-                                                    <i class="fas fa-calendar-times"></i>
-                                                </div>
-                                                <h3 class="empty-state-text">No hay movimientos temporales registrados</h3>
-                                            </div>
-                                        </td>
-                                    </tr>
+                                    @forelse($apiariosTemporales as $apiario)
+                                        <tr>
+                                            <td class="text-center">{{ $apiario->nombre }}</td>
+                                            <td class="text-center">{{ $apiario->num_colmenas }}</td>
+                                            <td class="text-center">
+                                                {{ optional(optional($apiario->comuna)->region)->nombre ?? 'N/A' }}
+                                            </td>
+                                            <td class="text-center">
+                                                {{ optional($apiario->comuna)->nombre ?? 'N/A' }}
+                                            </td>
+                                            <td class="text-center">
+                                                {{ $apiario->created_at->format('Y-m-d') }}
+                                            </td>
+                                            <td class="text-center">
+                                                <form action="{{ route('apiarios-trashumantes.archivar', $apiario->id) }}" method="POST">
+                                                    @csrf
+                                                    <button class="btn btn-warning btn-sm">Archivar</button>
+                                                </form>
+                                            </td>
+                                        </tr>
+                                        @empty
+                                        <tr>
+                                            <td colspan="6" class="text-center text-muted">
+                                            No hay apiarios temporales
+                                            </td>
+                                        </tr>
+                                        @endforelse
                                 </tbody>
                             </table>
                         </div>
@@ -385,7 +400,7 @@
     </div>
 
     <!-- Modal de confirmacion para un apiario individual -->
-    @foreach ($apiarios as $apiario)
+    @foreach ($apiariosFijos as $apiario)
         <div class="modal fade custom-modal" id="deleteModal{{ $apiario->id }}" tabindex="-1"
             aria-labelledby="deleteModalLabel{{ $apiario->id }}" aria-hidden="true">
             <div class="modal-dialog">

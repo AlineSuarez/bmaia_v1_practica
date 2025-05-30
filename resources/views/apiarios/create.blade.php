@@ -33,7 +33,7 @@
         <!-- Contenedor global para tooltips -->
         <div id="tooltip-container"></div>
 
-        <form action="{{ route('apiarios.store') }}" method="POST" enctype="multipart/form-data" class="fade-in-up">
+        <form action="{{ route('apiarios.storeFijo') }}" method="POST" enctype="multipart/form-data" class="fade-in-up">
             @csrf
             <div class="honeycomb-bg"></div>
 
@@ -64,8 +64,15 @@
                     <label for="registro_sag">
                         <i class="fas fa-id-card fa-fw"></i> N° Registro SAG (FRADA)
                     </label>
-                    <input type="text" class="form-control" id="registro_sag" name="registro_sag" required
-                        placeholder="Ingrese el número de registro">
+                    <input
+                        type="text"
+                        name="registro_sag"
+                        id="registro_sag"
+                        class="form-control"
+                        placeholder="Ej: FJ-001, TR-002"
+                        value="{{ old('registro_sag') }}"
+                        required
+                    >
                     <div class="custom-tooltip" data-tooltip-for="registro_sag">Ingresa el número de registro oficial
                         asignado por el SAG (FRADA).</div>
                 </div>
@@ -86,10 +93,12 @@
                     <label for="tipo_apiario">
                         <i class="fas fa-tags fa-fw"></i> Tipo de Apiario
                     </label>
-                    <input type="text" class="form-control" id="tipo_apiario" name="tipo_apiario" required
-                        placeholder="Ej: Producción, Polinización">
-                    <div class="custom-tooltip" data-tooltip-for="tipo_apiario">Especifica el tipo de apiario según su
-                        función principal (producción, polinización, etc).</div>
+                    <select name="tipo_apiario" id="tipo_apiario" class="form-control" required>
+                        <option value="">Seleccionar tipo...</option>
+                        <option value="fijo"        {{ old('tipo_apiario') == 'fijo' ? 'selected' : '' }}>Fijo</option>
+                        <option value="trashumante" {{ old('tipo_apiario') == 'trashumante' ? 'selected' : '' }}>Trashumante</option>
+                    </select>
+                    
                 </div>
             </div>
 
@@ -99,8 +108,16 @@
                     <label for="tipo_manejo">
                         <i class="fas fa-cogs fa-fw"></i> Tipo de Manejo
                     </label>
-                    <input type="text" class="form-control" id="tipo_manejo" name="tipo_manejo" required
-                        placeholder="Ej: Orgánico, Convencional">
+                    <input
+                        type="text"
+                        name="tipo_manejo"
+                        id="tipo_manejo"
+                        class="form-control"
+                        placeholder="Convencional, Orgánico..."
+                        value="{{ old('tipo_manejo') }}"
+                        required
+                    >
+
                     <div class="custom-tooltip" data-tooltip-for="tipo_manejo">Define el método de manejo que utilizas en
                         este apiario.</div>
                 </div>
@@ -108,8 +125,15 @@
                     <label for="objetivo_produccion">
                         <i class="fas fa-bullseye fa-fw"></i> Objetivo de Producción
                     </label>
-                    <input type="text" class="form-control" id="objetivo_produccion" name="objetivo_produccion" required
-                        placeholder="Ej: Miel, Polen, Propóleo">
+                    <input
+                        type="text"
+                        name="objetivo_produccion"
+                        id="objetivo_produccion"
+                        class="form-control"
+                        placeholder="Producción, Polinización..."
+                        value="{{ old('objetivo_produccion') }}"
+                        required
+                    >
                     <div class="custom-tooltip" data-tooltip-for="objetivo_produccion">Indica los productos principales que
                         esperas obtener de este apiario.</div>
                 </div>
@@ -140,6 +164,17 @@
                     <div class="custom-tooltip" data-tooltip-for="comuna">Selecciona la comuna específica donde se encuentra
                         el apiario.</div>
                 </div>
+                <div class="form-group">
+                <label for="localizacion">Localización (dirección o referencia)</label>
+                <input
+                    type="text"
+                    name="localizacion"
+                    id="localizacion"
+                    class="form-control"
+                    placeholder="Ej: Camino a…"
+                    value="{{ old('localizacion') }}"
+                >
+                </div>
             </div>
 
             <!-- Mapa y coordenadas -->
@@ -158,13 +193,29 @@
                         <label for="latitud">
                             <i class="fas fa-compass fa-fw"></i> Latitud
                         </label>
-                        <input type="text" class="form-control" id="latitud" name="latitud" readonly required>
+                        <input
+                            type="number"
+                            step="any"
+                            name="latitud"
+                            id="latitud"
+                            class="form-control"
+                            value="{{ old('latitud') }}"
+                            required
+                        >
                     </div>
                     <div class="form-group col-md-6">
                         <label for="longitud">
                             <i class="fas fa-compass fa-fw"></i> Longitud
                         </label>
-                        <input type="text" class="form-control" id="longitud" name="longitud" readonly required>
+                        <input
+                            type="number"
+                            step="any"
+                            name="longitud"
+                            id="longitud"
+                            class="form-control"
+                            value="{{ old('longitud') }}"
+                            required
+                        >
                     </div>
                 </div>
             </div>
@@ -191,7 +242,7 @@
             <!-- Botón de envío -->
             <div class="text-center mt-4">
                 <button type="submit" class="btn btn-gold gold-shine">
-                    <i class="fas fa-plus-circle"></i> Agregar Apiario
+                    <i class="fas fa-plus-circle"></i> Agregar Apiario Fijo
                 </button>
             </div>
 

@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Comuna;
+
 class Apiario extends Model
 {
     use HasFactory;
@@ -25,7 +26,9 @@ class Apiario extends Model
         'localizacion', // Agregar esta línea
         'nombre',//
         'nombre_comuna',//
-        'url'
+        'url',
+        'activo',
+        'es_temporal'
     
     ];
  
@@ -47,5 +50,39 @@ class Apiario extends Model
         return $this->belongsTo(Comuna::class);
     }
 
+    public function colmenas()
+    {
+        return $this->hasMany(Colmena::class);
+    }
+
+    public function movimientosOrigen()
+    {
+        return $this->hasMany(MovimientoColmena::class, 'apiario_origen_id');
+    }
+
+    public function movimientosDestino()
+    {
+        return $this->hasMany(MovimientoColmena::class, 'apiario_destino_id');
+    }
+
+
+ //metodos para archivar apiario temporal
+    public function debeArchivarse()
+    {
+        if ($this->tipo_apiario !== 'trashumante' || !$this->activo) {
+            return false;
+        }
+
+        foreach ($this->colmenas as $colmena) {
+            $ultimo = $colmena->movimientos()
+                              ->latest('fecha_movimiento')
+                              ->first();
+            if (!$ultimo || $ultimo->tipo_movimiento !== 'retorno') {
+                return false;
+            }
+        }
+
+        return true;
+    }
 
 }

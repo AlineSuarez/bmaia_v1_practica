@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use App\Models\Apiario;
@@ -10,30 +9,36 @@ class ColmenaController extends Controller
 {
     public function index(Apiario $apiario)
     {
-        return view('colmenas.index', ['apiario' => $apiario, 'colmenas' => $apiario->colmenas]);
+        $colmenas = $apiario->colmenas;
+        return view('colmenas.index', compact('apiario', 'colmenas'));
     }
 
     public function create(Apiario $apiario)
     {
-        return view('colmenas.create', ['apiario' => $apiario]);
+        return view('colmenas.create', compact('apiario'));
     }
 
     public function store(Request $request, Apiario $apiario)
     {
         $validated = $request->validate([
-            'nombre' => 'required|string',
-            'estado_inicial' => 'required|string',
-            'numero_marcos' => 'required|integer',
-            'observaciones' => 'nullable|string',
+            'codigo_qr' => 'required|unique:colmenas',
+            'color_etiqueta' => 'required|string',
+            'numero' => 'required|string',
         ]);
 
         $apiario->colmenas()->create($validated);
 
-        return redirect()->route('apiarios.show', $apiario)->with('success', 'Colmena registrada correctamente.');
+        return redirect()->route('colmenas.index', $apiario->id)->with('success', 'Colmena creada');
     }
 
     public function show(Apiario $apiario, Colmena $colmena)
     {
-        return view('colmenas.show', ['apiario' => $apiario, 'colmena' => $colmena]);
+        return view('colmenas.show', compact('apiario', 'colmena'));
+    }
+    
+    public function historial(Apiario $apiario, Colmena $colmena)
+    {
+        $movimientos = $colmena->movimientos()->with(['origen', 'destino'])->orderByDesc('fecha_movimiento')->get();
+        return view('colmenas.historial', compact('colmena', 'apiario', 'movimientos'));
     }
 }

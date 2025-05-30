@@ -1,19 +1,23 @@
 <?php
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Colmena extends Model
 {
-    use HasFactory;
+    use SoftDeletes;
 
     protected $fillable = [
         'apiario_id',
-        'nombre',
-        'estado_inicial',
-        'numero_marcos',
-        'observaciones',
+        'codigo_qr',
+        'color_etiqueta',
+        'numero',
+        'historial',
+    ];
+
+    protected $casts = [
+        'historial' => 'array',
     ];
 
     public function apiario()
@@ -21,8 +25,8 @@ class Colmena extends Model
         return $this->belongsTo(Apiario::class);
     }
 
-    public function visitas()
+    public function movimientos()
     {
-        return $this->hasMany(Visita::class);
+        return $this->hasMany(MovimientoColmena::class);
     }
 }
