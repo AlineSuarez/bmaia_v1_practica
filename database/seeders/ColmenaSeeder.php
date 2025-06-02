@@ -20,9 +20,13 @@ class ColmenaSeeder extends Seeder
                     'nombre'         => "Colmena {$i} del apiario {$apiario->id}",
                     'codigo_qr'      => Str::uuid(),
                     'color_etiqueta' => fake()->safeHexColor(),
-                    'numero'         => $i,
-                    'estado_inicial' => 'saludable',      // ← aquí el valor por defecto
-                    'historial'      => [],
+                    'numero'         => (string)$i,
+                    'estado_inicial' => 'saludable',
+                    'numero_marcos'  => rand(6, 10), // Valor realista
+                    'observaciones'  => 'Generada por Seeder',
+                    'historial'      => json_encode([]),
+                    'created_at'     => now(),
+                    'updated_at'     => now(),
                 ]);
             }
         }

@@ -10,6 +10,26 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
     </head>
 
+
+    <!-- Botones de acciones -->
+                <div class="action-buttons">
+                    <a href="{{ route('apiarios.create') }}" class="action-button primary"
+                        data-tooltip="Crear nuevo apiario">
+                        <i class="fas fa-plus-circle"></i> Nuevo Apiario
+                    </a>
+                    <button id="multiDeleteButton" class="action-button danger" disabled
+                        data-tooltip="Eliminar seleccionados">
+                        <i class="fas fa-trash-alt"></i> Eliminar seleccionados
+                    </button>
+                    <!-- Botones de acciones para trashumantes -->
+                    <button id="createTemporalButton" class="action-button success" disabled
+                        data-tooltip="Mover Colmenas">
+                        <i class="fas fa-route"></i> Crear Apiario Temporal
+                    </button>
+                
+                </div>
+
+
     <div class="apiarios-container animated-element hexagon-bg">
         <!-- Pestañas de navegación -->
         <ul class="nav nav-tabs" id="apiariosTab" role="tablist">
@@ -31,17 +51,7 @@
         <div class="tab-content" id="apiariosTabContent">
             <!-- Pestaña Apiarios Fijos -->
             <div class="tab-pane fade show active" id="fijos" role="tabpanel" aria-labelledby="fijos-tab">
-                <!-- Botones de acciones -->
-                <div class="action-buttons">
-                    <a href="{{ route('apiarios.create') }}" class="action-button primary"
-                        data-tooltip="Crear nuevo apiario">
-                        <i class="fas fa-plus-circle"></i> Nuevo Apiario
-                    </a>
-                    <button id="multiDeleteButton" class="action-button danger" disabled
-                        data-tooltip="Eliminar seleccionados">
-                        <i class="fas fa-trash-alt"></i> Eliminar seleccionados
-                    </button>
-                </div>
+                
 
                 <!-- Tabla de Apiarios Fijos -->
                 <div class="apiarios-table-wrapper">
@@ -153,13 +163,7 @@
 
             <!-- Pestaña Apiarios Trashumantes -->
             <div class="tab-pane fade" id="trashumantes" role="tabpanel" aria-labelledby="trashumantes-tab">
-                <!-- Botones de acciones para trashumantes -->
-                <div class="action-buttons">
-                    <button id="createTemporalButton" class="action-button success" disabled
-                        data-tooltip="Crear apiario temporal con seleccionados">
-                        <i class="fas fa-route"></i> Crear Apiario Temporal
-                    </button>
-                </div>
+                
 
                 <!-- Tabla de Apiarios Trashumantes -->
                 <div class="table-section">
