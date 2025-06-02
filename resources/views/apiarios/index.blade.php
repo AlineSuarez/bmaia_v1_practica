@@ -17,16 +17,6 @@
                         data-tooltip="Crear nuevo apiario">
                         <i class="fas fa-plus-circle"></i> Nuevo Apiario
                     </a>
-                    <button id="multiDeleteButton" class="action-button danger" disabled
-                        data-tooltip="Eliminar seleccionados">
-                        <i class="fas fa-trash-alt"></i> Eliminar seleccionados
-                    </button>
-                    <!-- Botones de acciones para trashumantes -->
-                    <button id="createTemporalButton" class="action-button success" disabled
-                        data-tooltip="Mover Colmenas">
-                        <i class="fas fa-route"></i> Crear Apiario Temporal
-                    </button>
-                
                 </div>
 
 
@@ -36,13 +26,13 @@
             <li class="nav-item" role="presentation">
                 <button class="nav-link active" id="fijos-tab" data-bs-toggle="tab" data-bs-target="#fijos" type="button"
                     role="tab" aria-controls="fijos" aria-selected="true">
-                    <i class="fas fa-warehouse"></i> Apiarios Fijos
+                    <i class="fas fa-warehouse"></i> Apiarios Fijos/Permanentes
                 </button>
             </li>
             <li class="nav-item" role="presentation">
                 <button class="nav-link" id="trashumantes-tab" data-bs-toggle="tab" data-bs-target="#trashumantes"
                     type="button" role="tab" aria-controls="trashumantes" aria-selected="false">
-                    <i class="fas fa-truck"></i> Apiarios Trashumantes
+                    <i class="fas fa-truck"></i> Apiarios Temporales
                 </button>
             </li>
         </ul>
@@ -166,13 +156,24 @@
             </div>
 
             <!-- Pestaña Apiarios Trashumantes -->
+
+            <!-- Botones de acciones para trashumantes -->
+            <div class="action-buttons">
+                <button id="createTemporalButton" class="action-button success" disabled
+                        data-tooltip="Mover Colmenas">
+                        <i class="fas fa-route"></i> Crear Apiario Temporal
+                    </button>
+            </div>
+
+            
+                    
             <div class="tab-pane fade" id="trashumantes" role="tabpanel" aria-labelledby="trashumantes-tab">
                 
 
                 <!-- Tabla de Apiarios Trashumantes -->
                 <div class="table-section">
                     <h3 class="table-title">
-                        <i class="fas fa-truck"></i> Apiarios Trashumantes
+                        <i class="fas fa-truck"></i> Apiarios Base
                     </h3>
                     <div class="apiarios-table-wrapper">
                         <div class="table-responsive">
