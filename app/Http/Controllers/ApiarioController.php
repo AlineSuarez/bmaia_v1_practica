@@ -22,18 +22,20 @@ class ApiarioController extends Controller
             ->get();
 
         // 2) Trashumantes “base” (NO temporales)
-        $apiariosBase = Apiario::where('user_id', $userId)
-                                ->where('tipo_apiario','trashumante')
-                                ->where('activo',1)
-                                ->where('es_temporal',false)    // ← filtrar aquí
-                                ->get();
+        $apiariosBase = Apiario::with('comuna') 
+            ->where('user_id', $userId)
+            ->where('tipo_apiario','trashumante')
+            ->where('activo',1)
+            ->where('es_temporal',false)
+            ->get();
 
-        // 3) Apiarios temporales (los que creaste con el wizard)
-        $apiariosTemporales = Apiario::where('user_id', $userId)
-                                    ->where('tipo_apiario','trashumante')
-                                    ->where('activo',1)
-                                    ->where('es_temporal',true)  // ← y aquí
-                                    ->get();
+        // 3) Apiarios temporales
+        $apiariosTemporales = Apiario::with('comuna.region') // ← AÑADIR RELACIÓN COMPLETA
+            ->where('user_id', $userId)
+            ->where('tipo_apiario','trashumante')
+            ->where('activo',1)
+            ->where('es_temporal',true)
+            ->get();
 
         return view('apiarios.index', compact(
             'apiariosFijos',

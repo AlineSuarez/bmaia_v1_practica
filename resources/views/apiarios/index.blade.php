@@ -107,8 +107,12 @@
                                             <td class="text-center">
                                                 <span class="tag tag-warning">{{ $apiario->objetivo_produccion }}</span>
                                             </td>
-                                            <td class="text-center">{{ $apiario->nombre_comuna ? $apiario->comuna->nombre : 'N/A' }}
+                                            
+                                            <td class="text-center">
+                                                {{ $apiario->comuna && $apiario->comuna->nombre ? $apiario->comuna->nombre : 'N/A' }}
                                             </td>
+
+
                                             <td class="text-center">
                                                 <div class="location-info">
                                                     <span class="coordinates">{{ $apiario->latitud }},
@@ -225,7 +229,7 @@
                                                     <span class="tag tag-warning">{{ $apiario->objetivo_produccion }}</span>
                                                 </td>
                                                 <td class="text-center">
-                                                    {{ $apiario->nombre_comuna ? $apiario->comuna->nombre : 'N/A' }}
+                                                    {{ $apiario->comuna && $apiario->comuna->nombre ? $apiario->comuna->nombre : 'N/A' }}
                                                 </td>
                                                 <td class="text-center">
                                                     <div class="location-info">

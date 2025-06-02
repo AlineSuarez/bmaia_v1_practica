@@ -73,7 +73,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/apiarios/store-fijo', [ApiarioController::class, 'storeFijo'])->name('apiarios.storeFijo');
     Route::post('/apiarios/store-trashumante', [TrashumanciaController::class, 'store'])->name('apiarios.storeTrashumante');
     //Route::post('/apiarios-trashumantes/{id}/archivar', [TrashumanciaController::class, 'archivar'])->name('apiarios-trashumantes.archivar');
-
+    //Route::post('/apiarios/store-temporal')
 
 
     Route::resource('visita', VisitaController::class);

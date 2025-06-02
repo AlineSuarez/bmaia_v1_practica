@@ -30,7 +30,7 @@ class TrashumanciaController extends Controller
 
             'colmenas'           => 'nullable|array',
             'colmenas'           => 'nullable|array',
-            'colmenas.*'         => 'integer|exists:colmenas,id',
+            'colmenas.*'         => 'integer',
 
             
             'fecha_inicio_mov'     => 'required|date',
