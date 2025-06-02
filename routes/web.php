@@ -4,7 +4,6 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\ApiarioController;
 use App\Http\Controllers\TrashumanciaController;
-
 use App\Http\Controllers\VisitaController;
 use App\Http\Controllers\DashboardController;
 use Laravel\Socialite\Facades\Socialite;
@@ -24,6 +23,7 @@ use App\Http\Controllers\AlertController;
 use App\Http\Controllers\ReminderController;
 use App\Http\Controllers\ImportantDateController;
 use App\Http\Controllers\EmergencyContactController;
+//use App\Http\Controllers\MovimientoColmenaController;
 //use App\Http\Controllers\MovimientoColmenaController;
 
 //Rutas de las policies 
@@ -64,9 +64,6 @@ Route::middleware(['auth'])->group(function () {
         ];
         return redirect()->route($routes[$default] ?? 'dashboard');
     })->middleware(['auth']);
-
-
-
 
     Route::get('/apiarios/create-temporal', [TrashumanciaController::class, 'create'])->name('apiarios.createTemporal');
     Route::resource('apiarios', ApiarioController::class);

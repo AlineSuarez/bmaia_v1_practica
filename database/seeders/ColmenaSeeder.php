@@ -16,17 +16,17 @@ class ColmenaSeeder extends Seeder
         foreach ($apiarios as $apiario) {
             for ($i = 1; $i <= 5; $i++) {
                 Colmena::create([
-                    'apiario_id'     => $apiario->id,
-                    'nombre'         => "Colmena {$i} del apiario {$apiario->id}",
-                    'codigo_qr'      => Str::uuid(),
+                    'apiario_id' => $apiario->id,
+                    'nombre' => "Colmena {$i} del apiario {$apiario->id}",
+                    'codigo_qr' => Str::uuid(),
                     'color_etiqueta' => fake()->safeHexColor(),
-                    'numero'         => (string)$i,
+                    'numero' => (string) $i,
                     'estado_inicial' => 'saludable',
-                    'numero_marcos'  => rand(6, 10), // Valor realista
-                    'observaciones'  => 'Generada por Seeder',
-                    'historial'      => json_encode([]),
-                    'created_at'     => now(),
-                    'updated_at'     => now(),
+                    'numero_marcos' => rand(6, 10), // Valor realista
+                    'observaciones' => 'Generada por Seeder',
+                    'historial' => json_encode([]),
+                    'created_at' => now(),
+                    'updated_at' => now(),
                 ]);
             }
         }
