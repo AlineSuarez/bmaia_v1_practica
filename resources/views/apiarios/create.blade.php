@@ -33,7 +33,7 @@
         <!-- Contenedor global para tooltips -->
         <div id="tooltip-container"></div>
 
-        <form action="{{ route('apiarios.storeFijo') }}" method="POST" enctype="multipart/form-data" class="fade-in-up">
+        <form action="{{ route('apiarios.store') }}" method="POST" enctype="multipart/form-data" class="fade-in-up">
             @csrf
             <div class="honeycomb-bg"></div>
 

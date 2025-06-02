@@ -157,6 +157,12 @@
 
             <!-- Pestaña Apiarios Trashumantes -->
 
+            
+
+            
+                    
+            <div class="tab-pane fade" id="trashumantes" role="tabpanel" aria-labelledby="trashumantes-tab">
+                
             <!-- Botones de acciones para trashumantes -->
             <div class="action-buttons">
                 <button id="createTemporalButton" class="action-button success" disabled
@@ -164,11 +170,6 @@
                         <i class="fas fa-route"></i> Crear Apiario Temporal
                     </button>
             </div>
-
-            
-                    
-            <div class="tab-pane fade" id="trashumantes" role="tabpanel" aria-labelledby="trashumantes-tab">
-                
 
                 <!-- Tabla de Apiarios Trashumantes -->
                 <div class="table-section">
