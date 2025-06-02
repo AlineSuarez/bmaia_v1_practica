@@ -28,7 +28,8 @@ class Apiario extends Model
         'nombre_comuna',//
         'url',
         'activo',
-        'es_temporal'
+        'es_temporal',
+        'foto'
     
     ];
  

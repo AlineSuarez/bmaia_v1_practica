@@ -242,7 +242,7 @@
             <!-- Botón de envío -->
             <div class="text-center mt-4">
                 <button type="submit" class="btn btn-gold gold-shine">
-                    <i class="fas fa-plus-circle"></i> Agregar Apiario Fijo
+                    <i class="fas fa-plus-circle"></i> Agregar Apiario 
                 </button>
             </div>
 

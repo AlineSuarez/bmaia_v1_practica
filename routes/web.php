@@ -67,8 +67,7 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/apiarios/create-temporal', [TrashumanciaController::class, 'create'])->name('apiarios.createTemporal');
     Route::resource('apiarios', ApiarioController::class);
-    Route::post('/apiarios/store-fijo', [ApiarioController::class, 'storeFijo'])->name('apiarios.storeFijo');
-    Route::post('/apiarios/store-trashumante', [TrashumanciaController::class, 'store'])->name('apiarios.storeTrashumante');
+    
     //Route::post('/apiarios-trashumantes/{id}/archivar', [TrashumanciaController::class, 'archivar'])->name('apiarios-trashumantes.archivar');
     //Route::post('/apiarios/store-temporal')
 

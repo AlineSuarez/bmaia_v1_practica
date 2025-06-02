@@ -31,7 +31,7 @@
 
                 <!-- Formulario Wizard Compacto -->
                 <div class="wizard-container">
-                    <form id="form-temporal" action="{{ route('apiarios.storeTrashumante') }}" method="POST">
+                    <form id="form-temporal" action="{{ route('apiarios.store') }}" method="POST">
                         @csrf
                         <input type="hidden" name="tipo" value="{{ $tipo }}">
                         <input type="hidden" name="apiarios_ids" value="{{ $apiariosData->pluck('id')->implode(',') }}">

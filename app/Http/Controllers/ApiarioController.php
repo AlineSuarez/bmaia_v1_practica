@@ -22,55 +22,24 @@ class ApiarioController extends Controller
             ->get();
 
         // 2) Trashumantes “base” (NO temporales)
-        $apiariosBase = Apiario::with('comuna') 
-            ->where('user_id', $userId)
-            ->where('tipo_apiario','trashumante')
-            ->where('activo',1)
-            ->where('es_temporal',false)
-            ->get();
+        $apiariosBase = Apiario::where('user_id', $userId)
+                                ->where('tipo_apiario','trashumante')
+                                ->where('activo',1)
+                                ->where('es_temporal',false)    // ← filtrar aquí
+                                ->get();
 
-        // 3) Apiarios temporales
-        $apiariosTemporales = Apiario::with('comuna.region') // ← AÑADIR RELACIÓN COMPLETA
-            ->where('user_id', $userId)
-            ->where('tipo_apiario','trashumante')
-            ->where('activo',1)
-            ->where('es_temporal',true)
-            ->get();
+        // 3) Apiarios temporales (los que creaste con el wizard)
+        $apiariosTemporales = Apiario::where('user_id', $userId)
+                                    ->where('tipo_apiario','trashumante')
+                                    ->where('activo',1)
+                                    ->where('es_temporal',true)  // ← y aquí
+                                    ->get();
 
         return view('apiarios.index', compact(
             'apiariosFijos',
             'apiariosBase',
             'apiariosTemporales'
         ));
-
-        /*
-        // 2) Base (trashumantes activos)
-        $apiariosBase = Apiario::with('comuna')
-            ->where('user_id', $userId)
-            ->where('tipo_apiario', 'trashumante')
-            ->where('activo', 1)
-            ->get();
-        // 3) Temporales (trashumantes inactivos; o bien, los que ya fueron retornados)
-        $apiariosTemporales = MovimientoColmena::with([
-            'colmena.apiario.comuna',
-            'colmena.apiario.user', // si lo necesitas para el nombre del apicultor
-        ])
-        ->orderBy('fecha_movimiento','desc')
-        ->get();
-
-        // 4) Archivados (cualquier apiario con activo = 0, si quieres distinguirlos de los temporales)
-        $apiariosArchivados = Apiario::with('comuna')
-            ->where('user_id', $userId)
-            ->where('activo', 0)
-            ->get();
-
-        return view('apiarios.index', compact(
-            'apiariosFijos',
-            'apiariosBase',
-            'apiariosTemporales',
-            'apiariosArchivados'
-        ));
-        */
     }
 
     // Mostrar formulario para crear un nuevo apiario
@@ -90,7 +59,7 @@ class ApiarioController extends Controller
     }
 
     // Guardar un nuevo apiario
-    public function storeFijo(Request $request)
+    public function store(Request $request)
     {
         // 1) validamos y recogemos en $data
         $data = $request->validate([
@@ -106,7 +75,8 @@ class ApiarioController extends Controller
             'latitud'              => 'required|numeric',
             'longitud'             => 'required|numeric',
             'localizacion'         => 'nullable|string',
-            'foto'                 => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:5120',
+
         ]);
 
         // 2) completamos campos extra
@@ -120,8 +90,7 @@ class ApiarioController extends Controller
 
         // 3) manejo de la foto
         if ($request->hasFile('foto')) {
-            $data['foto'] = $request->file('foto')
-                                ->store('fotos_apiarios','public');
+            $data['foto'] = $request->file('foto')->store('fotos_apiarios','public');
         }
 
         // 4) creamos el modelo de una
