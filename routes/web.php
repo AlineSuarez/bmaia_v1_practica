@@ -3,6 +3,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\ApiarioController;
+use App\Http\Controllers\ColmenaController;
 use App\Http\Controllers\TrashumanciaController;
 use App\Http\Controllers\VisitaController;
 use App\Http\Controllers\DashboardController;
@@ -67,7 +68,7 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/apiarios/create-temporal', [TrashumanciaController::class, 'create'])->name('apiarios.createTemporal');
     Route::resource('apiarios', ApiarioController::class);
-    
+
     //Route::post('/apiarios-trashumantes/{id}/archivar', [TrashumanciaController::class, 'archivar'])->name('apiarios-trashumantes.archivar');
     //Route::post('/apiarios/store-temporal')
 
@@ -142,6 +143,19 @@ Route::post('apiarios/editar/{id}', [ApiarioController::class, 'update'])->name(
 Route::get('comunas/{region}', [ApiarioController::class, 'getComunas']);
 Route::delete('/apiarios/delete/{apiario}', [ApiarioController::class, 'deleterApiario'])->name('apiarios.destroy');
 Route::get('/apiarios/{id}', [ApiarioController::class, 'show'])->name('apiarios.show');
+
+// Colmenas
+Route::prefix('apiarios/{apiario}/colmenas')->name('colmenas.')->group(function () {
+    Route::get('/', [ColmenaController::class, 'index'])->name('index');
+    Route::get('/create', [ColmenaController::class, 'create'])->name('create');
+    Route::post('/', [ColmenaController::class, 'store'])->name('store');
+    Route::get('/{colmena}', [ColmenaController::class, 'show'])->name('show');
+    Route::get('/{colmena}/edit', [ColmenaController::class, 'edit'])->name('edit');
+    Route::put('/{colmena}', [ColmenaController::class, 'update'])->name('update');
+    Route::delete('/{colmena}', [ColmenaController::class, 'destroy'])->name('destroy');
+    Route::get('/{colmena}/historial', [ColmenaController::class, 'historial'])->name('historial');
+});
+
 
 
 // Historial de visitas de un apiario

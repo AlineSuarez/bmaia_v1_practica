@@ -133,6 +133,10 @@
                                                         class="btn-table-action btn-info" data-tooltip="Descargar detalle PDF">
                                                         <i class="fas fa-download"></i>
                                                     </a>
+                                                    <a href="{{ route('colmenas.index', $apiario->id) }}"
+                                                            class="btn-table-action btn-info" data-tooltip="Ver Colmenas">
+                                                            <i class="fas fa-cubes"></i>
+                                                    </a>
                                                 </div>
                                             </td>
                                         </tr>
@@ -157,10 +161,6 @@
 
             <!-- Pestaña Apiarios Trashumantes -->
 
-            
-
-            
-                    
             <div class="tab-pane fade" id="trashumantes" role="tabpanel" aria-labelledby="trashumantes-tab">
                 
             <!-- Botones de acciones para trashumantes -->
@@ -264,6 +264,10 @@
                                                         <a href="{{ route('generate.document', $apiario->id) }}"
                                                             class="btn-table-action btn-info" data-tooltip="Descargar detalle PDF">
                                                             <i class="fas fa-download"></i>
+                                                        </a>
+                                                        <a href="{{ route('colmenas.index', $apiario->id) }}"
+                                                            class="btn-table-action btn-info" data-tooltip="Ver Colmenas">
+                                                            <i class="fas fa-cubes"></i>
                                                         </a>
                                                     </div>
                                                 </td>

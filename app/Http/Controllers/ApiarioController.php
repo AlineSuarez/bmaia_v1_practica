@@ -10,6 +10,7 @@ use App\Models\Region;
 use Auth;
 use App\Models\MovimientoColmena;
 
+
 class ApiarioController extends Controller
 {
     public function index()
@@ -94,11 +95,20 @@ class ApiarioController extends Controller
         }
 
         // 4) creamos el modelo de una
-        Apiario::create($data);
-
+        $apiario = Apiario::create($data);
+        for ($i = 1; $i <= $apiario->num_colmenas; $i++) {
+            //$codigo = (string) \Str::uuid();
+            $codigo = url("/apiarios/{$apiario->id}/colmenas/{$i}"); // URL real al detalle de la colmena
+            $apiario->colmenas()->create([
+                'nombre' => 'Colmena ' . $i, // ← Esto es CLAVE
+                'numero' => (string) $i,
+                'color_etiqueta' => 'Amarillo',
+                'codigo_qr' => $codigo,
+            ]);
+        }
         return redirect()
             ->route('apiarios')
-            ->with('success','Apiario fijo creado con éxito');
+            ->with('success','Apiario creado con éxito');
     }
 
 
@@ -253,6 +263,27 @@ class ApiarioController extends Controller
             'consejo' => $consejo,
             'apiario' => $apiario->id,
         ]);
+    }
+
+    public function createTemporal(Request $request)
+    {
+        $tipo = $request->get('tipo'); // 'traslado' o 'retorno'
+        $apiarios = $request->get('apiarios'); // IDs separados por coma
+
+        if (!$apiarios) {
+            return redirect()->route('apiarios.index')->with('error', 'No se seleccionaron apiarios.');
+        }
+
+        $apiarioIds = explode(',', $apiarios);
+
+        // Obtener los datos de los apiarios seleccionados
+        $apiariosData = Apiario::whereIn('id', $apiarioIds)->get();
+
+        if ($apiariosData->isEmpty()) {
+            return redirect()->route('apiarios.index')->with('error', 'No se encontraron los apiarios seleccionados.');
+        }
+
+        return view('apiarios.create-temporal', compact('tipo', 'apiariosData'));
     }
 
     // Método show que falta
