@@ -70,10 +70,7 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('apiarios', ApiarioController::class);
 
     // trashumancia
-    //Route::get('/trashumancia/create', [TrashumanciaController::class, 'create'])->name('trashumancia.create');
     Route::post('/trashumancia/store', [TrashumanciaController::class, 'store'])->name('trashumancia.store');
-    //Route::post('/trashumancia/store-traslado', [TrashumanciaController::class, 'storeTraslado'])->name('trashumancia.storeTraslado');
-    //Route::post('/trashumancia/store-retorno', [TrashumanciaController::class, 'storeRetorno'])->name('trashumancia.storeRetorno');
     Route::post('/trashumancia/archivar/{id}', [TrashumanciaController::class, 'archivar'])->name('trashumancia.archivar');
         
 

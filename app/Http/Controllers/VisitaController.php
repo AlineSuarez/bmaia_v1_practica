@@ -118,29 +118,27 @@ class VisitaController extends Controller
 
     public function storeGeneral(Request $request, Apiario $apiario)
     {
-        
-        
-        // Lógica para guardar el registro de visita general (visitas.create1)
+        // 1) Validación básica: 'fecha' debe venir como date (YYYY-MM-DD), 'motivo' como texto.
         $validated = $request->validate([
-            'fecha' => 'required|date_format:Y-m-d',
+            'fecha'  => 'required|date', 
             'motivo' => 'required|string',
         ]);
-        $request->merge([
-            'fecha' => \Carbon\Carbon::createFromFormat(config('app.date_format'), $request->input('fecha'))->format('Y-m-d')
-        ]);
+
+        // 2) Como el input es "date", $validated['fecha'] ya es "YYYY-MM-DD", 
+        //    no hace falta hacer createFromFormat. 
+        //    Simplemente lo guardamos tal cual.
         Visita::create([
-            'apiario_id' => $apiario->id,
-            //'user_id' => auth()->id(),
+            'apiario_id'   => $apiario->id,
             'fecha_visita' => $validated['fecha'],
-            'motivo' => $validated['motivo'],
-            'tipo_visita' => 'Visita General',
-            'nombres'   => $request->user()->name,
-            'apellidos' => $request->user()->last_name,
-            'rut'       => $request->user()->rut,
-            'telefono'  => $request->user()->telefono,
-            'firma'     => $request->user()->firma,
+            'motivo'       => $validated['motivo'],
+            'tipo_visita'  => 'Visita General',
+            'nombres'      => $request->user()->name,
+            'apellidos'    => $request->user()->last_name,
+            'rut'          => $request->user()->rut,
+            'telefono'     => $request->user()->telefono,
+            'firma'        => $request->user()->firma,
         ]);
-        return redirect()->route('visitas')->with('success', 'Registro de Visita General guardado correctamente.');
+        return redirect()->route('visitas.historial', $apiario)->with('success', 'Registro de Visita General guardado correctamente.');
     }
 
     public function storeSistemaExperto(Request $request)

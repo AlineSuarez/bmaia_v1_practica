@@ -80,9 +80,12 @@
                             </span>
                             Fecha de la Visita
                         </label>
-                        <input type="date" id="fecha" name="fecha" class="field-input date-input" required
-                            value="{{ old('fecha', date('Y-m-d')) }}">
+                        <input type="date" id="fecha" name="fecha" class="form-control" required
+                            value="{{ old('fecha') }}">
                         <span class="field-helper">Seleccione la fecha de su visita al apiario</span>
+                        @error('fecha')
+                            <small class="text-danger">{{ $message }}</small>
+                        @enderror
                     </div>
 
                     <div class="form-field">

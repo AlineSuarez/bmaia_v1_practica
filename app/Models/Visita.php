@@ -10,7 +10,7 @@ class Visita extends Model
 
     protected $fillable = [
         'apiario_id',
-        'user_id', // Agregado
+        'user_id',
         'colmena_id', 
         'fecha_visita',
         'vigor_de_colmena',
@@ -30,9 +30,9 @@ class Visita extends Model
         'num_colmenas_muertas',
         'num_colmenas_inspeccionadas',
         'num_colmenas_enfermas',
-        'flujo_nectar_polen', // Agregado
-        'nombre_revisor_apiario', // Agregado
-        'sospecha_enfermedad', // Agregado
+        'flujo_nectar_polen',
+        'nombre_revisor_apiario',
+        'sospecha_enfermedad',
         'observacion_primera_visita',
         'num_colmenas_tratadas',
         'motivo_tratamiento', 
