@@ -12,25 +12,24 @@ class Apiario extends Model
 
     // Definir los atributos que pueden ser asignados masivamente
     protected $fillable = [
-        'user_id', // Relación con el usuario
+        'user_id',
         'temporada_produccion',
         'registro_sag',
         'num_colmenas',
         'tipo_apiario',
         'tipo_manejo',
         'objetivo_produccion',
-        'region_id', // Agregar esta línea
-        'comuna_id', // Agregar esta línea
-        'latitud', // Agregar esta línea
-        'longitud', // Agregar esta línea
-        'localizacion', // Agregar esta línea
-        'nombre',//
+        'region_id',
+        'comuna_id',
+        'latitud',
+        'longitud',
+        'localizacion',
+        'nombre',
         'nombre_comuna',//
         'url',
         'activo',
         'es_temporal',
         'foto'
-    
     ];
  
     /**
@@ -56,15 +55,6 @@ class Apiario extends Model
         return $this->hasMany(Colmena::class);
     }
 
-    public function movimientosOrigen()
-    {
-        return $this->hasMany(MovimientoColmena::class, 'apiario_origen_id');
-    }
-
-    public function movimientosDestino()
-    {
-        return $this->hasMany(MovimientoColmena::class, 'apiario_destino_id');
-    }
 
 
  //metodos para archivar apiario temporal
@@ -73,7 +63,6 @@ class Apiario extends Model
         if ($this->tipo_apiario !== 'trashumante' || !$this->activo) {
             return false;
         }
-
         foreach ($this->colmenas as $colmena) {
             $ultimo = $colmena->movimientos()
                               ->latest('fecha_movimiento')
@@ -82,7 +71,6 @@ class Apiario extends Model
                 return false;
             }
         }
-
         return true;
     }
 

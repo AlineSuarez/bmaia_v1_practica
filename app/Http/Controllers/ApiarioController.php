@@ -35,11 +35,18 @@ class ApiarioController extends Controller
                                     ->where('activo',1)
                                     ->where('es_temporal',true)  // ← y aquí
                                     ->get();
+        
+        // 4) Apiarios Archivados → aquellos que ya no estén activos (activo = 0)
+        $apiariosArchivados = Apiario::where('activo', 0)
+                                     ->with('comuna.region')
+                                     ->orderByDesc('updated_at')
+                                     ->get();
 
         return view('apiarios.index', compact(
             'apiariosFijos',
             'apiariosBase',
-            'apiariosTemporales'
+            'apiariosTemporales',
+            'apiariosArchivados'
         ));
     }
 

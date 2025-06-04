@@ -31,11 +31,12 @@
 
                 <!-- Formulario Wizard Compacto -->
                 <div class="wizard-container">
-                    <form id="form-temporal" action="{{ route('apiarios.store') }}" method="POST">
+                    <form id="form-temporal" action="{{ route('trashumancia.store') }}" method="POST">
                         @csrf
                         <input type="hidden" name="tipo" value="{{ $tipo }}">
-                        <input type="hidden" name="apiarios_ids" value="{{ $apiariosData->pluck('id')->implode(',') }}">
-
+                        @foreach($apiariosData as $apiario)
+                            <input type="hidden" name="apiarios_base[]" value="{{ $apiario->id }}">
+                        @endforeach
                         <div class="mb-3">
                             <label for="nombreTemporal">Nombre Apiario Temporal</label>
                             <input type="text"
@@ -46,15 +47,6 @@
                                 value="{{ old('nombre') }}"
                                 required>
                         </div>
-
-                        @foreach($apiariosData as $apiario)
-                            <input type="hidden" name="apiarios_base[]" value="{{ $apiario->id }}">
-                        @endforeach
-
-                        
-                        <input type="hidden" name="region_id" value="{{ $apiariosData->first()->region_id }}">
-                        <input type="hidden" name="comuna_id" value="{{ $apiariosData->first()->comuna_id }}">
-
 
                         <!-- PASO 1: COLMENAS -->
                         <div class="wizard-step active" id="step-1">
@@ -359,7 +351,6 @@
                                     </button>
 
                                     <button type="submit" class="nav-btn nav-btn-submit" id="submitBtn"
-                                    <button type="submit" class="nav-btn nav-btn-submit" id="submitBtn"
                                         style="display: none;">
                                         <div class="btn-icon">
                                             <i class="fas fa-check"></i>
@@ -388,295 +379,278 @@
         </div>
     </div>
 @endsection
-
 @section('optional-scripts')
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            console.log('✅ Wizard con navegación rediseñada cargado');
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    console.log('✅ Wizard con navegación rediseñada cargado');
 
-            let currentStep = 1;
-            const totalSteps = 4;
+    let currentStep = 1;
+    const totalSteps = 4;
 
-            const steps = document.querySelectorAll('.wizard-step'); 
-            const navDots = document.querySelectorAll('.nav-dot');
+    // 1) Selección de nodos en DOM
+    const steps = document.querySelectorAll('.wizard-step');
+    const navDots = document.querySelectorAll('.nav-dot');
+    const nextBtn = document.getElementById('nextBtn');
+    const prevBtn = document.getElementById('prevBtn');
+    const submitBtn = document.getElementById('submitBtn');
+    const currentStepNumber = document.getElementById('currentStepNumber');
+    const stepDescription = document.getElementById('stepDescription');
+    const progressFill = document.getElementById('progressFill');
+    const colmenasStatus = document.getElementById('colmenasStatus');
+    const validationStatus = document.getElementById('validationStatus');
+    const motivoMovimiento = document.getElementById('motivo_select');
 
-            const nextBtn = document.getElementById('nextBtn');
-            const prevBtn = document.getElementById('prevBtn');
-            const submitBtn = document.getElementById('submitBtn');
-            const currentStepNumber = document.getElementById('currentStepNumber');
-            const stepDescription = document.getElementById('stepDescription');
-            const progressFill = document.getElementById('progressFill');
-            const colmenasStatus = document.getElementById('colmenasStatus');
-            const validationStatus = document.getElementById('validationStatus');
-            const motivoSelect = document.getElementById('motivo_select');
-            const stepDescriptions = [
-                'Selecciona las colmenas para el {{ $tipo }}',
-                'Información del apicultor responsable',
-                'Ubicación origen y destino del movimiento',
-                'Detalles finales del {{ $tipo }}'
-            ];
+    // 2) Controles del Paso 3 (ubicación destino, solo si tipo == 'traslado')
+    const destinoRegion  = document.getElementById('destinoRegionSelect');
+    const destinoComuna  = document.getElementById('destinoComunaSelect');
 
-            // Controles del Paso 3 (Ubicación Destino)
-            const destinoRegion   = document.getElementById('destinoRegionSelect');
-            const destinoComuna   = document.getElementById('destinoComunaSelect');
+    // 3) Controles del Paso 4 (movimiento)
+    const fechaInicio      = document.getElementById('fecha_inicio_mov');
+    const fechaTermino     = document.getElementById('fecha_termino_mov');
 
-            // Controles del Paso 4 (Movimiento)
-            const fechaInicio       = document.getElementById('fecha_inicio_mov');
-            const fechaTermino      = document.getElementById('fecha_termino_mov');
-            const motivoMovimiento  = document.getElementById('motivo_select');
+    // 4) Campos de “Polinización” dentro de Paso 4. Inicialmente pueden estar ocultos:
+    const polinizacionSection = document.querySelector('.polinizacion-section');
+    const cultivo            = document.getElementById('cultivo');
+    const periodoFloracion   = document.getElementById('periodo_floracion');
+    const hectareas          = document.getElementById('hectareas');
 
-            // Campos «Polinización» dentro de Paso 4
-            const cultivo           = document.getElementById('cultivo');
-            const periodoFloracion  = document.getElementById('periodo_floracion');
-            const hectareas         = document.getElementById('hectareas');
-            const polinizacionSection = document.querySelector('.polinizacion-section');
+    // Función para mostrar/ocultar el paso actual y ajustar required
+    function showStep(step) {
+        // (a) Ocultar todos los .wizard-step y solo mostrar el actual
+        steps.forEach(div => div.classList.remove('active'));
+        document.getElementById(`step-${step}`).classList.add('active');
 
-            // Función para mostrar paso
-            function showStep(step) {
-            // 1) Ocultar todos los pasos, luego mostrar el que toca
-            steps.forEach(div => div.classList.remove('active'));
-            document.getElementById(`step-${step}`).classList.add('active');
+        // (b) Ajustar visibilidad de botones “Anterior” / “Siguiente” / “Confirmar”
+        prevBtn.style.display   = (step === 1)          ? 'none'         : 'inline-block';
+        nextBtn.style.display   = (step === totalSteps) ? 'none'         : 'inline-block';
+        submitBtn.style.display = (step === totalSteps) ? 'inline-block' : 'none';
 
-            // 2) Mostrar / ocultar botones Prev / Next / Submit
-            prevBtn.style.display   = (step === 1)             ? 'none'         : 'inline-block';
-            nextBtn.style.display   = (step === totalSteps)    ? 'none'         : 'inline-block';
-            submitBtn.style.display = (step === totalSteps)    ? 'inline-block' : 'none';
+        // (c) Actualizar los puntos de progreso
+        navDots.forEach((dot, idx) => {
+            dot.classList.remove('active','completed');
+            if (idx + 1 < step)    dot.classList.add('completed');
+            if (idx + 1 === step)  dot.classList.add('active');
+        });
 
-            // 3) Actualizar la barra de progreso (dots)
-            navDots.forEach((dot, idx) => {
-                dot.classList.remove('active','completed');
-                if (idx + 1 < step)      dot.classList.add('completed');
-                if (idx + 1 === step)    dot.classList.add('active');
-            });
+        // (d) Required dinámicos:
 
-            // 4) AÑADIR o QUITAR required en función del paso
-            // — Paso 3: Ubicación Destino → necesito required en destinoRegion y destinoComuna
-            if (step === 3) {
-                if (destinoRegion) destinoRegion.setAttribute('required', 'required');
-                if (destinoComuna) destinoComuna.setAttribute('required', 'required');
-            } else {
-                if (destinoRegion) destinoRegion.removeAttribute('required');
-                if (destinoComuna) destinoComuna.removeAttribute('required');
+        // → Paso 3: Ubicación Destino (solo si estamos en paso 3 y destinoRegion existe)
+        if (step === 3 && destinoRegion && destinoComuna) {
+            destinoRegion.setAttribute('required','required');
+            destinoComuna.setAttribute('required','required');
+        } else {
+            if (destinoRegion) destinoRegion.removeAttribute('required');
+            if (destinoComuna) destinoComuna.removeAttribute('required');
+        }
+
+        // → Paso 4: Movimiento → siempre required en fechaInicio, fechaTermino y motivoSelect
+        if (step === 4) {
+            if (fechaInicio)      fechaInicio.setAttribute('required','required');
+            if (fechaTermino)     fechaTermino.setAttribute('required','required');
+            if (motivoMovimiento) motivoMovimiento.setAttribute('required','required');
+        } else {
+            if (fechaInicio)      fechaInicio.removeAttribute('required');
+            if (fechaTermino)     fechaTermino.removeAttribute('required');
+            if (motivoMovimiento) motivoMovimiento.removeAttribute('required');
+        }
+
+        // → Paso 4 + Motivo == “Polinización” → cultivar / periodo_floracion / hectareas required
+        if (step === 4 && motivoMovimiento?.value === 'Polinización') {
+            if (cultivo)           cultivo.setAttribute('required','required');
+            if (periodoFloracion)  periodoFloracion.setAttribute('required','required');
+            if (hectareas)         hectareas.setAttribute('required','required');
+        } else {
+            if (cultivo)           cultivo.removeAttribute('required');
+            if (periodoFloracion)  periodoFloracion.removeAttribute('required');
+            if (hectareas)         hectareas.removeAttribute('required');
+        }
+    }
+
+    // 5) Botón “Siguiente” → avanza paso (con validación interna en paso 1)
+    nextBtn.addEventListener('click', function () {
+        if (currentStep === 1) {
+            const selCount = document.querySelectorAll('.colmena-check:checked').length;
+            if (selCount === 0) {
+                alert('Debes seleccionar al menos una colmena.');
+                return;
             }
+        }
+        if (currentStep < totalSteps) {
+            currentStep++;
+            showStep(currentStep);
+        }
+    });
 
-            // — Paso 4: Movimiento → agregar required a fechaInicio, fechaTermino y motivoMovimiento
-            if (step === 4) {
-                if (fechaInicio) fechaInicio.setAttribute('required', 'required');
-                if (fechaTermino) fechaTermino.setAttribute('required', 'required');
-                if (motivoMovimiento) motivoMovimiento.setAttribute('required', 'required');
-            } else {
-                if (fechaInicio) fechaInicio.removeAttribute('required');
-                if (fechaTermino) fechaTermino.removeAttribute('required');
-                if (motivoMovimiento) motivoMovimiento.removeAttribute('required');
-            }
+    // 6) Botón “Anterior” → retrocede paso
+    prevBtn.addEventListener('click', function () {
+        if (currentStep > 1) {
+            currentStep--;
+            showStep(currentStep);
+        }
+    });
 
+    // 7) Cuando cambia el select “motivo_movimiento” → muestro/oculto la sección Polinización
+    motivoMovimiento.addEventListener('change', function () {
+        if (this.value === 'Polinización') {
+            polinizacionSection.style.display = 'block';
+        } else {
+            polinizacionSection.style.display = 'none';
+        }
+        // Después de mostrar/ocultar, vuelvo a invocar showStep para reajustar required
+        showStep(currentStep);
+    });
 
-            // — Si estamos en Paso 4 _y_ motivo == “Polinización”, entonces esos campos deben ser required
-            const motVal = motivoMovimiento?.value || '';
-            if (step === 4 && motivoMovimiento?.value === 'Polinización') {
-                if (cultivo) cultivo.setAttribute('required','required');
-                if (periodoFloracion) periodoFloracion.setAttribute('required','required');
-                if (hectareas) hectareas.setAttribute('required','required');
-            } else {
-                if (cultivo) cultivo.removeAttribute('required');
-                if (periodoFloracion) periodoFloracion.removeAttribute('required');
-                if (hectareas) hectareas.removeAttribute('required');
+    // 8) Botón “Confirmar Traslado/Retorno” (Submit)
+    submitBtn.addEventListener('click', function (evt) {
+        evt.preventDefault(); // evitamos envío automático
+
+        // → Validar que Fecha Inicio ≤ Fecha Término
+        if (fechaInicio.value && fechaTermino.value) {
+            if (fechaInicio.value > fechaTermino.value) {
+                alert('La fecha de inicio no puede ser mayor que la fecha término.');
+                return;
             }
         }
 
-        // Al hacer clic en “Siguiente”
-        nextBtn.addEventListener('click', function () {
-            // (Opcional) Validación interna en Paso 1: al menos 1 colmena
-            if (currentStep === 1) {
+        // → Si motivo == “Polinización”, validar campos obligatorios
+        if ((motivoMovimiento?.value || '') === 'Polinización') {
+            if (!cultivo.value.trim() ||
+                !periodoFloracion.value.trim() ||
+                !hectareas.value) {
+                alert('Debes completar todos los campos de polinización.');
+                return;
+            }
+        }
+
+        // → Validar nuevamente al menos una colmena seleccionada
+        const selectedColmenas = document.querySelectorAll('.colmena-check:checked');
+        if (selectedColmenas.length === 0) {
+            alert('Debes seleccionar al menos una colmena.');
+            return;
+        }
+
+        // → Preguntar confirmación final al usuario
+        if (!confirm(`¿Confirmas el ${ '{{ $tipo }}' } de ${selectedColmenas.length} colmenas?`)) {
+            return;
+        }
+
+        // → Si todo está OK, envío el formulario al servidor
+        document.getElementById('form-temporal').submit();
+        console.log('✅ Formulario enviado correctamente');
+    });
+
+    // 9) Actualización de mensaje de validación en la barra inferior
+    function updateValidationStatus(step) {
+        switch (step) {
+            case 1:
                 const selCount = document.querySelectorAll('.colmena-check:checked').length;
-                if (selCount === 0) {
-                    alert('Debes seleccionar al menos una colmena.');
-                    return;
-                }
-            }
-
-            if (currentStep < totalSteps) {
-                currentStep++;
-                showStep(currentStep);
-            }
-        });
-
-        // Al hacer clic en “Anterior”
-        prevBtn.addEventListener('click', function () {
-            if (currentStep > 1) {
-                currentStep--;
-                showStep(currentStep);
-            }
-        });
-
-        // Al cambiar el select “motivo” (Paso 4) mostramos/ocultamos sección de polinización
-        motivoMovimiento.addEventListener('change', function () {
-            if (this.value === 'Polinización') {
-                polinizacionSection.style.display = 'block';
-            } else {
-                polinizacionSection.style.display = 'none';
-            }
-            // Y volvemos a invocar showStep para ajustar required según el nuevo motivo
-            showStep(currentStep);
-        });
-
-        // Antes de enviar (click en “Confirmar traslado”), podemos hacer chequeos extra
-        submitBtn.addEventListener('click', function (evt) {
-            evt.preventDefault(); // evita envío automático
-            // Ejemplo: fechaInicio ≤ fechaTermino
-            if (fechaInicio.value && fechaTermino.value) {
-                if (fechaInicio.value > fechaTermino.value) {
-                    evt.preventDefault();
-                    alert('La fecha de inicio no puede ser mayor que la fecha término.');
-                    return;
-                }
-            }
-
-            // Si motivo = “Polinización”, validar esos campos también
-            if ((motivoMovimiento?.value || '') === 'Polinización') {
-                if (!cultivo.value.trim() || !periodoFloracion.value.trim() || !hectareas.value) {
-                    evt.preventDefault();
-                    alert('Debes completar todos los campos de polinización.');
-                    return;
-                }
-            }
-            // Si todo está OK, dejamos que el formulario se envíe.
-             const selectedColmenas = document.querySelectorAll('.colmena-check:checked');
-                if (selectedColmenas.length === 0) {
-                    alert('Debes seleccionar al menos una colmena.');
-                    return;
-                }
-
-                if (!confirm(`¿Confirmas el traslado de ${selectedColmenas.length} colmenas?`)) {
-                    return;
-                }
-
-                document.getElementById('form-temporal').submit();
-                console.log('✅ Formulario enviado correctamente');
-
-        });
-
-
-
-            // Función para actualizar estado de validación
-            function updateValidationStatus(step) {
-                switch (step) {
-                    case 1:
-                        const selectedColmenas = document.querySelectorAll('.colmena-check:checked');
-                        if (selectedColmenas.length > 0) {
-                            validationStatus.innerHTML = '<i class="fas fa-check-circle"></i><span>Colmenas seleccionadas correctamente</span>';
-                            validationStatus.classList.add('success');
-                            validationStatus.classList.remove('warning');
-                        } else {
-                            validationStatus.innerHTML = '<i class="fas fa-exclamation-triangle"></i><span>Selecciona al menos una colmena</span>';
-                            validationStatus.classList.add('warning');
-                            validationStatus.classList.remove('success');
-                        }
-                        break;
-                    case 2:
-                        validationStatus.innerHTML = '<i class="fas fa-user-check"></i><span>Información del apicultor completa</span>';
-                        validationStatus.classList.add('success');
-                        validationStatus.classList.remove('warning');
-                        break;
-                    case 3:
-                        validationStatus.innerHTML = '<i class="fas fa-map-check"></i><span>Ubicaciones configuradas</span>';
-                        validationStatus.classList.add('success');
-                        validationStatus.classList.remove('warning');
-                        break;
-                    case 4:
-                        validationStatus.innerHTML = '<i class="fas fa-clipboard-check"></i><span>Listo para confirmar</span>';
-                        validationStatus.classList.add('success');
-                        validationStatus.classList.remove('warning');
-                        break;
-                }
-            }
-
-            
-
-            // Navegación por dots
-            document.querySelectorAll('.nav-dot').forEach((dot, index) => {
-                dot.addEventListener('click', function () {
-                    if (index + 1 <= currentStep + 1) { // Permitir ir solo a pasos completados o siguiente
-                        currentStep = index + 1;
-                        showStep(currentStep);
-                    }
-                });
-            });
-
-            // Manejo de colmenas
-            document.addEventListener('change', function (e) {
-                if (e.target.classList.contains('select-all-colmenas')) {
-                    const apiarioId = e.target.dataset.apiario;
-                    const colmenas = document.querySelectorAll(`input[data-apiario="${apiarioId}"].colmena-check`);
-                    colmenas.forEach(colmena => colmena.checked = e.target.checked);
-                    updateColmenasCount();
-                }
-
-                if (e.target.classList.contains('colmena-check')) {
-                    updateColmenasCount();
-                }
-            });
-
-            // Mostrar/ocultar sección polinización
-            if (motivoSelect) {
-                motivoSelect.addEventListener('change', function () {
-                    const polinizacionSection = document.querySelector('.polinizacion-section');
-                    if (this.value === 'polinizacion') {
-                        polinizacionSection.style.display = 'block';
-                    } else {
-                        polinizacionSection.style.display = 'none';
-                    }
-                });
-            }
-
-            // Actualizar contador de colmenas
-            function updateColmenasCount() {
-                const selectedColmenas = document.querySelectorAll('.colmena-check:checked');
-                const origenColmenasInput = document.getElementById('origen_colmenas');
-
-                if (origenColmenasInput) {
-                    origenColmenasInput.value = `${selectedColmenas.length} seleccionadas`;
-                }
-
-                // Actualizar status bar
-                colmenasStatus.innerHTML = `<i class="fas fa-cube"></i><span>${selectedColmenas.length} colmenas seleccionadas</span>`;
-
-                if (selectedColmenas.length > 0) {
-                    colmenasStatus.classList.add('success');
+                if (selCount > 0) {
+                    validationStatus.innerHTML = '<i class="fas fa-check-circle"></i><span>Colmenas seleccionadas correctamente</span>';
+                    validationStatus.classList.add('success');
+                    validationStatus.classList.remove('warning');
                 } else {
-                    colmenasStatus.classList.remove('success');
+                    validationStatus.innerHTML = '<i class="fas fa-exclamation-triangle"></i><span>Selecciona al menos una colmena</span>';
+                    validationStatus.classList.add('warning');
+                    validationStatus.classList.remove('success');
                 }
+                break;
+            case 2:
+                validationStatus.innerHTML = '<i class="fas fa-user-check"></i><span>Información del apicultor completa</span>';
+                validationStatus.classList.add('success');
+                validationStatus.classList.remove('warning');
+                break;
+            case 3:
+                validationStatus.innerHTML = '<i class="fas fa-map-check"></i><span>Ubicaciones configuradas</span>';
+                validationStatus.classList.add('success');
+                validationStatus.classList.remove('warning');
+                break;
+            case 4:
+                validationStatus.innerHTML = '<i class="fas fa-clipboard-check"></i><span>Listo para confirmar</span>';
+                validationStatus.classList.add('success');
+                validationStatus.classList.remove('warning');
+                break;
+        }
+    }
 
-                // Actualizar validación si estamos en el paso 1
-                if (currentStep === 1) {
-                    updateValidationStatus(1);
-                }
+    // 10) Click en las “nav-dots” para saltar pasos (solo a pasos completados o siguiente)
+    document.querySelectorAll('.nav-dot').forEach((dot, idx) => {
+        dot.addEventListener('click', function () {
+            if (idx + 1 <= currentStep + 1) {
+                currentStep = idx + 1;
+                showStep(currentStep);
             }
-
-            // Inicializar
-            showStep(1);
-            updateColmenasCount();
-
-            destinoRegion.addEventListener('change', function () {
-                const regionId = this.value;
-                destinoComuna.innerHTML = '<option value="">Cargando comunas…</option>';
-                if (!regionId) {
-                    destinoComuna.innerHTML = '<option value="">Seleccionar comuna…</option>';
-                    return;
-                }
-                fetch(`/comunas/${regionId}`)
-                    .then(r => r.json())
-                    .then(json => {
-                        let html = '<option value="">Seleccionar comuna…</option>';
-                        json.forEach(c => {
-                            html += `<option value="${c.id}">${c.nombre}</option>`;
-                        });
-                        destinoComuna.innerHTML = html;
-                    })
-                    .catch(() => {
-                        destinoComuna.innerHTML = '<option value="">Error al cargar comunas</option>';
-                    });
-            });
         });
-    </script>
+    });
+
+    // 11) Manejo de selección de colmenas (Paso 1)
+    document.addEventListener('change', function (e) {
+        if (e.target.classList.contains('select-all-colmenas')) {
+            const apiarioId = e.target.dataset.apiario;
+            const colmenas = document.querySelectorAll(`input[data-apiario="${apiarioId}"].colmena-check`);
+            colmenas.forEach(c => c.checked = e.target.checked);
+            updateColmenasCount();
+        }
+        if (e.target.classList.contains('colmena-check')) {
+            updateColmenasCount();
+        }
+    });
+
+    // 12) Mostrar/ocultar la sección de Polinización en caso de que el select ya traiga “Polinización” en old()
+    if (motivoMovimiento?.value === 'Polinización') {
+        polinizacionSection.style.display = 'block';
+    } else {
+        polinizacionSection.style.display = 'none';
+    }
+
+    // 13) Función que actualiza el contador de colmenas en la pantalla
+    function updateColmenasCount() {
+        const selCount = document.querySelectorAll('.colmena-check:checked').length;
+        const origenColmenasInput = document.getElementById('origen_colmenas');
+
+        if (origenColmenasInput) {
+            origenColmenasInput.value = `${selCount} seleccionadas`;
+        }
+
+        // Actualizar la barra inferior de estatus
+        colmenasStatus.innerHTML = `<i class="fas fa-cube"></i><span>${selCount} colmenas seleccionadas</span>`;
+        if (selCount > 0) {
+            colmenasStatus.classList.add('success');
+        } else {
+            colmenasStatus.classList.remove('success');
+        }
+
+        if (currentStep === 1) {
+            updateValidationStatus(1);
+        }
+    }
+
+    // 14) Inicializar wizard en paso 1
+    showStep(1);
+    updateColmenasCount();
+
+    // 15) Cargar comunas cuando cambia región (Paso 3)
+    if (destinoRegion) {
+        destinoRegion.addEventListener('change', function () {
+            const regionId = this.value;
+            destinoComuna.innerHTML = '<option value="">Cargando comunas…</option>';
+            if (!regionId) {
+                destinoComuna.innerHTML = '<option value="">Seleccionar comuna…</option>';
+                return;
+            }
+            fetch(`/comunas/${regionId}`)
+                .then(res => res.json())
+                .then(json => {
+                    let html = '<option value="">Seleccionar comuna…</option>';
+                    json.forEach(c => {
+                        html += `<option value="${c.id}">${c.nombre}</option>`;
+                    });
+                    destinoComuna.innerHTML = html;
+                })
+                .catch(() => {
+                    destinoComuna.innerHTML = '<option value="">Error al cargar comunas</option>';
+                });
+        });
+    }
+});
+</script>
 @endsection

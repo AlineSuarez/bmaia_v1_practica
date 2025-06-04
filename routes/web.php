@@ -66,12 +66,16 @@ Route::middleware(['auth'])->group(function () {
         return redirect()->route($routes[$default] ?? 'dashboard');
     })->middleware(['auth']);
 
-    Route::get('/apiarios/create-temporal', [TrashumanciaController::class, 'create'])->name('apiarios.createTemporal');
+    Route::get('/apiarios/create-temporal', [ApiarioController::class, 'createTemporal'])->name('apiarios.createTemporal');
     Route::resource('apiarios', ApiarioController::class);
 
-    //Route::post('/apiarios-trashumantes/{id}/archivar', [TrashumanciaController::class, 'archivar'])->name('apiarios-trashumantes.archivar');
-    //Route::post('/apiarios/store-temporal')
-
+    // trashumancia
+    //Route::get('/trashumancia/create', [TrashumanciaController::class, 'create'])->name('trashumancia.create');
+    Route::post('/trashumancia/store', [TrashumanciaController::class, 'store'])->name('trashumancia.store');
+    //Route::post('/trashumancia/store-traslado', [TrashumanciaController::class, 'storeTraslado'])->name('trashumancia.storeTraslado');
+    //Route::post('/trashumancia/store-retorno', [TrashumanciaController::class, 'storeRetorno'])->name('trashumancia.storeRetorno');
+    Route::post('/trashumancia/archivar/{id}', [TrashumanciaController::class, 'archivar'])->name('trashumancia.archivar');
+        
 
     Route::resource('visita', VisitaController::class);
     Route::get('/visitas', [VisitaController::class, 'index'])->name('visitas.index');

@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use App\Models\Apiario;
@@ -12,114 +13,166 @@ class TrashumanciaController extends Controller
 {
     public function create(Request $request)
     {
-        $ids = explode(',', $request->query('apiarios', ''));
-        $tipo = $request->query('tipo', 'traslado');
-        $apiariosData = Apiario::with('colmenas')->whereIn('id', $ids)->get();
-        return view('apiarios.create-temporal', compact('apiariosData', 'tipo'));
-    }
+        // 1) Leer parámetros
+        $tipo        = $request->query('tipo', 'traslado');      // 'traslado' o 'retorno'
+        $apiariosStr = $request->query('apiarios', '');          // string con IDs separados por coma
 
+        // 2) Validaciones básicas
+        if (empty($apiariosStr)) {
+            return redirect()->route('apiarios')
+                             ->with('error', 'Debe seleccionar al menos un apiario de origen.');
+        }
+
+        $apiarioIds = explode(',', $apiariosStr);
+        // 3) Obtener los apiarios base con sus colmenas (para listar colmenas disponibles)
+        $apiariosData = Apiario::with('colmenas')
+            ->whereIn('id', $apiarioIds)
+            ->where('tipo_apiario', 'fijo') // sólo apiarios fijos/padres
+            ->get();
+
+        if ($apiariosData->isEmpty()) {
+            return redirect()->route('apiarios')
+                             ->with('error', 'No se encontraron los apiarios seleccionados.');
+        }
+
+        // 4) Enviar a la vista wizard, con colección de Apiarios (cada uno ya trae ->colmenas)
+        return view('apiarios.create-temporal', compact('tipo', 'apiariosData'));
+    }
+    
     public function store(Request $request)
     {
-        // 1) validar todos los campos que vienen del wizard
-        $data = $request->validate([
-            'apiarios_base' => 'required|array|min:1',
-            'apiarios_base.*' => 'exists:apiarios,id',
-            'nombre' => 'required|string|max:255',
-            'region_id' => 'required|integer|exists:regiones,id',
-            'comuna_id' => 'required|integer|exists:comunas,id',
+        // 1) Definición de reglas de validación (ya lo tenías)
+        $rules = [
+            'tipo'                  => 'required|in:traslado,retorno',
+            'apiarios_base'         => 'required|array|min:1',
+            'apiarios_base.*'       => 'required|integer|exists:apiarios,id',
+            'colmenas'              => 'required|array',             // colmenas[<apiario_id>][] 
+            'colmenas.*'            => 'required|array|min:1',
+            'colmenas.*.*'          => 'required|integer|exists:colmenas,id',
 
-            'colmenas'           => 'nullable|array',
-            'colmenas.*'         => 'integer',
+            'nombre'                => 'required|string|max:255',
+            'fecha_inicio_mov'      => 'required|date',
+            'fecha_termino_mov'     => 'required|date|after_or_equal:fecha_inicio_mov',
+            'motivo_movimiento'     => 'required|in:Producción,Polinización',
 
+            'transportista_nombre'  => 'nullable|string|max:255',
+            'transportista_rut'     => 'nullable|string|max:255',
+            'vehiculo_patente'      => 'nullable|string|max:50',
+        ];
 
-            'fecha_inicio_mov' => 'required|date',
-            'fecha_termino_mov' => 'required|date|after_or_equal:fecha_inicio_mov',
-            'motivo_movimiento' => 'required|in:Producción,Polinización',
+        // Si es traslado, obligamos región/comuna destino
+        if ($request->input('tipo') === 'traslado') {
+            $rules['destino_region_id']   = 'required|integer|exists:regiones,id';
+            $rules['destino_comuna_id']   = 'required|integer|exists:comunas,id';
+            $rules['coordenadas_destino'] = 'nullable|string|max:50'; // p.ej. "-33.0472, -71.4419"
+        }
 
-            'apicultor_nombre' => 'nullable|string|max:255',
-            'apicultor_rut' => 'nullable|string|max:255',
-            'registro_nacional' => 'nullable|string|max:255',
+        // Si es polinización, obligamos esos campos
+        if ($request->input('motivo_movimiento') === 'Polinización') {
+            $rules['cultivo']           = 'required|string|max:255';
+            $rules['periodo_floracion'] = 'required|string|max:255';
+            $rules['hectareas']         = 'required|integer|min:1';
+        }
 
-            'cultivo' => 'nullable|string|max:255',
-            'periodo_floracion' => 'nullable|string|max:255',
-            'hectareas' => 'nullable|integer|min:1',
+        // 2) Validar todo
+        $data = $request->validate($rules);
 
-            'transportista_nombre' => 'nullable|string|max:255',
-            'transportista_rut' => 'nullable|string|max:255',
-            'vehiculo_patente' => 'nullable|string|max:50',
+        // 3) Iniciar transacción para que todo falle o tenga éxito completo
+        DB::transaction(function() use ($data) {
+            // 3.1) Preparar datos comunes para crear el Apiario temporal
+            $destinoRegionId = $data['destino_region_id'] ?? null;
+            $destinoComunaId = $data['destino_comuna_id'] ?? null;
 
-            'destino_region_id' => 'required|integer|exists:regiones,id',
-            'destino_comuna_id' => 'required|integer|exists:comunas,id',
-            'coordenadas_destino' => 'nullable|string|max:255',
+            // 3.2) Si vienen coordenadas_destino, extraer lat/lng
+            $lat = null;
+            $lng = null;
+            if (!empty($data['coordenadas_destino'])) {
+                [$lat, $lng] = array_map('trim', explode(',', $data['coordenadas_destino']));
+                $lat = (float) $lat;
+                $lng = (float) $lng;
+            }
 
-        ]);
+            // 3.3) Crear el Apiario temporal “básico”
+            //     Los siguientes campos son los que van a la tabla apiarios:
+            //     - user_id, nombre, temporada_produccion, num_colmenas (se fija a 0 por ahora),
+            //       objetivo_produccion (motivo_movimiento), region_id, comuna_id, latitud, longitud.
+            $apiarioTemp = Apiario::create([
+                'user_id'               => auth()->id(),
+                'nombre'                => $data['nombre'],
+                'temporada_produccion'  => now()->year,
+                'registro_sag'          => null,                 // no aplica al temporales
+                'num_colmenas'          => 0,                    // se actualizará luego
+                'tipo_manejo'           => null,                 // no aplica aquí
+                'objetivo_produccion'   => $data['motivo_movimiento'],
+                'region_id'             => $destinoRegionId,
+                'comuna_id'             => $destinoComunaId,
+                'latitud'               => $lat,
+                'longitud'              => $lng,
+                'foto'                  => null,                 // si lo necesitas, agrégalo
+                // Ahora marcamos las banderas:
+                'tipo_apiario'          => 'trashumante',
+                'activo'                => 1,
+                'es_temporal'           => 1,
+            ]);
 
-        return DB::transaction(function () use ($data) {
-            $user = auth()->user();
-            $colmenasAReasignar = []; // este array contendrá los IDs reales de cada colmena
-
-            if (!empty($data['colmenas']) && is_array($data['colmenas'])) {
-                foreach ($data['colmenas'] as $apiarioBaseId => $idsColmenas) {
-                    foreach ($idsColmenas as $idColmena) {
-                        $colmena = Colmena::find($idColmena);
-                        if ($colmena && $colmena->apiario_id == $apiarioBaseId) {
-                            $colmenasAReasignar[] = $colmena->id;
+            // 3.4) Determinar qué colmenas se van a mover
+            //      Recorremos cada apiario_base y tomamos las colmenas marcadas
+            $colmenasIds = [];
+            foreach ($data['apiarios_base'] as $apiarioBaseId) {
+                if (isset($data['colmenas'][$apiarioBaseId]) && is_array($data['colmenas'][$apiarioBaseId])) {
+                    foreach ($data['colmenas'][$apiarioBaseId] as $colmenaId) {
+                        // Verificar que esa colmena exista y pertenezca a ese apiario de origen
+                        $col = Colmena::where('id', $colmenaId)
+                                      ->where('apiario_id', $apiarioBaseId)
+                                      ->first();
+                        if ($col) {
+                            $colmenasIds[] = $col->id;
                         }
                     }
                 }
             }
 
-            $apiarioTemp = Apiario::create([
-                'user_id' => auth()->id(),
-                'nombre' => $data['nombre'],
-                'tipo_apiario' => 'trashumante',
-                'temporada_produccion' => now()->year,
-                'num_colmenas' => $colmenasAReasignar->count(),
-                'activo' => 1,
-                'es_temporal' => true,
-                'region_id' => $data['destino_region_id'],
-                'comuna_id' => $data['destino_comuna_id'],
-                'created_by' => $user->id,
-                'updated_by' => $user->id
-            ]);
-            if (!empty($data['colmenas']) && is_array($data['colmenas'])) {
-                foreach ($data['colmenas'] as $apiarioBaseId => $listaDeIndices) {
-                    $colmenasAReasignar = $data['colmenas'] ?? [];
+            // 3.5) Actualizar el conteo de colmenas en el Apiario Temporal
+            $cantidadColmenas = count($colmenasIds);
+            $apiarioTemp->update(['num_colmenas' => $cantidadColmenas]);
+
+            // 3.6) Crear un registro de MovimientoColmena y reasignar físicamente
+            foreach ($colmenasIds as $colId) {
+                $colm = Colmena::find($colId);
+                if (!$colm) {
+                    continue;
                 }
-            }
-            // Actualizo contador
-            $apiarioTemp->update([
-                'num_colmenas' => count($colmenasAReasignar)
-            ]);
 
-            foreach ($colmenasAReasignar as $colmenaId) {
-                $colmena = Colmena::find($colmenaId);
-
-                // 1) Crear registro en movimientos_colmenas
                 MovimientoColmena::create([
-                    'colmena_id' => $colmena->id,
-                    'apiario_origen_id' => $colmena->apiario_id,
+                    'colmena_id'         => $colm->id,
+                    'apiario_origen_id'  => $colm->apiario_id,
                     'apiario_destino_id' => $apiarioTemp->id,
-                    'tipo_movimiento' => 'traslado',
-                    'fecha_movimiento' => now(),
-                    'fecha_inicio_mov' => $data['fecha_inicio_mov'],
-                    'fecha_termino_mov' => $data['fecha_termino_mov'],
-                    'motivo_movimiento' => $data['motivo_movimiento'],
-                    'observaciones' => null,
-                    'transportista' => $data['transportista_nombre'] ?? null,
-                    'vehiculo' => $data['vehiculo_patente'] ?? null,
+                    'tipo_movimiento'    => $data['tipo'],            
+                    'fecha_movimiento'   => now(),
+                    'fecha_inicio_mov'   => $data['fecha_inicio_mov'],
+                    'fecha_termino_mov'  => $data['fecha_termino_mov'],
+                    'motivo_movimiento'  => $data['motivo_movimiento'],
+                    'cultivo'            => $data['cultivo'] ?? null,
+                    'periodo_floracion'  => $data['periodo_floracion'] ?? null,
+                    'hectareas'          => $data['hectareas'] ?? null,
+                    'transportista'      => $data['transportista_nombre'] ?? null,
+                    'vehiculo'           => $data['vehiculo_patente'] ?? null,
                 ]);
 
-                // 2) Reasignar la colmena físicamente en su tabla (cambiar apiario_id)
-                $colmena->update(['apiario_id' => $apiarioTemp->id]);
+                // Reasignar físicamente la colmena a este Apiario temporal
+                $colm->update(['apiario_id' => $apiarioTemp->id]);
             }
-            return redirect()->route('apiarios.index')->with('success', 'Apiario temporal creado y movimientos registrados correctamente');
+
+            // 3.7) Si no se movió ninguna colmena (num_colmenas == 0), archivamos en el mismo momento
+            if ($cantidadColmenas === 0) {
+                $apiarioTemp->update(['activo' => 0]);
+            }
         });
+
+        return redirect()
+            ->route('apiarios')
+            ->with('success', 'Movimiento registrado y apiario temporal creado correctamente.');
     }
-
-
-
-
 
     public function archivar($id)
     {
@@ -130,36 +183,43 @@ class TrashumanciaController extends Controller
         }
 
         return DB::transaction(function () use ($apiario) {
+            // Por cada colmena que quede en este apiario temporal, hacemos retorno automático
             $colmenas = Colmena::where('apiario_id', $apiario->id)->get();
 
             foreach ($colmenas as $colmena) {
-                $ultimo = $colmena->movimientos()
-                    ->where('apiario_destino_id', $apiario->id)
-                    ->latest()
+                $ultimoTraslado = $colmena->movimientos()
+                    ->where('tipo_movimiento', 'traslado')
+                    ->latest('fecha_movimiento')
                     ->first();
 
+                if (!$ultimoTraslado) {
+                    continue;
+                }
+
                 MovimientoColmena::create([
-                    'colmena_id' => $colmena->id,
-                    'apiario_origen_id' => $apiario->id,
-                    'apiario_destino_id' => $ultimo->apiario_origen_id,
-                    'tipo_movimiento' => 'retorno',
-                    'fecha_movimiento' => now(),
-                    'fecha_inicio_mov' => now()->subDays(1),
-                    'fecha_termino_mov' => now(),
-                    'motivo_movimiento' => 'Retorno por cierre del apiario temporal',
-                    'observaciones' => 'Automático desde sistema',
-                    'transportista' => 'Sistema',
-                    'vehiculo' => 'Sistema',
+                    'colmena_id'         => $colmena->id,
+                    'apiario_origen_id'  => $apiario->id,
+                    'apiario_destino_id' => $ultimoTraslado->apiario_origen_id,
+                    'tipo_movimiento'    => 'retorno',
+                    'fecha_movimiento'   => now(),
+                    'fecha_inicio_mov'   => now()->subDays(1),
+                    'fecha_termino_mov'  => now(),
+                    'motivo_movimiento'  => 'Retorno por archivado manual',
+                    'observaciones'      => 'Archivado de apiario temporal',
+                    'transportista'      => 'Sistema',
+                    'vehiculo'           => 'Sistema',
+                    'created_by'         => auth()->id(),
+                    'updated_by'         => auth()->id(),
                 ]);
 
-                $colmena->update(['apiario_id' => $ultimo->apiario_origen_id]);
+                // Reasignar la colmena físicamente
+                $colmena->update(['apiario_id' => $ultimoTraslado->apiario_origen_id]);
             }
 
-            if ($apiario->debeArchivarse()) {
-                $apiario->update(['activo' => 0]);
-            }
+            // Finalmente, marcar este apiario como inactivo
+            $apiario->update(['activo' => 0]);
 
-            return response()->json(['message' => 'Apiario temporal archivado']);
+            return response()->json(['message' => 'Apiario temporal archivado correctamente']);
         });
     }
 }

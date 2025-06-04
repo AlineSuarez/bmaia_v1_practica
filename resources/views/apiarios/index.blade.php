@@ -35,6 +35,12 @@
                     <i class="fas fa-truck"></i> Apiarios Temporales
                 </button>
             </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="archivados-tab" data-bs-toggle="tab" data-bs-target="#archivados"
+                    type="button" role="tab" aria-controls="archivados" aria-selected="false">
+                    <i class="fas fa-folder"></i> Apiarios Archivados
+                </button>
+            </li>
         </ul>
 
         <!-- Contenido de las pestañas -->
@@ -163,15 +169,24 @@
 
             <div class="tab-pane fade" id="trashumantes" role="tabpanel" aria-labelledby="trashumantes-tab">
                 
-            <!-- Botones de acciones para trashumantes -->
-            <div class="action-buttons">
-                <button id="createTemporalButton" class="action-button success" disabled
-                        data-tooltip="Mover Colmenas">
-                        <i class="fas fa-route"></i> Crear Apiario Temporal
+                <!-- Botones de acciones para trashumantes -->
+                <div class="action-buttons">
+                    <button id="trasladarColmenasButton" class="action-button warning" disabled
+                            data-tooltip="Trasladar colmenas seleccionadas">
+                        <i class="fas fa-arrow-right"></i> Trasladar Colmenas
                     </button>
-            </div>
 
-                <!-- Tabla de Apiarios Trashumantes -->
+                    <button id="retornarColmenasButton" class="action-button success" disabled
+                            data-tooltip="Retornar colmenas a su apiario original">
+                        <i class="fas fa-arrow-left"></i> Retornar Colmenas
+                    </button>
+                </div>
+
+                <div class="action-button mb-2">
+                    
+                </div>
+
+                <!-- Tabla de Apiarios Base -->
                 <div class="table-section">
                     <h3 class="table-title">
                         <i class="fas fa-truck"></i> Apiarios Base
@@ -300,6 +315,12 @@
                             <table id="apiariosTemporalesTable" class="apiarios-table">
                                 <thead>
                                     <tr>
+                                        <th class="text-center">
+                                            <label class="custom-checkbox">
+                                                <input type="checkbox" id="selectAllTemporales">
+                                                <span class="checkmark"></span>
+                                            </label>
+                                        </th>
                                         <th class="text-center"><span class="column-title">Apicultor</span></th>
                                         <th class="text-center"><span class="column-title">Nº Colmenas</span></th>
                                         <th class="text-center"><span class="column-title">Región Origen</span></th>
@@ -315,6 +336,14 @@
                                 <tbody>
                                     @forelse($apiariosTemporales as $apiario)
                                         <tr>
+                                            <td class="text-center">
+                                                <label class="custom-checkbox">
+                                                    <input type="checkbox"
+                                                        class="select-checkbox-temporales"
+                                                        value="{{ $apiario->id }}">
+                                                    <span class="checkmark"></span>
+                                                </label>
+                                            </td>
                                             <td class="text-center">{{ $apiario->nombre }}</td>
                                             <td class="text-center">{{ $apiario->num_colmenas }}</td>
                                             <td class="text-center">
@@ -326,12 +355,7 @@
                                             <td class="text-center">
                                                 {{ $apiario->created_at->format('Y-m-d') }}
                                             </td>
-                                            <td class="text-center">
-                                                <form action="{{ route('apiarios-trashumantes.archivar', $apiario->id) }}" method="POST">
-                                                    @csrf
-                                                    <button class="btn btn-warning btn-sm">Archivar</button>
-                                                </form>
-                                            </td>
+                                            
                                         </tr>
                                         @empty
                                         <tr>
@@ -343,6 +367,43 @@
                                 </tbody>
                             </table>
                         </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pestaña Apiarios Archivados -->
+            <div class="tab-pane fade" id="archivados" role="tabpanel" aria-labelledby="archivados-tab">
+                <div class="apiarios-table-wrapper">
+                    <div class="table-responsive">
+                        @if(isset($apiariosArchivados) && $apiariosArchivados->count() > 0)
+                            <table id="apiariosArchivadosTable" class="apiarios-table table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th class="text-center"><span class="column-title">Apiario</span></th>
+                                        <th class="text-center"><span class="column-title">Temporada</span></th>
+                                        <th class="text-center"><span class="column-title">Región</span></th>
+                                        <th class="text-center"><span class="column-title">Comuna</span></th>
+                                        <th class="text-center"><span class="column-title">Fecha Archivado</span></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach($apiariosArchivados as $apiario)
+                                        <tr>
+                                            <td class="text-center">{{ $apiario->nombre }}</td>
+                                            <td class="text-center">{{ $apiario->temporada_produccion }}</td>
+                                            <td class="text-center">{{ optional(optional($apiario->comuna)->region)->nombre ?? 'N/A' }}</td>
+                                            <td class="text-center">{{ optional($apiario->comuna)->nombre ?? 'N/A' }}</td>
+                                            <td class="text-center">{{ $apiario->updated_at->format('Y-m-d') }}</td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        @else
+                            <div class="empty-state text-center py-4">
+                                <i class="fas fa-folder-open fa-2x mb-2"></i>
+                                <p class="text-muted">No hay apiarios archivados.</p>
+                            </div>
+                        @endif
                     </div>
                 </div>
             </div>
@@ -459,391 +520,478 @@
         @endif
     @endforeach
 @endsection
-
 @section('optional-scripts')
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            // Funciones para manejar checkboxes de apiarios fijos
-            setupCheckboxHandlers('selectAll', '.select-checkbox', 'multiDeleteButton');
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    // ==================================================
+    // 1) APIARIOS FIJOS (eliminar múltiple)
+    // ==================================================
+    function setupFijosHandlers(selectAllId, checkboxSelector, buttonId) {
+        const selectAll = document.getElementById(selectAllId);
+        const checkboxes = document.querySelectorAll(checkboxSelector);
+        const button = document.getElementById(buttonId);
 
-            // Funciones para manejar checkboxes de apiarios trashumantes - MODIFICADO
-            setupTemporalCheckboxHandlers('selectAllTrashumante', '.select-checkbox-trashumante', 'createTemporalButton');
+        function updateButtonState() {
+            const checkedCount = document.querySelectorAll(checkboxSelector + ':checked').length;
+            if (!button) return;
 
-            function setupCheckboxHandlers(selectAllId, checkboxSelector, buttonId) {
-                const selectAll = document.getElementById(selectAllId);
-                const checkboxes = document.querySelectorAll(checkboxSelector);
-                const multiDeleteButton = document.getElementById(buttonId);
+            button.disabled = (checkedCount === 0);
 
-                function updateMultiDeleteButton() {
-                    const checkedBoxes = document.querySelectorAll(checkboxSelector + ':checked');
-                    if (multiDeleteButton) {
-                        multiDeleteButton.disabled = checkedBoxes.length === 0;
+            // Si existe multiDeleteButton y hay seleccionados, mostramos la cuenta
+            if (checkedCount > 0) {
+                button.innerHTML = `<i class="fas fa-trash-alt"></i> Eliminar (${checkedCount})`;
+            } else {
+                button.innerHTML = `<i class="fas fa-trash-alt"></i> Eliminar seleccionados`;
+            }
+        }
 
-                        if (checkedBoxes.length > 0) {
-                            multiDeleteButton.innerHTML = `<i class="fas fa-trash-alt"></i> Eliminar (${checkedBoxes.length})`;
-                        } else {
-                            multiDeleteButton.innerHTML = `<i class="fas fa-trash-alt"></i> Eliminar seleccionados`;
-                        }
-                    }
-                }
+        // 1.1) “Select all” para apiarios fijos
+        if (selectAll) {
+            selectAll.addEventListener('change', function () {
+                checkboxes.forEach(chk => chk.checked = selectAll.checked);
+                updateButtonState();
+            });
+        }
 
-                // Manejar "Seleccionar todos"
+        // 1.2) Chequeo individual en cada fila
+        checkboxes.forEach(chk => {
+            chk.addEventListener('change', function () {
+                // Si todos los checkboxes están chequeados, marcar “selectAll”
+                const total = checkboxes.length;
+                const totalChecked = document.querySelectorAll(checkboxSelector + ':checked').length;
                 if (selectAll) {
-                    selectAll.addEventListener('change', function () {
-                        checkboxes.forEach(checkbox => {
-                            checkbox.checked = selectAll.checked;
-                        });
-                        updateMultiDeleteButton();
-                    });
+                    selectAll.checked = (total === totalChecked);
                 }
+                updateButtonState();
+            });
+        });
 
-                // Manejar selecciones individuales
-                checkboxes.forEach(checkbox => {
-                    checkbox.addEventListener('change', function () {
-                        const allChecked = document.querySelectorAll(checkboxSelector).length ===
-                            document.querySelectorAll(checkboxSelector + ':checked').length;
-                        if (selectAll) {
-                            selectAll.checked = allChecked;
-                        }
-                        updateMultiDeleteButton();
-                    });
-                });
+        // 1.3) Estado inicial (por si ya hay “old()” marcado)
+        updateButtonState();
+    }
 
-                // Ejecutar una vez para establecer el estado inicial
-                updateMultiDeleteButton();
+    // Invocamos para “Apiarios Fijos” 
+    setupFijosHandlers('selectAll', '.select-checkbox', 'multiDeleteButton');
+
+    // ==================================================
+    // 2) APIARIOS TRASHUMANTES (BASE) – Trasladar/Retornar desde apiarios base
+    // ==================================================
+    function setupTrashumanteBaseHandlers(selectAllId, checkboxSelector, trasladarBtnId, retornarBtnId) {
+        const selectAll = document.getElementById(selectAllId);
+        const checkboxes = document.querySelectorAll(checkboxSelector);
+        const trasladarBtn = document.getElementById(trasladarBtnId);
+        const retornarBtn = document.getElementById(retornarBtnId);
+
+        function updateTrashumanteButtons() {
+            const selectedCount = document.querySelectorAll(checkboxSelector + ':checked').length;
+
+            // 2.1) Trasladar
+            if (trasladarBtn) {
+                trasladarBtn.disabled = (selectedCount === 0);
+                if (selectedCount > 0) {
+                    trasladarBtn.innerHTML = `<i class="fas fa-arrow-right"></i> Trasladar Colmenas (${selectedCount})`;
+                } else {
+                    trasladarBtn.innerHTML = `<i class="fas fa-arrow-right"></i> Trasladar Colmenas`;
+                }
             }
 
-            // NUEVA FUNCIÓN para manejar checkboxes de apiarios trashumantes
-            function setupTemporalCheckboxHandlers(selectAllId, checkboxSelector, buttonId) {
-                const selectAll = document.getElementById(selectAllId);
-                const checkboxes = document.querySelectorAll(checkboxSelector);
-                const createTemporalButton = document.getElementById(buttonId);
-
-                function updateCreateTemporalButton() {
-                    const checkedBoxes = document.querySelectorAll(checkboxSelector + ':checked');
-                    if (createTemporalButton) {
-                        createTemporalButton.disabled = checkedBoxes.length === 0;
-
-                        if (checkedBoxes.length > 0) {
-                            createTemporalButton.innerHTML = `<i class="fas fa-route"></i> Crear Apiario Temporal (${checkedBoxes.length})`;
-                        } else {
-                            createTemporalButton.innerHTML = `<i class="fas fa-route"></i> Crear Apiario Temporal`;
-                        }
-                    }
+            // 2.2) Retornar
+            if (retornarBtn) {
+                retornarBtn.disabled = (selectedCount === 0);
+                if (selectedCount > 0) {
+                    retornarBtn.innerHTML = `<i class="fas fa-arrow-left"></i> Retornar Colmenas (${selectedCount})`;
+                } else {
+                    retornarBtn.innerHTML = `<i class="fas fa-arrow-left"></i> Retornar Colmenas`;
                 }
+            }
+        }
 
-                // Manejar "Seleccionar todos"
+        // 2.3) “Select All” para apiarios base (trashumantes)
+        if (selectAll) {
+            selectAll.addEventListener('change', function () {
+                const marcado = selectAll.checked;
+                checkboxes.forEach(chk => chk.checked = marcado);
+                updateTrashumanteButtons();
+            });
+        }
+
+        // 2.4) Chequeo individual en cada una de las filas de apiarios base
+        checkboxes.forEach(chk => {
+            chk.addEventListener('change', function () {
+                const total = checkboxes.length;
+                const totalChecked = document.querySelectorAll(checkboxSelector + ':checked').length;
                 if (selectAll) {
-                    selectAll.addEventListener('change', function () {
-                        checkboxes.forEach(checkbox => {
-                            checkbox.checked = selectAll.checked;
-                        });
-                        updateCreateTemporalButton();
-                    });
+                    selectAll.checked = (total === totalChecked);
                 }
+                updateTrashumanteButtons();
+            });
+        });
 
-                // Manejar selecciones individuales
-                checkboxes.forEach(checkbox => {
-                    checkbox.addEventListener('change', function () {
-                        const allChecked = document.querySelectorAll(checkboxSelector).length ===
-                            document.querySelectorAll(checkboxSelector + ':checked').length;
-                        if (selectAll) {
-                            selectAll.checked = allChecked;
-                        }
-                        updateCreateTemporalButton();
-                    });
-                });
+        // 2.5) Estado inicial para botones
+        updateTrashumanteButtons();
+    }
 
-                // Ejecutar una vez para establecer el estado inicial
-                updateCreateTemporalButton();
+    // Invocamos para “Apiarios Base” (trashumantes) – habilita “Trasladar” y “Retornar”
+    setupTrashumanteBaseHandlers(
+        'selectAllTrashumante',
+        '.select-checkbox-trashumante',
+        'trasladarColmenasButton',
+        'retornarColmenasButton'
+    );
+
+    // 2.6) Si clickean en “Trasladar Colmenas” → redirige al wizard con tipo=traslado
+    const trasladarBtn = document.getElementById('trasladarColmenasButton');
+    if (trasladarBtn) {
+        trasladarBtn.addEventListener('click', function () {
+            const seleccionados = Array.from(document.querySelectorAll('.select-checkbox-trashumante:checked'))
+                                      .map(chk => chk.value);
+            if (seleccionados.length === 0) return;
+
+            const url = new URL('{{ route("apiarios.createTemporal") }}', window.location.origin);
+            url.searchParams.set('tipo', 'traslado');
+            url.searchParams.set('apiarios', seleccionados.join(','));
+            window.location.href = url.toString();
+        });
+    }
+
+    // 2.7) Si clickean en “Retornar Colmenas” → redirige al wizard con tipo=retorno
+    const retornarBtnBase = document.getElementById('retornarColmenasButton');
+    if (retornarBtnBase) {
+        retornarBtnBase.addEventListener('click', function () {
+            const seleccionados = Array.from(document.querySelectorAll('.select-checkbox-trashumante:checked'))
+                                      .map(chk => chk.value);
+            if (seleccionados.length === 0) return;
+
+            const url = new URL('{{ route("apiarios.createTemporal") }}', window.location.origin);
+            url.searchParams.set('tipo', 'retorno');
+            url.searchParams.set('apiarios', seleccionados.join(','));
+            window.location.href = url.toString();
+        });
+    }
+
+    // ==================================================
+    // 3) APIARIOS TEMPORALES – “Retornar Colmenas” desde la lista de temporales
+    // ==================================================
+    function setupTemporalesHandlers(selectAllId, checkboxSelector, buttonId) {
+        const selectAll = document.getElementById(selectAllId);
+        const checkboxes = document.querySelectorAll(checkboxSelector);
+        const retornarBtn = document.getElementById(buttonId);
+
+        function updateRetornarButtonState() {
+            const checkedCount = document.querySelectorAll(checkboxSelector + ':checked').length;
+            if (!retornarBtn) return;
+
+            retornarBtn.disabled = (checkedCount === 0);
+            if (checkedCount > 0) {
+                retornarBtn.innerHTML = `<i class="fas fa-arrow-left"></i> Retornar Colmenas (${checkedCount})`;
+            } else {
+                retornarBtn.innerHTML = `<i class="fas fa-arrow-left"></i> Retornar Colmenas`;
             }
+        }
 
-            // Lógica para crear apiario temporal
-            const createTemporalButton = document.getElementById('createTemporalButton');
-            const createTemporalModal = document.getElementById('createTemporalModal');
-            const selectedApiariosList = document.getElementById('selectedApiariosList');
-            const createTrasladoButton = document.getElementById('createTrasladoButton');
-            const createRetornoButton = document.getElementById('createRetornoButton');
+        // 3.1) “Select All” para apiarios temporales
+        if (selectAll) {
+            selectAll.addEventListener('change', function () {
+                const marcado = selectAll.checked;
+                checkboxes.forEach(chk => chk.checked = marcado);
+                updateRetornarButtonState();
+            });
+        }
 
-            // Abrir modal al hacer clic en el botón de crear temporal
-            if (createTemporalButton) {
-                createTemporalButton.addEventListener('click', function () {
-                    const selectedCheckboxes = document.querySelectorAll('.select-checkbox-trashumante:checked');
+        // 3.2) Chequeo individual en cada fila de temporales
+        checkboxes.forEach(chk => {
+            chk.addEventListener('change', function () {
+                const total = checkboxes.length;
+                const totalChecked = document.querySelectorAll(checkboxSelector + ':checked').length;
+                if (selectAll) {
+                    selectAll.checked = (total === totalChecked);
+                }
+                updateRetornarButtonState();
+            });
+        });
 
-                    if (selectedCheckboxes.length > 0) {
-                        // Limpiar lista anterior
-                        selectedApiariosList.innerHTML = '';
+        // 3.3) Estado inicial
+        updateRetornarButtonState();
+    }
 
-                        // Agregar apiarios seleccionados a la lista
-                        selectedCheckboxes.forEach(checkbox => {
-                            const row = checkbox.closest('tr');
-                            const apiarioName = row.querySelector('.apiario-id').textContent;
-                            const numColmenas = row.querySelector('.counter').textContent;
+    // Invocamos para “Apiarios Temporales”
+    setupTemporalesHandlers('selectAllTemporales', '.select-checkbox-temporales', 'retornarColmenasButton');
 
-                            const listItem = document.createElement('li');
-                            listItem.className = 'mb-2';
-                            listItem.innerHTML = `
-                                                    <div class="d-flex justify-content-between align-items-center">
-                                                        <span><i class="fas fa-warehouse"></i> ${apiarioName}</span>
-                                                        <span class="badge bg-primary">${numColmenas} colmenas</span>
-                                                    </div>
-                                                `;
-                            selectedApiariosList.appendChild(listItem);
-                        });
+    // 3.4) Redirección al hacer clic en “Retornar Colmenas” dentro de temporales
+    const retornarBtnTemp = document.getElementById('retornarColmenasButton');
+    if (retornarBtnTemp) {
+        retornarBtnTemp.addEventListener('click', function () {
+            const seleccionados = Array.from(document.querySelectorAll('.select-checkbox-temporales:checked'))
+                                      .map(chk => chk.value);
+            if (seleccionados.length === 0) return;
 
-                        // Mostrar modal
-                        const modal = new bootstrap.Modal(createTemporalModal);
-                        modal.show();
-                    }
-                });
-            }
+            const url = new URL('{{ route("apiarios.createTemporal") }}', window.location.origin);
+            url.searchParams.set('tipo', 'retorno');
+            url.searchParams.set('apiarios', seleccionados.join(','));
+            window.location.href = url.toString();
+        });
+    }
 
-            // Manejar botón de Traslado
-            if (createTrasladoButton) {
-                createTrasladoButton.addEventListener('click', function () {
-                    const selectedApiarios = Array.from(document.querySelectorAll('.select-checkbox-trashumante:checked'))
-                        .map(checkbox => checkbox.value);
+    // ==================================================
+    // 4) CREAR / RETORNAR APIARIO TEMPORAL (MODAL)
+    // ==================================================
+    const createTemporalButton = document.getElementById('createTemporalButton');
+    const createTemporalModal = document.getElementById('createTemporalModal');
+    const selectedApiariosList = document.getElementById('selectedApiariosList');
+    const createTrasladoButton = document.getElementById('createTrasladoButton');
+    const createRetornoButton  = document.getElementById('createRetornoButton');
 
-                    if (selectedApiarios.length > 0) {
-                        // Crear URL con parámetros para navegar en la misma página
-                        const url = new URL('{{ route("apiarios.createTemporal") }}', window.location.origin);
-                        url.searchParams.set('tipo', 'traslado');
-                        url.searchParams.set('apiarios', selectedApiarios.join(','));
+    // 4.1) Al hacer clic en “Crear Apiario Temporal” → mostrar modal con lista
+    if (createTemporalButton) {
+        createTemporalButton.addEventListener('click', function () {
+            const selectedCheckboxes = document.querySelectorAll('.select-checkbox-trashumante:checked');
+            if (selectedCheckboxes.length === 0) return;
 
-                        // Navegar en la misma página
-                        window.location.href = url.toString();
-                    }
-                });
-            }
+            // Limpiar lista anterior
+            selectedApiariosList.innerHTML = '';
 
-            // Manejar botón de Retorno
-            if (createRetornoButton) {
-                createRetornoButton.addEventListener('click', function () {
-                    const selectedApiarios = Array.from(document.querySelectorAll('.select-checkbox-trashumante:checked'))
-                        .map(checkbox => checkbox.value);
+            // Recorrer los seleccionados y mostrar nombre + colmenas en el modal
+            selectedCheckboxes.forEach(chk => {
+                const row = chk.closest('tr');
+                const apiarioName = row.querySelector('.apiario-id').textContent;
+                const numColmenas = row.querySelector('.counter').textContent;
 
-                    if (selectedApiarios.length > 0) {
-                        // Crear URL con parámetros para navegar en la misma página
-                        const url = new URL('{{ route("apiarios.createTemporal") }}', window.location.origin);
-                        url.searchParams.set('tipo', 'retorno');
-                        url.searchParams.set('apiarios', selectedApiarios.join(','));
-
-                        // Navegar en la misma página
-                        window.location.href = url.toString();
-                    }
-                });
-            }
-
-            // Filtrado de tabla
-            const searchInput = document.getElementById('searchInput');
-            const filterTipo = document.getElementById('filterTipo');
-            const tableRows = document.querySelectorAll('#apiariosTable tbody tr');
-
-            function filterTable() {
-                const searchTerm = searchInput ? searchInput.value.toLowerCase() : '';
-                const tipoFilter = filterTipo ? filterTipo.value.toLowerCase() : '';
-
-                tableRows.forEach(row => {
-                    const apiarioText = row.textContent.toLowerCase();
-                    const tipoCell = row.querySelector('td:nth-child(6)');
-                    const tipoText = tipoCell ? tipoCell.textContent.toLowerCase() : '';
-
-                    const matchesSearch = searchTerm === '' || apiarioText.includes(searchTerm);
-                    const matchesTipo = tipoFilter === '' || tipoText.includes(tipoFilter);
-
-                    row.style.display = (matchesSearch && matchesTipo) ? '' : 'none';
-                });
-            }
-
-            if (searchInput) {
-                searchInput.addEventListener('input', filterTable);
-            }
-
-            if (filterTipo) {
-                filterTipo.addEventListener('change', filterTable);
-            }
-
-            // Animación de entrada para elementos de la tabla
-            const rows = document.querySelectorAll('#apiariosTable tbody tr');
-            rows.forEach((row, index) => {
-                row.style.opacity = '0';
-                row.style.transform = 'translateY(10px)';
-                row.style.animation = `fadeIn 0.3s ease-out ${index * 0.05}s forwards`;
+                const listItem = document.createElement('li');
+                listItem.className = 'mb-2';
+                listItem.innerHTML = `
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span><i class="fas fa-warehouse"></i> ${apiarioName}</span>
+                        <span class="badge bg-primary">${numColmenas} colmenas</span>
+                    </div>
+                `;
+                selectedApiariosList.appendChild(listItem);
             });
 
-            // Lógica para eliminación múltiple (solo para apiarios fijos)
-            const confirmDeleteButton = document.getElementById('confirmDelete');
-            const multiDeleteButton = document.getElementById('multiDeleteButton');
+            // Mostrar modal
+            new bootstrap.Modal(createTemporalModal).show();
+        });
+    }
 
-            // Abrir modal al hacer clic en el botón de eliminación múltiple
-            if (multiDeleteButton) {
-                multiDeleteButton.addEventListener('click', function () {
-                    const deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'));
-                    deleteModal.show();
-                });
-            }
+    // 4.2) Botón “Traslado” dentro del modal
+    if (createTrasladoButton) {
+        createTrasladoButton.addEventListener('click', function () {
+            const seleccionados = Array.from(document.querySelectorAll('.select-checkbox-trashumante:checked'))
+                                      .map(chk => chk.value);
+            if (seleccionados.length === 0) return;
 
-            // Procesar la eliminación múltiple cuando se confirma
-            if (confirmDeleteButton) {
-                confirmDeleteButton.addEventListener('click', function () {
-                    const selectedApiarios = Array.from(document.querySelectorAll('.select-checkbox:checked'))
-                        .map(checkbox => checkbox.value);
+            const url = new URL('{{ route("apiarios.createTemporal") }}', window.location.origin);
+            url.searchParams.set('tipo', 'traslado');
+            url.searchParams.set('apiarios', seleccionados.join(','));
+            window.location.href = url.toString();
+        });
+    }
 
-                    if (selectedApiarios.length > 0) {
-                        // Crear un formulario oculto para enviar la solicitud
-                        const form = document.createElement('form');
-                        form.method = 'POST';
-                        form.action = '{{ route("apiarios.massDelete") }}';
-                        form.style.display = 'none';
+    // 4.3) Botón “Retorno” dentro del modal
+    if (createRetornoButton) {
+        createRetornoButton.addEventListener('click', function () {
+            const seleccionados = Array.from(document.querySelectorAll('.select-checkbox-trashumante:checked'))
+                                      .map(chk => chk.value);
+            if (seleccionados.length === 0) return;
 
-                        // Agregar token CSRF
-                        const csrfToken = document.createElement('input');
-                        csrfToken.type = 'hidden';
-                        csrfToken.name = '_token';
-                        csrfToken.value = '{{ csrf_token() }}';
-                        form.appendChild(csrfToken);
+            const url = new URL('{{ route("apiarios.createTemporal") }}', window.location.origin);
+            url.searchParams.set('tipo', 'retorno');
+            url.searchParams.set('apiarios', seleccionados.join(','));
+            window.location.href = url.toString();
+        });
+    }
 
-                        // Agregar IDs seleccionados
-                        selectedApiarios.forEach(id => {
-                            const input = document.createElement('input');
-                            input.type = 'hidden';
-                            input.name = 'ids[]';
-                            input.value = id;
-                            form.appendChild(input);
-                        });
+    // ==================================================
+    // 5) FILTRADO DE TABLA, ANIMACIONES, ELIMINAR FIJOS, TOOLTIP, ETC.
+    //    (este bloque permanece exactamente igual que antes)
+    // ==================================================
 
-                        // Agregar el formulario al documento
-                        document.body.appendChild(form);
+    // 5.1) Filtrado de tabla de “Apiarios Fijos”
+    const searchInput = document.getElementById('searchInput');
+    const filterTipo  = document.getElementById('filterTipo');
+    const tableRows   = document.querySelectorAll('#apiariosTable tbody tr');
 
-                        // Enviar el formulario mediante AJAX para evitar redirección del servidor
-                        fetch(form.action, {
-                            method: 'POST',
-                            body: new FormData(form),
-                            headers: {
-                                'X-Requested-With': 'XMLHttpRequest'
-                            }
-                        })
-                            .then(response => {
-                                if (response.ok) {
-                                    // Cerrar el modal
-                                    const deleteModal = document.getElementById('deleteModal');
-                                    if (deleteModal) {
-                                        const bsModal = bootstrap.Modal.getInstance(deleteModal);
-                                        if (bsModal) bsModal.hide();
-                                    }
+    function filterTable() {
+        const searchTerm = searchInput ? searchInput.value.toLowerCase() : '';
+        const tipoFilter = filterTipo ? filterTipo.value.toLowerCase() : '';
 
-                                    // Recargar la página actual
-                                    window.location.reload();
-                                } else {
-                                    console.error('Error al eliminar los apiarios');
-                                    alert('Ha ocurrido un error al eliminar los apiarios');
-                                }
-                            })
-                            .catch(error => {
-                                console.error('Error:', error);
-                                alert('Ha ocurrido un error al procesar la solicitud');
-                            });
+        tableRows.forEach(row => {
+            const apiarioText = row.textContent.toLowerCase();
+            const tipoCell    = row.querySelector('td:nth-child(6)');
+            const tipoText    = tipoCell ? tipoCell.textContent.toLowerCase() : '';
 
-                        // Prevenir que el formulario se envíe normalmente
-                        return false;
+            const matchesSearch = (searchTerm === '') || apiarioText.includes(searchTerm);
+            const matchesTipo   = (tipoFilter === '') || tipoText.includes(tipoFilter);
+            row.style.display = (matchesSearch && matchesTipo) ? '' : 'none';
+        });
+    }
+
+    if (searchInput) {
+        searchInput.addEventListener('input', filterTable);
+    }
+    if (filterTipo) {
+        filterTipo.addEventListener('change', filterTable);
+    }
+
+    // 5.2) Animación de entrada para filas de “Apiarios Fijos”
+    const rows = document.querySelectorAll('#apiariosTable tbody tr');
+    rows.forEach((row, index) => {
+        row.style.opacity = '0';
+        row.style.transform = 'translateY(10px)';
+        row.style.animation = `fadeIn 0.3s ease-out ${index * 0.05}s forwards`;
+    });
+
+    // 5.3) Eliminación múltiple de apiarios fijos (ajax)
+    const confirmDeleteButton = document.getElementById('confirmDelete');
+    const multiDeleteButton   = document.getElementById('multiDeleteButton');
+
+    if (multiDeleteButton) {
+        multiDeleteButton.addEventListener('click', function () {
+            const deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'));
+            deleteModal.show();
+        });
+    }
+
+    if (confirmDeleteButton) {
+        confirmDeleteButton.addEventListener('click', function () {
+            const selectedIds = Array.from(document.querySelectorAll('.select-checkbox:checked'))
+                                     .map(chk => chk.value);
+            if (selectedIds.length === 0) return;
+
+            // Construir formulario oculto
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = '{{ route("apiarios.massDelete") }}';
+            form.style.display = 'none';
+
+            // CSRF
+            const csrfToken = document.createElement('input');
+            csrfToken.type = 'hidden';
+            csrfToken.name = '_token';
+            csrfToken.value = '{{ csrf_token() }}';
+            form.appendChild(csrfToken);
+
+            // IDs seleccionados
+            selectedIds.forEach(id => {
+                const inp = document.createElement('input');
+                inp.type = 'hidden';
+                inp.name = 'ids[]';
+                inp.value = id;
+                form.appendChild(inp);
+            });
+
+            document.body.appendChild(form);
+
+            // Envío vía fetch (ajax)
+            fetch(form.action, {
+                method: 'POST',
+                body: new FormData(form),
+                headers: { 'X-Requested-With': 'XMLHttpRequest' }
+            })
+            .then(response => {
+                if (response.ok) {
+                    // Cerrar modal y recargar
+                    const deleteModal = document.getElementById('deleteModal');
+                    if (deleteModal) {
+                        const bsModal = bootstrap.Modal.getInstance(deleteModal);
+                        if (bsModal) bsModal.hide();
                     }
-                });
+                    window.location.reload();
+                } else {
+                    console.error('Error al eliminar los apiarios');
+                    alert('Ha ocurrido un error al eliminar los apiarios');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Ha ocurrido un error al procesar la solicitud');
+            });
+
+            return false; // evitar envío normal
+        });
+    }
+
+    // 5.4) Tooltip para imágenes y demás
+    const apiarioImages = document.querySelectorAll('.apiario-image img');
+    apiarioImages.forEach(img => {
+        img.addEventListener('click', function () {
+            const modalId = this.getAttribute('data-bs-target');
+            const imageModal = new bootstrap.Modal(document.querySelector(modalId));
+            imageModal.show();
+
+            const modalImg = document.querySelector(`${modalId} .modal-body img`);
+            if (modalImg) {
+                modalImg.style.opacity = '0';
+                setTimeout(() => {
+                    modalImg.style.transition = 'opacity 0.3s ease';
+                    modalImg.style.opacity = '1';
+                }, 100);
             }
         });
 
-        // Script para manejar la expansión de imágenes
-        const apiarioImages = document.querySelectorAll('.apiario-image img');
-        apiarioImages.forEach(img => {
-            img.addEventListener('click', function () {
-                // Obtener el ID del modal desde el atributo data-target
-                const modalId = this.getAttribute('data-bs-target');
+        img.classList.add('clickable-image');
+        img.title = "Clic para ampliar";
+        img.style.cursor = "pointer";
+    });
 
-                // Crear una instancia del modal de Bootstrap 5 y mostrarlo
-                const imageModal = new bootstrap.Modal(document.querySelector(modalId));
-                imageModal.show();
+    // 5.5) Custom Tooltips (hover)
+    (function setupTooltips() {
+        const tooltip = document.createElement('div');
+        tooltip.className = 'custom-tooltip';
+        tooltip.style.display = 'none';
+        document.body.appendChild(tooltip);
 
-                // Mejorar la experiencia visual
-                const modalImg = document.querySelector(`${modalId} .modal-body img`);
-                if (modalImg) {
-                    // Añadir una transición suave para la carga de la imagen
-                    modalImg.style.opacity = '0';
-                    setTimeout(() => {
-                        modalImg.style.transition = 'opacity 0.3s ease';
-                        modalImg.style.opacity = '1';
-                    }, 100);
-                }
-            });
+        function showTooltip(e) {
+            const text = this.getAttribute('data-tooltip');
+            if (!text) return;
 
-            // Añadir clase para indicar que es clicable y mejorar la experiencia
-            img.classList.add('clickable-image');
-            img.title = "Clic para ampliar";
-            img.style.cursor = "pointer";
-        });
+            tooltip.textContent = text;
+            tooltip.style.display = 'block';
 
-        document.addEventListener('DOMContentLoaded', function () {
-            // Crear un elemento para el tooltip
-            const tooltip = document.createElement('div');
-            tooltip.className = 'custom-tooltip';
+            const rect = this.getBoundingClientRect();
+            tooltip.style.top  = (rect.top - tooltip.offsetHeight - 10) + 'px';
+            tooltip.style.left = (rect.left + rect.width/2 - tooltip.offsetWidth/2) + 'px';
+
+            const tooltipRect = tooltip.getBoundingClientRect();
+            if (tooltipRect.left < 10) {
+                tooltip.style.left = '10px';
+            } else if (tooltipRect.right > window.innerWidth - 10) {
+                tooltip.style.left = (window.innerWidth - tooltipRect.width - 10) + 'px';
+            }
+            if (tooltipRect.top < 10) {
+                tooltip.style.top = (rect.bottom + 10) + 'px';
+            }
+        }
+
+        function hideTooltip() {
             tooltip.style.display = 'none';
-            document.body.appendChild(tooltip);
+        }
 
-            // Función para mostrar el tooltip
-            function showTooltip(e) {
-                const text = this.getAttribute('data-tooltip');
-                if (!text) return;
-
-                tooltip.textContent = text;
-                tooltip.style.display = 'block';
-
-                // Posicionar el tooltip encima del elemento
-                const rect = this.getBoundingClientRect();
-                tooltip.style.top = (rect.top - tooltip.offsetHeight - 10) + 'px';
-                tooltip.style.left = (rect.left + rect.width / 2 - tooltip.offsetWidth / 2) + 'px';
-
-                // Asegurar que el tooltip no se salga de la pantalla
-                const tooltipRect = tooltip.getBoundingClientRect();
-                if (tooltipRect.left < 10) {
-                    tooltip.style.left = '10px';
-                } else if (tooltipRect.right > window.innerWidth - 10) {
-                    tooltip.style.left = (window.innerWidth - tooltipRect.width - 10) + 'px';
-                }
-
-                if (tooltipRect.top < 10) {
-                    tooltip.style.top = (rect.bottom + 10) + 'px';
-                }
-            }
-
-            // Función para ocultar el tooltip
-            function hideTooltip() {
-                tooltip.style.display = 'none';
-            }
-
-            // Agregar eventos a todos los elementos con data-tooltip
-            document.querySelectorAll('[data-tooltip]').forEach(el => {
-                el.addEventListener('mouseenter', showTooltip);
-                el.addEventListener('mouseleave', hideTooltip);
-            });
-
-            // Actualizar los tooltips cuando se agregan nuevos elementos
-            const observer = new MutationObserver(mutations => {
-                mutations.forEach(mutation => {
-                    if (mutation.addedNodes.length) {
-                        mutation.addedNodes.forEach(node => {
-                            if (node.nodeType === 1) {
-                                if (node.hasAttribute('data-tooltip')) {
-                                    node.addEventListener('mouseenter', showTooltip);
-                                    node.addEventListener('mouseleave', hideTooltip);
-                                }
-                                node.querySelectorAll('[data-tooltip]').forEach(el => {
-                                    el.addEventListener('mouseenter', showTooltip);
-                                    el.addEventListener('mouseleave', hideTooltip);
-                                });
-                            }
-                        });
-                    }
-                });
-            });
-            observer.observe(document.body, { childList: true, subtree: true });
+        document.querySelectorAll('[data-tooltip]').forEach(el => {
+            el.addEventListener('mouseenter', showTooltip);
+            el.addEventListener('mouseleave', hideTooltip);
         });
-    </script>
+
+        const observer = new MutationObserver(mutations => {
+            mutations.forEach(mutation => {
+                if (mutation.addedNodes.length) {
+                    mutation.addedNodes.forEach(node => {
+                        if (node.nodeType === 1) {
+                            if (node.hasAttribute('data-tooltip')) {
+                                node.addEventListener('mouseenter', showTooltip);
+                                node.addEventListener('mouseleave', hideTooltip);
+                            }
+                            node.querySelectorAll('[data-tooltip]').forEach(el => {
+                                el.addEventListener('mouseenter', showTooltip);
+                                el.addEventListener('mouseleave', hideTooltip);
+                            });
+                        }
+                    });
+                }
+            });
+        });
+        observer.observe(document.body, { childList: true, subtree: true });
+    })();
+
+}); // Fin DOMContentLoaded
+</script>
 @endsection
