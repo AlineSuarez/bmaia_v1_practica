@@ -63,4 +63,12 @@ class MovimientoColmena extends Model
     {
         return $this->belongsTo(Apiario::class, 'apiario_destino_id');
     }
+    public function origen()
+    {
+        return $this->belongsTo(Apiario::class, 'apiario_origen_id');
+    }
+    public function destino()
+    {
+        return $this->belongsTo(Apiario::class, 'apiario_destino_id');
+    }
 }
