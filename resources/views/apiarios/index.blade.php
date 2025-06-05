@@ -171,19 +171,21 @@
                 
                 <!-- Botones de acciones para trashumantes -->
                 <div class="action-buttons">
-                    <button id="trasladarColmenasButton" class="action-button warning" disabled
-                            data-tooltip="Trasladar colmenas seleccionadas">
+                    <button
+                        id="trasladarColmenasButton"
+                        class="action-button warning"
+                        disabled
+                        data-tooltip="Trasladar colmenas seleccionadas">
                         <i class="fas fa-arrow-right"></i> Trasladar Colmenas
                     </button>
 
-                    <button id="retornarColmenasButton" class="action-button success" disabled
-                            data-tooltip="Retornar colmenas a su apiario original">
+                    <button 
+                        id="retornarColmenasButton"
+                        class="action-button success"
+                        disabled
+                        data-tooltip="Retornar colmenas a su apiario original">
                         <i class="fas fa-arrow-left"></i> Retornar Colmenas
                     </button>
-                </div>
-
-                <div class="action-button mb-2">
-                    
                 </div>
 
                 <!-- Tabla de Apiarios Base -->
@@ -335,6 +337,12 @@
                                 </thead>
                                 <tbody>
                                     @forelse($apiariosTemporales as $apiario)
+                                        @php
+                                            // Intentamos obtener el último movimiento (traslado) que lo originó
+                                            $mov = $apiario->ultimoMovimientoDestino;
+                                            // La región/comuna de origen viene del Apiario padre (apiarioOrigen)
+                                            $apiarioOrigen = $mov ? $mov->apiarioOrigen : null;
+                                        @endphp
                                         <tr>
                                             <td class="text-center">
                                                 <label class="custom-checkbox">
@@ -346,17 +354,127 @@
                                             </td>
                                             <td class="text-center">{{ $apiario->nombre }}</td>
                                             <td class="text-center">{{ $apiario->num_colmenas }}</td>
+                                            <!-- Región Origen = si existe el movimiento, tomamos región del apiarioOrigen -->
+                                            <td class="text-center">
+                                                {{ $apiarioOrigen
+                                                    && $apiarioOrigen->comuna
+                                                    && $apiarioOrigen->comuna->region
+                                                    ? $apiarioOrigen->comuna->region->nombre
+                                                    : 'N/A'
+                                                }}
+                                            </td>
+                                            <!-- Comuna Origen = nombre de comuna del apiarioOrigen -->
+                                            <td class="text-center">
+                                                {{ $apiarioOrigen
+                                                    && $apiarioOrigen->comuna
+                                                    ? $apiarioOrigen->comuna->nombre
+                                                    : 'N/A'
+                                                }}
+                                            </td>
+                                            
+                                            <!-- Región Destino = región donde está el apiario temporal -->
                                             <td class="text-center">
                                                 {{ optional(optional($apiario->comuna)->region)->nombre ?? 'N/A' }}
                                             </td>
+
+                                            <!-- Comuna Destino = comuna donde está el apiario temporal -->
                                             <td class="text-center">
                                                 {{ optional($apiario->comuna)->nombre ?? 'N/A' }}
                                             </td>
+
+
+                                            <!-- Fecha Movimiento = fecha_movimiento del último traslado -->
                                             <td class="text-center">
-                                                {{ $apiario->created_at->format('Y-m-d') }}
+                                                {{ $mov ? $mov->fecha_movimiento->format('Y-m-d') : '—' }}
+                                            </td>
+
+                                            <!-- Motivo (Producción/Polinización) -->
+                                            <td class="text-center">
+                                                {{ $mov ? $mov->motivo_movimiento : '—' }}
+                                            </td>
+
+                                            <!-- Cultivo (solo si el motivo fue Polinización) -->
+                                            <td class="text-center">
+                                                {{ $mov && $mov->motivo_movimiento === 'Polinización'
+                                                    ? ($mov->cultivo ?? '—')
+                                                    : '—'
+                                                }}
                                             </td>
                                             
+                                            <!-- Columna de Acciones: editar / eliminar / descargar reporte, etc. -->
+                                            <td class="text-center">
+                                                <div class="table-actions">
+                                                    {{-- Botón EDITAR: redirige a la ruta de edición de apiario --}}
+                                                    <a href="{{ route('apiarios.editar', $apiario->id) }}"
+                                                        class="btn-table-action btn-edit"
+                                                        data-tooltip="Editar">
+                                                        <i class="fas fa-edit"></i>
+                                                    </a>
+
+                                                    {{-- Botón ELIMINAR: abre un modal o dispara un formulario --}}
+                                                    <button class="btn-table-action btn-delete"
+                                                            type="button"
+                                                            data-bs-toggle="modal"
+                                                            data-bs-target="#deleteModalTemporal{{ $apiario->id }}"
+                                                            data-tooltip="Eliminar">
+                                                        <i class="fas fa-trash-alt"></i>
+                                                    </button>
+
+                                                    {{-- Botón DESCARGAR PDF (igual que en los fijos) --}}
+                                                    <a href="{{ route('generate.document', $apiario->id) }}"
+                                                    class="btn-table-action btn-info"
+                                                    data-tooltip="Descargar detalle PDF">
+                                                    <i class="fas fa-download"></i>
+                                                    </a>
+
+                                                    <a href="{{ route('colmenas.index', $apiario->id) }}"
+                                                        class="btn-table-action btn-info" data-tooltip="Ver Colmenas">
+                                                        <i class="fas fa-cubes"></i>
+                                                    </a>
+                                                </div>
+                                            </td>
                                         </tr>
+
+                                        {{-- Modal para confirmar eliminación de este apiario temporal --}}
+                                        <div class="modal fade custom-modal"
+                                            id="deleteModalTemporal{{ $apiario->id }}"
+                                            tabindex="-1"
+                                            aria-labelledby="deleteModalLabelTemporal{{ $apiario->id }}"
+                                            aria-hidden="true">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title"
+                                                            id="deleteModalLabelTemporal{{ $apiario->id }}">
+                                                            Confirmar Eliminación
+                                                        </h5>
+                                                        <button type="button" class="btn-close"
+                                                                data-bs-dismiss="modal"
+                                                                aria-label="Close"></button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <p>¿Está seguro de que desea eliminar el apiario temporal
+                                                            <strong>{{ $apiario->nombre }}</strong>? Esta acción no se puede deshacer.</p>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button"
+                                                                class="modal-btn modal-btn-secondary"
+                                                                data-bs-dismiss="modal">
+                                                            Cancelar
+                                                        </button>
+                                                        <form action="{{ route('apiarios.destroy', $apiario->id) }}"
+                                                            method="POST">
+                                                            @csrf
+                                                            @method('DELETE')
+                                                            <button type="submit" class="modal-btn modal-btn-danger">
+                                                                Eliminar
+                                                            </button>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
                                         @empty
                                         <tr>
                                             <td colspan="6" class="text-center text-muted">
@@ -375,7 +493,7 @@
             <div class="tab-pane fade" id="archivados" role="tabpanel" aria-labelledby="archivados-tab">
                 <div class="apiarios-table-wrapper">
                     <div class="table-responsive">
-                        @if(isset($apiariosArchivados) && $apiariosArchivados->count() > 0)
+                        @if($apiariosArchivados->count() > 0)
                             <table id="apiariosArchivadosTable" class="apiarios-table table table-striped">
                                 <thead>
                                     <tr>
@@ -384,6 +502,7 @@
                                         <th class="text-center"><span class="column-title">Región</span></th>
                                         <th class="text-center"><span class="column-title">Comuna</span></th>
                                         <th class="text-center"><span class="column-title">Fecha Archivado</span></th>
+                                        <th class="text-center"><span class="column-title">Acción</span></th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -394,6 +513,31 @@
                                             <td class="text-center">{{ optional(optional($apiario->comuna)->region)->nombre ?? 'N/A' }}</td>
                                             <td class="text-center">{{ optional($apiario->comuna)->nombre ?? 'N/A' }}</td>
                                             <td class="text-center">{{ $apiario->updated_at->format('Y-m-d') }}</td>
+
+                                            {{-- Botones de acción (igual que en las demás tablas) --}}
+                                            <td class="text-center">
+                                                <div class="table-actions">
+                                                    <a href="{{ route('apiarios.editar', $apiario->id) }}"
+                                                    class="btn-table-action btn-edit" data-tooltip="Editar">
+                                                        <i class="fas fa-edit"></i>
+                                                    </a>
+                                                    <form action="{{ route('apiarios.destroy', $apiario->id) }}"
+                                                        method="POST"
+                                                        style="display: inline-block;">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="submit"
+                                                                class="btn-table-action btn-delete"
+                                                                data-tooltip="Eliminar">
+                                                            <i class="fas fa-trash-alt"></i>
+                                                        </button>
+                                                    </form>
+                                                    <a href="{{ route('generate.document', $apiario->id) }}"
+                                                    class="btn-table-action btn-info" data-tooltip="Descargar detalle PDF">
+                                                        <i class="fas fa-download"></i>
+                                                    </a>
+                                                </div>
+                                            </td>
                                         </tr>
                                     @endforeach
                                 </tbody>
@@ -520,8 +664,7 @@
         @endif
     @endforeach
 @endsection
-@section('optional-scripts')
-<script>
+@section('optional-scripts')<script>
 document.addEventListener('DOMContentLoaded', function () {
     // ==================================================
     // 1) APIARIOS FIJOS (eliminar múltiple)
@@ -537,7 +680,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
             button.disabled = (checkedCount === 0);
 
-            // Si existe multiDeleteButton y hay seleccionados, mostramos la cuenta
             if (checkedCount > 0) {
                 button.innerHTML = `<i class="fas fa-trash-alt"></i> Eliminar (${checkedCount})`;
             } else {
@@ -545,7 +687,7 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         }
 
-        // 1.1) “Select all” para apiarios fijos
+        // 1.1) “Select All” para apiarios fijos
         if (selectAll) {
             selectAll.addEventListener('change', function () {
                 checkboxes.forEach(chk => chk.checked = selectAll.checked);
@@ -556,7 +698,6 @@ document.addEventListener('DOMContentLoaded', function () {
         // 1.2) Chequeo individual en cada fila
         checkboxes.forEach(chk => {
             chk.addEventListener('change', function () {
-                // Si todos los checkboxes están chequeados, marcar “selectAll”
                 const total = checkboxes.length;
                 const totalChecked = document.querySelectorAll(checkboxSelector + ':checked').length;
                 if (selectAll) {
@@ -570,22 +711,21 @@ document.addEventListener('DOMContentLoaded', function () {
         updateButtonState();
     }
 
-    // Invocamos para “Apiarios Fijos” 
+    // Invocamos para “Apiarios Fijos”
     setupFijosHandlers('selectAll', '.select-checkbox', 'multiDeleteButton');
 
+
     // ==================================================
-    // 2) APIARIOS TRASHUMANTES (BASE) – Trasladar/Retornar desde apiarios base
+    // 2) APIARIOS TRASHUMANTES (BASE) – Solo “Trasladar Colmenas”
     // ==================================================
-    function setupTrashumanteBaseHandlers(selectAllId, checkboxSelector, trasladarBtnId, retornarBtnId) {
+    function setupTrashumanteBaseHandlers(selectAllId, checkboxSelector, trasladarBtnId) {
         const selectAll = document.getElementById(selectAllId);
         const checkboxes = document.querySelectorAll(checkboxSelector);
         const trasladarBtn = document.getElementById(trasladarBtnId);
-        const retornarBtn = document.getElementById(retornarBtnId);
 
-        function updateTrashumanteButtons() {
+        function updateTrasladarButton() {
             const selectedCount = document.querySelectorAll(checkboxSelector + ':checked').length;
 
-            // 2.1) Trasladar
             if (trasladarBtn) {
                 trasladarBtn.disabled = (selectedCount === 0);
                 if (selectedCount > 0) {
@@ -594,28 +734,18 @@ document.addEventListener('DOMContentLoaded', function () {
                     trasladarBtn.innerHTML = `<i class="fas fa-arrow-right"></i> Trasladar Colmenas`;
                 }
             }
-
-            // 2.2) Retornar
-            if (retornarBtn) {
-                retornarBtn.disabled = (selectedCount === 0);
-                if (selectedCount > 0) {
-                    retornarBtn.innerHTML = `<i class="fas fa-arrow-left"></i> Retornar Colmenas (${selectedCount})`;
-                } else {
-                    retornarBtn.innerHTML = `<i class="fas fa-arrow-left"></i> Retornar Colmenas`;
-                }
-            }
         }
 
-        // 2.3) “Select All” para apiarios base (trashumantes)
+        // 2.1) “Select All” para apiarios base
         if (selectAll) {
             selectAll.addEventListener('change', function () {
                 const marcado = selectAll.checked;
                 checkboxes.forEach(chk => chk.checked = marcado);
-                updateTrashumanteButtons();
+                updateTrasladarButton();
             });
         }
 
-        // 2.4) Chequeo individual en cada una de las filas de apiarios base
+        // 2.2) Chequeo individual en cada fila
         checkboxes.forEach(chk => {
             chk.addEventListener('change', function () {
                 const total = checkboxes.length;
@@ -623,28 +753,28 @@ document.addEventListener('DOMContentLoaded', function () {
                 if (selectAll) {
                     selectAll.checked = (total === totalChecked);
                 }
-                updateTrashumanteButtons();
+                updateTrasladarButton();
             });
         });
 
-        // 2.5) Estado inicial para botones
-        updateTrashumanteButtons();
+        // 2.3) Estado inicial
+        updateTrasladarButton();
     }
 
-    // Invocamos para “Apiarios Base” (trashumantes) – habilita “Trasladar” y “Retornar”
+    // Invocamos para “Apiarios Base” – habilita solo “Trasladar”
     setupTrashumanteBaseHandlers(
         'selectAllTrashumante',
         '.select-checkbox-trashumante',
-        'trasladarColmenasButton',
-        'retornarColmenasButton'
+        'trasladarColmenasButton'
     );
 
-    // 2.6) Si clickean en “Trasladar Colmenas” → redirige al wizard con tipo=traslado
+    // 2.4) Si clickean en “Trasladar Colmenas” → redirige al wizard con tipo=traslado
     const trasladarBtn = document.getElementById('trasladarColmenasButton');
     if (trasladarBtn) {
         trasladarBtn.addEventListener('click', function () {
-            const seleccionados = Array.from(document.querySelectorAll('.select-checkbox-trashumante:checked'))
-                                      .map(chk => chk.value);
+            const seleccionados = Array.from(
+                document.querySelectorAll('.select-checkbox-trashumante:checked')
+            ).map(chk => chk.value);
             if (seleccionados.length === 0) return;
 
             const url = new URL('{{ route("apiarios.createTemporal") }}', window.location.origin);
@@ -654,20 +784,6 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // 2.7) Si clickean en “Retornar Colmenas” → redirige al wizard con tipo=retorno
-    const retornarBtnBase = document.getElementById('retornarColmenasButton');
-    if (retornarBtnBase) {
-        retornarBtnBase.addEventListener('click', function () {
-            const seleccionados = Array.from(document.querySelectorAll('.select-checkbox-trashumante:checked'))
-                                      .map(chk => chk.value);
-            if (seleccionados.length === 0) return;
-
-            const url = new URL('{{ route("apiarios.createTemporal") }}', window.location.origin);
-            url.searchParams.set('tipo', 'retorno');
-            url.searchParams.set('apiarios', seleccionados.join(','));
-            window.location.href = url.toString();
-        });
-    }
 
     // ==================================================
     // 3) APIARIOS TEMPORALES – “Retornar Colmenas” desde la lista de temporales
@@ -721,16 +837,37 @@ document.addEventListener('DOMContentLoaded', function () {
     const retornarBtnTemp = document.getElementById('retornarColmenasButton');
     if (retornarBtnTemp) {
         retornarBtnTemp.addEventListener('click', function () {
-            const seleccionados = Array.from(document.querySelectorAll('.select-checkbox-temporales:checked'))
-                                      .map(chk => chk.value);
+            const seleccionados = Array.from(
+                document.querySelectorAll('.select-checkbox-temporales:checked')
+            ).map(chk => chk.value);
             if (seleccionados.length === 0) return;
 
-            const url = new URL('{{ route("apiarios.createTemporal") }}', window.location.origin);
-            url.searchParams.set('tipo', 'retorno');
-            url.searchParams.set('apiarios', seleccionados.join(','));
-            window.location.href = url.toString();
+            // Creas un form oculto para archivar múltiple
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = '{{ route("apiarios.archivarMultiples") }}';
+            form.style.display = 'none';
+
+            // Token CSRF
+            const csrfInput = document.createElement('input');
+            csrfInput.type = 'hidden';
+            csrfInput.name = '_token';
+            csrfInput.value = '{{ csrf_token() }}';
+            form.appendChild(csrfInput);
+
+            seleccionados.forEach(id => {
+                const input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = 'ids[]';
+                input.value = id;
+                form.appendChild(input);
+            });
+
+            document.body.appendChild(form);
+            form.submit();
         });
     }
+
 
     // ==================================================
     // 4) CREAR / RETORNAR APIARIO TEMPORAL (MODAL)
@@ -747,10 +884,8 @@ document.addEventListener('DOMContentLoaded', function () {
             const selectedCheckboxes = document.querySelectorAll('.select-checkbox-trashumante:checked');
             if (selectedCheckboxes.length === 0) return;
 
-            // Limpiar lista anterior
             selectedApiariosList.innerHTML = '';
 
-            // Recorrer los seleccionados y mostrar nombre + colmenas en el modal
             selectedCheckboxes.forEach(chk => {
                 const row = chk.closest('tr');
                 const apiarioName = row.querySelector('.apiario-id').textContent;
@@ -767,7 +902,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 selectedApiariosList.appendChild(listItem);
             });
 
-            // Mostrar modal
             new bootstrap.Modal(createTemporalModal).show();
         });
     }
@@ -775,8 +909,9 @@ document.addEventListener('DOMContentLoaded', function () {
     // 4.2) Botón “Traslado” dentro del modal
     if (createTrasladoButton) {
         createTrasladoButton.addEventListener('click', function () {
-            const seleccionados = Array.from(document.querySelectorAll('.select-checkbox-trashumante:checked'))
-                                      .map(chk => chk.value);
+            const seleccionados = Array.from(
+                document.querySelectorAll('.select-checkbox-trashumante:checked')
+            ).map(chk => chk.value);
             if (seleccionados.length === 0) return;
 
             const url = new URL('{{ route("apiarios.createTemporal") }}', window.location.origin);
@@ -789,8 +924,9 @@ document.addEventListener('DOMContentLoaded', function () {
     // 4.3) Botón “Retorno” dentro del modal
     if (createRetornoButton) {
         createRetornoButton.addEventListener('click', function () {
-            const seleccionados = Array.from(document.querySelectorAll('.select-checkbox-trashumante:checked'))
-                                      .map(chk => chk.value);
+            const seleccionados = Array.from(
+                document.querySelectorAll('.select-checkbox-trashumante:checked')
+            ).map(chk => chk.value);
             if (seleccionados.length === 0) return;
 
             const url = new URL('{{ route("apiarios.createTemporal") }}', window.location.origin);
@@ -800,12 +936,10 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
+
     // ==================================================
     // 5) FILTRADO DE TABLA, ANIMACIONES, ELIMINAR FIJOS, TOOLTIP, ETC.
-    //    (este bloque permanece exactamente igual que antes)
     // ==================================================
-
-    // 5.1) Filtrado de tabla de “Apiarios Fijos”
     const searchInput = document.getElementById('searchInput');
     const filterTipo  = document.getElementById('filterTipo');
     const tableRows   = document.querySelectorAll('#apiariosTable tbody tr');
@@ -853,11 +987,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
     if (confirmDeleteButton) {
         confirmDeleteButton.addEventListener('click', function () {
-            const selectedIds = Array.from(document.querySelectorAll('.select-checkbox:checked'))
-                                     .map(chk => chk.value);
+            const selectedIds = Array.from(
+                document.querySelectorAll('.select-checkbox:checked')
+            ).map(chk => chk.value);
             if (selectedIds.length === 0) return;
 
-            // Construir formulario oculto
             const form = document.createElement('form');
             form.method = 'POST';
             form.action = '{{ route("apiarios.massDelete") }}';
@@ -870,7 +1004,6 @@ document.addEventListener('DOMContentLoaded', function () {
             csrfToken.value = '{{ csrf_token() }}';
             form.appendChild(csrfToken);
 
-            // IDs seleccionados
             selectedIds.forEach(id => {
                 const inp = document.createElement('input');
                 inp.type = 'hidden';
@@ -881,7 +1014,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
             document.body.appendChild(form);
 
-            // Envío vía fetch (ajax)
             fetch(form.action, {
                 method: 'POST',
                 body: new FormData(form),
@@ -889,7 +1021,6 @@ document.addEventListener('DOMContentLoaded', function () {
             })
             .then(response => {
                 if (response.ok) {
-                    // Cerrar modal y recargar
                     const deleteModal = document.getElementById('deleteModal');
                     if (deleteModal) {
                         const bsModal = bootstrap.Modal.getInstance(deleteModal);
@@ -906,7 +1037,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 alert('Ha ocurrido un error al procesar la solicitud');
             });
 
-            return false; // evitar envío normal
+            return false;
         });
     }
 

@@ -24,8 +24,6 @@ use App\Http\Controllers\AlertController;
 use App\Http\Controllers\ReminderController;
 use App\Http\Controllers\ImportantDateController;
 use App\Http\Controllers\EmergencyContactController;
-//use App\Http\Controllers\MovimientoColmenaController;
-//use App\Http\Controllers\MovimientoColmenaController;
 
 //Rutas de las policies 
 Route::view('/politicas-de-privacidad', 'legal.privacidad')->name('privacidad');
@@ -69,10 +67,11 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/apiarios/create-temporal', [ApiarioController::class, 'createTemporal'])->name('apiarios.createTemporal');
     Route::resource('apiarios', ApiarioController::class);
 
-    // trashumancia
+    // trashumancia - temporal
     Route::post('/trashumancia/store', [TrashumanciaController::class, 'store'])->name('trashumancia.store');
-    Route::post('/trashumancia/archivar/{id}', [TrashumanciaController::class, 'archivar'])->name('trashumancia.archivar');
-        
+    Route::post('/apiarios/{id}/archivar', [TrashumanciaController::class, 'archivar'])->name('apiarios.archivar');
+    Route::post('/apiarios/archivar-multiples', [TrashumanciaController::class,'archivarMultiples'])->name('apiarios.archivarMultiples');
+
 
     Route::resource('visita', VisitaController::class);
     Route::get('/visitas', [VisitaController::class, 'index'])->name('visitas.index');

@@ -93,7 +93,7 @@ class ApiarioController extends Controller
         $data['comuna_id']   = $data['comuna'];
         unset($data['region'], $data['comuna']);
 
-        $data['activo']      = $data['tipo_apiario'] === 'trashumante';
+        $data['activo']      = 1;
         $data['es_temporal'] = false;
 
         // 3) manejo de la foto
