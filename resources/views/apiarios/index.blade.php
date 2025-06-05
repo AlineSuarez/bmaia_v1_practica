@@ -427,6 +427,7 @@
                                                     <i class="fas fa-download"></i>
                                                     </a>
 
+                                                    {{-- Botón VER COLMENAS (igual que en los fijos) --}}
                                                     <a href="{{ route('colmenas.index', $apiario->id) }}"
                                                         class="btn-table-action btn-info" data-tooltip="Ver Colmenas">
                                                         <i class="fas fa-cubes"></i>
@@ -498,7 +499,9 @@
                                 <thead>
                                     <tr>
                                         <th class="text-center"><span class="column-title">Apiario</span></th>
-                                        <th class="text-center"><span class="column-title">Temporada</span></th>
+                                        <th class="text-center"><span class="column-title">N° Colmenas</span></th>
+                                        <th class="text-center"><span class="column-title">Tipo</span></th>
+                                        <th class="text-center"><span class="column-title">Objetivo</span></th>
                                         <th class="text-center"><span class="column-title">Región</span></th>
                                         <th class="text-center"><span class="column-title">Comuna</span></th>
                                         <th class="text-center"><span class="column-title">Fecha Archivado</span></th>
@@ -508,17 +511,36 @@
                                 <tbody>
                                     @foreach($apiariosArchivados as $apiario)
                                         <tr>
-                                            <td class="text-center">{{ $apiario->nombre }}</td>
-                                            <td class="text-center">{{ $apiario->temporada_produccion }}</td>
-                                            <td class="text-center">{{ optional(optional($apiario->comuna)->region)->nombre ?? 'N/A' }}</td>
-                                            <td class="text-center">{{ optional($apiario->comuna)->nombre ?? 'N/A' }}</td>
-                                            <td class="text-center">{{ $apiario->updated_at->format('Y-m-d') }}</td>
-
-                                            {{-- Botones de acción (igual que en las demás tablas) --}}
+                                            <td class="text-center">
+                                                {{ $apiario->nombre }}
+                                            </td>
+                                            <td class="text-center">{{ $apiario->colmenas_historicas }}</td>
+                                            <td class="text-center">
+                                                <span class="tag tag-secondary">
+                                                    {{ ucfirst($apiario->tipo_apiario) }}
+                                                </span>
+                                            </td>
+                                            
+                                            <td class="text-center">
+                                                <span class="tag tag-warning">
+                                                    {{ $apiario->objetivo_produccion }}
+                                                </span>
+                                            </td>
+                                            
+                                            <td class="text-center">
+                                                {{ optional(optional($apiario->comuna)->region)->nombre ?? 'N/A' }}
+                                            </td>
+                                            <td class="text-center">
+                                                {{ optional($apiario->comuna)->nombre ?? 'N/A' }}
+                                            </td>
+                                            <td class="text-center">
+                                                {{ $apiario->updated_at->format('Y-m-d') }}
+                                            </td>
                                             <td class="text-center">
                                                 <div class="table-actions">
                                                     <a href="{{ route('apiarios.editar', $apiario->id) }}"
-                                                    class="btn-table-action btn-edit" data-tooltip="Editar">
+                                                    class="btn-table-action btn-edit"
+                                                    data-tooltip="Editar">
                                                         <i class="fas fa-edit"></i>
                                                     </a>
                                                     <form action="{{ route('apiarios.destroy', $apiario->id) }}"
@@ -533,8 +555,14 @@
                                                         </button>
                                                     </form>
                                                     <a href="{{ route('generate.document', $apiario->id) }}"
-                                                    class="btn-table-action btn-info" data-tooltip="Descargar detalle PDF">
+                                                    class="btn-table-action btn-info"
+                                                    data-tooltip="Descargar detalle PDF">
                                                         <i class="fas fa-download"></i>
+                                                    </a>
+                                                    <a href="{{ route('colmenas.index', $apiario->id) }}"
+                                                    class="btn-table-action btn-info"
+                                                    data-tooltip="Ver Colmenas">
+                                                        <i class="fas fa-cubes"></i>
                                                     </a>
                                                 </div>
                                             </td>
@@ -933,7 +961,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
             // Por cada ID, extraemos el nombre visible en la tabla para mostrarlo
             seleccionados.forEach(id => {
-                // Buscamos la fila del apiario que tenga value="{{ $apiario->id }}">
+                // Buscamos la fila del apiario que coincida con id seleccionado
                 const chk = document.querySelector(`.select-checkbox-temporales[value="${id}"]`);
                 if (!chk) return;
 

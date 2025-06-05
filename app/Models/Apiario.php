@@ -55,7 +55,19 @@ class Apiario extends Model
         return $this->hasMany(Colmena::class);
     }
 
+    public function movimientosDestino()
+    {
+        return $this->hasMany(MovimientoColmena::class, 'apiario_destino_id');
+    }
 
+
+    public function getColmenasHistoricasAttribute()
+    {
+        return $this
+            ->movimientosDestino()
+            ->where('tipo_movimiento', 'traslado')
+            ->count();
+    }
 
  //metodos para archivar apiario temporal
     public function debeArchivarse()

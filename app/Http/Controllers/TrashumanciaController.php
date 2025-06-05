@@ -181,78 +181,127 @@ class TrashumanciaController extends Controller
 
     public function archivar($id)
     {
-        $apiario = Apiario::findOrFail($id);
+        $apiarioTemp = Apiario::findOrFail($id);
 
-        if ($apiario->tipo_apiario !== 'trashumante') {
+        if ($apiarioTemp->tipo_apiario !== 'trashumante') {
             return response()->json(['error' => 'Solo apiarios temporales pueden archivarse.'], 422);
         }
 
-        DB::transaction(function () use ($apiario) {
-            $colmenas = Colmena::where('apiario_id', $apiario->id)->get();
+        return DB::transaction(function () use ($apiarioTemp) {
+            // 1) Obtener todas las colmenas que todavía estén en este apiario temporal
+            $colmenas = Colmena::where('apiario_id', $apiarioTemp->id)->get();
 
             foreach ($colmenas as $colmena) {
+                // 2) Buscar el último traslado para saber cuál fue el apiario padre original
                 $ultimoTraslado = $colmena->movimientos()
                     ->where('tipo_movimiento', 'traslado')
                     ->latest('fecha_movimiento')
                     ->first();
 
-                if (!$ultimoTraslado) {
+                if (! $ultimoTraslado) {
                     continue;
                 }
 
-                // Crear movimiento de retorno
+                // 3) Crear el registro de retorno
                 MovimientoColmena::create([
                     'colmena_id'         => $colmena->id,
-                    'apiario_origen_id'  => $apiario->id,
+                    'apiario_origen_id'  => $apiarioTemp->id,
                     'apiario_destino_id' => $ultimoTraslado->apiario_origen_id,
                     'tipo_movimiento'    => 'retorno',
                     'fecha_movimiento'   => now(),
-                    'fecha_inicio_mov'   => now()->subDay(),
+                    'fecha_inicio_mov'   => now()->subDays(1),
                     'fecha_termino_mov'  => now(),
                     'motivo_movimiento'  => 'Retorno por archivado manual',
                     'transportista'      => 'Sistema',
                     'vehiculo'           => 'Sistema',
-                    'created_by'         => auth()->id(),
-                    'updated_by'         => auth()->id(),
                 ]);
 
-                // Reasignar físicamente la colmena al apiario padre
-                $colmena->update(['apiario_id' => $ultimoTraslado->apiario_origen_id]);
+                // 4) Reasignar físicamente la colmena de vuelta al apiario padre
+                $apiarioPadre = Apiario::find($ultimoTraslado->apiario_origen_id);
 
-                // Incrementar num_colmenas en el apiario padre
-                $apiarioOrigen = Apiario::find($ultimoTraslado->apiario_origen_id);
-                if ($apiarioOrigen) {
-                    $apiarioOrigen->increment('num_colmenas', 1);
+                // → Incrementar en +1 el num_colmenas en el apiario padre
+                if ($apiarioPadre) {
+                    $apiarioPadre->increment('num_colmenas', 1);
                 }
+
+                // → Actualizar la FK en la colmena
+                $colmena->update(['apiario_id' => $ultimoTraslado->apiario_origen_id]);
             }
 
-            // Marcar este apiario temporal como inactivo (archivado) y num_colmenas = 0
-            $apiario->update([
-                'activo'       => 0,
+            // 5) Ahora que ya no quedan colmenas dentro del apiario temporal, dejamos num_colmenas = 0
+            $apiarioTemp->update([
                 'num_colmenas' => 0,
+                'activo'       => 0,
             ]);
-        });
 
-        return response()->json(['message' => 'Apiario temporal archivado correctamente']);
+            return response()->json(['message' => 'Apiario temporal archivado correctamente']);
+        });
     }
+
 
 
     public function archivarMultiples(Request $request)
     {
         $ids = $request->input('ids', []);
-
-        if (!is_array($ids) || empty($ids)) {
-            return redirect()->route('apiarios')->with('error', 'No se seleccionaron apiarios temporales.');
+        if (empty($ids) || !is_array($ids)) {
+            return redirect()->route('apiarios')->with('error', 'No se enviaron apiarios para archivar.');
         }
 
-        foreach ($ids as $id) {
-            // Llamamos al método archivar para cada ID
-            $this->archivar($id);
-        }
+        DB::transaction(function() use ($ids) {
+            foreach ($ids as $id) {
+                $apiarioTemp = Apiario::where('id', $id)
+                                    ->where('tipo_apiario', 'trashumante')
+                                    ->where('es_temporal', true)
+                                    ->where('activo', 1)
+                                    ->first();
 
-        return redirect()
-            ->route('apiarios')
-            ->with('success', 'Apiarios temporales archivados correctamente.');
+                if (! $apiarioTemp) {
+                    continue; // solo procesamos temporales activos
+                }
+
+                // Mismo bloque que en archivar():
+                $colmenas = Colmena::where('apiario_id', $apiarioTemp->id)->get();
+                foreach ($colmenas as $colmena) {
+                    $ultimoTraslado = $colmena->movimientos()
+                        ->where('tipo_movimiento', 'traslado')
+                        ->latest('fecha_movimiento')
+                        ->first();
+
+                    if (! $ultimoTraslado) {
+                        continue;
+                    }
+
+                    MovimientoColmena::create([
+                        'colmena_id'         => $colmena->id,
+                        'apiario_origen_id'  => $apiarioTemp->id,
+                        'apiario_destino_id' => $ultimoTraslado->apiario_origen_id,
+                        'tipo_movimiento'    => 'retorno',
+                        'fecha_movimiento'   => now(),
+                        'fecha_inicio_mov'   => now()->subDays(1),
+                        'fecha_termino_mov'  => now(),
+                        'motivo_movimiento'  => 'Retorno por archivado múltiple',
+                        'transportista'      => 'Sistema',
+                        'vehiculo'           => 'Sistema',
+                    ]);
+
+                    // Incrementar en 1 el num_colmenas del apiario padre
+                    $apiarioPadre = Apiario::find($ultimoTraslado->apiario_origen_id);
+                    if ($apiarioPadre) {
+                        $apiarioPadre->increment('num_colmenas', 1);
+                    }
+
+                    $colmena->update(['apiario_id' => $ultimoTraslado->apiario_origen_id]);
+                }
+
+                // Finalmente, pongo el temporal en 0 colmenas y lo inactiveo
+                $apiarioTemp->update([
+                    'num_colmenas' => 0,
+                    'activo'       => 0,
+                ]);
+            }
+        });
+
+        return redirect()->route('apiarios')->with('success', 'Apiarios temporales archivados correctamente.');
     }
 
 }

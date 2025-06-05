@@ -62,28 +62,33 @@
                                             <h5>{{ $apiario->nombre }}</h5>
                                             <span class="apiario-meta">{{ $apiario->num_colmenas }} colmenas disponibles</span>
                                             <label class="select-all">
-                                                <input type="checkbox" class="select-all-colmenas"
+                                                <input type="checkbox"
+                                                    class="select-all-colmenas"
                                                     data-apiario="{{ $apiario->id }}">
                                                 Seleccionar todas
                                             </label>
                                         </div>
 
                                         <div class="colmenas-compact">
-                                            @for($i = 1; $i <= $apiario->num_colmenas; $i++)
-                                                <label class="colmena-compact">
-                                                    <input
-                                                        type="checkbox"
-                                                        name="colmenas[{{ $apiario->id }}][]"
-                                                        value="{{ $i }}"
-                                                        class="colmena-check"
-                                                        data-apiario="{{ $apiario->id }}"
-                                                    >
-                                                    <span class="colmena-visual">
-                                                        <i class="fas fa-cube"></i>
-                                                        <small>{{ $i }}</small>
-                                                    </span>
-                                                </label>
-                                            @endfor
+                                            @if($apiario->colmenas->isEmpty())
+                                                <p class="text-muted">No hay colmenas disponibles en este apiario.</p>
+                                            @else
+                                                @foreach($apiario->colmenas as $colmena)
+                                                    <label class="colmena-compact">
+                                                        <input
+                                                            type="checkbox"
+                                                            name="colmenas[{{ $apiario->id }}][]"
+                                                            value="{{ $colmena->id }}"
+                                                            class="colmena-check"
+                                                            data-apiario="{{ $apiario->id }}"
+                                                        >
+                                                        <span class="colmena-visual">
+                                                            <i class="fas fa-cube"></i>
+                                                            <small>{{ $colmena->numero }}</small>
+                                                        </span>
+                                                    </label>
+                                                @endforeach
+                                            @endif
                                         </div>
                                     </div>
                                 @endforeach

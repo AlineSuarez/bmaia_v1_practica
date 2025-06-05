@@ -37,10 +37,13 @@ class ApiarioController extends Controller
                                     ->get();
         
         // 4) Apiarios Archivados → aquellos que ya no estén activos (activo = 0)
-        $apiariosArchivados = Apiario::where('activo', 0)
-                                     ->with('comuna.region')
-                                     ->orderByDesc('updated_at')
-                                     ->get();
+        $apiariosArchivados = Apiario::where('user_id', $userId)
+                                 ->where('tipo_apiario', 'trashumante')
+                                 ->where('es_temporal', true)
+                                 ->where('activo', 0)
+                                 ->with('comuna.region')
+                                 ->orderByDesc('updated_at')
+                                 ->get();
 
         return view('apiarios.index', compact(
             'apiariosFijos',
