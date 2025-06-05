@@ -598,6 +598,45 @@
         </div>
     </div>
 
+    <!-- Modal de confirmación para Retornar Colmenas y archivar temporales  -->
+    <div class="modal fade" id="returnConfirmationModal" tabindex="-1" aria-labelledby="returnConfirmationLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 id="returnConfirmationLabel" class="modal-title">
+                        <i class="fas fa-exclamation-circle text-warning"></i> Confirmar Retorno
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body">
+                    <p>
+                        Las colmenas de los apiarios temporales seleccionados serán devueltas a sus
+                        apiarios de origen correspondientes, y este/estos apiario/s temporal/es 
+                        serán finalmente archivado(s).<br><br>
+                        ¿Estás seguro de que deseas continuar?
+                    </p>
+                    <ul id="returnSelectedList" class="list-unstyled">
+                        {{-- Aquí insertaremos con JavaScript el nombre (o ID) de cada apiario temporal seleccionado --}}
+                    </ul>
+                </div>
+                <div class="modal-footer">
+                    <button type="button"
+                            class="btn btn-secondary"
+                            data-bs-dismiss="modal">
+                        <i class="fas fa-times"></i> Cancelar
+                    </button>
+                    <button type="button"
+                            class="btn btn-success"
+                            id="confirmReturnButton">
+                        <i class="fas fa-check"></i> Confirmar Retorno
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    
+
     <!-- Modales (mantienen la misma estructura) -->
     <div class="modal fade custom-modal" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel"
         aria-hidden="true">
@@ -618,7 +657,7 @@
         </div>
     </div>
 
-    <!-- Modal de confirmacion para un apiario individual -->
+    <!-- Modal de confirmacion para eliminar un apiario individual -->
     @foreach ($apiariosFijos as $apiario)
         <div class="modal fade custom-modal" id="deleteModal{{ $apiario->id }}" tabindex="-1"
             aria-labelledby="deleteModalLabel{{ $apiario->id }}" aria-hidden="true">
@@ -833,7 +872,9 @@ document.addEventListener('DOMContentLoaded', function () {
     // Invocamos para “Apiarios Temporales”
     setupTemporalesHandlers('selectAllTemporales', '.select-checkbox-temporales', 'retornarColmenasButton');
 
-    // 3.4) Redirección al hacer clic en “Retornar Colmenas” dentro de temporales
+
+
+    /*// 3.4) Redirección al hacer clic en “Retornar Colmenas” dentro de temporales
     const retornarBtnTemp = document.getElementById('retornarColmenasButton');
     if (retornarBtnTemp) {
         retornarBtnTemp.addEventListener('click', function () {
@@ -866,7 +907,90 @@ document.addEventListener('DOMContentLoaded', function () {
             document.body.appendChild(form);
             form.submit();
         });
+    } */
+
+// 3.4) Retornar y archivar colmenas
+
+
+    // 1) Capturamos el botón “Retornar Colmenas” y el modal
+    const retornarBtnTemp = document.getElementById('retornarColmenasButton');
+    const returnModal = new bootstrap.Modal(document.getElementById('returnConfirmationModal'));
+    const returnSelectedList = document.getElementById('returnSelectedList');
+    const confirmReturnButton = document.getElementById('confirmReturnButton');
+
+    // 2) Al hacer clic en “Retornar Colmenas” abrimos el modal
+    if (retornarBtnTemp) {
+        retornarBtnTemp.addEventListener('click', function () {
+            // Obtenemos IDs de los temporales seleccionados
+            const seleccionados = Array.from(
+                document.querySelectorAll('.select-checkbox-temporales:checked')
+            ).map(chk => chk.value);
+
+            if (seleccionados.length === 0) return; // no hay nada seleccionado
+
+            // Limpiamos la lista dentro del modal
+            returnSelectedList.innerHTML = '';
+
+            // Por cada ID, extraemos el nombre visible en la tabla para mostrarlo
+            seleccionados.forEach(id => {
+                // Buscamos la fila del apiario que tenga value="{{ $apiario->id }}">
+                const chk = document.querySelector(`.select-checkbox-temporales[value="${id}"]`);
+                if (!chk) return;
+
+                const fila = chk.closest('tr');
+                // Suponiendo que la columna “Apicultor” es la segunda <td> de la fila
+                const apicultorNombre = fila.querySelector('td:nth-child(2)').textContent.trim();
+
+                const li = document.createElement('li');
+                li.innerHTML = `<i class="fas fa-warehouse"></i> ${apicultorNombre}`;
+                returnSelectedList.appendChild(li);
+            });
+
+            // Abrir el modal de confirmación
+            returnModal.show();
+        });
     }
+
+    // 3) Si el usuario confirma el retorno dentro del modal, enviamos el POST
+    if (confirmReturnButton) {
+        confirmReturnButton.addEventListener('click', function () {
+            // Tomamos nuevamente los IDs seleccionados
+            const seleccionados = Array.from(
+                document.querySelectorAll('.select-checkbox-temporales:checked')
+            ).map(chk => chk.value);
+
+            if (seleccionados.length === 0) {
+                returnModal.hide();
+                return;
+            }
+
+            // Creamos un formulario dinámico para enviar el POST a archivar-multiples
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = '{{ route("apiarios.archivarMultiples") }}';
+            form.style.display = 'none';
+
+            // CSRF token
+            const csrfInput = document.createElement('input');
+            csrfInput.type = 'hidden';
+            csrfInput.name = '_token';
+            csrfInput.value = '{{ csrf_token() }}';
+            form.appendChild(csrfInput);
+
+            // Agregar cada ID en un input hidden llamado "ids[]"
+            seleccionados.forEach(id => {
+                const input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = 'ids[]';
+                input.value = id;
+                form.appendChild(input);
+            });
+
+            document.body.appendChild(form);
+            form.submit();
+        });
+    }
+
 
 
     // ==================================================
