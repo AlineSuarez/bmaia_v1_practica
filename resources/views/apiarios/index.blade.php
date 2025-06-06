@@ -407,14 +407,14 @@
                                                                                 class="btn-table-action btn-info" data-tooltip="Descargar detalle PDF">
                                                                                 <i class="fas fa-download"></i>
                                                                             </a>
-
-                                                                            {{-- Botón ELIMINAR: abre un modal o dispara un formulario --}}
-                                                                            <button class="btn-table-action btn-delete" type="button"
-                                                                                data-bs-toggle="modal"
-                                                                                data-bs-target="#deleteModalTemporal{{ $apiario->id }}"
-                                                                                data-tooltip="Archivar">
-                                                                                <i class="fas fa-box"></i>
-                                                                            </button>
+                                                                                <!--<button class="btn-table-action btn-delete" type="button"
+                                                                                    data-bs-toggle="modal"
+                                                                                    data-bs-target="#deleteModalTemporal{{ $apiario->id }}"
+                                                                                    data-tooltip="Archivar">
+                                                                                    <i class="fas fa-box"></i>
+                                                                                </button>
+                                                                                -->
+                                                                            
                                                                         </div>
                                                                     </td>
                                                                 </tr>
