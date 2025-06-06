@@ -98,7 +98,6 @@
                         <option value="fijo"        {{ old('tipo_apiario') == 'fijo' ? 'selected' : '' }}>Fijo</option>
                         <option value="trashumante" {{ old('tipo_apiario') == 'trashumante' ? 'selected' : '' }}>Trashumante</option>
                     </select>
-                    
                 </div>
             </div>
 
