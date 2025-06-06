@@ -8,7 +8,6 @@
     <div class="apiary-dashboard">
         <!-- Encabezado con efecto parallax sutil -->
         <header class="dashboard-header">
-            <div class="header-backdrop"></div>
             <div class="header-content">
                 <div class="header-icon-wrapper">
                     <div class="header-icon">
