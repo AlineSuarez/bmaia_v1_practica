@@ -25,7 +25,6 @@ class Apiario extends Model
         'longitud',
         'localizacion',
         'nombre',
-        'nombre_comuna',//
         'url',
         'activo',
         'es_temporal',
@@ -50,6 +49,11 @@ class Apiario extends Model
         return $this->belongsTo(Comuna::class);
     }
 
+    public function region()
+    {
+        return $this->belongsTo(Region::class);
+    }
+
     public function colmenas()
     {
         return $this->hasMany(Colmena::class);
@@ -58,6 +62,13 @@ class Apiario extends Model
     public function movimientosDestino()
     {
         return $this->hasMany(MovimientoColmena::class, 'apiario_destino_id');
+    }
+
+    public function ultimoMovimientoDestino()
+    {
+        return $this->hasOne(MovimientoColmena::class, 'apiario_destino_id')
+                    ->where('tipo_movimiento', 'traslado')
+                    ->latest('fecha_movimiento');
     }
 
 

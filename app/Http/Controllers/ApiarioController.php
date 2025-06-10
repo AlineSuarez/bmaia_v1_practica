@@ -41,7 +41,7 @@ class ApiarioController extends Controller
                                  ->where('tipo_apiario', 'trashumante')
                                  ->where('es_temporal', true)
                                  ->where('activo', 0)
-                                 ->with('comuna.region')
+                                 ->with('comuna.region', 'ultimoMovimientoDestino.apiarioOrigen.comuna.region')
                                  ->orderByDesc('updated_at')
                                  ->get();
 
