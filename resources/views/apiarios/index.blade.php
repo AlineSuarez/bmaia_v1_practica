@@ -315,64 +315,97 @@
                                 </thead>
                                 <tbody>
                                     @forelse($apiariosTemporales as $apiario)
-                                                                    @php
-    $mov = $apiario->ultimoMovimientoDestino;
-    $apiarioOrigen = $mov ? $mov->apiarioOrigen : null;
-                                                                    @endphp
-                                                                    <tr>
-                                                                        <td class="text-center">
-                                                                            <label class="custom-checkbox">
-                                                                                <input type="checkbox" class="select-checkbox-temporales" value="{{ $apiario->id }}">
-                                                                                <span class="checkmark"></span>
-                                                                            </label>
-                                                                        </td>
-                                                                        <td class="text-center">{{ $apiario->nombre }}</td>
-                                                                        <td class="text-center">
-                                                                            <div class="counter">{{ $apiario->num_colmenas }}</div>
-                                                                        </td>
-                                                                        <td class="text-center">
-                                                                            {{ $apiarioOrigen && $apiarioOrigen->comuna && $apiarioOrigen->comuna->region
-        ? $apiarioOrigen->comuna->region->nombre : 'N/A' }}
-                                                                        </td>
-                                                                        <td class="text-center">
-                                                                            {{ $apiarioOrigen && $apiarioOrigen->comuna
-        ? $apiarioOrigen->comuna->nombre : 'N/A' }}
-                                                                        </td>
-                                                                        <td class="text-center">
-                                                                            {{ optional(optional($apiario->comuna)->region)->nombre ?? 'N/A' }}
-                                                                        </td>
-                                                                        <td class="text-center">
-                                                                            {{ optional($apiario->comuna)->nombre ?? 'N/A' }}
-                                                                        </td>
-                                                                        <td class="text-center">
-                                                                            {{ $mov ? $mov->fecha_movimiento->format('Y-m-d') : '—' }}
-                                                                        </td>
-                                                                        <td class="text-center">
-                                                                            <span class="tag tag-{{ $mov && $mov->motivo_movimiento === 'Polinización' ? 'success' : 'warning' }}">
-                                                                                {{ $mov ? $mov->motivo_movimiento : '—' }}
-                                                                            </span>
-                                                                        </td>
-                                                                        <td class="text-center">
-                                                                            {{ $mov && $mov->motivo_movimiento === 'Polinización' ? ($mov->cultivo ?? '—') : '—' }}
-                                                                        </td>
-                                                                        <td class="text-center">
-                                                                            <div class="table-actions">
-                                                                                <a href="{{ route('apiarios.editar', $apiario->id) }}" class="btn-table-action btn-edit">
-                                                                                    <i class="fas fa-edit"></i>
-                                                                                </a>
-                                                                                <a href="{{ route('colmenas.index', $apiario->id) }}" class="btn-table-action btn-info">
-                                                                                    <i class="fas fa-cubes"></i>
-                                                                                </a>
-                                                                                <a href="{{ route('generate.document', $apiario->id) }}" class="btn-table-action btn-info">
-                                                                                    <i class="fas fa-download"></i>
-                                                                                </a>
-                                                                                <button class="btn-table-action btn-delete" type="button" data-bs-toggle="modal"
-                                                                                    data-bs-target="#deleteModalTemporal{{ $apiario->id }}">
-                                                                                    <i class="fas fa-archive"></i>
+                                                                @php
+                                                                    // Intentamos obtener el último movimiento (traslado) que lo originó
+                                                                    $mov = $apiario->ultimoMovimientoDestino;
+                                                                    // La región/comuna de origen viene del Apiario padre (apiarioOrigen)
+                                                                    $apiarioOrigen = $mov ? $mov->apiarioOrigen : null;
+                                                                @endphp
+                                                                <tr>
+                                                                    <td class="text-center">
+                                                                        <label class="custom-checkbox">
+                                                                            <input type="checkbox" class="select-checkbox-temporales"
+                                                                                value="{{ $apiario->id }}">
+                                                                            <span class="checkmark"></span>
+                                                                        </label>
+                                                                    </td>
+                                                                    <td class="text-center">{{ $apiario->nombre }}</td>
+                                                                    <td class="text-center">{{ $apiario->num_colmenas }}</td>
+                                                                    <!-- Región Origen = si existe el movimiento, tomamos región del apiarioOrigen -->
+                                                                    <td class="text-center">
+                                                                        {{ $apiarioOrigen
+                                        && $apiarioOrigen->comuna
+                                        && $apiarioOrigen->comuna->region
+                                        ? $apiarioOrigen->comuna->region->nombre
+                                        : 'N/A'
+                                                                                                                                                                                                                                                                                                                                                                                                                        }}
+                                                                    </td>
+                                                                    <!-- Comuna Origen = nombre de comuna del apiarioOrigen -->
+                                                                    <td class="text-center">
+                                                                        {{ $apiarioOrigen
+                                        && $apiarioOrigen->comuna
+                                        ? $apiarioOrigen->comuna->nombre
+                                        : 'N/A'
+                                                                                                                                                                                                                                                                                                                                                                                                                        }}
+                                                                    </td>
+
+                                                                    <!-- Región Destino = región donde está el apiario temporal -->
+                                                                    <td class="text-center">
+                                                                        {{ optional(optional($apiario->comuna)->region)->nombre ?? 'N/A' }}
+                                                                    </td>
+
+                                                                    <!-- Comuna Destino = comuna donde está el apiario temporal -->
+                                                                    <td class="text-center">
+                                                                        {{ optional($apiario->comuna)->nombre ?? 'N/A' }}
+                                                                    </td>
+
+
+                                                                    <!-- Fecha Movimiento = fecha_movimiento del último traslado -->
+                                                                    <td class="text-center">
+                                                                        {{ $mov ? $mov->fecha_movimiento->format('Y-m-d') : '—' }}
+                                                                    </td>
+
+                                                                    <!-- Motivo (Producción/Polinización) -->
+                                                                    <td class="text-center">
+                                                                        {{ $mov ? $mov->motivo_movimiento : '—' }}
+                                                                    </td>
+
+                                                                    <!-- Cultivo (solo si el motivo fue Polinización) -->
+                                                                    <td class="text-center">
+                                                                        {{ $mov && $mov->motivo_movimiento === 'Polinización' ? ($mov->cultivo ?? '—') : '—'}}
+                                                                    </td>
+
+                                                                    <!-- Columna de Acciones: editar / eliminar / descargar reporte, etc. -->
+                                                                    <td class="text-center">
+                                                                        <div class="table-actions">
+                                                                            {{-- Botón EDITAR: redirige a la ruta de edición de apiario --}}
+                                                                            <a href="{{ route('apiarios.editar', $apiario->id) }}"
+                                                                                class="btn-table-action btn-edit" data-tooltip="Editar">
+                                                                                <i class="fas fa-edit"></i>
+                                                                            </a>
+
+                                                                            {{-- Botón VER COLMENAS (igual que en los fijos) --}}
+                                                                            <a href="{{ route('colmenas.index', $apiario->id) }}"
+                                                                                class="btn-table-action btn-info" data-tooltip="Ver Colmenas">
+                                                                                <i class="fas fa-cubes"></i>
+                                                                            </a>
+
+                                                                            {{-- Botón DESCARGAR PDF (igual que en los fijos) --}}
+                                                                            <a href="{{ route('generate.document', $apiario->id) }}"
+                                                                                class="btn-table-action btn-info" data-tooltip="Descargar detalle PDF">
+                                                                                <i class="fas fa-download"></i>
+                                                                            </a>
+                                                                                <!--<button class="btn-table-action btn-delete" type="button"
+                                                                                    data-bs-toggle="modal"
+                                                                                    data-bs-target="#deleteModalTemporal{{ $apiario->id }}"
+                                                                                    data-tooltip="Archivar">
+                                                                                    <i class="fas fa-box"></i>
                                                                                 </button>
-                                                                            </div>
-                                                                        </td>
-                                                                    </tr>
+                                                                                -->
+                                                                            
+                                                                        </div>
+                                                                    </td>
+                                                                </tr>
                                     @empty
                                         <tr>
                                             <td colspan="11" class="text-center text-muted">
