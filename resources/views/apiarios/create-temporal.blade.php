@@ -351,6 +351,7 @@
                                     </button>
 
                                     <button type="submit" class="nav-btn nav-btn-submit" id="submitBtn"
+                                    <button type="submit" class="nav-btn nav-btn-submit" id="submitBtn"
                                         style="display: none;">
                                         <div class="btn-icon">
                                             <i class="fas fa-check"></i>
