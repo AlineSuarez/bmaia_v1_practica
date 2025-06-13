@@ -24,8 +24,8 @@
       <div class="development-icon">
         <img src="{{ asset('img/abeja.png') }}" width="160px" height="130px" alt="Fondo IA">
       </div>
-      <p>¡Bienvenido a Ma<span class="highlight">iA</span>!</p>
-      <p>Presentamos MaiA: el nuevo Agente de Inteligencia Artificial al servicio de la Apicultura Chilena
+      <p>¡Bienvenido a B-Ma<span class="highlight">iA</span>!</p>
+      <p>Presentamos B-MaiA: el nuevo Agente de Inteligencia Artificial al servicio de la Apicultura Chilena
         <i style="font-weight:bold;">(versión
           Beta)</i>
       </p>
@@ -50,7 +50,7 @@
 
     <div class="content-wrapper">
       <div class="hero-text">
-        <h1>Bienvenido a Ma<span class="highlight">iA</span></span></h1>
+        <h1>Bienvenido a B-Ma<span class="highlight">iA</span></span></h1>
         <p class="tagline">Inteligencia Artificial al servicio de la Apicultura</p>
       </div>
     </div>
@@ -62,25 +62,27 @@
 
 <section id="maia-ecosystem" class="maia-section">
   <div class="maia-container">
-    <!-- Section 1: Sobre MaiA -->
+    <!-- Section 1: Sobre B-MaiA -->
     <div class="maia-content-section">
-      <h1 class="section-title">Sobre Ma<span class="highlight">iA</span></h1>
+      <h1 class="section-title">Sobre B-Ma<span class="highlight">iA</span></h1>
       <div class="maia-content-row">
         <div class="maia-text">
           <p>
             Imagina tener un asesor experto disponible las 24 horas para ayudarte con tus colmenas.
           </p>
           <p>
-            MaiA es un Agente de Inteligencia Artificial diseñado pensando en los apicultores chilenos. MaiA entiende
+            B-MaiA es un Agente de Inteligencia Artificial diseñado pensando en los apicultores chilenos. B-MaiA
+            entiende
             los desafíos
             de los productores y está listo para responder tus consultas técnicas, ayudarte a llevar registros por voz
             sin importar
             dónde estés, y simplificar la gestión de tu apiario de forma rápida y sencilla.
           </p>
           <p>
-            Con MaiA, olvídate de las dudas y el papeleo. Pregúntale sobre los primeros signos de una enfermedad y obtén
+            Con B-MaiA, olvídate de las dudas y el papeleo. Pregúntale sobre los primeros signos de una enfermedad y
+            obtén
             información
-            al instante. Dedica más tiempo a tus abejas y deja que MaiA te facilite el día a día en tu negocio.
+            al instante. Dedica más tiempo a tus abejas y deja que B-MaiA te facilite el día a día en tu negocio.
           </p>
         </div>
         <div class="maia-video-container">
@@ -112,7 +114,8 @@
 
     <!-- Section 2: + Simple -->
     <div class="maia-content-section">
-      <h1 class="section-title"><span class="highlight">+</span> Simple</h1>
+      <h1 class="section-title"><i class="fas fa-plus" style="font-weight: 800; font-size:2.2rem; color:#ffd54f;"></i>
+        Simple</h1>
       <div class="maia-content-row">
         <div class="maia-text">
           <p>
@@ -158,7 +161,7 @@
             ¿Quieres simplificar la gestión de tu apiario y aumentar tu producción?
           </p>
           <p style="margin-top: 20px;">
-            Prueba MaiA gratis por 16 días y vive la experiencia!
+            Prueba B-MaiA gratis por 16 días y vive la experiencia!
           </p>
           <div class="cta-buttons">
             <a onclick="openModal('register-modal')" class="cta-button primary" style="cursor: pointer;">Comienza tu
@@ -197,11 +200,12 @@
 
     <!-- Section 3: + Sostenible -->
     <div class="maia-content-section">
-      <h1 class="section-title"><span class="highlight">+</span> Sostenible</h1>
+      <h1 class="section-title"><i class="fas fa-plus" style="font-weight: 800; font-size:2.2rem; color:#ffd54f;"></i>
+        Sostenible</h1>
       <div class="maia-content-row">
         <div class="maia-text">
           <p>
-            MaiA te ayuda a mejorar la sostenibilidad ambiental, disminuyendo la mortandad de abejas por varroa y
+            B-MaiA te ayuda a mejorar la sostenibilidad ambiental, disminuyendo la mortandad de abejas por varroa y
             nosema, y la
             pérdida por enjambres. Además te ayuda a reducir el número de viajes, el gasto de combustible y las
             emisiones de CO2.
@@ -225,9 +229,9 @@
             Nuestro sistema contribuye activamente a la preservación de las abejas, esenciales para la polinización y la
             biodiversidad. ¿Quieres mejorar la salud de tus colmenas?
           </p>
-          <div class="cta-buttons">
+          <!-- <div class="cta-buttons">
             <a href="#descarga" class="cta-button primary">¡Descarga la App y descubre la diferencia!</a>
-          </div>
+          </div> -->
         </div>
         <div class="maia-video-container">
           <div class="video-showcase">
@@ -259,64 +263,148 @@
 
     <!-- NEW SECTION: Eficiencia y Productividad -->
     <div class="maia-content-section">
-      <h1 class="section-title"><span class="highlight">+</span> Práctico</h1>
+      <h1 class="section-title"><i class="fas fa-plus" style="font-weight: 800; font-size:2.2rem; color:#ffd54f;"></i>
+        Práctico</h1>
       <div class="maia-content-row">
         <div class="maia-text">
           <p>
-            Gana tiempo y enfócate en tus abejas. MaiA te ayuda a optimizar tu trabajo, reduciendo tareas
+            Gana tiempo y enfócate en tus abejas. B-MaiA te ayuda a optimizar tu trabajo, reduciendo tareas
             administrativas para que
             dediques tu energía a lo que realmente importa: el cuidado de tus colmenas y la producción de miel.
           </p>
           <p>
-            Con MaiA registra tus observaciones en menos de 10 segundos!
+            Con B-MaiA registra tus observaciones en menos de 10 segundos!
           </p>
 
-          <!-- Efficiency stats -->
-          <div class="efficiency-stats">
-            <div class="efficiency-stat-row">
-              <div class="efficiency-bar-container">
-                <div class="efficiency-label">Tiempo en campo</div>
-                <div class="efficiency-bar-wrapper">
-                  <div class="efficiency-bar efficiency-bar-before" style="width: 100%;">
-                    <span>Antes: 100%</span>
+          <div class="impact-cards">
+            <div class="impact-card">
+              <div class="impact-header">
+                <div class="impact-icon">
+                  <i class="fas fa-clock"></i>
+                </div>
+                <h4>Tiempo en Campo</h4>
+              </div>
+
+              <div class="impact-visual">
+                <div class="clock-comparison">
+                  <div class="clock-before">
+                    <div class="clock-face">
+                      <div class="clock-hand" style="transform: rotate(360deg);"></div>
+                    </div>
+                    <span class="clock-label">Día completo antes</span>
+                  </div>
+
+                  <div class="transformation-arrow">
+                    <i class="fas fa-magic"></i>
+                  </div>
+
+                  <div class="clock-after">
+                    <div class="clock-face optimized">
+                      <div class="clock-hand" style="transform: rotate(234deg);"></div>
+                      <div class="free-time-indicator"></div>
+                    </div>
+                    <span class="clock-label">5h trabajo + 3h libres</span>
                   </div>
                 </div>
-                <div class="efficiency-bar-wrapper">
-                  <div class="efficiency-bar efficiency-bar-after" style="width: 65%;">
-                    <span>Con MaiA: 65% + 35% de tiempo libre</span>
-                  </div>
+              </div>
+
+              <div class="impact-benefit">
+                <div class="benefit-highlight">
+                  <i class="fas fa-gift"></i>
+                  <span>35% más tiempo libre</span>
                 </div>
               </div>
             </div>
 
-            <div class="efficiency-stat-row">
-              <div class="efficiency-bar-container">
-                <div class="efficiency-label">Tiempo en documentación</div>
-                <div class="efficiency-bar-wrapper">
-                  <div class="efficiency-bar efficiency-bar-before" style="width: 100%;">
-                    <span>Antes: 100%</span>
+            <div class="impact-card">
+              <div class="impact-header">
+                <div class="impact-icon">
+                  <i class="fas fa-file-alt"></i>
+                </div>
+                <h4>Documentación</h4>
+              </div>
+
+              <div class="impact-visual">
+                <div class="document-stack">
+                  <div class="documents-before">
+                    <div class="document-pile">
+                      <div class="document"></div>
+                      <div class="document"></div>
+                      <div class="document"></div>
+                      <div class="document"></div>
+                      <div class="document"></div>
+                    </div>
+                    <span class="doc-label">5 horas de papeleo</span>
+                  </div>
+
+                  <div class="transformation-arrow">
+                    <i class="fas fa-robot"></i>
+                  </div>
+
+                  <div class="documents-after">
+                    <div class="smart-document">
+                      <i class="fas fa-microphone"></i>
+                      <div class="voice-waves">
+                        <div class="wave"></div>
+                        <div class="wave"></div>
+                        <div class="wave"></div>
+                      </div>
+                    </div>
+                    <span class="doc-label">Registro por voz</span>
                   </div>
                 </div>
-                <div class="efficiency-bar-wrapper">
-                  <div class="efficiency-bar efficiency-bar-after" style="width: 40%;">
-                    <span>Con MaiA: 40% + 60% de tiempo libre</span>
-                  </div>
+              </div>
+
+              <div class="impact-benefit">
+                <div class="benefit-highlight">
+                  <i class="fas fa-lightning-bolt"></i>
+                  <span>60% menos tiempo</span>
                 </div>
               </div>
             </div>
 
-            <div class="efficiency-stat-row">
-              <div class="efficiency-bar-container">
-                <div class="efficiency-label">Tiempo al detectar problemas</div>
-                <div class="efficiency-bar-wrapper">
-                  <div class="efficiency-bar efficiency-bar-before" style="width: 60%;">
-                    <span>Antes: 60%</span>
+            <div class="impact-card">
+              <div class="impact-header">
+                <div class="impact-icon">
+                  <i class="fas fa-search-plus"></i>
+                </div>
+                <h4>Detección de Problemas</h4>
+              </div>
+
+              <div class="impact-visual">
+                <div class="detection-comparison">
+                  <div class="detection-before">
+                    <div class="problem-indicators">
+                      <div class="indicator missed"></div>
+                      <div class="indicator missed"></div>
+                      <div class="indicator detected"></div>
+                      <div class="indicator detected"></div>
+                      <div class="indicator detected"></div>
+                    </div>
+                    <span class="detection-rate">60% detectados</span>
+                  </div>
+
+                  <div class="transformation-arrow">
+                    <i class="fas fa-brain"></i>
+                  </div>
+
+                  <div class="detection-after">
+                    <div class="problem-indicators enhanced">
+                      <div class="indicator detected"></div>
+                      <div class="indicator detected"></div>
+                      <div class="indicator detected"></div>
+                      <div class="indicator detected"></div>
+                      <div class="indicator early-detected"></div>
+                    </div>
+                    <span class="detection-rate">95% detectados temprano</span>
                   </div>
                 </div>
-                <div class="efficiency-bar-wrapper">
-                  <div class="efficiency-bar efficiency-bar-after" style="width: 95%;">
-                    <span>Con MaiA: 95% + 5% de tiempo libre</span>
-                  </div>
+              </div>
+
+              <div class="impact-benefit">
+                <div class="benefit-highlight">
+                  <i class="fas fa-shield-alt"></i>
+                  <span>35% más efectivo</span>
                 </div>
               </div>
             </div>
@@ -326,11 +414,25 @@
         <div class="maia-video-container">
           <div class="efficiency-showcase">
             <div class="device smartphone smartphone-dark">
-              <div class="smartphone-frame">
-                <div class="smartphone-screen">
-                  <img src="/img/eficiencia.jpg" alt="Eficiencia apícola con MaiA" class="efficiency-image">
+
+              <div class="device ipad">
+                <div class="ipad-frame" style="background: linear-gradient(to bottom,rgb(0, 0, 0),rgb(0, 0, 0));">
+                  <div class="ipad-screen">
+                    <video class="feature-video" autoplay loop muted playsinline
+                      poster="https://files.cdn-files-a.com/uploads/10098964/800_6761de379c2f5-thumbnail.jpg">
+                      <source type="video/mp4" src="/img/simple.mp4">
+                    </video>
+                  </div>
                 </div>
               </div>
+              <!-- <div class="smartphone-frame">
+                <div class="smartphone-screen">
+                  <video class="feature-video" autoplay loop muted playsinline
+                    poster="https://files.cdn-files-a.com/uploads/10098964/800_6761de379c2f5-thumbnail.jpg">
+                    <source type="video/mp4" src="/img/simple.mp4">
+                  </video>
+                </div>
+              </div> -->
             </div>
             <div class="glow-effect glow-effect-efficiency"></div>
             <!-- Enhanced decorative elements -->
@@ -356,11 +458,11 @@
           operacionales y aumentando la rentabilidad de tu negocio.
         </p>
         <p class="cta-description">
-          Prueba MaiA gratis por 16 días y transforma la gestión de tus colmenas!
+          Prueba B-MaiA gratis por 16 días y transforma la gestión de tus colmenas!
         </p>
-        <div class="cta-buttons">
+        <!-- <div class="cta-buttons">
           <a href="#descarga" class="cta-button primary">¡Descarga la app ahora!</a>
-        </div>
+        </div> -->
 
         <!-- Enhanced honeycomb background for CTA -->
         <div class="cta-honeycomb-bg">
@@ -419,7 +521,7 @@
 
     <!-- Texto introductorio adicional -->
     <div class="intro-text">
-      <h2 style="font-weight: bold; margin-bottom: 30px;">MaiA la forma más inteligente de gestionar tus colmenas</h2>
+      <h2 style="font-weight: bold; margin-bottom: 30px;">B-MaiA la forma más inteligente de gestionar tus colmenas</h2>
       <p>Plataforma todo en uno, 100% digital, que integra herramientas avanzadas de IA para gestionar tus colmenas de
         manera más
         fácil y rápida, adaptándose a las particularidades de la apicultura chilena.</p>
@@ -590,7 +692,7 @@
       <div class="info-icon">
         <i class="fa-solid fa-lightbulb"></i>
       </div>
-      <p>Todas nuestras herramientas están disponibles en la plataforma MaiA y se sincronizan automáticamente entre
+      <p>Todas nuestras herramientas están disponibles en la plataforma B-MaiA y se sincronizan automáticamente entre
         dispositivos. Los datos se actualizan en tiempo real, permitiéndote tomar decisiones informadas desde cualquier
         lugar y en cualquier momento.</p>
     </div>
@@ -598,8 +700,7 @@
 </section>
 
 <!-- Sección de Descarga de la App -->
-<section id="descarga" class="descarga-section">
-  <!-- Partículas decorativas -->
+<!-- <section id="descarga" class="descarga-section">
   <div class="particles-container">
     <div class="particle particle-1"></div>
     <div class="particle particle-2"></div>
@@ -613,7 +714,7 @@
     <div class="descarga-content">
       <div class="descarga-text">
         <h2 class="section-title">Descarga la App</h2>
-        <p class="section-description" style="text-align: center;">Prueba MaiA gratis por 16 días, la forma más
+        <p class="section-description" style="text-align: center;">Prueba B-MaiA gratis por 16 días, la forma más
           inteligente de gestionar tus
           colmenas</p>
 
@@ -737,11 +838,11 @@
       </div>
     </div>
   </div>
-</section>
+</section> -->
 
 <!-- Sección de Cómo Funciona -->
 <section id="como-funciona" class="como-funciona-section">
-  <h2 class="section-title">¿Quieres saber más sobre MaiA?</h2>
+  <h2 class="section-title">¿Quieres saber más sobre B-MaiA?</h2>
   <div class="container">
     <div class="process-container collapsible-container" style="margin-bottom: 40px;">
       <div class="collapsible-header" style="position: relative; z-index: 2;">
@@ -787,7 +888,7 @@
       <div class="collapsible-content">
         <div class="section-description"
           style="margin-bottom: 30px; text-align: center; max-width: 800px; margin-left: auto; margin-right: auto;">
-          Con MaiA, optimiza tu tiempo, protege tus abejas y produce miel de manera más inteligente.
+          Con B-MaiA, optimiza tu tiempo, protege tus abejas y produce miel de manera más inteligente.
           Todo sincronizado de forma segura en la nube y accesible desde cualquier dispositivo.
         </div>
 
@@ -869,7 +970,8 @@
             </div>
             <div class="step-content">
               <h3>Análisis inteligente</h3>
-              <p>MaiA integra y analiza los datos registrados, correlacionando el estado de desarrollo de las colmenas,
+              <p>B-MaiA integra y analiza los datos registrados, correlacionando el estado de desarrollo de las
+                colmenas,
                 las
                 condiciones
                 ambientales del apiario, y el registro de los manejos aplicados. Nuestro Agente de IA identifica
@@ -1019,7 +1121,7 @@
             </div>
             <div class="step-content">
               <h3>Sistema de Mejora Continua</h3>
-              <p>MaiA genera un historial detallado de tus actividades y manejos aplicados en cada apiario, por
+              <p>B-MaiA genera un historial detallado de tus actividades y manejos aplicados en cada apiario, por
                 temporada.
                 A
                 medida que estos datos se acumulan, surgen patrones que permiten analizar y optimizar tus prácticas,
@@ -1062,7 +1164,7 @@
 
     <div class="benefits-container collapsible-container" style="margin-bottom: 70px;">
       <div class="collapsible-header" style="position: relative; z-index: 2;">
-        <h2 class="section-title" style="margin-top: 20px; font-size: 30px !important;">Beneficios de MaiA</h2>
+        <h2 class="section-title" style="margin-top: 20px; font-size: 30px !important;">Beneficios de B-MaiA</h2>
         <div class="collapse-icon">
           <i class="fa-solid fa-chevron-down"></i>
         </div>
@@ -1071,7 +1173,8 @@
       <!-- Contenido visible incluso cuando está colapsado -->
       <div class="benefits-preview"
         style="padding: 0 20px 20px; text-align: center; margin-bottom: 20px; border-bottom: 1px dashed rgba(255, 143, 0, 0.2);">
-        <p style="margin-bottom: 15px; font-size: 1rem; color: #555;">Descubre cómo MaiA mejora la productividad, salud
+        <p style="margin-bottom: 15px; font-size: 1rem; color: #555;">Descubre cómo B-MaiA mejora la productividad,
+          salud
           de las
           colmenas y gestión de datos para tu apiario. <span style="font-style: italic; color: #ff8f00;">Haz clic para
             ver
@@ -1218,7 +1321,7 @@
     <div class="section-header">
       <h2 class="section-title">Testimonios</h2>
       <p class="section-description">
-        Lo que nuestros clientes dicen sobre MaiA
+        Lo que nuestros clientes dicen sobre B-MaiA
       </p>
     </div>
 
@@ -1254,7 +1357,7 @@
               <i class="fa-solid fa-quote-left"></i>
             </div>
             <p class="testimonio-text">
-              "La plataforma MaiA facilita enormemente el monitoreo y gestión de mis colmenas, algo que antes era muy
+              "La plataforma B-MaiA facilita enormemente el monitoreo y gestión de mis colmenas, algo que antes era muy
               laborioso. Desde que la utilizo, he reducido el tiempo de inspección en un 40% y he podido detectar
               problemas antes de que se conviertan en situaciones críticas."
             </p>
@@ -1293,7 +1396,7 @@
               <i class="fa-solid fa-quote-left"></i>
             </div>
             <p class="testimonio-text">
-              "Gracias a MaiA, he podido mejorar significativamente la salud de mis colmenas y aumentar la producción de
+              "Gracias a B-MaiA, he podido mejorar significativamente la salud de mis colmenas y aumentar la producción de
               miel en un 30%. La aplicación me alerta sobre posibles problemas y me ofrece recomendaciones precisas que
               han sido fundamentales para optimizar mi operación apícola."
             </p>
@@ -1305,7 +1408,7 @@
     <div class="testimonios-stats">
       <div class="stat-item">
         <div class="stat-icon">
-          <img src="/img/apicultor.png" width="50px" height="50px" alt="Eficiencia apícola con MaiA">
+          <img src="/img/apicultor.png" width="50px" height="50px" alt="Eficiencia apícola con B-MaiA">
         </div>
         <div class="stat-number">+500</div>
         <div class="stat-label">Apicultores satisfechos</div>
@@ -1336,7 +1439,7 @@
           <i class="fa-solid fa-map"></i>
         </div>
         <div class="stat-number">7</div>
-        <div class="stat-label">Regiones de Chile con presencia de MaiA</div>
+        <div class="stat-label">Regiones de Chile con presencia de B-MaiA</div>
       </div>
     </div>
   </div>
@@ -1416,8 +1519,8 @@
           </div>
         </a>
       </div>
-      <p class="section-description" style="text-align: center; font-weight: bold;"><i>MaiA: Inteligencia Artificial
-          para la Apicultura</i>
+      <p class="section-description" style="text-align: center; font-weight: bold;">B-MaiA: Inteligencia Artificial al
+        servicio de la Apicultura.
       </p>
       <p style="text-align: center;"> Un agente de IA desarrollado por Bee Fractal SpA al servicio del apicultor
         chileno.</p>
@@ -1477,7 +1580,7 @@
           </div>
           <div class="product-info">
             <div class="product-name">Drone</div>
-            <div class="product-desc">Prueba MaiA gratis por 16 días</div>
+            <div class="product-desc">Prueba B-MaiA gratis por 16 días</div>
           </div>
         </li>
         <li class="product-item">
@@ -1528,7 +1631,7 @@
   <div class="footer-bottom">
 
     <div class="footer-bottom-content">
-      <p class="copyright">&copy; {{ date(format: 'Y') }} MaiA. Todos los derechos reservados.</p>
+      <p class="copyright">&copy; {{ date(format: 'Y') }} B-MaiA. Todos los derechos reservados.</p>
       <div class="footer-bottom-links">
         <a href="{{ route('privacidad') }}">Política de Privacidad</a>
         <a href="{{ route('terminos') }}">Términos de Uso</a>

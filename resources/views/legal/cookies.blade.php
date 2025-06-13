@@ -4,7 +4,7 @@
     <h1>Política de Cookies</h1>
 
     <div class="section">
-        <h2 id="introduccion">Política de Cookies de BeeMaiA</h2>
+        <h2 id="introduccion">Política de Cookies de B-MaiA</h2>
         <p>
             Esta política de cookies explica cómo utilizamos cookies y tecnologías similares en nuestro sitio web
             www.apicheck.cl (en adelante, "Sitio Web") para ofrecerte una mejor experiencia de usuario.

@@ -26,9 +26,9 @@
             de manera más responsable, y lograr sistemas productivos más eficientes.
         </p>
         <p>
-            Para ello, hemos desarrollado BeeMaiA, el primer Agente IA para Apicultura, que apoya en la gestión de sus
+            Para ello, hemos desarrollado B-MaiA, el primer Agente IA para Apicultura, que apoya en la gestión de sus
             apiarios y colmenas a productores de todos los niveles, desde aficionados hasta profesionales. A través de
-            BeeMaiA, ponemos a tu disposición un sólido soporte técnico y herramientas de análisis para la toma de
+            B-MaiA, ponemos a tu disposición un sólido soporte técnico y herramientas de análisis para la toma de
             decisiones, que te permitirán:
         </p>
         <ol>
@@ -38,7 +38,7 @@
         </ol>
         <p>
             La presente política de privacidad explica cómo Bee Fractal SpA utiliza y protege tu información personal
-            cuando accedes a nuestro sitio web y aplicación móvil de BeeMaiA. Para Bee Fractal, tu privacidad es primordial.
+            cuando accedes a nuestro sitio web y aplicación móvil de B-MaiA. Para Bee Fractal, tu privacidad es primordial.
             Al utilizar la plataforma, es posible que te solicitemos cierta información de identificación. Ten la seguridad
             de que esta información se utilizará exclusivamente de acuerdo con esta política de privacidad y nunca la
             compartiremos con terceros ni la utilizaremos para fines distintos a los que se detallan a continuación.

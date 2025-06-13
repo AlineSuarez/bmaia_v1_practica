@@ -8,7 +8,6 @@ use App\Models\Apiario;
 use App\Models\Comuna;
 use App\Models\Region;
 use Auth;
-use App\Models\MovimientoColmena;
 
 
 class ApiarioController extends Controller
@@ -24,26 +23,26 @@ class ApiarioController extends Controller
 
         // 2) Trashumantes “base” (NO temporales)
         $apiariosBase = Apiario::where('user_id', $userId)
-                                ->where('tipo_apiario','trashumante')
-                                ->where('activo',1)
-                                ->where('es_temporal',false)    // ← filtrar aquí
-                                ->get();
+            ->where('tipo_apiario', 'trashumante')
+            ->where('activo', 1)
+            ->where('es_temporal', false)    // ← filtrar aquí
+            ->get();
 
         // 3) Apiarios temporales (los que creaste con el wizard)
         $apiariosTemporales = Apiario::where('user_id', $userId)
-                                    ->where('tipo_apiario','trashumante')
-                                    ->where('activo',1)
-                                    ->where('es_temporal',true)  // ← y aquí
-                                    ->get();
-        
+            ->where('tipo_apiario', 'trashumante')
+            ->where('activo', 1)
+            ->where('es_temporal', true)  // ← y aquí
+            ->get();
+
         // 4) Apiarios Archivados → aquellos que ya no estén activos (activo = 0)
         $apiariosArchivados = Apiario::where('user_id', $userId)
-                                 ->where('tipo_apiario', 'trashumante')
-                                 ->where('es_temporal', true)
-                                 ->where('activo', 0)
-                                 ->with('comuna.region')
-                                 ->orderByDesc('updated_at')
-                                 ->get();
+            ->where('tipo_apiario', 'trashumante')
+            ->where('es_temporal', true)
+            ->where('activo', 0)
+            ->with('comuna.region')
+            ->orderByDesc('updated_at')
+            ->get();
 
         return view('apiarios.index', compact(
             'apiariosFijos',
@@ -72,36 +71,41 @@ class ApiarioController extends Controller
     // Guardar un nuevo apiario
     public function store(Request $request)
     {
-        // 1) validamos y recogemos en $data
+        // Validación corregida y unificada
         $data = $request->validate([
-            'nombre'               => 'required|string|max:255',
+            'nombre' => 'required|string|max:255',
             'temporada_produccion' => 'required|string|max:255',
-            'registro_sag'         => 'required|string|max:255',
-            'num_colmenas'         => 'required|integer',
-            'tipo_apiario'         => 'required|in:fijo,trashumante',
-            'tipo_manejo'          => 'required|string|max:255',
-            'objetivo_produccion'  => 'required|string|max:255',
-            'region'               => 'required|exists:regiones,id',
-            'comuna'               => 'required|exists:comunas,id',
-            'latitud'              => 'required|numeric',
-            'longitud'             => 'required|numeric',
-            'localizacion'         => 'nullable|string',
-            'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:5120',
-
+            'registro_sag' => 'required|string|max:255',
+            'num_colmenas' => 'required|integer',
+            'tipo_apiario' => 'required|in:fijo,trashumante',
+            'tipo_manejo' => 'required|string|max:255',
+            'objetivo_produccion' => 'required|string|max:255',
+            'region' => 'required|exists:regiones,id',
+            'comuna' => 'required|exists:comunas,id',
+            'latitud' => 'required|numeric',
+            'longitud' => 'required|numeric',
+            'localizacion' => 'nullable|string',
+            'foto' => 'nullable|image|mimes:jpeg,jpg,png,gif,webp,bmp,svg|max:10240',
         ]);
 
         // 2) completamos campos extra
-        $data['user_id']     = auth()->id();
-        $data['region_id']   = $data['region'];
-        $data['comuna_id']   = $data['comuna'];
+        $data['user_id'] = auth()->id();
+        $data['region_id'] = $data['region'];
+        $data['comuna_id'] = $data['comuna'];
         unset($data['region'], $data['comuna']);
 
-        $data['activo']      = 1;
+        $data['activo'] = 1;
         $data['es_temporal'] = false;
 
-        // 3) manejo de la foto
+        // Manejo mejorado de la foto
         if ($request->hasFile('foto')) {
-            $data['foto'] = $request->file('foto')->store('fotos_apiarios','public');
+            $file = $request->file('foto');
+
+            // Generar nombre único para evitar conflictos
+            $filename = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+
+            // Guardar en storage/app/public/fotos_apiarios
+            $data['foto'] = $file->storeAs('fotos_apiarios', $filename, 'public');
         }
 
         // 4) creamos el modelo de una
@@ -118,7 +122,7 @@ class ApiarioController extends Controller
         }
         return redirect()
             ->route('apiarios')
-            ->with('success','Apiario creado con éxito');
+            ->with('success', 'Apiario creado con éxito');
     }
 
 
@@ -173,6 +177,7 @@ class ApiarioController extends Controller
 
     public function update(Request $request, $id)
     {
+        // VALIDACIÓN CORREGIDA - ahora acepta todos los formatos
         $request->validate([
             'nombre' => 'required|string|max:255',
             'temporada_produccion' => 'required|string',
@@ -185,19 +190,29 @@ class ApiarioController extends Controller
             'comuna' => 'required|integer',
             'latitud' => 'required|numeric',
             'longitud' => 'required|numeric',
-            'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:1048' // Validación para la imagen
+            // VALIDACIÓN CORREGIDA - acepta todos los formatos y tamaño mayor
+            'foto' => 'nullable|image|mimes:jpeg,jpg,png,gif,webp,bmp,svg|max:10240' // 10MB
         ]);
+
         $apiario = Apiario::findOrFail($id);
-        // Verificar si se ha subido una nueva foto
+
+        // Manejo mejorado de la nueva foto
         if ($request->hasFile('foto')) {
             // Eliminar la foto anterior si existe
-            if ($apiario->foto) {
-                Storage::delete('public/' . $apiario->foto);
+            if ($apiario->foto && Storage::disk('public')->exists($apiario->foto)) {
+                Storage::disk('public')->delete($apiario->foto);
             }
+
+            $file = $request->file('foto');
+
+            // Generar nombre único
+            $filename = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+
             // Guardar la nueva foto
-            $path = $request->file('foto')->store('fotos_apiarios', 'public');
+            $path = $file->storeAs('fotos_apiarios', $filename, 'public');
             $apiario->foto = $path;
         }
+
         // Actualizar otros campos del apiario
         $apiario->nombre = $request->nombre;
         $apiario->temporada_produccion = $request->temporada_produccion;
@@ -210,7 +225,9 @@ class ApiarioController extends Controller
         $apiario->comuna_id = $request->comuna;
         $apiario->latitud = $request->latitud;
         $apiario->longitud = $request->longitud;
+
         $apiario->save();
+
         return redirect()->route('apiarios')->with('success', 'Apiario actualizado exitosamente.');
     }
 

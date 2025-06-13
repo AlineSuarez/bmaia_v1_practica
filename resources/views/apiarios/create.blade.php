@@ -64,15 +64,8 @@
                     <label for="registro_sag">
                         <i class="fas fa-id-card fa-fw"></i> N° Registro SAG (FRADA)
                     </label>
-                    <input
-                        type="text"
-                        name="registro_sag"
-                        id="registro_sag"
-                        class="form-control"
-                        placeholder="Ej: FJ-001, TR-002"
-                        value="{{ old('registro_sag') }}"
-                        required
-                    >
+                    <input type="text" name="registro_sag" id="registro_sag" class="form-control"
+                        placeholder="Ej: FJ-001, TR-002" value="{{ old('registro_sag') }}" required>
                     <div class="custom-tooltip" data-tooltip-for="registro_sag">Ingresa el número de registro oficial
                         asignado por el SAG (FRADA).</div>
                 </div>
@@ -95,8 +88,9 @@
                     </label>
                     <select name="tipo_apiario" id="tipo_apiario" class="form-control" required>
                         <option value="">Seleccionar tipo...</option>
-                        <option value="fijo"        {{ old('tipo_apiario') == 'fijo' ? 'selected' : '' }}>Fijo</option>
-                        <option value="trashumante" {{ old('tipo_apiario') == 'trashumante' ? 'selected' : '' }}>Trashumante</option>
+                        <option value="fijo" {{ old('tipo_apiario') == 'fijo' ? 'selected' : '' }}>Fijo</option>
+                        <option value="trashumante" {{ old('tipo_apiario') == 'trashumante' ? 'selected' : '' }}>Trashumante
+                        </option>
                     </select>
                 </div>
             </div>
@@ -107,15 +101,8 @@
                     <label for="tipo_manejo">
                         <i class="fas fa-cogs fa-fw"></i> Tipo de Manejo
                     </label>
-                    <input
-                        type="text"
-                        name="tipo_manejo"
-                        id="tipo_manejo"
-                        class="form-control"
-                        placeholder="Convencional, Orgánico..."
-                        value="{{ old('tipo_manejo') }}"
-                        required
-                    >
+                    <input type="text" name="tipo_manejo" id="tipo_manejo" class="form-control"
+                        placeholder="Convencional, Orgánico..." value="{{ old('tipo_manejo') }}" required>
 
                     <div class="custom-tooltip" data-tooltip-for="tipo_manejo">Define el método de manejo que utilizas en
                         este apiario.</div>
@@ -124,15 +111,8 @@
                     <label for="objetivo_produccion">
                         <i class="fas fa-bullseye fa-fw"></i> Objetivo de Producción
                     </label>
-                    <input
-                        type="text"
-                        name="objetivo_produccion"
-                        id="objetivo_produccion"
-                        class="form-control"
-                        placeholder="Producción, Polinización..."
-                        value="{{ old('objetivo_produccion') }}"
-                        required
-                    >
+                    <input type="text" name="objetivo_produccion" id="objetivo_produccion" class="form-control"
+                        placeholder="Producción, Polinización..." value="{{ old('objetivo_produccion') }}" required>
                     <div class="custom-tooltip" data-tooltip-for="objetivo_produccion">Indica los productos principales que
                         esperas obtener de este apiario.</div>
                 </div>
@@ -164,15 +144,9 @@
                         el apiario.</div>
                 </div>
                 <div class="form-group">
-                <label for="localizacion">Localización (dirección o referencia)</label>
-                <input
-                    type="text"
-                    name="localizacion"
-                    id="localizacion"
-                    class="form-control"
-                    placeholder="Ej: Camino a…"
-                    value="{{ old('localizacion') }}"
-                >
+                    <label for="localizacion">Localización (dirección o referencia)</label>
+                    <input type="text" name="localizacion" id="localizacion" class="form-control"
+                        placeholder="Ej: Camino a…" value="{{ old('localizacion') }}">
                 </div>
             </div>
 
@@ -192,29 +166,15 @@
                         <label for="latitud">
                             <i class="fas fa-compass fa-fw"></i> Latitud
                         </label>
-                        <input
-                            type="number"
-                            step="any"
-                            name="latitud"
-                            id="latitud"
-                            class="form-control"
-                            value="{{ old('latitud') }}"
-                            required
-                        >
+                        <input type="number" step="any" name="latitud" id="latitud" class="form-control"
+                            value="{{ old('latitud') }}" required>
                     </div>
                     <div class="form-group col-md-6">
                         <label for="longitud">
                             <i class="fas fa-compass fa-fw"></i> Longitud
                         </label>
-                        <input
-                            type="number"
-                            step="any"
-                            name="longitud"
-                            id="longitud"
-                            class="form-control"
-                            value="{{ old('longitud') }}"
-                            required
-                        >
+                        <input type="number" step="any" name="longitud" id="longitud" class="form-control"
+                            value="{{ old('longitud') }}" required>
                     </div>
                 </div>
             </div>
@@ -241,7 +201,7 @@
             <!-- Botón de envío -->
             <div class="text-center mt-4">
                 <button type="submit" class="btn btn-gold gold-shine">
-                    <i class="fas fa-plus-circle"></i> Agregar Apiario 
+                    <i class="fas fa-plus-circle"></i> Agregar Apiario
                 </button>
             </div>
 
@@ -318,20 +278,20 @@
                 // Personalizar el icono del marcador
                 const apiaryIcon = L.icon({
                     iconUrl: 'data:image/svg+xml;base64,' + btoa(`
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 36" width="24" height="36">
-                        <defs>
-                            <linearGradient id="grad1" x1="0%" y1="0%" x2="0%" y2="100%">
-                                <stop offset="0%" style="stop-color:#FFD700;stop-opacity:1" />
-                                <stop offset="100%" style="stop-color:#FFA500;stop-opacity:1" />
-                            </linearGradient>
-                        </defs>
-                        <path d="M12,2 C8.1,2 5,5.1 5,9 C5,14.2 12,22 12,22 S19,14.2 19,9 C19,5.1 15.9,2 12,2 Z" 
-                              fill="url(#grad1)" stroke="#B8860B" stroke-width="1"/>
-                        <circle cx="12" cy="9" r="4" fill="#FFFFFF" stroke="#B8860B" stroke-width="1"/>
-                        <path d="M12,6 L13.5,8.5 L16,8.5 L14.2,10.2 L15,12.5 L12,11 L9,12.5 L9.8,10.2 L8,8.5 L10.5,8.5 Z" 
-                              fill="#FFD700"/>
-                    </svg>
-                `),
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 36" width="24" height="36">
+                            <defs>
+                                <linearGradient id="grad1" x1="0%" y1="0%" x2="0%" y2="100%">
+                                    <stop offset="0%" style="stop-color:#FFD700;stop-opacity:1" />
+                                    <stop offset="100%" style="stop-color:#FFA500;stop-opacity:1" />
+                                </linearGradient>
+                            </defs>
+                            <path d="M12,2 C8.1,2 5,5.1 5,9 C5,14.2 12,22 12,22 S19,14.2 19,9 C19,5.1 15.9,2 12,2 Z" 
+                                  fill="url(#grad1)" stroke="#B8860B" stroke-width="1"/>
+                            <circle cx="12" cy="9" r="4" fill="#FFFFFF" stroke="#B8860B" stroke-width="1"/>
+                            <path d="M12,6 L13.5,8.5 L16,8.5 L14.2,10.2 L15,12.5 L12,11 L9,12.5 L9.8,10.2 L8,8.5 L10.5,8.5 Z" 
+                                  fill="#FFD700"/>
+                        </svg>
+                    `),
                     iconSize: [32, 48],
                     iconAnchor: [16, 48],
                     popupAnchor: [0, -48]
@@ -344,15 +304,15 @@
 
                 // Personalizar el popup
                 const popupContent = `
-                                                                                            <div class="custom-popup">
-                                                                                                <h4><i class="fas fa-map-pin"></i> Tu Apiario</h4>
-                                                                                                <p>Arrastra el marcador para ajustar la ubicación exacta.</p>
-                                                                                                <div class="popup-coordinates">
-                                                                                                    <span><strong>Lat:</strong> ${lat.toFixed(6)}</span><br>
-                                                                                                    <span><strong>Lng:</strong> ${lng.toFixed(6)}</span>
+                                                                                                <div class="custom-popup">
+                                                                                                    <h4><i class="fas fa-map-pin"></i> Tu Apiario</h4>
+                                                                                                    <p>Arrastra el marcador para ajustar la ubicación exacta.</p>
+                                                                                                    <div class="popup-coordinates">
+                                                                                                        <span><strong>Lat:</strong> ${lat.toFixed(6)}</span><br>
+                                                                                                        <span><strong>Lng:</strong> ${lng.toFixed(6)}</span>
+                                                                                                    </div>
                                                                                                 </div>
-                                                                                            </div>
-                                                                                        `;
+                                                                                            `;
 
                 marker.bindPopup(popupContent).openPopup();
 
@@ -363,15 +323,15 @@
 
                     // Actualizar el popup con las nuevas coordenadas
                     const updatedPopupContent = `
-                                                                                                <div class="custom-popup">
-                                                                                                    <h4><i class="fas fa-map-pin"></i> Tu Apiario</h4>
-                                                                                                    <p>Ubicación actualizada correctamente.</p>
-                                                                                                    <div class="popup-coordinates">
-                                                                                                        <span><strong>Lat:</strong> ${position.lat.toFixed(6)}</span><br>
-                                                                                                        <span><strong>Lng:</strong> ${position.lng.toFixed(6)}</span>
+                                                                                                    <div class="custom-popup">
+                                                                                                        <h4><i class="fas fa-map-pin"></i> Tu Apiario</h4>
+                                                                                                        <p>Ubicación actualizada correctamente.</p>
+                                                                                                        <div class="popup-coordinates">
+                                                                                                            <span><strong>Lat:</strong> ${position.lat.toFixed(6)}</span><br>
+                                                                                                            <span><strong>Lng:</strong> ${position.lng.toFixed(6)}</span>
+                                                                                                        </div>
                                                                                                     </div>
-                                                                                                </div>
-                                                                                            `;
+                                                                                                `;
                     marker.getPopup().setContent(updatedPopupContent);
                     marker.openPopup();
 
@@ -386,15 +346,15 @@
 
                     // Actualizar el popup con las nuevas coordenadas
                     const updatedPopupContent = `
-                                                                                                <div class="custom-popup">
-                                                                                                    <h4><i class="fas fa-map-pin"></i> Tu Apiario</h4>
-                                                                                                    <p>Ubicación actualizada correctamente.</p>
-                                                                                                    <div class="popup-coordinates">
-                                                                                                        <span><strong>Lat:</strong> ${e.latlng.lat.toFixed(6)}</span><br>
-                                                                                                        <span><strong>Lng:</strong> ${e.latlng.lng.toFixed(6)}</span>
+                                                                                                    <div class="custom-popup">
+                                                                                                        <h4><i class="fas fa-map-pin"></i> Tu Apiario</h4>
+                                                                                                        <p>Ubicación actualizada correctamente.</p>
+                                                                                                        <div class="popup-coordinates">
+                                                                                                            <span><strong>Lat:</strong> ${e.latlng.lat.toFixed(6)}</span><br>
+                                                                                                            <span><strong>Lng:</strong> ${e.latlng.lng.toFixed(6)}</span>
+                                                                                                        </div>
                                                                                                     </div>
-                                                                                                </div>
-                                                                                            `;
+                                                                                                `;
                     marker.getPopup().setContent(updatedPopupContent);
                     marker.openPopup();
 
@@ -413,39 +373,39 @@
                 // Añadir estilos personalizados para el popup
                 const style = document.createElement('style');
                 style.textContent = `
-                                                                                            .custom-popup {
-                                                                                                font-family: var(--font-body);
-                                                                                                padding: 8px;
-                                                                                            }
-                                                                                            .custom-popup h4 {
-                                                                                                color: var(--color-brown);
-                                                                                                margin: 0 0 8px 0;
-                                                                                                font-size: 16px;
-                                                                                                font-weight: 600;
-                                                                                            }
-                                                                                            .custom-popup p {
-                                                                                                margin: 0 0 8px 0;
-                                                                                                font-size: 14px;
-                                                                                            }
-                                                                                            .popup-coordinates {
-                                                                                                font-family: var(--font-mono);
-                                                                                                font-size: 12px;
-                                                                                                color: var(--color-text-light);
-                                                                                                background-color: rgba(212, 175, 55, 0.05);
-                                                                                                padding: 8px;
-                                                                                                border-radius: 4px;
-                                                                                                margin-top: 5px;
-                                                                                                border-left: 2px solid var(--color-gold);
-                                                                                            }
-                                                                                            .map-instructions {
-                                                                                                text-align: center;
-                                                                                                padding: 10px 15px;
-                                                                                                border-radius: 8px;
-                                                                                                margin: 10px 0 15px 0;
-                                                                                                font-size: 14px;
-                                                                                                color: var(--color-brown);
-                                                                                            }
-                                                                                        `;
+                                                                                                .custom-popup {
+                                                                                                    font-family: var(--font-body);
+                                                                                                    padding: 8px;
+                                                                                                }
+                                                                                                .custom-popup h4 {
+                                                                                                    color: var(--color-brown);
+                                                                                                    margin: 0 0 8px 0;
+                                                                                                    font-size: 16px;
+                                                                                                    font-weight: 600;
+                                                                                                }
+                                                                                                .custom-popup p {
+                                                                                                    margin: 0 0 8px 0;
+                                                                                                    font-size: 14px;
+                                                                                                }
+                                                                                                .popup-coordinates {
+                                                                                                    font-family: var(--font-mono);
+                                                                                                    font-size: 12px;
+                                                                                                    color: var(--color-text-light);
+                                                                                                    background-color: rgba(212, 175, 55, 0.05);
+                                                                                                    padding: 8px;
+                                                                                                    border-radius: 4px;
+                                                                                                    margin-top: 5px;
+                                                                                                    border-left: 2px solid var(--color-gold);
+                                                                                                }
+                                                                                                .map-instructions {
+                                                                                                    text-align: center;
+                                                                                                    padding: 10px 15px;
+                                                                                                    border-radius: 8px;
+                                                                                                    margin: 10px 0 15px 0;
+                                                                                                    font-size: 14px;
+                                                                                                    color: var(--color-brown);
+                                                                                                }
+                                                                                            `;
                 document.head.appendChild(style);
             }
 
@@ -466,15 +426,15 @@
 
                     // Actualizar el popup con las nuevas coordenadas
                     const updatedPopupContent = `
-                                                    <div class="custom-popup">
-                                                        <h4><i class="fas fa-map-pin"></i> Comuna: ${comunaNombre}</h4>
-                                                        <p>Ubicación central de la comuna seleccionada.</p>
-                                                        <div class="popup-coordinates">
-                                                            <span><strong>Lat:</strong> ${position.lat.toFixed(6)}</span><br>
-                                                            <span><strong>Lng:</strong> ${position.lng.toFixed(6)}</span>
+                                                        <div class="custom-popup">
+                                                            <h4><i class="fas fa-map-pin"></i> Comuna: ${comunaNombre}</h4>
+                                                            <p>Ubicación central de la comuna seleccionada.</p>
+                                                            <div class="popup-coordinates">
+                                                                <span><strong>Lat:</strong> ${position.lat.toFixed(6)}</span><br>
+                                                                <span><strong>Lng:</strong> ${position.lng.toFixed(6)}</span>
+                                                            </div>
                                                         </div>
-                                                    </div>
-                                                `;
+                                                    `;
                     marker.getPopup().setContent(updatedPopupContent);
                     marker.openPopup();
 
@@ -680,12 +640,12 @@
                 if (type === 'error') icon = 'times-circle';
 
                 notification.innerHTML = `
-                                                                                            <div class="notification-icon">
-                                                                                                <i class="fas fa-${icon}"></i>
-                                                                                            </div>
-                                                                                            <div class="notification-content">${message}</div>
-                                                                                            <button class="notification-close"><i class="fas fa-times"></i></button>
-                                                                                        `;
+                                                                                                <div class="notification-icon">
+                                                                                                    <i class="fas fa-${icon}"></i>
+                                                                                                </div>
+                                                                                                <div class="notification-content">${message}</div>
+                                                                                                <button class="notification-close"><i class="fas fa-times"></i></button>
+                                                                                            `;
 
                 document.body.appendChild(notification);
 
@@ -719,10 +679,10 @@
                 const loadingContainer = document.createElement('div');
                 loadingContainer.className = 'loading-container';
                 loadingContainer.innerHTML = `
-                                                                                            <div class="loading-indicator">
-                                                                                                <div></div><div></div><div></div><div></div>
-                                                                                            </div>
-                                                                                        `;
+                                                                                                <div class="loading-indicator">
+                                                                                                    <div></div><div></div><div></div><div></div>
+                                                                                                </div>
+                                                                                            `;
 
                 // Si es el mapa, añadir directamente al contenedor
                 if (elementId === 'map') {
@@ -781,60 +741,60 @@
             // Añadir estilos para efectos visuales
             const styleElement = document.createElement('style');
             styleElement.textContent = `
-                                                                                        .highlight-animation {
-                                                                                            animation: highlightPulse 1s ease;
-                                                                                        }
+                                                                                            .highlight-animation {
+                                                                                                animation: highlightPulse 1s ease;
+                                                                                            }
 
-                                                                                        @keyframes highlightPulse {
-                                                                                            0% { background-color: var(--color-background); }
-                                                                                            50% { background-color: rgba(212, 175, 55, 0.2); }
-                                                                                            100% { background-color: var(--color-background); }
-                                                                                        }
+                                                                                            @keyframes highlightPulse {
+                                                                                                0% { background-color: var(--color-background); }
+                                                                                                50% { background-color: rgba(212, 175, 55, 0.2); }
+                                                                                                100% { background-color: var(--color-background); }
+                                                                                            }
 
-                                                                                        .loading-container {
-                                                                                            display: flex;
-                                                                                            align-items: center;
-                                                                                            justify-content: center;
-                                                                                            padding: 10px;
-                                                                                        }
+                                                                                            .loading-container {
+                                                                                                display: flex;
+                                                                                                align-items: center;
+                                                                                                justify-content: center;
+                                                                                                padding: 10px;
+                                                                                            }
 
-                                                                                        .loading-indicator {
-                                                                                            display: inline-block;
-                                                                                            position: relative;
-                                                                                            width: 80px;
-                                                                                            height: 13px;
-                                                                                        }
+                                                                                            .loading-indicator {
+                                                                                                display: inline-block;
+                                                                                                position: relative;
+                                                                                                width: 80px;
+                                                                                                height: 13px;
+                                                                                            }
 
-                                                                                        .loading-indicator div {
-                                                                                            position: absolute;
-                                                                                            top: 0;
-                                                                                            width: 13px;
-                                                                                            height: 13px;
-                                                                                            border-radius: 50%;
-                                                                                            background: var(--color-gold);
-                                                                                            animation-timing-function: cubic-bezier(0, 1, 1, 0);
-                                                                                        }
+                                                                                            .loading-indicator div {
+                                                                                                position: absolute;
+                                                                                                top: 0;
+                                                                                                width: 13px;
+                                                                                                height: 13px;
+                                                                                                border-radius: 50%;
+                                                                                                background: var(--color-gold);
+                                                                                                animation-timing-function: cubic-bezier(0, 1, 1, 0);
+                                                                                            }
 
-                                                                                        .loading-indicator div:nth-child(1) {
-                                                                                            left: 8px;
-                                                                                            animation: loading1 0.6s infinite;
-                                                                                        }
+                                                                                            .loading-indicator div:nth-child(1) {
+                                                                                                left: 8px;
+                                                                                                animation: loading1 0.6s infinite;
+                                                                                            }
 
-                                                                                        .loading-indicator div:nth-child(2) {
-                                                                                            left: 8px;
-                                                                                            animation: loading2 0.6s infinite;
-                                                                                        }
+                                                                                            .loading-indicator div:nth-child(2) {
+                                                                                                left: 8px;
+                                                                                                animation: loading2 0.6s infinite;
+                                                                                            }
 
-                                                                                        .loading-indicator div:nth-child(3) {
-                                                                                            left: 32px;
-                                                                                            animation: loading2 0.6s infinite;
-                                                                                        }
+                                                                                            .loading-indicator div:nth-child(3) {
+                                                                                                left: 32px;
+                                                                                                animation: loading2 0.6s infinite;
+                                                                                            }
 
-                                                                                        .loading-indicator div:nth-child(4) {
-                                                                                            left: 56px;
-                                                                                            animation: loading3 0.6s infinite;
-                                                                                        }
-                                                                                    `;
+                                                                                            .loading-indicator div:nth-child(4) {
+                                                                                                left: 56px;
+                                                                                                animation: loading3 0.6s infinite;
+                                                                                            }
+                                                                                        `;
             document.head.appendChild(styleElement);
 
             // Añadir efectos de animación al enviar el formulario
@@ -892,56 +852,56 @@
                 // Añadir estilos para la animación de envío
                 const submitStyle = document.createElement('style');
                 submitStyle.textContent = `
-                                                                                            .submitting {
-                                                                                                position: relative;
-                                                                                            }
+                                                                                                .submitting {
+                                                                                                    position: relative;
+                                                                                                }
 
-                                                                                            .submitting::after {
-                                                                                                content: "";
-                                                                                                position: absolute;
-                                                                                                top: 0;
-                                                                                                left: 0;
-                                                                                                width: 100%;
-                                                                                                height: 100%;
-                                                                                                background-color: rgba(255, 255, 255, 0.7);
-                                                                                                backdrop-filter: blur(3px);
-                                                                                                z-index: 1000;
-                                                                                                display: flex;
-                                                                                                align-items: center;
-                                                                                                justify-content: center;
-                                                                                                font-size: 1.5rem;
-                                                                                                color: var(--color-gold);
-                                                                                                border-radius: var(--border-radius);
-                                                                                            }
+                                                                                                .submitting::after {
+                                                                                                    content: "";
+                                                                                                    position: absolute;
+                                                                                                    top: 0;
+                                                                                                    left: 0;
+                                                                                                    width: 100%;
+                                                                                                    height: 100%;
+                                                                                                    background-color: rgba(255, 255, 255, 0.7);
+                                                                                                    backdrop-filter: blur(3px);
+                                                                                                    z-index: 1000;
+                                                                                                    display: flex;
+                                                                                                    align-items: center;
+                                                                                                    justify-content: center;
+                                                                                                    font-size: 1.5rem;
+                                                                                                    color: var(--color-gold);
+                                                                                                    border-radius: var(--border-radius);
+                                                                                                }
 
-                                                                                            .shake-animation {
-                                                                                                animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
-                                                                                            }
+                                                                                                .shake-animation {
+                                                                                                    animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
+                                                                                                }
 
-                                                                                            @keyframes shake {
-                                                                                                10%, 90% { transform: translate3d(-1px, 0, 0); }
-                                                                                                20%, 80% { transform: translate3d(2px, 0, 0); }
-                                                                                                30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
-                                                                                                40%, 60% { transform: translate3d(4px, 0, 0); }
-                                                                                            }
+                                                                                                @keyframes shake {
+                                                                                                    10%, 90% { transform: translate3d(-1px, 0, 0); }
+                                                                                                    20%, 80% { transform: translate3d(2px, 0, 0); }
+                                                                                                    30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
+                                                                                                    40%, 60% { transform: translate3d(4px, 0, 0); }
+                                                                                                }
 
-                                                                                            .error-message {
-                                                                                                color: var(--color-error);
-                                                                                                font-size: 0.8rem;
-                                                                                                margin-top: 0.25rem;
-                                                                                                animation: fadeIn 0.3s ease;
-                                                                                            }
+                                                                                                .error-message {
+                                                                                                    color: var(--color-error);
+                                                                                                    font-size: 0.8rem;
+                                                                                                    margin-top: 0.25rem;
+                                                                                                    animation: fadeIn 0.3s ease;
+                                                                                                }
 
-                                                                                            .is-invalid {
-                                                                                                border-color: var(--color-error) !important;
-                                                                                                background-color: rgba(244, 67, 54, 0.05) !important;
-                                                                                            }
+                                                                                                .is-invalid {
+                                                                                                    border-color: var(--color-error) !important;
+                                                                                                    background-color: rgba(244, 67, 54, 0.05) !important;
+                                                                                                }
 
-                                                                                            @keyframes fadeIn {
-                                                                                                from { opacity: 0; transform: translateY(-10px); }
-                                                                                                to { opacity: 1; transform: translateY(0); }
-                                                                                            }
-                                                                                        `;
+                                                                                                @keyframes fadeIn {
+                                                                                                    from { opacity: 0; transform: translateY(-10px); }
+                                                                                                    to { opacity: 1; transform: translateY(0); }
+                                                                                                }
+                                                                                            `;
                 document.head.appendChild(submitStyle);
             });
 
@@ -966,12 +926,12 @@
             // Añadir estilos para efectos de hover
             const hoverStyle = document.createElement('style');
             hoverStyle.textContent = `
-                                                                                        .hover-effect {
-                                                                                            transform: translateY(-2px);
-                                                                                            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-                                                                                            transition: all 0.3s ease;
-                                                                                        }
-                                                                                    `;
+                                                                                            .hover-effect {
+                                                                                                transform: translateY(-2px);
+                                                                                                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+                                                                                                transition: all 0.3s ease;
+                                                                                            }
+                                                                                        `;
             document.head.appendChild(hoverStyle);
         });
     </script>

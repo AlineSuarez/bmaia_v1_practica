@@ -9,11 +9,7 @@
   </head>
   <!-- Verificar carga del middleware 
       <p>Formato en config: {{ config('app.date_format') }}</p>
-  <p>Hoy es: @date(now())</p>
-
-   
-  -->
-
+    <p>Hoy es: @date(now())</p> -->
 
   <!-- Loader con animación de panal (fuera del contenedor principal) -->
   <div id="dashboard-loader">
@@ -46,7 +42,6 @@
     <header class="dashboard-header">
       <div class="header-content">
       <h1>Panel de Control</h1>
-      <p class="dashboard-subtitle">Gestión integral de apicultura</p>
       </div>
       <div class="quick-stats">
       <div class="quick-stat">
@@ -55,7 +50,7 @@
         </div>
         <div class="stat-info">
         <span class="stat-label">Hoy</span>
-       <!-- <span class="stat-value">{{ date('d M, Y') }}</span> -->
+        <!-- <span class="stat-value">{{ date('d M, Y') }}</span> -->
         <span class="stat-value">@date(now())</span>
         </div>
       </div>
@@ -82,7 +77,6 @@
 
     <!-- Grid de Métricas Principales -->
     <div class="metrics-container">
-      <h2 class="section-title">Métricas Principales</h2>
       <div class="metrics-grid">
       <!-- 1. Apiarios Card -->
       <div class="metric-card apiarios">
@@ -494,8 +488,8 @@
       'Snow': 'fa-snowflake',
       'Mist': 'fa-smog'
     };
-    // Cambiar a 4 días en lugar de 2
-    const dias = ['Hoy', 'Mañana', 'Pasado mañana', 'En 3 días'];
+    // Cambiar a 5 días
+    const dias = ['Hoy', 'Mañana', 'Pasado mañana', 'En 3 días', 'En 4 días', 'En 5 días'];
 
     function reverseGeocode(lat, lon, callback) {
       fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&zoom=10&addressdetails=1`)
@@ -519,8 +513,7 @@
 
     function renderMainCards() {
       let html = '';
-      // Cambiar de 2 a 4 tarjetas
-      for (let i = 0; i < 4; i++) {
+      for (let i = 0; i < 6; i++) {
       if (!daysArray[i]) continue;
       const day = daysArray[i];
       const main = day.weather[0].main;
@@ -536,15 +529,15 @@
       <div class="weather-temp" style="font-weight:bold;font-size:1.4em">${Math.round(day.main.temp)}°C</div>
       <div class="weather-details" style="margin-top:8px">
       <div class="weather-detail" style="text-transform:capitalize">
-      <i class="fas fa-info-circle"></i>
-      ${day.weather[0].description}
+        <i class="fas fa-info-circle"></i>
+        ${day.weather[0].description}
       </div>
       <div class="weather-detail">
-      <i class="fas fa-tint"></i>
-      Humedad: ${day.main.humidity}%
+        <i class="fas fa-tint"></i>
+        Humedad: ${day.main.humidity}%
       </div>
       </div>
-      </div>`;
+    </div>`;
       }
       weatherCards.innerHTML = html;
       if (volverBtn) volverBtn.style.display = 'none';

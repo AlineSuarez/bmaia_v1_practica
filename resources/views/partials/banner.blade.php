@@ -7,7 +7,7 @@
     <!-- Logo -->
     <a href="#" class="navbar-logo">
         <img src="{{ asset('img/abeja.png') }}" width="38px" height="32px" style="margin-right:10px;" alt="bee">
-        <span class="logo-text">MaiA</span>
+        <span class="logo-text">B-MaiA</span>
     </a>
 
     <!-- Navegación principal -->
@@ -17,15 +17,15 @@
                 <a href="#inicio" style="color: rgb(212, 159, 0); font-weight: bold;" class="nav-link active">Inicio</a>
             </li>
             <li class="nav-item">
-                <a href="#maia" style="color: rgb(212, 159, 0); font-weight: bold;" class="nav-link">Sobre MaiA</a>
+                <a href="#maia" style="color: rgb(212, 159, 0); font-weight: bold;" class="nav-link">Sobre B-MaiA</a>
             </li>
             <li class="nav-item">
                 <a href="#herramientas" style="color: rgb(212, 159, 0); font-weight: bold;"
                     class="nav-link">Herramientas</a>
             </li>
-            <li class="nav-item">
+            <!-- <li class="nav-item">
                 <a href="#descarga" style="color: rgb(212, 159, 0); font-weight: bold;" class="nav-link">Descarga</a>
-            </li>
+            </li> -->
             <li class="nav-item">
                 <a href="#como-funciona" style="color: rgb(212, 159, 0); font-weight: bold;" class="nav-link">Cómo
                     funciona</a>

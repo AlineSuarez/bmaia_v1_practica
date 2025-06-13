@@ -1059,7 +1059,6 @@ body {
 }
 
 .benefits-container .collapsible-header::after {
-    content: "Mostrar más";
     position: absolute;
     right: 50px;
     font-size: 0.85em;
@@ -1067,10 +1066,6 @@ body {
     opacity: 0.9;
     font-style: italic;
     text-shadow: 0 0 5px rgba(231, 149, 25, 0.2);
-}
-
-.benefits-container.active .collapsible-header::after {
-    content: "Haz clic para cerrar";
 }
 
 @keyframes border-shine {
@@ -1162,7 +1157,6 @@ body {
 }
 
 .sustainability-note {
-    font-style: italic;
     font-size: 1rem;
     opacity: 0.9;
     margin-top: 1rem;
@@ -8158,7 +8152,6 @@ footer::before {
 }
 
 .collapsible-header::after {
-    content: "Mostrar más";
     position: absolute;
     right: 50px;
     font-size: 0.85em;
@@ -8183,10 +8176,6 @@ footer::before {
         content: "";
         display: none;
     }
-}
-
-.collapsible-container.active .collapsible-header::after {
-    content: "Haz clic para cerrar";
 }
 
 .collapsible-header:hover {
@@ -9352,19 +9341,19 @@ footer::before {
 }
 
 /* ======= ANIMACIONES ADICIONALES ======= */
-@keyframes cardFloat {
+/* @keyframes cardFloat {
     0% {
         transform: translateY(0);
     }
 
     50% {
-        transform: translateY(-8px);
+        transform: translateY(-2px);
     }
 
     100% {
         transform: translateY(0);
     }
-}
+} */
 
 .herramienta-card:nth-child(odd) {
     animation: cardFloat 6s ease-in-out infinite;
@@ -9560,7 +9549,6 @@ footer::before {
 }
 
 .process-container .collapsible-header::after {
-    content: "Mostrar más";
     position: absolute;
     right: 50px;
     font-size: 0.85em;
@@ -9568,4 +9556,536 @@ footer::before {
     opacity: 0.9;
     font-style: italic;
     text-shadow: 0 0 5px rgba(231, 149, 25, 0.2);
+}
+
+/* ========== ARREGLO PARA LA ROTACIÓN DE LA FLECHA ========== */
+
+/* Asegurar que la flecha tenga una transición suave */
+.collapse-icon {
+    transition: transform 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.collapse-icon i {
+    transition: transform 0.3s ease;
+    font-size: 1.2rem;
+}
+
+/* Rotar la flecha cuando el contenedor esté activo */
+.collapsible-container.active .collapse-icon {
+    transform: rotate(180deg);
+}
+
+.collapsible-container.active .collapse-icon i {
+    transform: rotate(180deg);
+}
+
+/* Asegurar que el header tenga el cursor pointer */
+.collapsible-header {
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: space-between; /* Espacio entre título y flecha */
+    padding: 1rem 2rem;
+}
+
+.collapsible-header:hover {
+    background-color: rgba(255, 143, 0, 0.05);
+}
+
+/* Si prefieres que solo el ícono rote en lugar del contenedor completo */
+.collapsible-container .collapse-icon {
+    transform: rotate(0deg);
+    transition: transform 0.3s ease-in-out;
+}
+
+.collapsible-container.active .collapse-icon {
+    transform: rotate(180deg);
+}
+
+/* ========== TARJETAS DE IMPACTO - DISEÑO MINIMALISTA ========== */
+
+.impact-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.2rem;
+    margin-top: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.impact-card {
+    background: white;
+    border-radius: 12px;
+    padding: 1.2rem;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+    border: 1px solid rgba(255, 143, 0, 0.08);
+    transition: all 0.25s ease;
+    position: relative;
+}
+
+.impact-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, #ff8f00, #ffb74d);
+    border-radius: 12px 12px 0 0;
+}
+
+.impact-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 25px rgba(255, 143, 0, 0.12);
+    border-color: rgba(255, 143, 0, 0.2);
+}
+
+/* ========== HEADER MINIMALISTA ========== */
+.impact-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+}
+
+.impact-icon {
+    width: 36px;
+    height: 36px;
+    background: linear-gradient(135deg, #ff8f00, #ffb74d);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1rem;
+    flex-shrink: 0;
+}
+
+.impact-header h4 {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #333;
+    line-height: 1.2;
+}
+
+/* ========== VISUALIZACIONES COMPACTAS ========== */
+
+/* --- RELOJ COMPACTO --- */
+.clock-comparison {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+}
+
+.clock-before,
+.clock-after {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.4rem;
+    flex: 1;
+}
+
+.clock-face {
+    width: 45px;
+    height: 45px;
+    border: 2px solid #ddd;
+    border-radius: 50%;
+    position: relative;
+    background: white;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+}
+
+.clock-face.optimized {
+    border-color: #ff8f00;
+    background: linear-gradient(135deg, #fff8e1, #ffffff);
+}
+
+.clock-hand {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 1.5px;
+    height: 15px;
+    background: #333;
+    transform-origin: bottom center;
+    border-radius: 1px;
+    margin-left: -0.75px;
+    margin-top: -15px;
+    transition: transform 0.3s ease;
+}
+
+.clock-face.optimized .clock-hand {
+    background: #ff8f00;
+}
+
+.free-time-indicator {
+    position: absolute;
+    top: 20%;
+    right: 20%;
+    width: 8px;
+    height: 8px;
+    background: #4caf50;
+    border-radius: 50%;
+    animation: pulse 2s infinite;
+}
+
+.clock-label {
+    font-size: 0.7rem;
+    color: #666;
+    text-align: center;
+    font-weight: 500;
+    line-height: 1.1;
+}
+
+/* --- FLECHA COMPACTA --- */
+.transformation-arrow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    background: linear-gradient(135deg, #ff8f00, #ffb74d);
+    border-radius: 50%;
+    color: white;
+    font-size: 0.85rem;
+    animation: bounce 2s infinite;
+    flex-shrink: 0;
+}
+
+/* --- DOCUMENTOS COMPACTOS --- */
+.document-stack {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+}
+
+.documents-before,
+.documents-after {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.4rem;
+    flex: 1;
+}
+
+.document-pile {
+    position: relative;
+    width: 40px;
+    height: 32px;
+}
+
+.document {
+    position: absolute;
+    width: 32px;
+    height: 24px;
+    background: #f5f5f5;
+    border: 1px solid #ddd;
+    border-radius: 2px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+}
+
+.document:nth-child(1) {
+    transform: translate(0px, 0px) rotate(-1deg);
+}
+.document:nth-child(2) {
+    transform: translate(2px, 2px) rotate(1deg);
+}
+.document:nth-child(3) {
+    transform: translate(4px, 4px) rotate(-1deg);
+}
+.document:nth-child(4) {
+    transform: translate(6px, 6px) rotate(1deg);
+}
+.document:nth-child(5) {
+    transform: translate(8px, 8px) rotate(-1deg);
+}
+
+.smart-document {
+    width: 45px;
+    height: 45px;
+    background: linear-gradient(135deg, #fff8e1, #ffffff);
+    border: 2px solid #ff8f00;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.2rem;
+    position: relative;
+    box-shadow: 0 1px 4px rgba(255, 143, 0, 0.15);
+}
+
+.smart-document i {
+    font-size: 1rem;
+    color: #ff8f00;
+}
+
+.voice-waves {
+    display: flex;
+    gap: 1px;
+    align-items: end;
+}
+
+.wave {
+    width: 2px;
+    background: #ff8f00;
+    border-radius: 1px;
+    animation: wave-animation 1.5s infinite ease-in-out;
+}
+
+.wave:nth-child(1) {
+    height: 6px;
+    animation-delay: 0s;
+}
+
+.wave:nth-child(2) {
+    height: 10px;
+    animation-delay: 0.2s;
+}
+
+.wave:nth-child(3) {
+    height: 4px;
+    animation-delay: 0.4s;
+}
+
+.doc-label {
+    font-size: 0.7rem;
+    color: #666;
+    text-align: center;
+    font-weight: 500;
+    line-height: 1.1;
+}
+
+/* --- DETECCIÓN COMPACTA --- */
+.detection-comparison {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+}
+
+.detection-before,
+.detection-after {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.4rem;
+    flex: 1;
+}
+
+.problem-indicators {
+    display: flex;
+    gap: 3px;
+    justify-content: center;
+}
+
+.indicator {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    border: 1px solid transparent;
+    transition: all 0.3s ease;
+}
+
+.indicator.missed {
+    background: #ffcdd2;
+    border-color: #f44336;
+}
+
+.indicator.detected {
+    background: #c8e6c9;
+    border-color: #4caf50;
+}
+
+.indicator.early-detected {
+    background: #fff3e0;
+    border-color: #ff8f00;
+    box-shadow: 0 0 4px rgba(255, 143, 0, 0.4);
+    animation: success-glow 2s infinite;
+}
+
+.detection-rate {
+    font-size: 0.7rem;
+    color: #666;
+    text-align: center;
+    font-weight: 600;
+}
+
+/* ========== BENEFICIOS COMPACTOS ========== */
+.impact-benefit {
+    margin-top: 0.75rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid rgba(255, 143, 0, 0.15);
+}
+
+.benefit-highlight {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    padding: 0.5rem 0.75rem;
+    background: linear-gradient(135deg, #fff8e1, #ffffff);
+    border: 1px solid rgba(255, 143, 0, 0.2);
+    border-radius: 20px;
+    color: #ff8f00;
+    font-weight: 600;
+    font-size: 0.8rem;
+    box-shadow: 0 1px 4px rgba(255, 143, 0, 0.08);
+    transition: all 0.3s ease;
+}
+
+.benefit-highlight i {
+    font-size: 0.85rem;
+}
+
+/* ========== ANIMACIONES OPTIMIZADAS ========== */
+@keyframes pulse {
+    0% {
+        opacity: 1;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 0.7;
+        transform: scale(1.1);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@keyframes bounce {
+    0%,
+    20%,
+    50%,
+    80%,
+    100% {
+        transform: translateY(0);
+    }
+    40% {
+        transform: translateY(-3px);
+    }
+    60% {
+        transform: translateY(-2px);
+    }
+}
+
+@keyframes wave-animation {
+    0%,
+    100% {
+        height: 4px;
+    }
+    50% {
+        height: 12px;
+    }
+}
+
+@keyframes success-glow {
+    0% {
+        box-shadow: 0 0 2px rgba(255, 143, 0, 0.4);
+    }
+    50% {
+        box-shadow: 0 0 6px rgba(255, 143, 0, 0.6);
+    }
+    100% {
+        box-shadow: 0 0 2px rgba(255, 143, 0, 0.4);
+    }
+}
+
+/* ========== RESPONSIVE COMPACTO ========== */
+@media (max-width: 768px) {
+    .impact-cards {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+        margin-top: 1.2rem;
+    }
+
+    .impact-card {
+        padding: 1rem;
+    }
+
+    .clock-comparison,
+    .document-stack,
+    .detection-comparison {
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .transformation-arrow {
+        transform: rotate(90deg);
+        width: 28px;
+        height: 28px;
+        font-size: 0.75rem;
+    }
+
+    .clock-face,
+    .smart-document {
+        width: 50px;
+        height: 50px;
+    }
+
+    .problem-indicators {
+        gap: 4px;
+    }
+
+    .indicator {
+        width: 10px;
+        height: 10px;
+    }
+}
+
+@media (max-width: 480px) {
+    .impact-header {
+        flex-direction: column;
+        text-align: center;
+        gap: 0.5rem;
+    }
+
+    .impact-header h4 {
+        font-size: 0.95rem;
+    }
+
+    .impact-icon {
+        width: 32px;
+        height: 32px;
+        font-size: 0.9rem;
+    }
+
+    .benefit-highlight {
+        font-size: 0.75rem;
+        padding: 0.4rem 0.6rem;
+    }
+
+    .clock-label,
+    .doc-label,
+    .detection-rate {
+        font-size: 0.65rem;
+    }
+}
+
+/* ========== EFECTOS HOVER MINIMALISTAS ========== */
+.impact-card:hover .transformation-arrow {
+    animation-duration: 1s;
+}
+
+.impact-card:hover .benefit-highlight {
+    background: linear-gradient(135deg, #ff8f00, #ffb74d);
+    color: white;
+    transform: scale(1.02);
+}
+
+.impact-card:hover .free-time-indicator {
+    animation-duration: 1s;
 }

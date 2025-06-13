@@ -38,7 +38,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/shepherd.js@8.0.0/dist/css/shepherd.css" />
     @stack('styles')
 
-   <!-- Flatpickr CSS y JS Flatpickr --> 
+    <!-- Flatpickr CSS y JS Flatpickr -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/es.js"></script>
@@ -49,15 +49,15 @@
 <body>
 
     @auth
-    <script>
-        window.appLocale     = "{{ app()->getLocale() }}";
-    window.appDateFormat = "{{ config('app.date_format', 'DD/MM/YYYY') }}";
-        window.translations = {!! json_encode(__('messages')) !!};
+        <script>
+            window.appLocale = "{{ app()->getLocale() }}";
+            window.appDateFormat = "{{ config('app.date_format', 'DD/MM/YYYY') }}";
+            window.translations = {!! json_encode(__('messages')) !!};
 
-        window.trans = function (key) {
-            return window.translations[key] || key;
-        };
-    </script>
+            window.trans = function (key) {
+                return window.translations[key] || key;
+            };
+        </script>
     @endauth
 
 
@@ -79,7 +79,7 @@
     <div id="virtual-assistant-chat" class="assistant-chat" style="display:none;">
         <div class="card">
             <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
-                <h5 class="mb-0">Chat con MaIA</h5>
+                <h5 class="mb-0">Chat con B-MaIA</h5>
                 <button id="close-chat" class="btn-close" onclick="toggleChat()"
                     style="color:aliceblue;background-color:orange;" aria-label="Close">
                     <span class="fa fa-times"></span>
