@@ -362,7 +362,7 @@
 
                                                                     <!-- Fecha Movimiento = fecha_movimiento del último traslado -->
                                                                     <td class="text-center">
-                                                                        {{ $mov ? $mov->fecha_movimiento->format('Y-m-d') : '—' }}
+                                                                        {{ $mov ? $mov->fecha_movimiento->format('d/m/Y') : '—' }}
                                                                     </td>
 
                                                                     <!-- Motivo (Producción/Polinización) -->
@@ -372,7 +372,10 @@
 
                                                                     <!-- Cultivo (solo si el motivo fue Polinización) -->
                                                                     <td class="text-center">
-                                                                        {{ $mov && $mov->motivo_movimiento === 'Polinización' ? ($mov->cultivo ?? '—') : '—'}}
+                                                                        {{ $mov && $mov->motivo_movimiento === 'Polinización'
+                                                                            ? ($mov->cultivo ?? '—')
+                                                                            : '—'
+                                                                        }}
                                                                     </td>
 
                                                                     <!-- Columna de Acciones: editar / eliminar / descargar reporte, etc. -->

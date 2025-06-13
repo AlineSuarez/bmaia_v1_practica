@@ -17,7 +17,9 @@ class MovimientoColmena extends Model
         'fecha_termino_mov',
     ];
     protected $casts = [
-        'fecha_movimiento' => 'datetime',  // <-- así Laravel lo convierte en Carbon automáticamente
+        'fecha_movimiento' => 'datetime',
+        'fecha_inicio_mov'   => 'datetime',
+        'fecha_termino_mov'  => 'datetime',
     ];
 
     protected $fillable = [
@@ -29,6 +31,11 @@ class MovimientoColmena extends Model
         'fecha_inicio_mov',
         'fecha_termino_mov',
         'motivo_movimiento',
+
+        'cultivo',
+        'periodo_floracion',
+        'hectareas',
+
         'observaciones',
         'transportista',
         'vehiculo',
@@ -60,14 +67,6 @@ class MovimientoColmena extends Model
     }
 
     public function apiarioDestino()
-    {
-        return $this->belongsTo(Apiario::class, 'apiario_destino_id');
-    }
-    public function origen()
-    {
-        return $this->belongsTo(Apiario::class, 'apiario_origen_id');
-    }
-    public function destino()
     {
         return $this->belongsTo(Apiario::class, 'apiario_destino_id');
     }
