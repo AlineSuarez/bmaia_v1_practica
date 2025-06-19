@@ -11,16 +11,17 @@ class EstadoNutricional extends Model
     protected $table = 'estado_nutricional';
 
     protected $fillable = [
-        'reserva_miel_polen',
         'tipo_alimentacion',
         'fecha_aplicacion',
         'insumo_utilizado',
-        'dosifiacion', // OJO: en la bd esta escrito como dosifiacion
+        'dosifiacion',
         'metodo_utilizado',
-        'n_colmenas_tratadas',
+        // nuevo
+        'objetivo',
     ];
     public function visita()
     {
         return $this->hasOne(\App\Models\Visita::class, 'estado_nutricional_id');
     }
 }
+

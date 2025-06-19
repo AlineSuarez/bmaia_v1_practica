@@ -14,7 +14,19 @@ class PreparacionInvernada extends Model
         'control_sanitario',
         'fusion_colmenas',
         'reserva_alimento',
+        // nuevos
+        'cantidad_marcos_cubiertos_abejas',
+        'cantidad_marcos_cubiertos_cria',
+        'marcos_reservas_miel',
+        'presencial_reservas_polen',
+        'presencia_reina',
+        'nivel_infestacion_varroa',
+        'signos_enfermedades_visibles',
+        'fecha_ultima_revision_previa_receso',
+        'fecha_cierre_temporada',
+        'alimentacion_suplementaria',
     ];
+
     public function visita()
     {
         return $this->hasOne(\App\Models\Visita::class, 'preparacion_invernada_id');

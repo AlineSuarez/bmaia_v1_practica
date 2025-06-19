@@ -18,23 +18,7 @@ class Colmena extends Model
         'estado_inicial',
         'numero_marcos',
         'observaciones',
-        /*
-        'fecha_ultima_inspeccion',
-        'fecha_ultima_reina',
-        'fecha_ultima_recoleccion',
-        'fecha_ultima_recoleccion_miel',
-        'fecha_ultima_recoleccion_propolis',
-        'fecha_ultima_recoleccion_abejas',
-        'fecha_ultima_recoleccion_cera',
-        'fecha_ultima_recoleccion_jalea',
-        'fecha_ultima_recoleccion_veneno',
-        'fecha_ultima_recoleccion_polinizacion',
-        'fecha_ultima_recoleccion_otros',
-        'fecha_ultima_recoleccion_otros_texto',
-        'fecha_ultima_recoleccion_otros_cantidad',
-        'fecha_ultima_recoleccion_otros_unidad',
-        'fecha_ultima_recoleccion_otros_observaciones',
-        */
+        
     ];
 
     protected $casts = [

@@ -157,6 +157,14 @@
                                                         <span class="option-desc">Tratamientos aplicados</span>
                                                     </div>
                                                 </a>
+                                                <a href="{{ route('generate.document.alimentacion', $apiario->id) }}"
+                                                    class="dropdown-option">
+                                                    <div class="option-icon"><i class="fas fa-leaf"></i></div>
+                                                    <div class="option-content">
+                                                        <span class="option-title">Registro de Alimentos</span>
+                                                        <span class="option-desc">Alimentos, metodos e insumos a utilizar</span>
+                                                    </div>
+                                                </a>
                                             </div>
                                         </div>
                                     </div>
@@ -207,8 +215,17 @@
                                             <a href="{{ url('visitas/create2/' . $apiario->id) }}" class="registration-option">
                                                 <div class="option-icon"><i class="fas fa-syringe"></i></div>
                                                 <div class="option-content">
-                                                    <span class="option-title">Uso de Medicamentos</span>
+                                                    <span class="option-title">Uso de Tratamientos</span>
                                                     <p class="option-description">Control de tratamientos y medicamentos aplicados
+                                                    </p>
+                                                </div>
+                                                <div class="option-indicator"><i class="fas fa-chevron-right"></i></div>
+                                            </a>
+                                            <a href="{{ route('visitas.create3', $apiario) }}" class="registration-option">
+                                                <div class="option-icon"><i class="fas fa-leaf"></i></div>
+                                                <div class="option-content">
+                                                    <span class="option-title">Alimentacion</span>
+                                                    <p class="option-description">Estado nutricional e insumos utilizados
                                                     </p>
                                                 </div>
                                                 <div class="option-indicator"><i class="fas fa-chevron-right"></i></div>

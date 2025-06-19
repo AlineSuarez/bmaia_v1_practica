@@ -8,15 +8,21 @@ use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
 {
-    /**
-     * Seed the application's database.
-     */
     public function run(): void
     {
-        // User::factory(10)->create();
-        //$this->call(UsersTableSeeder::class);
-       // $this->call(RegionesComunasSeeder::class);
-       $this->call(TareasPredefinidasSeeder::class); // Asegúrate de incluir tu seeder aquí
-    
+        $this->call([
+            // 1. Usuarios
+            UsersTableSeeder::class,
+
+            // 2. Regiones y comunas (incluye coordenadas y UTM)
+            RegionesComunasSeeder::class,
+            ComunasCoordenadasSeeder::class,
+            ComunasUtmSeeder::class,
+
+            // 3. Tareas
+            TareasGeneralesSeeder::class,
+            TareasPredefinidasSeeder::class,
+            AddTareasPredefinidasSeeder::class,
+        ]);
     }
 }

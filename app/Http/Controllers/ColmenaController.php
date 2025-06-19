@@ -46,7 +46,20 @@ class ColmenaController extends Controller
 
     public function show(Apiario $apiario, Colmena $colmena)
     {
-        return view('colmenas.show', compact('apiario', 'colmena'));
+        $pccs = \App\Models\SistemaExperto::where('colmena_id', $colmena->id)
+            ->with([
+                'desarrolloCria',
+                'calidadReina',
+                'estadoNutricional',
+                'presenciaVarroa',
+                'presenciaNosemosis',
+                'indiceCosecha',
+                'preparacionInvernada',
+            ])
+            ->orderByDesc('fecha') // o created_at
+            ->get();
+
+        return view('colmenas.show', compact('apiario', 'colmena', 'pccs'));
     }
 
     public function historial(Apiario $apiario, Colmena $colmena)

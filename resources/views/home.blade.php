@@ -177,7 +177,7 @@
 
       <!-- 5. Sistema Experto Card -->
       <div class="metric-card sistema-experto">
-        <a href="{{ route('sistemaexperto') }}" class="metric-link">
+        <a href="{{ route('sistemaexperto.index') }}" class="metric-link">
         <div class="metric-header">
           <div class="metric-icon">
           <i class="fas fa-brain"></i>

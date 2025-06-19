@@ -15,9 +15,16 @@ class PresenciaVarroa extends Model
         'muestreo_abejas_adultas',
         'muestreo_cria_operculada',
         'tratamiento',
+        // nuevos diagnósticos / monitoreo
+        'metodo_diagnostico',
+        'fecha_monitoreo_varroa',
+        // tratamientos
+        'producto_comercial',
+        'ingrediente_activo',
         'fecha_aplicacion',
         'dosificacion',
         'metodo_aplicacion',
+        'periodo_carencia',
         'n_colmenas_tratadas',
     ];
     public function visita()

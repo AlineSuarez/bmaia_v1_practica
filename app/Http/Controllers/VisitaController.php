@@ -1,11 +1,16 @@
 <?php
 namespace App\Http\Controllers;
 
-use App\Models\Apiario;
-use App\Models\Visita;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use Auth;
+use App\Models\{
+    Apiario,
+    Colmena,
+    Visita,
+    EstadoNutricional,
+    SistemaExperto,
+};
 
 class VisitaController extends Controller
 {
@@ -50,6 +55,15 @@ class VisitaController extends Controller
         $visita = Visita::where('apiario_id', $id_apiario)->where('tipo_visita', 'Visita General')->first();
         $userFormat = config('app.date_format', 'DD/MM/YYYY');
         return view('visitas.create1', compact('apiario','visita','user','userFormat'));
+    }
+
+    public function createAlimentacion($id_apiario)
+    {
+        $apiario = Apiario::with('colmenas')
+                          ->where('user_id', auth()->id())
+                          ->findOrFail($id_apiario);
+
+        return view('visitas.create3', compact('apiario'));
     }
 
     public function store(Request $request, Apiario $apiario)
@@ -127,95 +141,76 @@ class VisitaController extends Controller
         // 2) Como el input es "date", $validated['fecha'] ya es "YYYY-MM-DD", 
         //    no hace falta hacer createFromFormat. 
         //    Simplemente lo guardamos tal cual.
-        Visita::create([
-            'apiario_id'   => $apiario->id,
-            'fecha_visita' => $validated['fecha'],
-            'motivo'       => $validated['motivo'],
-            'tipo_visita'  => 'Visita General',
-            'nombres'      => $request->user()->name,
-            'apellidos'    => $request->user()->last_name,
-            'rut'          => $request->user()->rut,
-            'telefono'     => $request->user()->telefono,
-            'firma'        => $request->user()->firma,
+            Visita::create([
+                'apiario_id'   => $apiario->id,
+                'fecha_visita' => $validated['fecha'],
+                'motivo'       => $validated['motivo'],
+                'tipo_visita'  => 'Visita General',
+                'nombres'      => $request->user()->name,
+                'apellidos'    => $request->user()->last_name,
+                'rut'          => $request->user()->rut,
+                'telefono'     => $request->user()->telefono,
+                'firma'        => $request->user()->firma,
+            ]);
+            return redirect()->route('visitas.historial', $apiario)->with('success', 'Registro de Visita General guardado correctamente.');
+        }
+
+    public function storeAlimentacion(Request $request, Apiario $apiario)
+    {
+        // 1) Validar
+        $data = $request->validate([
+            'objetivo'                           => 'required|in:estimulacion,mantencion',
+            'tipo_alimentacion'                  => 'required|string|max:255',
+            'fecha_aplicacion_insumo_utilizado' => 'required|date',
+            'insumo_utilizado'                   => 'nullable|string|max:255',
+            'dosificacion'                       => 'nullable|string|max:255',
+            'metodo_utilizado'                   => 'required|string|max:255',
         ]);
-        return redirect()->route('visitas.historial', $apiario)->with('success', 'Registro de Visita General guardado correctamente.');
+
+        // 2) Guardar en estado_nutricional
+        $nutricional = EstadoNutricional::create([
+            'objetivo'           => $data['objetivo'],
+            'tipo_alimentacion'  => $data['tipo_alimentacion'],
+            'fecha_aplicacion'   => $data['fecha_aplicacion_insumo_utilizado'],
+            'insumo_utilizado'   => $data['insumo_utilizado'],
+            'dosifiacion'        => $data['dosificacion'],
+            'metodo_utilizado'   => $data['metodo_utilizado'],
+        ]);
+
+        // 3) Elegir la colmena sobre la que actuamos
+        $colmena = $apiario->colmenas()->first();
+        if (! $colmena) {
+            return back()->withErrors('Este apiario no tiene colmenas.');
+        }
+
+        // 4) Crear la Visita y asociar estado_nutricional + colmena
+        $visita = Visita::create([
+            'apiario_id'             => $apiario->id,
+            'user_id'                => auth()->id(),
+            'tipo_visita'            => 'Alimentación',
+            'fecha_visita'           => now(),
+            'estado_nutricional_id'  => $nutricional->id,
+        ]);
+
+        // 5) Sincronizar PCC3 en SistemaExperto
+        SistemaExperto::updateOrCreate(
+            ['colmena_id' => $colmena->id],
+            [
+                'apiario_id'            => $apiario->id,
+                'pcc3_objetivo'          => $nutricional->objetivo,
+                'pcc3_tipo_alimentacion' => $nutricional->tipo_alimentacion,
+                'pcc3_fecha_aplicacion'  => $nutricional->fecha_aplicacion,
+                'pcc3_insumo_utilizado'  => $nutricional->insumo_utilizado,
+                'pcc3_dosificacion'      => $nutricional->dosifiacion,
+                'pcc3_metodo_utilizado'  => $nutricional->metodo_utilizado,
+            ]
+        );
+
+        // 5) Redirigir de vuelta al wizard o donde prefieras
+        return redirect()
+            ->route('visitas', $apiario->id)
+            ->with('success', 'Alimentación guardada y PCC3 sincronizado.');
     }
-
-    public function storeSistemaExperto(Request $request)
-{
-    // 1. Validaciones
-    $request->validate([
-        // PCC1 - Desarrollo de la Cámara de Cría
-        'desarrollo_cria.vigor_colmena' => 'nullable|string',
-        'desarrollo_cria.actividad_abejas' => 'nullable|string',
-        'desarrollo_cria.ingreso_polen' => 'nullable|string',
-        'desarrollo_cria.bloqueo_camara_cria' => 'nullable|string',
-        'desarrollo_cria.presencia_celdas_reales' => 'nullable|string',
-        // PCC2 - Calidad de la Reina
-        'calidad_reina.postura_reina' => 'nullable|string',
-        'calidad_reina.estado_cria' => 'nullable|string',
-        'calidad_reina.postura_zanganos' => 'nullable|string',
-        // PCC3 - Estado Nutricional
-        'estado_nutricional.reserva_miel_polen' => 'nullable|string',
-        'estado_nutricional.tipo_alimentacion' => 'nullable|string',
-        'estado_nutricional.fecha_aplicacion' => 'nullable|date',
-        'estado_nutricional.insumo_utilizado' => 'nullable|string',
-        'estado_nutricional.dosifiacion' => 'nullable|string',
-        'estado_nutricional.metodo_utilizado' => 'nullable|string',
-        'estado_nutricional.n_colmenas_tratadas' => 'nullable|integer',
-        // PCC4 - Varroa
-        'presencia_varroa.diagnostico_visual' => 'nullable|string',
-        'presencia_varroa.muestreo_abejas_adultas' => 'nullable|string',
-        'presencia_varroa.muestreo_cria_operculada' => 'nullable|string',
-        'presencia_varroa.tratamiento' => 'nullable|string',
-        'presencia_varroa.fecha_aplicacion' => 'nullable|date',
-        'presencia_varroa.dosificacion' => 'nullable|string',
-        'presencia_varroa.metodo_aplicacion' => 'nullable|string',
-        'presencia_varroa.n_colmenas_tratadas' => 'nullable|integer',
-        // PCC5 - Nosemosis
-        'presencia_nosemosis.signos_clinicos' => 'nullable|string',
-        'presencia_nosemosis.muestreo_laboratorio' => 'nullable|string',
-        'presencia_nosemosis.tratamiento' => 'nullable|string',
-        'presencia_nosemosis.fecha_aplicacion' => 'nullable|date',
-        'presencia_nosemosis.dosificacion' => 'nullable|string',
-        'presencia_nosemosis.metodo_aplicacion' => 'nullable|string',
-        'presencia_nosemosis.num_colmenas_tratadas' => 'nullable|integer',
-        // PCC6 - Índice de Cosecha
-        'indice_cosecha.madurez_miel' => 'nullable|string',
-        'indice_cosecha.num_alzadas' => 'nullable|numeric',
-        'indice_cosecha.marcos_miel' => 'nullable|numeric',
-        // PCC7 - Preparación Invernada
-        'preparacion_invernada.control_sanitario' => 'nullable|string',
-        'preparacion_invernada.fusion_colmenas' => 'nullable|string',
-        'preparacion_invernada.reserva_alimento' => 'nullable|string',
-    ]);
-
-    // 2. Guardar cada PCC en su tabla y obtener ID
-    $desarrolloCria = \App\Models\DesarrolloCria::create($request->input('desarrollo_cria', []));
-    $calidadReina = \App\Models\CalidadReina::create($request->input('calidad_reina', []));
-    $estadoNutricional = \App\Models\EstadoNutricional::create($request->input('estado_nutricional', []));
-    $presenciaVarroa = \App\Models\PresenciaVarroa::create($request->input('presencia_varroa', []));
-    $presenciaNosemosis = \App\Models\PresenciaNosemosis::create($request->input('presencia_nosemosis', []));
-    $indiceCosecha = \App\Models\IndiceCosecha::create($request->input('indice_cosecha', []));
-    $preparacionInvernada = \App\Models\PreparacionInvernada::create($request->input('preparacion_invernada', []));
-
-    // 3. Crear la visita principal y guardar los ID de cada PCC
-    $visita = \App\Models\Visita::create([
-        //'user_id' => auth()->id(),
-        'apiario_id' => $request->apiario_id,
-        'fecha_visita' => now(),
-        'tipo_visita' => 'Sistema Experto',
-        'desarrollo_cria_id' => $desarrolloCria->id,
-        'calidad_reina_id' => $calidadReina->id,
-        'estado_nutricional_id' => $estadoNutricional->id,
-        'presencia_varroa_id' => $presenciaVarroa->id,
-        'presencia_nosemosis_id' => $presenciaNosemosis->id,
-        'indice_cosecha_id' => $indiceCosecha->id,
-        'preparacion_invernada_id' => $preparacionInvernada->id,
-    ]);
-
-    return redirect()->route('sistemaexperto')->with('success', 'Registro guardado correctamente.');
-}
 
     public function showHistorial($apiarioId)
     {

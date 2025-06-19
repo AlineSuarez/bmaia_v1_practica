@@ -66,37 +66,14 @@ class Visita extends Model
     {
         return $this->belongsTo(Apiario::class);
     }
+    
+    public function colmena()
+    {
+        return $this->belongsTo(Colmena::class);
+    }
 
     public function usuario()
     {
         return $this->belongsTo(User::class, 'user_id');
-    }
-
-    public function desarrolloCria() {
-        return $this->belongsTo(DesarrolloCria::class);
-    }
-    
-    public function calidadReina() {
-        return $this->belongsTo(CalidadReina::class);
-    }
-    
-    public function estadoNutricional() {
-        return $this->belongsTo(EstadoNutricional::class);
-    }
-    
-    public function presenciaVarroa() {
-        return $this->belongsTo(PresenciaVarroa::class);
-    }
-    
-    public function presenciaNosemosis() {
-        return $this->belongsTo(PresenciaNosemosis::class);
-    }
-    
-    public function preparacionInvernada() {
-        return $this->belongsTo(PreparacionInvernada::class);
-    }
-    
-    public function indiceCosecha() {
-        return $this->belongsTo(IndiceCosecha::class);
     }
 }

@@ -119,10 +119,19 @@
                 <!-- Form Content -->
                 <div class="col-lg-9 col-md-8">
                     <div class="wizard-content">
-                        <form action="{{ route('sistemaexperto.store')}}" method="POST" id="expertForm">
+                        <form action="{{ route('sistemaexperto.store', $apiario->id)}}" method="POST">
                             @csrf
-                            <input type="hidden" name="apiario_id" value="{{ $apiarios->first()->id ?? null }}">
+                            @if($errors->any())
+                                <div class="alert alert-danger">
+                                    <ul class="mb-0">
+                                    @foreach($errors->all() as $e)
+                                        <li>{{ $e }}</li>
+                                    @endforeach
+                                    </ul>
+                                </div>
+                            @endif
 
+                            <input type="hidden" name="apiario_id" value="{{ $apiario->id }}">
                             <div class="tab-content" id="wizardTabsContent">
                                 <!-- PCC1 -->
                                 <div class="tab-pane fade show active" id="step1" role="tabpanel">
@@ -147,9 +156,9 @@
                                                 <select class="form-select form-control-modern"
                                                     name="desarrollo_cria[vigor_colmena]">
                                                     <option value="">Seleccionar vigor...</option>
-                                                    <option value="Débil">Débil</option>
-                                                    <option value="Regular">Regular</option>
-                                                    <option value="Vigorosa">Vigorosa</option>
+                                                    <option value="Débil"   {{ old('desarrollo_cria.vigor_colmena')=='Débil'   ? 'selected':'' }}>Débil</option>
+                                                    <option value="Regular" {{ old('desarrollo_cria.vigor_colmena')=='Regular' ? 'selected':'' }}>Regular</option>
+                                                    <option value="Vigorosa"{{ old('desarrollo_cria.vigor_colmena')=='Vigorosa'? 'selected':'' }}>Vigorosa</option>
                                                 </select>
                                             </div>
 
@@ -227,6 +236,30 @@
                                                     </div>
                                                 </div>
                                             </div>
+
+                                            <div class="form-group">
+                                                <label class="form-label"><strong>Cantidad de marcos con cría</strong></label>
+                                                <input type="number" class="form-control form-control-modern" name="desarrollo_cria[cantidad_marcos_con_cria]" min="0">
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label class="form-label"><strong>Cantidad de marcos con abejas</strong></label>
+                                                <input type="number" class="form-control form-control-modern" name="desarrollo_cria[cantidad_marcos_con_abejas]" min="0">
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label class="form-label"><strong>Cantidad de reservas (miel/polén)</strong></label>
+                                                <input type="number" class="form-control form-control-modern" name="desarrollo_cria[cantidad_reservas]" min="0">
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label class="form-label"><strong>Presencia de zánganos</strong></label>
+                                                <select class="form-select form-control-modern" name="desarrollo_cria[presencia_zanganos]">
+                                                    <option value="">Seleccionar...</option>
+                                                    <option value="1">Sí</option>
+                                                    <option value="0">No</option>
+                                                </select>
+                                            </div>
                                         </div>
 
                                         <div class="step-actions">
@@ -293,6 +326,71 @@
                                                     <option value="Alta">Alta</option>
                                                 </select>
                                             </div>
+
+                                            <div class="form-group">
+                                                <label class="form-label"><strong>Origen de la reina</strong></label>
+                                                <select class="form-select form-control-modern" name="calidad_reina[origen_reina]">
+                                                    <option value="">Seleccionar...</option>
+                                                    <option value="natural">Natural</option>
+                                                    <option value="comprada">Comprada</option>
+                                                    <option value="fecundada">Fecundada</option>
+                                                    <option value="virgen">Vírgen</option>
+                                                </select>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label class="form-label"><strong>Raza</strong></label>
+                                                <input type="text" class="form-control form-control-modern" name="calidad_reina[raza]" placeholder="Ej. italiana, carníca…">
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label class="form-label"><strong>Línea genética</strong></label>
+                                                <input type="text" class="form-control form-control-modern" name="calidad_reina[linea_genetica]">
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label class="form-label"><strong>Fecha de introducción</strong></label>
+                                                <input type="date" class="form-control form-control-modern" name="calidad_reina[fecha_introduccion]">
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label class="form-label"><strong>Estado actual</strong></label>
+                                                <select class="form-select form-control-modern" name="calidad_reina[estado_actual]">
+                                                    <option value="">Seleccionar...</option>
+                                                    <option value="activa">Activa</option>
+                                                    <option value="fallida">Fallida</option>
+                                                    <option value="reemplazada">Reemplazada</option>
+                                                </select>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label class="form-label"><strong>Reemplazos realizados</strong></label>
+                                                <div id="reemplazos-container">
+                                                    <div class="row gx-2 mb-2">
+                                                        <div class="col-6">
+                                                            <input type="date"
+                                                                name="calidad_reina[reemplazos_realizados][0][fecha]"
+                                                                class="form-control form-control-modern"
+                                                                placeholder="dd-mm-aaaa" />
+                                                        </div>
+                                                        <div class="col-6">
+                                                            <input type="text"
+                                                                name="calidad_reina[reemplazos_realizados][0][motivo]"
+                                                                class="form-control form-control-modern"
+                                                                placeholder="Motivo del reemplazo" />
+                                                        </div>
+                                                    </div>
+                                                    <!-- Botón para agregar más 
+                                                     <button type="button"
+                                                            class="btn btn-sm btn-outline-success btn-add-replacement">
+                                                        <i class="fas fa-plus"></i>
+                                                    </button>-->
+                                                    
+                                                    
+                                                </div>
+
+                                            </div>
+
                                         </div>
 
                                         <div class="step-actions">
@@ -317,78 +415,82 @@
                                             </div>
                                             <div class="step-info">
                                                 <h4 class="step-title">PCC3 - Estado Nutricional</h4>
-                                                <p class="step-description">Evaluación de la alimentación y reservas de la
-                                                    colmena</p>
+                                                <p class="step-description">Evaluación de la alimentación y reservas de la colmena</p>
                                             </div>
                                         </div>
 
                                         <div class="form-grid">
-                                            <div class="form-group full-width">
-                                                <label class="form-label">
-                                                    <i class="fas fa-balance-scale me-2"></i>
-                                                    <strong>Relación reservas de miel y polen / cantidad de cría</strong>
-                                                </label>
-                                                <textarea class="form-control form-control-modern"
-                                                    name="estado_nutricional[reserva_miel_polen]" rows="3"
-                                                    placeholder="Describe la relación entre las reservas y la cantidad de cría..."></textarea>
+                                            
+                                            <div class="form-group">
+                                                <label class="form-label"><strong>Objetivo</strong></label>
+                                                <select name="estado_nutricional[objetivo]" class="form-select" required>
+                                                    <option value="">Seleccionar…</option>
+                                                    <option value="estimulacion"
+                                                        {{ old('estado_nutricional.objetivo', $valores['estado_nutricional']['objetivo'] ?? '')=='estimulacion' ? 'selected':'' }}>
+                                                        Estimulación
+                                                    </option>
+                                                    <option value="mantencion"
+                                                        {{ old('estado_nutricional.objetivo', $valores['estado_nutricional']['objetivo'] ?? '')=='mantencion' ? 'selected':'' }}>
+                                                        Mantención
+                                                    </option>
+                                                </select>
                                             </div>
 
                                             <div class="form-group">
-                                                <label class="form-label">
-                                                    <i class="fas fa-utensils me-2"></i>
-                                                    <strong>Tipo de alimentación</strong>
-                                                </label>
-                                                <input type="text" class="form-control form-control-modern"
+                                                <label class="form-label"><i class="fas fa-utensils me-2"></i><strong>Tipo de alimentación</strong></label>
+                                                <input
+                                                    type="text"
                                                     name="estado_nutricional[tipo_alimentacion]"
-                                                    placeholder="Ej: Jarabe, Polen, Sustituto...">
+                                                    class="form-control"
+                                                    placeholder="Ej: Jarabe, Polen…"
+                                                    value="{{ old('estado_nutricional.tipo_alimentacion', $valores['estado_nutricional']['tipo_alimentacion'] ?? '') }}"
+                                                    required
+                                                />
                                             </div>
 
                                             <div class="form-group">
-                                                <label class="form-label">
-                                                    <i class="fas fa-calendar-alt me-2"></i>
-                                                    <strong>Fecha de aplicación</strong>
-                                                </label>
-                                                <input type="date" class="form-control form-control-modern"
-                                                    name="estado_nutricional[fecha_aplicacion]">
+                                                <label class="form-label"><i class="fas fa-calendar-alt me-2"></i><strong>Fecha de aplicación</strong></label>
+                                                <input
+                                                    type="date"
+                                                    name="estado_nutricional[fecha_aplicacion]"
+                                                    class="form-control"
+                                                    value="{{ old('estado_nutricional.fecha_aplicacion', $valores['estado_nutricional']['fecha_aplicacion'] ?? '') }}"
+                                                    required
+                                                />
                                             </div>
 
                                             <div class="form-group">
-                                                <label class="form-label">
-                                                    <i class="fas fa-prescription-bottle me-2"></i>
-                                                    <strong>Insumo utilizado</strong>
-                                                </label>
-                                                <input type="text" class="form-control form-control-modern"
+                                                <label class="form-label"><i class="fas fa-prescription-bottle me-2"></i><strong>Insumo utilizado</strong></label>
+                                                <input
+                                                    type="text"
                                                     name="estado_nutricional[insumo_utilizado]"
-                                                    placeholder="Nombre del insumo...">
+                                                    class="form-control"
+                                                    placeholder="Nombre del insumo…"
+                                                    value="{{ old('estado_nutricional.insumo_utilizado', $valores['estado_nutricional']['insumo_utilizado'] ?? '') }}"
+                                                />
                                             </div>
 
                                             <div class="form-group">
-                                                <label class="form-label">
-                                                    <i class="fas fa-vial me-2"></i>
-                                                    <strong>Dosificación</strong>
-                                                </label>
-                                                <input type="text" class="form-control form-control-modern"
+                                                <label class="form-label"><i class="fas fa-vial me-2"></i><strong>Dosificación</strong></label>
+                                                <input
+                                                    type="text"
                                                     name="estado_nutricional[dosifiacion]"
-                                                    placeholder="Cantidad y frecuencia...">
+                                                    class="form-control"
+                                                    placeholder="Cantidad y frecuencia…"
+                                                    value="{{ old('estado_nutricional.dosifiacion', $valores['estado_nutricional']['dosifiacion'] ?? '') }}"
+                                                />
                                             </div>
 
                                             <div class="form-group">
-                                                <label class="form-label">
-                                                    <i class="fas fa-cogs me-2"></i>
-                                                    <strong>Método utilizado</strong>
-                                                </label>
-                                                <input type="text" class="form-control form-control-modern"
+                                                <label class="form-label"><i class="fas fa-cogs me-2"></i><strong>Método utilizado</strong></label>
+                                                <input
+                                                    type="text"
                                                     name="estado_nutricional[metodo_utilizado]"
-                                                    placeholder="Método de aplicación...">
-                                            </div>
-
-                                            <div class="form-group">
-                                                <label class="form-label">
-                                                    <i class="fas fa-hashtag me-2"></i>
-                                                    <strong>N° de colmenas tratadas</strong>
-                                                </label>
-                                                <input type="number" class="form-control form-control-modern"
-                                                    name="estado_nutricional[n_colmenas_tratadas]" min="0" placeholder="0">
+                                                    class="form-control"
+                                                    placeholder="Método de aplicación…"
+                                                    value="{{ old('estado_nutricional.metodo_utilizado', $valores['estado_nutricional']['metodo_utilizado'] ?? '') }}"
+                                                    required
+                                                />
                                             </div>
                                         </div>
 
@@ -412,10 +514,11 @@
                                             <div class="step-icon">
                                                 <i class="fas fa-bug"></i>
                                             </div>
+                                            
+                                            <!-- 1. Diagnóstico -->
                                             <div class="step-info">
                                                 <h4 class="step-title">PCC4 - Nivel de Infestación de Varroa</h4>
-                                                <p class="step-description">Diagnóstico y control del ácaro Varroa
-                                                    destructor</p>
+                                                <h5 class="step-description">1. Diagnóstico</h5>
                                             </div>
                                         </div>
 
@@ -427,7 +530,7 @@
                                                 </label>
                                                 <textarea class="form-control form-control-modern"
                                                     name="presencia_varroa[diagnostico_visual]" rows="3"
-                                                    placeholder="Ej: varroa forética visible, ala mocha, cría salteada..."></textarea>
+                                                    placeholder="Ej: varroa forética visible, ala mocha, cría salteada...">{{ old('presencia_varroa.diagnostico_visual', $valores['presencia_varroa']['diagnostico_visual'] ?? '') }}</textarea>
                                             </div>
 
                                             <div class="form-group full-width">
@@ -437,7 +540,7 @@
                                                 </label>
                                                 <textarea class="form-control form-control-modern"
                                                     name="presencia_varroa[muestreo_abejas_adultas]" rows="2"
-                                                    placeholder="Resultados del muestreo..."></textarea>
+                                                    placeholder="Resultados del muestreo...">{{ old('presencia_varroa.muestreo_abejas_adultas', $valores['presencia_varroa']['muestreo_abejas_adultas'] ?? '') }}</textarea>
                                             </div>
 
                                             <div class="form-group full-width">
@@ -447,17 +550,45 @@
                                                 </label>
                                                 <textarea class="form-control form-control-modern"
                                                     name="presencia_varroa[muestreo_cria_operculada]" rows="2"
-                                                    placeholder="Resultados del análisis de cría..."></textarea>
+                                                    placeholder="Resultados del análisis de cría...">{{ old('presencia_varroa.muestreo_cria_operculada', $valores['presencia_varroa']['muestreo_cria_operculada'] ?? '') }}</textarea>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label class="form-label"><strong>Método diagnóstico</strong></label>
+                                                <input type="text" class="form-control form-control-modern" name="presencia_varroa[metodo_diagnostico]" value="{{ old('presencia_varroa.metodo_diagnostico', $valores['presencia_varroa']['metodo_diagnostico'] ?? '') }}" placeholder="alcohol, azúcar, lámina pegajosa…">
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label class="form-label"><strong>Fecha monitoreo Varroa</strong></label>
+                                                <input type="date" class="form-control form-control-modern" name="presencia_varroa[fecha_monitoreo_varroa]" value="{{ old('presencia_varroa.fecha_monitoreo_varroa', $valores['presencia_varroa']['fecha_monitoreo_varroa'] ?? '') }}">
+                                            </div>
+
+                                            <!-- 2. Tratamientos aplicados -->
+                                            <div class="step-header">
+                                                <div class="step-info">
+                                                    <h5 class="step-description">2. Tratamientos aplicados</h5>
+                                                </div>
                                             </div>
 
                                             <div class="form-group">
                                                 <label class="form-label">
                                                     <i class="fas fa-prescription-bottle-alt me-2"></i>
-                                                    <strong>Tratamiento aplicado</strong>
+                                                    <strong>Tratamientos aplicados</strong>
                                                 </label>
                                                 <input type="text" class="form-control form-control-modern"
                                                     name="presencia_varroa[tratamiento]"
+                                                    value="{{ old('presencia_varroa.tratamiento', $valores['presencia_varroa']['tratamiento'] ?? '') }}"
                                                     placeholder="Producto o práctica utilizada...">
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label class="form-label"><strong>Producto comercial</strong></label>
+                                                <input type="text" class="form-control form-control-modern" name="presencia_varroa[producto_comercial]" value="{{ old('presencia_varroa.producto_comercial', $valores['presencia_varroa']['producto_comercial'] ?? '') }}">
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label class="form-label"><strong>Ingrediente activo</strong></label>
+                                                <input type="text" class="form-control form-control-modern" name="presencia_varroa[ingrediente_activo]" value="{{ old('presencia_varroa.ingrediente_activo', $valores['presencia_varroa']['ingrediente_activo'] ?? '') }}">
                                             </div>
 
                                             <div class="form-group">
@@ -466,7 +597,7 @@
                                                     <strong>Fecha de aplicación</strong>
                                                 </label>
                                                 <input type="date" class="form-control form-control-modern"
-                                                    name="presencia_varroa[fecha_aplicacion]">
+                                                    name="presencia_varroa[fecha_aplicacion]" value="{{ old('presencia_varroa.fecha_aplicacion', $valores['presencia_varroa']['fecha_aplicacion'] ?? '') }}">
                                             </div>
 
                                             <div class="form-group">
@@ -475,7 +606,7 @@
                                                     <strong>Dosificación</strong>
                                                 </label>
                                                 <input type="text" class="form-control form-control-modern"
-                                                    name="presencia_varroa[dosificacion]" placeholder="Dosis aplicada...">
+                                                    name="presencia_varroa[dosificacion]" value="{{ old('presencia_varroa.dosificacion', $valores['presencia_varroa']['dosificacion'] ?? '') }}" placeholder="Dosis aplicada...">
                                             </div>
 
                                             <div class="form-group">
@@ -484,17 +615,13 @@
                                                     <strong>Método de aplicación</strong>
                                                 </label>
                                                 <input type="text" class="form-control form-control-modern"
-                                                    name="presencia_varroa[metodo_aplicacion]"
+                                                    name="presencia_varroa[metodo_aplicacion]" value="{{ old('presencia_varroa.metodo_aplicacion', $valores['presencia_varroa']['metodo_aplicacion'] ?? '') }}"
                                                     placeholder="Forma de aplicación...">
                                             </div>
 
                                             <div class="form-group">
-                                                <label class="form-label">
-                                                    <i class="fas fa-hashtag me-2"></i>
-                                                    <strong>N° de colmenas tratadas</strong>
-                                                </label>
-                                                <input type="number" class="form-control form-control-modern"
-                                                    name="presencia_varroa[n_colmenas_tratadas]" min="0" placeholder="0">
+                                                <label class="form-label"><strong>Periodo de carencia ( n° días)</strong></label>
+                                                <input type="number" class="form-control form-control-modern" min="0" name="presencia_varroa[periodo_carencia]" value="{{ old('presencia_varroa.periodo_carencia', $valores['presencia_varroa']['periodo_carencia'] ?? '') }}">
                                             </div>
                                         </div>
 
@@ -533,7 +660,7 @@
                                                 </label>
                                                 <textarea class="form-control form-control-modern"
                                                     name="presencia_nosemosis[signos_clinicos]" rows="2"
-                                                    placeholder="Ej: abdomen hinchado, alas separadas..."></textarea>
+                                                    placeholder="Ej: abdomen hinchado, alas separadas..."> {{ old('presencia_nosemosis.signos_clinicos', $valores['presencia_nosemosis']['signos_clinicos'] ?? '') }}</textarea>
                                             </div>
 
                                             <div class="form-group full-width">
@@ -543,7 +670,7 @@
                                                 </label>
                                                 <textarea class="form-control form-control-modern"
                                                     name="presencia_nosemosis[muestreo_laboratorio]" rows="2"
-                                                    placeholder="Resultados del análisis de laboratorio..."></textarea>
+                                                    placeholder="Resultados del análisis de laboratorio...">{{ old('presencia_nosemosis.muestreo_laboratorio', $valores['presencia_nosemosis']['muestreo_laboratorio'] ?? '') }}</textarea>
                                             </div>
 
                                             <div class="form-group">
@@ -552,7 +679,7 @@
                                                     <strong>Tratamiento aplicado</strong>
                                                 </label>
                                                 <input type="text" class="form-control form-control-modern"
-                                                    name="presencia_nosemosis[tratamiento]"
+                                                    name="presencia_nosemosis[tratamiento]" value="{{ old('presencia_nosemosis.tratamiento', $valores['presencia_nosemosis']['tratamiento'] ?? '') }}"
                                                     placeholder="Medicamento o tratamiento...">
                                             </div>
 
@@ -561,7 +688,7 @@
                                                     <i class="fas fa-calendar-alt me-2"></i>
                                                     <strong>Fecha de aplicación</strong>
                                                 </label>
-                                                <input type="date" class="form-control form-control-modern"
+                                                <input type="date" class="form-control form-control-modern" value="{{ old('presencia_nosemosis.fecha_aplicacion', $valores['presencia_nosemosis']['fecha_aplicacion'] ?? '') }}"
                                                     name="presencia_nosemosis[fecha_aplicacion]">
                                             </div>
 
@@ -571,7 +698,7 @@
                                                     <strong>Dosificación</strong>
                                                 </label>
                                                 <input type="text" class="form-control form-control-modern"
-                                                    name="presencia_nosemosis[dosificacion]"
+                                                    name="presencia_nosemosis[dosificacion]" value="{{ old('presencia_nosemosis.dosificacion', $valores['presencia_nosemosis']['dosificacion'] ?? '') }}"
                                                     placeholder="Dosis aplicada...">
                                             </div>
 
@@ -581,19 +708,30 @@
                                                     <strong>Método de aplicación</strong>
                                                 </label>
                                                 <input type="text" class="form-control form-control-modern"
-                                                    name="presencia_nosemosis[metodo_aplicacion]"
+                                                    name="presencia_nosemosis[metodo_aplicacion]" value="{{ old('presencia_nosemosis.metodo_aplicacion', $valores['presencia_nosemosis']['metodo_aplicacion'] ?? '') }}"
                                                     placeholder="Forma de aplicación...">
                                             </div>
 
                                             <div class="form-group">
-                                                <label class="form-label">
-                                                    <i class="fas fa-hashtag me-2"></i>
-                                                    <strong>N° de colmenas tratadas</strong>
-                                                </label>
-                                                <input type="number" class="form-control form-control-modern"
-                                                    name="presencia_nosemosis[num_colmenas_tratadas]" min="0"
-                                                    placeholder="0">
+                                                <label class="form-label"><strong>Método diagnóstico laboratorio</strong></label>
+                                                <input type="text" class="form-control form-control-modern" name="presencia_nosemosis[metodo_diagnostico_laboratorio]" value="{{ old('presencia_nosemosis.metodo_diagnostico_laboratorio', $valores['presencia_nosemosis']['metodo_diagnostico_laboratorio'] ?? '') }}" placeholder="Ej. PCR, tinción…">
                                             </div>
+
+                                            <div class="form-group">
+                                                <label class="form-label"><strong>Fecha monitoreo Nosema</strong></label>
+                                                <input type="date" class="form-control form-control-modern"  name="presencia_nosemosis[fecha_monitoreo_nosema]" value="{{ old('presencia_nosemosis.fecha_monitoreo_nosema', $valores['presencia_nosemosis']['fecha_monitoreo_nosema'] ?? '') }}">
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label class="form-label"><strong>Producto comercial</strong></label>
+                                                <input type="text" class="form-control form-control-modern" name="presencia_nosemosis[producto_comercial]" value="{{ old('presencia_nosemosis.producto_comercial', $valores['presencia_nosemosis']['producto_comercial'] ?? '') }}">
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label class="form-label"><strong>Ingrediente activo</strong></label>
+                                                <input type="text" class="form-control form-control-modern" name="presencia_nosemosis[ingrediente_activo]" value="{{ old('presencia_nosemosis.ingrediente_activo', $valores['presencia_nosemosis']['ingrediente_activo'] ?? '') }}">
+                                            </div>
+
                                         </div>
 
                                         <div class="step-actions">
@@ -640,7 +778,7 @@
                                             <div class="form-group">
                                                 <label class="form-label">
                                                     <i class="fas fa-layer-group me-2"></i>
-                                                    <strong>N° de alzas promedio por colmena</strong>
+                                                    <strong>N° de alzas promedio de la colmena</strong>
                                                 </label>
                                                 <input type="number" step="0.1" class="form-control form-control-modern"
                                                     name="indice_cosecha[num_alzadas]" placeholder="0.0">
@@ -683,35 +821,59 @@
                                         </div>
 
                                         <div class="form-grid">
-                                            <div class="form-group full-width">
-                                                <label class="form-label">
-                                                    <i class="fas fa-shield-alt me-2"></i>
-                                                    <strong>Control sanitario</strong>
-                                                </label>
-                                                <textarea class="form-control form-control-modern"
-                                                    name="preparacion_invernada[control_sanitario]" rows="3"
-                                                    placeholder="Describe las medidas de control sanitario aplicadas..."></textarea>
+                                            <div class="form-group">
+                                                <label class="form-label"><strong>Marcos cubiertos (abejas)</strong></label>
+                                                <input type="number" class="form-control form-control-modern" min="0" name="preparacion_invernada[cantidad_marcos_cubiertos_abejas]">
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label class="form-label"><strong>Marcos cubiertos (cría)</strong></label>
+                                                <input type="number" class="form-control form-control-modern" min="0" name="preparacion_invernada[cantidad_marcos_cubiertos_cria]">
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label class="form-label"><strong>Marcos de reservas de miel</strong></label>
+                                                <input type="number" class="form-control form-control-modern" min="0" name="preparacion_invernada[marcos_reservas_miel]">
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label class="form-label"><strong>Marcos de reservas de polén</strong></label>
+                                                <input type="number" class="form-control form-control-modern" min="0" name="preparacion_invernada[presencial_reservas_polen]">
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label class="form-label"><strong>Presencia de reina</strong></label>
+                                                <select class="form-select form-control-modern" name="preparacion_invernada[presencia_reina]">
+                                                    <option value="1">Sí</option>
+                                                    <option value="0">No</option>
+                                                </select>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label class="form-label"><strong>Nivel infestación Varroa</strong></label>
+                                                <input type="text" class="form-control form-control-modern" name="preparacion_invernada[nivel_infestacion_varroa]">
                                             </div>
 
                                             <div class="form-group full-width">
-                                                <label class="form-label">
-                                                    <i class="fas fa-link me-2"></i>
-                                                    <strong>Fusión de colmenas débiles</strong>
-                                                </label>
-                                                <textarea class="form-control form-control-modern"
-                                                    name="preparacion_invernada[fusion_colmenas]" rows="3"
-                                                    placeholder="Detalla el proceso de fusión de colmenas..."></textarea>
+                                                <label class="form-label"><strong>Signos de enfermedades visibles</strong></label>
+                                                <textarea class="form-control form-control-modern" rows="2" name="preparacion_invernada[signos_enfermedades_visibles]"></textarea>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label class="form-label"><strong>Fecha última revisión</strong></label>
+                                                <input type="date" class="form-control form-control-modern" name="preparacion_invernada[fecha_ultima_revision_previa_receso]">
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label class="form-label"><strong>Fecha cierre temporada</strong></label>
+                                                <input type="date" class="form-control form-control-modern" name="preparacion_invernada[fecha_cierre_temporada]">
                                             </div>
 
                                             <div class="form-group full-width">
-                                                <label class="form-label">
-                                                    <i class="fas fa-warehouse me-2"></i>
-                                                    <strong>Reserva de alimento</strong>
-                                                </label>
-                                                <textarea class="form-control form-control-modern"
-                                                    name="preparacion_invernada[reserva_alimento]" rows="3"
-                                                    placeholder="Describe las reservas de alimento preparadas..."></textarea>
+                                                <label class="form-label"><strong>Alimentación suplementaria</strong></label>
+                                                <textarea class="form-control form-control-modern" rows="2" name="preparacion_invernada[alimentacion_suplementaria]"></textarea>
                                             </div>
+
                                         </div>
 
                                         <div class="step-actions">

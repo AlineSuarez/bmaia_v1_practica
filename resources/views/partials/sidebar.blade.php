@@ -87,8 +87,8 @@
                             </a>
                         </li>
                         <li class="apicola-sidebar-item">
-                            <a class="apicola-sidebar-link {{ request()->routeIs('sistemaexperto') ? 'active' : '' }}"
-                                href="{{ route('sistemaexperto') }}">
+                            <a class="apicola-sidebar-link {{ request()->routeIs('sistemaexperto.index') ? 'active' : '' }}"
+                                href="{{ route('sistemaexperto.index') }}">
                                 <div class="apicola-icon-container">
                                     <i class="fas fa-brain"></i>
                                     <span class="apicola-icon-background"></span>

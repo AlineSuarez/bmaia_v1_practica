@@ -16,7 +16,13 @@ class DesarrolloCria extends Model
         'ingreso_polen',
         'bloqueo_camara_cria',
         'presencia_celdas_reales',
+        // campos nuevos
+        'cantidad_marcos_con_cria',
+        'cantidad_marcos_con_abejas',
+        'cantidad_reservas',
+        'presencia_zanganos',
     ];
+    
     public function visita()
     {
         return $this->hasOne(\App\Models\Visita::class, 'desarrollo_cria_id');

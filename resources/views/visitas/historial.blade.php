@@ -37,6 +37,10 @@
                                     <div class="stat-number">{{ $apiario->visitas->where('tipo_visita', 'Uso de Medicamentos')->count() }}</div>
                                     <div class="stat-label">Medicamentos</div>
                                 </div>
+                                <div class="stat-card">
+                                    <div class="stat-number">{{ $apiario->visitas->where('tipo_visita', 'Alimentación')->count() }}</div>
+                                    <div class="stat-label">Alimentación</div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -103,6 +107,12 @@
                                         <div class="mobile-stat-label">Medic.</div>
                                     </div>
                                 </div>
+                                <div class="col-3">
+                                    <div class="mobile-stat-card">
+                                        <div class="mobile-stat-number">{{ $apiario->visitas->where('tipo_visita', 'Alimentación')->count() }}</div>
+                                        <div class="mobile-stat-label">Alim.</div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
@@ -128,6 +138,13 @@
                                         <i class="fas fa-pills me-2"></i>
                                         <span class="tab-text">Medicamentos</span>
                                         <span class="tab-badge">{{ $apiario->visitas->where('tipo_visita', 'Uso de Medicamentos')->count() }}</span>
+                                    </button>
+                                </li>
+                                <li class="custom-nav-item" role="presentation">
+                                    <button class="custom-nav-link" id="alimentacion-tab" data-bs-toggle="tab" data-bs-target="#alimentacion" type="button" role="tab">
+                                        <i class="fas fa-pills me-2"></i>
+                                        <span class="tab-text">Alimentación</span>
+                                        <span class="tab-badge">{{ $apiario->visitas->where('tipo_visita', 'Alimentación')->count() }}</span>
                                     </button>
                                 </li>
                             </ul>
@@ -357,6 +374,51 @@
                                     </div>
                                 @endif
                             </div>
+                            <!-- Alimentaciones Tab -->
+                            <div class="tab-pane fade" id="medicamentos" role="tabpanel">
+                                @if($apiario->visitas->where('tipo_visita', 'Alimentación')->isEmpty())
+                                    <div class="no-data-message">
+                                        <i class="fas fa-info-circle me-2"></i>
+                                        No hay registros de alimentación.
+                                    </div>
+                                @else
+                                    <div class="table-container">
+                                        <div class="table-header">
+                                            <h5><i class="fas fa-pills me-2"></i>Alimentación ({{ $apiario->visitas->where('tipo_visita', 'Alimentación')->count() }} registros)</h5>
+                                            <small class="text-muted">Historial de alimentose insumos utilizados en el apiario.</small>
+                                        </div>
+                                        <div class="table-responsive">
+                                            <table class="custom-table medication-table" id="medicationTable">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Tipo de Alimentacion</th>
+                                                        <th>Fecha de Aplicacións</th>
+                                                        <th>Insumo Utilizado</th>
+                                                        <th>Objetivo</th>
+                                                        <th>Dosificación</th>
+                                                        <th>Método Utilizado</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @foreach($apiario->visitas->where('tipo_visita', 'Alimentación')->sortByDesc('fecha_visita') as $visita)
+                                                        <tr class="table-row" data-date="{{ $visita->fecha_visita }}">
+                                                            <td class="feeding-type">{{ $visita->estadoNutricional->tipo_alimentacion ?? 'N/A' }}</td>
+                                                            <td class="feeding-date">
+                                                                <span class="date-main">{{ \Carbon\Carbon::parse($visita->fecha_visita)->format('d/m/Y') }}</span>
+                                                            </td>
+                                                            <td class="feeding-supply">{{ $visita->estadoNutricional->insumo_utilizado ?? 'N/A' }}</td>
+                                                            <td class="feeding-objective">{{ $visita->estadoNutricional->objetivo ?? 'N/A' }}</td>
+                                                            <td class="feeding-dosage">{{ $visita->estadoNutricional->dosificacion ?? 'N/A' }}</td>
+                                                            <td class="feeding-method">{{ $visita->estadoNutricional->metodo_utilizado ?? 'N/A' }}</td>
+                                                        </tr>
+                                                    @endforeach
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                @endif
+                            </div>
+                                
                         </div>
                     @endif
 

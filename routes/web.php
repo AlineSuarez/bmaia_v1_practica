@@ -24,6 +24,7 @@ use App\Http\Controllers\AlertController;
 use App\Http\Controllers\ReminderController;
 use App\Http\Controllers\ImportantDateController;
 use App\Http\Controllers\EmergencyContactController;
+use App\Http\Controllers\SistemaExpertoController;
 
 //Rutas de las policies 
 Route::view('/politicas-de-privacidad', 'legal.privacidad')->name('privacidad');
@@ -89,9 +90,12 @@ Route::middleware(['auth'])->group(function () {
     Route::get('visitas/create2/{id}', [VisitaController::class, 'createMedicamentos'])->name('visitas.medicamentos-registro');
     Route::post('apiarios/{apiario}/medicamentos-registro', [VisitaController::class, 'storeMedicamentos'])->name('apiarios.medicamentos-registro.store');
     Route::get('/generate-document/medicamentos/{apiarioId}', [DocumentController::class, 'generateMedicamentsDocument'])->name('generate.document.medicamentos');
-
     Route::post('/apiarios/massDelete', [ApiarioController::class, 'massDelete'])->name('apiarios.massDelete');
-});
+    // Rutas para registro de Alimentación
+    Route::get('visitas/create3/{id_apiario}', [VisitaController::class,'createAlimentacion'])->name('visitas.create3');
+    Route::post('visitas/store3/{apiario}', [VisitaController::class,'storeAlimentacion'])->name('visitas.store3');
+    Route::get('/generate-document/alimentacion-record/{apiarioId}', [DocumentController::class, 'generateAlimentacionDocument'])->name('generate.document.alimentacion');
+}); 
 
 // Redirigir a Google para autenticación
 Route::get('login/google', function () {
@@ -257,15 +261,34 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/user/settings/contacts/{contact}', [EmergencyContactController::class, 'update'])->name('contacts.update');
     Route::delete('/user/settings/contacts/{contact}', [EmergencyContactController::class, 'destroy'])->name('contacts.destroy');
 });
+
+
 //(estas rutas estaban tambien dentro de un midleware de pago)
 // La ruta de sistema experto que lista los apiarios
-Route::get('/sistemaexperto', [App\Http\Controllers\ApiarioController::class, 'indexSistemaExperto'])->name('sistemaexperto');
-// Formulario para registrar PCC (puede aceptar el id del apiario)
-Route::get('/sistemaexperto/{apiario}/create', [ChatbotController::class, 'sistemaExpertoCreate'])->name('sistemaexperto.create');
+//Route::get('/sistemaexperto', [App\Http\Controllers\ApiarioController::class, 'indexSistemaExperto'])->name('sistemaexperto');
+
 // Guardar PCC
-Route::post('/sistemaexperto/guardar', [App\Http\Controllers\VisitaController::class, 'storeSistemaExperto'])->name('sistemaexperto.store');
+//Route::post('/sistemaexperto/guardar', [App\Http\Controllers\VisitaController::class, 'storeSistemaExperto'])->name('sistemaexperto.store');
 // AJAX individual: obtener consejo por apiario (simulado)
 Route::get('/apiarios/{apiario}/obtener-consejo', [App\Http\Controllers\ApiarioController::class, 'obtenerConsejo']);
+
+
+// Nuevas rutas para el sistema experto
+Route::prefix('sistemaexperto')->name('sistemaexperto.')->middleware(['auth'])->group(function(){
+    // Listado de apiarios para sistema experto
+    Route::get('/', [SistemaExpertoController::class, 'index'])->name('index');
+    // Formulario de creación para un apiario
+    Route::get('{apiario}/create', [SistemaExpertoController::class, 'create'])->name('create');
+    // Guarda el PCC (repite en todas las colmenas internamente)
+    Route::post('{apiario}/store', [SistemaExpertoController::class, 'store'])->name('store');
+    // Edita un registro de sistema experto concreto
+    Route::get('colmenas/{colmena}/edit', [SistemaExpertoController::class, 'editPcc'])->name('editpcc');
+    // Actualiza
+    Route::put('sistemaexperto/{sistemaexperto}', [SistemaExpertoController::class, 'update'])->name('update');
+    // Borra
+    //Route::delete('{sistemaexperto}', [SistemaExpertoController::class, 'destroy'])->name('destroy');
+});
+
 
 // Documentos y Emails
 Route::get('/generate-document/{id}', [DocumentController::class, 'generateDocument'])->name('generate.document');

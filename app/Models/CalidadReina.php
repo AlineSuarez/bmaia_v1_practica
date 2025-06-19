@@ -14,6 +14,13 @@ class CalidadReina extends Model
         'postura_reina',
         'estado_cria',
         'postura_zanganos',
+        // nuevos:
+        'origen_reina',
+        'raza',
+        'linea_genetica',
+        'fecha_introduccion',
+        'estado_actual',
+        'reemplazos_realizados',
     ];
     public function visita()
     {
