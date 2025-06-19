@@ -794,6 +794,38 @@ body {
 }
 
 /* ============================================================
+   LÍMITE MEJORADO PARA COLUMNAS OBJETIVO Y MANEJO
+   ============================================================ */
+
+.data-table td:nth-child(6) {
+    max-width: 220px;
+    min-width: 180px;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    white-space: normal;
+    line-height: 1.4;
+    padding: var(--space-3);
+}
+
+.data-table td:nth-child(6) .badge {
+    display: inline-block;
+    width: auto;
+    max-width: 100%;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    white-space: normal;
+    text-align: center;
+    line-height: 1.4;
+    padding: var(--space-2) var(--space-3);
+}
+
+.data-table th:nth-child(6) {
+    max-width: 220px;
+    min-width: 180px;
+    text-align: center;
+}
+
+/* ============================================================
    CELDAS ESPECIALIZADAS
    ============================================================ */
 
