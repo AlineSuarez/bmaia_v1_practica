@@ -64,7 +64,7 @@ class ColmenaController extends Controller
 
     public function historial(Apiario $apiario, Colmena $colmena)
     {
-        $movimientos = $colmena->movimientos()->with(['origen', 'destino'])->orderByDesc('fecha_movimiento')->get();
+        $movimientos = $colmena->movimientos()->with(['apiarioOrigen', 'apiarioDestino'])->orderByDesc('fecha_movimiento')->get();
         return view('colmenas.historial', compact('colmena', 'apiario', 'movimientos'));
     }
     

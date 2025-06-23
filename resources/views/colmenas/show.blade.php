@@ -72,7 +72,9 @@
                                     <ul>
                                         <li><strong>Postura reina:</strong> {{ $pcc->calidadReina->postura_reina ?? 'N/A' }}</li>
                                         <li><strong>Estado cría:</strong> {{ $pcc->calidadReina->estado_cria ?? 'N/A' }}</li>
-                                        <li><strong>Fecha introducción:</strong> {{ optional($pcc->calidadReina->fecha_introduccion)->format('d/m/Y') ?? 'N/A' }}</li>
+                                        <li><strong>Fecha introducción:</strong>
+                                            {{ optional(optional($pcc->calidadReina)->fecha_introduccion)->format('d/m/Y') ?? 'N/A' }}
+                                        </li>
                                     </ul>
 
                                     <h6 class="mt-3">PCC3 – Estado Nutricional</h6>
@@ -103,7 +105,13 @@
                                     <h6 class="mt-3">PCC7 – Preparación Invernada</h6>
                                     <ul>
                                         <li><strong>Control sanitario:</strong> {{ $pcc->preparacionInvernada->control_sanitario ?? 'N/A' }}</li>
-                                        <li><strong>Reina presente:</strong> {{ $pcc->preparacionInvernada->presencia_reina ? 'Sí' : 'No' }}</li>
+                                        <li><strong>Reina presente:</strong>
+                                            @if(isset($pcc->preparacionInvernada) && $pcc->preparacionInvernada->presencia_reina !== null)
+                                                {{ $pcc->preparacionInvernada->presencia_reina ? 'Sí' : 'No' }}
+                                            @else
+                                                N/A
+                                            @endif
+                                        </li>
                                     </ul>
                                 </div>
                             </div>
