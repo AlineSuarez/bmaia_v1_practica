@@ -18,7 +18,7 @@ class Colmena extends Model
         'estado_inicial',
         'numero_marcos',
         'observaciones',
-        
+
     ];
 
     protected $casts = [
@@ -28,6 +28,11 @@ class Colmena extends Model
     public function apiario()
     {
         return $this->belongsTo(Apiario::class);
+    }
+
+    public function apiarioBase()
+    {
+        return $this->belongsTo(Apiario::class, 'apiario_base_id');
     }
 
     public function movimientos()

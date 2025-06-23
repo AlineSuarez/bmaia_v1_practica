@@ -12,8 +12,19 @@ class ColmenaController extends Controller
 {
     public function index(Apiario $apiario)
     {
-        $colmenas = $apiario->colmenas;
-        return view('colmenas.index', compact('apiario', 'colmenas'));
+        $colmenas = $apiario->colmenas()->with('apiarioBase')->get();
+
+        // Agrupar por nombre del apiario base
+        $colmenasPorApiarioBase = $colmenas->groupBy(function ($colmena) {
+            return $colmena->apiarioBase->nombre ?? 'Sin apiario base';
+        });
+
+        // Obtener todos los apiarios base seleccionados (ajusta la consulta según tu lógica)
+        $apiariosBaseSeleccionados = Apiario::where('es_temporal', false)
+            ->where('tipo_apiario', 'base')
+            ->pluck('nombre');
+
+        return view('colmenas.index', compact('apiario', 'colmenasPorApiarioBase', 'apiariosBaseSeleccionados'));
     }
 
     public function create(Apiario $apiario)
@@ -64,10 +75,10 @@ class ColmenaController extends Controller
 
     public function historial(Apiario $apiario, Colmena $colmena)
     {
-        $movimientos = $colmena->movimientos()->with(['apiarioOrigen', 'apiarioDestino'])->orderByDesc('fecha_movimiento')->get();
+        $movimientos = $colmena->movimientos()->with(['origen', 'destino'])->orderByDesc('fecha_movimiento')->get();
         return view('colmenas.historial', compact('colmena', 'apiario', 'movimientos'));
     }
-    
+
     public function edit(Apiario $apiario, Colmena $colmena)
     {
         return view('colmenas.edit', compact('apiario', 'colmena'));
