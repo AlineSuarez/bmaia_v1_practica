@@ -303,5 +303,35 @@ class TrashumanciaController extends Controller
 
         return redirect()->route('apiarios')->with('success', 'Apiarios temporales archivados correctamente.');
     }
+    
+    public function showColmenas($apiarioId)
+    {
+        $apiario = Apiario::findOrFail($apiarioId);
+        if ($apiario->tipo_apiario !== 'trashumante' || !$apiario->es_temporal) {
+            abort(404, 'No es un apiario temporal válido.');
+        }
+
+        // Traigo solo los movimientos de traslado hacia este temporal
+        $movs = MovimientoColmena::with(['apiarioOrigen','colmena'])
+            ->where('apiario_destino_id', $apiario->id)
+            ->where('tipo_movimiento', 'traslado')
+            ->get();
+
+        // Agrupo las colmenas por el nombre de su apiario de origen
+        $colmenasPorApiarioBase = $movs
+            ->groupBy(fn($m) => optional($m->apiarioOrigen)->nombre ?: 'Sin apiario base')
+            ->map(fn($grupo) => $grupo->pluck('colmena'));
+
+        // Lista ordenada de nombres de apiarios
+        $apiariosBaseSeleccionados = $colmenasPorApiarioBase->keys()->all();
+
+        // OJO: aquí devolvemos la vista de índice de colmenas
+        return view('colmenas.index', compact(
+            'apiario',
+            'apiariosBaseSeleccionados',
+            'colmenasPorApiarioBase'
+        ));
+    }
+
 
 }

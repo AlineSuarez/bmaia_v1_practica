@@ -46,72 +46,37 @@
 
     <div class="container">
         <h1 class="mb-4">Colmenas del Apiario: {{ $apiario->nombre }}</h1>
+
         <div class="mb-3">
             <strong>Apiarios base seleccionados:</strong>
             <ul>
-                @foreach($apiariosBaseSeleccionados as $nombreBase)
-                    <li>{{ $nombreBase }}</li>
-                @endforeach
+            @foreach($apiariosBaseSeleccionados as $nombreBase)
+                <li>{{ $nombreBase }}</li>
+            @endforeach
             </ul>
         </div>
-        <div class="d-flex flex-wrap position-relative flex-column w-100">
-            @foreach($apiariosBaseSeleccionados as $nombreBase)
-                <div class="mb-3 w-100">
-                    <h5 class="text-primary mb-2">{{ $nombreBase }}</h5>
-                    <div class="d-flex flex-wrap">
-                        @php
-                            // Normaliza el nombre para comparar sin tildes, espacios ni mayúsculas
-                            function normalizar($str)
-                            {
-                                return strtolower(preg_replace('/\s+/', '', iconv('UTF-8', 'ASCII//TRANSLIT', $str)));
-                            }
-                            $colmenas = collect();
-                            foreach ($colmenasPorApiarioBase as $nombreAgrupado => $grupoColmenas) {
-                                if (normalizar($nombreAgrupado) === normalizar($nombreBase)) {
-                                    $colmenas = $grupoColmenas;
-                                    break;
-                                }
-                            }
-                        @endphp
-                        @forelse($colmenas as $colmena)
-                            <div class="colmena-card" style="border-color: {{ $colmena->color_etiqueta }};"
-                                onclick="window.location='{{ route('colmenas.show', [$apiario->id, $colmena->id]) }}'"
-                                data-tooltip="<img src='https://api.qrserver.com/v1/create-qr-code/?data={{ urlencode($colmena->codigo_qr) }}&size=100x100'>">
-                                <div class="colmena-icon">
-                                    <i class="fas fa-cube"></i>
-                                </div>
-                                <div>#{{ $colmena->numero }}</div>
-                            </div>
-                        @empty
-                            <div class="text-muted">No hay colmenas registradas para este apiario base.</div>
-                        @endforelse
+
+        <div class="d-flex flex-wrap flex-column w-100">
+            @foreach($colmenasPorApiarioBase as $nombreBase => $colmenas)
+            <div class="mb-3 w-100">
+                <h5 class="text-primary mb-2">{{ $nombreBase }}</h5>
+                <div class="d-flex flex-wrap">
+                @forelse($colmenas as $colmena)
+                    <div class="colmena-card"
+                        style="border-color: {{ $colmena->color_etiqueta }};"
+                        onclick="window.location='{{ route('colmenas.show', [$apiario->id, $colmena->id]) }}'"
+                        data-tooltip="<img src='https://api.qrserver.com/v1/create-qr-code/?data={{ urlencode($colmena->codigo_qr) }}&size=100x100'>">
+                    <div class="colmena-icon"><i class="fas fa-cube"></i></div>
+                    <div>#{{ $colmena->numero }}</div>
                     </div>
+                @empty
+                    <div class="text-muted">No hay colmenas para este apiario base.</div>
+                @endforelse
                 </div>
+            </div>
             @endforeach
-
-            @php
-                $sinBase = $colmenasPorApiarioBase['Sin apiario base'] ?? collect();
-            @endphp
-            @if($sinBase->count())
-                <div class="mb-3 w-100">
-                    <h5 class="text-primary mb-2">Sin apiario base</h5>
-                    <div class="d-flex flex-wrap">
-                        @foreach($sinBase as $colmena)
-                            <div class="colmena-card" style="border-color: {{ $colmena->color_etiqueta }};"
-                                onclick="window.location='{{ route('colmenas.show', [$apiario->id, $colmena->id]) }}'"
-                                data-tooltip="<img src='https://api.qrserver.com/v1/create-qr-code/?data={{ urlencode($colmena->codigo_qr) }}&size=100x100'>">
-                                <div class="colmena-icon">
-                                    <i class="fas fa-cube"></i>
-                                </div>
-                                <div>#{{ $colmena->numero }}</div>
-                            </div>
-                        @endforeach
-                    </div>
-                </div>
-            @endif
         </div>
-    </div>
-
+        </div>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             const cards = document.querySelectorAll('.colmena-card');

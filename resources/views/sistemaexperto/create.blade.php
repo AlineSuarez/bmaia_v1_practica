@@ -423,7 +423,7 @@
                                             
                                             <div class="form-group">
                                                 <label class="form-label"><strong>Objetivo</strong></label>
-                                                <select name="estado_nutricional[objetivo]" class="form-select" required>
+                                                <select name="estado_nutricional[objetivo]" class="form-select">
                                                     <option value="">Seleccionar…</option>
                                                     <option value="estimulacion"
                                                         {{ old('estado_nutricional.objetivo', $valores['estado_nutricional']['objetivo'] ?? '')=='estimulacion' ? 'selected':'' }}>
@@ -444,7 +444,7 @@
                                                     class="form-control"
                                                     placeholder="Ej: Jarabe, Polen…"
                                                     value="{{ old('estado_nutricional.tipo_alimentacion', $valores['estado_nutricional']['tipo_alimentacion'] ?? '') }}"
-                                                    required
+                                                    
                                                 />
                                             </div>
 
@@ -455,7 +455,6 @@
                                                     name="estado_nutricional[fecha_aplicacion]"
                                                     class="form-control"
                                                     value="{{ old('estado_nutricional.fecha_aplicacion', $valores['estado_nutricional']['fecha_aplicacion'] ?? '') }}"
-                                                    required
                                                 />
                                             </div>
 
@@ -489,7 +488,6 @@
                                                     class="form-control"
                                                     placeholder="Método de aplicación…"
                                                     value="{{ old('estado_nutricional.metodo_utilizado', $valores['estado_nutricional']['metodo_utilizado'] ?? '') }}"
-                                                    required
                                                 />
                                             </div>
                                         </div>

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Apiario;
 use App\Models\Colmena;
+use App\Models\MovimientoColmena;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -12,19 +13,30 @@ class ColmenaController extends Controller
 {
     public function index(Apiario $apiario)
     {
-        $colmenas = $apiario->colmenas()->with('apiarioBase')->get();
+        // si es temporal agrupamos por movimiento “traslado” que llegó aquí
+        if ($apiario->tipo_apiario === 'trashumante' && $apiario->es_temporal) {
+            $movs = MovimientoColmena::with('apiarioOrigen','colmena')
+                ->where('apiario_destino_id', $apiario->id)
+                ->where('tipo_movimiento','traslado')
+                ->get();
 
-        // Agrupar por nombre del apiario base
-        $colmenasPorApiarioBase = $colmenas->groupBy(function ($colmena) {
-            return $colmena->apiarioBase->nombre ?? 'Sin apiario base';
-        });
+            $colmenasPorApiarioBase = $movs
+                ->groupBy(fn($m) => optional($m->apiarioOrigen)->nombre ?: 'Sin apiario base')
+                ->map(fn($grupo) => $grupo->pluck('colmena'));
 
-        // Obtener todos los apiarios base seleccionados (ajusta la consulta según tu lógica)
-        $apiariosBaseSeleccionados = Apiario::where('es_temporal', false)
-            ->where('tipo_apiario', 'base')
-            ->pluck('nombre');
+            $apiariosBaseSeleccionados = $colmenasPorApiarioBase->keys()->all();
+        } else {
+            // caso no-temporal: muestro todas las colmenas bajo un único título
+            $col = $apiario->colmenas()->get();
+            $colmenasPorApiarioBase   = collect([ $apiario->nombre => $col ]);
+            $apiariosBaseSeleccionados = [ $apiario->nombre ];
+        }
 
-        return view('colmenas.index', compact('apiario', 'colmenasPorApiarioBase', 'apiariosBaseSeleccionados'));
+        return view('colmenas.index', compact(
+            'apiario',
+            'colmenasPorApiarioBase',
+            'apiariosBaseSeleccionados'
+        ));
     }
 
     public function create(Apiario $apiario)
