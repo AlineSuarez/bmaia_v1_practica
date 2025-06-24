@@ -59,9 +59,17 @@
 
                         <div class="colmenas-grid">
                             @forelse($colmenas as $colmena)
+
+                                @php
+                                    $url = route('colmenas.show', [
+                                        'apiario' => $apiario->id,
+                                        'colmena'  => $colmena->id,
+                                    ]);
+                                @endphp
+
                                 <div class="colmena-card" style="border-color: {{ $colmena->color_etiqueta }};"
-                                    onclick="window.location='{{ route('colmenas.show', [$apiario->id, $colmena->id]) }}'"
-                                    data-tooltip="<img src='https://api.qrserver.com/v1/create-qr-code/?data={{ urlencode($colmena->codigo_qr) }}&size=100x100'>">
+                                    onclick="window.location='{{ $url }}'"
+                                    data-tooltip="<img src='https://api.qrserver.com/v1/create-qr-code/?data={{ urlencode($url) }}&size=100x100'>">
                                     <div class="colmena-icon">
                                         <i class="fas fa-cube"></i>
                                     </div>

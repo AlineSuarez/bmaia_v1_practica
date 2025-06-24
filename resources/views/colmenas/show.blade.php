@@ -4,6 +4,22 @@
 
 @section('content')
         <div class="container py-4">
+            <nav aria-label="breadcrumb" class="mb-3">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                <a href="{{ route('apiarios') }}">Apiarios</a>
+                </li>
+                <li class="breadcrumb-item">
+                <a href="{{ route('colmenas.index', $apiario->id) }}">
+                    {{ $apiario->nombre }}
+                </a>
+                </li>
+                <li class="breadcrumb-item active" aria-current="page">
+                Colmena #{{ $colmena->numero }}
+                </li>
+            </ol>
+            </nav>
+
             <div class="row justify-content-center">
                 <div class="col-md-8">
                     <div class="card shadow-sm">
@@ -12,7 +28,17 @@
                         </div>
                         <div class="card-body">
                             <div class="mb-3 text-center">
-                                <img src="https://api.qrserver.com/v1/create-qr-code/?data={{ urlencode($colmena->codigo_qr) }}&size=150x150" alt="QR">
+                                @php
+                                    $url = route('colmenas.show', [
+                                        'apiario' => $apiario->id,
+                                        'colmena'  => $colmena->id
+                                    ]);
+                                @endphp
+
+                                <img
+                                src="https://api.qrserver.com/v1/create-qr-code/?data={{ urlencode($url) }}&size=150x150"
+                                alt="QR Colmena #{{ $colmena->numero }}"
+                                />
                                 <div class="mt-2">
                                     <a href="#" class="btn btn-sm btn-outline-secondary">Imprimir QR</a>
                                 </div>
