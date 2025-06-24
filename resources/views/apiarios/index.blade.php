@@ -9,8 +9,8 @@
     </head>
 
     <!-- ============================================================
-                 DISEÑO MINIMALISTA FULL-WIDTH CON SISTEMA DE TARJETAS
-                 ============================================================ -->
+                     DISEÑO MINIMALISTA FULL-WIDTH CON SISTEMA DE TARJETAS
+                     ============================================================ -->
     <div class="apiarios-container">
 
         <!-- Header Principal Minimalista -->
@@ -60,9 +60,15 @@
                     <i class="fas fa-truck"></i>
                 </div>
                 <div class="tab-content">
-                    <span class="tab-title">Apiarios Temporales</span>
+                    <div class="tab-line">
+                        <span class="tab-title" style="font-size: small;">Apiarios Base</span>
+                        <span class="tab-badge">{{ count($apiariosBase) }}</span>
+                    </div>
+                    <div class="tab-line">
+                        <span class="tab-title" style="font-size: small;" >Apiarios Temporales</span>
+                        <span class="tab-badge">{{ count($apiariosTemporales) }}</span>
+                    </div>
                 </div>
-                <div class="tab-badge">{{ count($apiariosBase) + count($apiariosTemporales) }}</div>
             </button>
         </nav>
 
@@ -70,8 +76,8 @@
         <main class="content-area" id="apiariosTabContent">
 
             <!-- ============================================================
-                         PESTAÑA APIARIOS FIJOS - CON SISTEMA DE TARJETAS
-                         ============================================================ -->
+                             PESTAÑA APIARIOS FIJOS - CON SISTEMA DE TARJETAS
+                             ============================================================ -->
             <section class="tab-pane active" id="fijos" role="tabpanel" aria-labelledby="fijos-tab">
 
                 <div class="section-toolbar">
@@ -222,8 +228,8 @@
             </section>
 
             <!-- ============================================================
-                         PESTAÑA TRASHUMANCIA - CON SISTEMA DE TARJETAS
-                         ============================================================ -->
+                             PESTAÑA TRASHUMANCIA - CON SISTEMA DE TARJETAS
+                             ============================================================ -->
             <section class="tab-pane" id="trashumantes" role="tabpanel" aria-labelledby="trashumantes-tab">
 
                 <!-- Sección Apiarios Base -->
@@ -435,8 +441,8 @@
                                 <tbody>
                                     @forelse($apiariosTemporales as $apiario)
                                         @php
-                                            $mov = $apiario->ultimoMovimientoDestino;
-                                            $apiarioOrigen = $mov ? $mov->apiarioOrigen : null;
+    $mov = $apiario->ultimoMovimientoDestino;
+    $apiarioOrigen = $mov ? $mov->apiarioOrigen : null;
                                         @endphp
                                         <tr>
                                             <td>
@@ -550,8 +556,8 @@
     </div>
 
     <!-- ============================================================
-                 MODAL ARCHIVADOS - REDISEÑADO
-                 ============================================================ -->
+                     MODAL ARCHIVADOS - REDISEÑADO
+                     ============================================================ -->
     <div class="modal fade" id="archivedModal" tabindex="-1" aria-labelledby="archivedModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-xl">
             <div class="modal-content modern-modal">
@@ -670,8 +676,8 @@
     </div>
 
     <!-- ============================================================
-                 MODALES FUNCIONALES (SE MANTIENEN INTACTOS)
-                 ============================================================ -->
+                     MODALES FUNCIONALES (SE MANTIENEN INTACTOS)
+                     ============================================================ -->
 
     <!-- Modales de eliminación para apiarios fijos -->
     @foreach ($apiariosFijos as $apiario)

@@ -212,7 +212,6 @@ body {
     align-items: center;
     gap: var(--space-4);
     padding: var(--space-5) var(--space-6);
-    background: none;
     border: none;
     cursor: pointer;
     transition: var(--transition);
@@ -3249,4 +3248,22 @@ body {
     );
     color: #92400e;
     border: 1px solid var(--warning);
+}
+
+.tab-line {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.25rem;
+}
+
+.tab-line:last-child {
+    margin-bottom: 0;
+}
+
+.tab-line .tab-title {
+    margin: 0;
+}
+
+.tab-line .tab-badge {
+    margin-left: 0.5rem;
 }
