@@ -867,7 +867,7 @@ button {
 }
 
 .action-btn.primary {
-    font-size: small;
+    font-size: 0.728rem;
     background-color: var(--color-primary);
     color: white;
     box-shadow: 0 2px 4px rgba(245, 158, 11, 0.3);
@@ -883,6 +883,7 @@ button {
     font-size: small;
     background-color: var(--color-gray-100);
     color: var(--color-gray-700);
+    width: 100%;
 }
 
 .action-btn.secondary:hover {
@@ -2324,4 +2325,584 @@ button {
     border-radius: var(--radius-full);
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     z-index: 1;
+}
+
+/* Mejoras generales para el contenedor de apiarios */
+.apiaries-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 1.5rem;
+    transition: var(--transition-normal);
+    width: 100%;
+    overflow: visible;
+}
+
+/* Vista de lista mejorada */
+.apiaries-container.list-view {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+}
+
+.apiaries-container.list-view .apiary-card {
+    display: flex;
+    height: auto;
+    min-height: 140px;
+    max-width: 100%;
+    overflow: visible;
+}
+
+/* Mejoras para pantallas muy grandes (>1600px) */
+@media (min-width: 1600px) {
+    .apiaries-container {
+        grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+        gap: 2rem;
+    }
+
+    .apiaries-container.list-view .apiary-card {
+        padding: 0.5rem;
+        border-radius: var(--radius-2xl);
+    }
+
+    .apiaries-container.list-view .card-header {
+        width: 320px;
+        min-width: 320px;
+    }
+}
+
+/* Mejoras para pantallas grandes (1200-1599px) */
+@media (min-width: 1200px) and (max-width: 1599px) {
+    .apiaries-container {
+        grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+        gap: 1.75rem;
+    }
+
+    .apiaries-container.list-view .card-header {
+        width: 280px;
+        min-width: 280px;
+    }
+
+    .apiaries-container.list-view .card-stats {
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+
+    .apiaries-container.list-view .stat {
+        flex: 1;
+        min-width: 200px;
+    }
+}
+
+/* Mejoras para pantallas medianas (992-1199px) */
+@media (min-width: 992px) and (max-width: 1199px) {
+    .apiaries-container {
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 1.5rem;
+    }
+
+    .apiaries-container.list-view .apiary-card {
+        flex-direction: row;
+        align-items: stretch;
+    }
+
+    .apiaries-container.list-view .card-header {
+        width: 250px;
+        min-width: 250px;
+        border-right: 1px solid var(--color-gray-100);
+        border-bottom: none;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    .apiaries-container.list-view .card-body {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        flex: 1;
+        padding: 1rem;
+    }
+
+    .apiaries-container.list-view .card-stats {
+        flex-direction: row;
+        justify-content: space-around;
+        margin-bottom: 1rem;
+        flex-wrap: wrap;
+    }
+
+    .apiaries-container.list-view .stat {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        min-width: 120px;
+    }
+
+    .apiaries-container.list-view .card-actions {
+        flex-direction: row;
+        justify-content: space-between;
+        margin: 0;
+        gap: 0.5rem;
+    }
+}
+
+/* Mejoras para tablets (768-991px) */
+@media (min-width: 768px) and (max-width: 991px) {
+    .apiaries-container {
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 1.25rem;
+    }
+
+    .apiaries-container.list-view .apiary-card {
+        flex-direction: column;
+        max-width: 100%;
+    }
+
+    .apiaries-container.list-view .card-header {
+        width: 100%;
+        border-right: none;
+        border-bottom: 1px solid var(--color-gray-100);
+        flex-direction: row;
+        align-items: center;
+        padding: 1rem 1.25rem;
+    }
+
+    .apiaries-container.list-view .card-body {
+        flex-direction: column;
+        padding: 1.25rem;
+    }
+
+    .apiaries-container.list-view .card-stats {
+        flex-direction: row;
+        justify-content: space-between;
+        margin-bottom: 1.25rem;
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+
+    .apiaries-container.list-view .stat {
+        flex: 1;
+        min-width: 120px;
+        text-align: center;
+    }
+
+    .apiaries-container.list-view .card-actions {
+        flex-direction: row;
+        gap: 0.75rem;
+        width: 100%;
+        margin: 0;
+    }
+
+    .apiaries-container.list-view .action-btn {
+        flex: 1;
+        width: 100%;
+    }
+
+    /* Mejoras para dropdowns en tablets */
+    .apiaries-container.list-view .dropdown-panel {
+        position: fixed;
+        bottom: 20px;
+        left: 20px;
+        right: 20px;
+        width: calc(100% - 40px);
+        max-width: 500px;
+        margin: 0 auto;
+        transform: translateY(20px);
+    }
+
+    .apiaries-container.list-view .action-dropdown.active .dropdown-panel {
+        transform: translateY(0);
+    }
+}
+
+/* Mejoras para móviles grandes (576-767px) */
+@media (min-width: 576px) and (max-width: 767px) {
+    .apiaries-container {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+    .apiaries-container.list-view .apiary-card {
+        flex-direction: column;
+        border-radius: var(--radius-lg);
+        overflow: hidden;
+    }
+
+    .apiaries-container.list-view .card-header {
+        width: 100%;
+        border-right: none;
+        border-bottom: 1px solid var(--color-gray-100);
+        padding: 1rem;
+        background-color: var(--color-gray-50);
+    }
+
+    .apiaries-container.list-view .card-body {
+        padding: 1rem;
+    }
+
+    .apiaries-container.list-view .card-stats {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.75rem;
+        margin-bottom: 1rem;
+    }
+
+    .apiaries-container.list-view .stat {
+        background-color: white;
+        padding: 0.75rem;
+        border-radius: var(--radius-md);
+        border: 1px solid var(--color-gray-100);
+        text-align: center;
+    }
+
+    .apiaries-container.list-view .stat-icon {
+        margin: 0 auto 0.5rem auto;
+    }
+
+    .apiaries-container.list-view .card-actions {
+        flex-direction: column;
+        gap: 0.5rem;
+        width: 100%;
+        margin: 0;
+    }
+
+    .apiaries-container.list-view .action-btn {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+/* Mejoras para móviles pequeños (<576px) */
+@media (max-width: 575px) {
+    .apiaries-container {
+        grid-template-columns: 1fr;
+        gap: 0.75rem;
+        padding: 0 0.25rem;
+    }
+
+    .apiary-card {
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow-sm);
+        margin-bottom: 0.5rem;
+    }
+
+    .apiaries-container.list-view .apiary-card {
+        flex-direction: column;
+        overflow: hidden;
+        border-radius: var(--radius-lg);
+    }
+
+    .apiaries-container.list-view .card-header {
+        width: 100%;
+        border: none;
+        border-bottom: 1px solid var(--color-gray-200);
+        padding: 0.875rem;
+        background: linear-gradient(
+            135deg,
+            var(--color-gray-50),
+            var(--color-amber-50)
+        );
+    }
+
+    .apiaries-container.list-view .card-title h2 {
+        font-size: 1rem;
+        margin-bottom: 0.25rem;
+    }
+
+    .apiaries-container.list-view .card-id {
+        font-size: 0.75rem;
+    }
+
+    .apiaries-container.list-view .card-body {
+        padding: 0.875rem;
+    }
+
+    .apiaries-container.list-view .card-stats {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        margin-bottom: 0.875rem;
+    }
+
+    .apiaries-container.list-view .stat {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        background-color: white;
+        padding: 0.625rem;
+        border-radius: var(--radius-md);
+        box-shadow: var(--shadow-sm);
+        border: 1px solid var(--color-gray-100);
+    }
+
+    .apiaries-container.list-view .stat-icon {
+        width: 32px;
+        height: 32px;
+        margin-right: 0.75rem;
+        margin-bottom: 0;
+        font-size: 0.875rem;
+    }
+
+    .apiaries-container.list-view .stat-content {
+        flex: 1;
+    }
+
+    .apiaries-container.list-view .stat-label {
+        font-size: 0.75rem;
+        margin-bottom: 0.125rem;
+    }
+
+    .apiaries-container.list-view .stat-value {
+        font-size: 0.875rem;
+        font-weight: 600;
+    }
+
+    .apiaries-container.list-view .card-actions {
+        flex-direction: column;
+        gap: 0.5rem;
+        width: 100%;
+        margin: 0;
+    }
+
+    .apiaries-container.list-view .action-btn {
+        width: 100%;
+        padding: 0.75rem;
+        font-size: 0.875rem;
+        justify-content: center;
+        border-radius: var(--radius-md);
+    }
+
+    /* Mejoras específicas para dropdowns en móviles */
+    .apiaries-container.list-view .dropdown-panel {
+        position: fixed;
+        bottom: 10px;
+        left: 10px;
+        right: 10px;
+        width: calc(100% - 20px);
+        max-height: 70vh;
+        overflow-y: auto;
+        z-index: 1500 !important;
+        border-radius: var(--radius-xl);
+        box-shadow: var(--shadow-xl);
+    }
+
+    .apiaries-container.list-view .dropdown-panel::after {
+        display: none;
+    }
+
+    .apiaries-container.list-view .dropdown-header {
+        padding: 0.75rem 1rem;
+        border-bottom: 1px solid var(--color-gray-200);
+        background-color: var(--color-gray-50);
+        position: sticky;
+        top: 0;
+        z-index: 1;
+    }
+
+    .apiaries-container.list-view .dropdown-options {
+        padding: 0.5rem;
+    }
+
+    .apiaries-container.list-view .dropdown-option {
+        padding: 0.75rem;
+        margin-bottom: 0.25rem;
+        border-radius: var(--radius-lg);
+        border: 1px solid var(--color-gray-100);
+    }
+
+    .apiaries-container.list-view .dropdown-option:last-child {
+        margin-bottom: 0;
+    }
+}
+
+/* Mejoras para orientación landscape en móviles */
+@media (max-width: 767px) and (orientation: landscape) {
+    .apiaries-container.list-view .apiary-card {
+        flex-direction: row;
+        min-height: 120px;
+    }
+
+    .apiaries-container.list-view .card-header {
+        width: 200px;
+        min-width: 200px;
+        border-right: 1px solid var(--color-gray-200);
+        border-bottom: none;
+    }
+
+    .apiaries-container.list-view .card-body {
+        flex: 1;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .apiaries-container.list-view .card-stats {
+        flex: 1;
+        flex-direction: row;
+        gap: 0.5rem;
+        margin-bottom: 0;
+    }
+
+    .apiaries-container.list-view .stat {
+        flex: 1;
+        min-width: 100px;
+        flex-direction: column;
+        text-align: center;
+        padding: 0.5rem;
+    }
+
+    .apiaries-container.list-view .stat-icon {
+        margin: 0 auto 0.25rem auto;
+        width: 28px;
+        height: 28px;
+    }
+
+    .apiaries-container.list-view .card-actions {
+        flex-direction: column;
+        width: auto;
+        min-width: 120px;
+        gap: 0.25rem;
+    }
+
+    .apiaries-container.list-view .action-btn {
+        padding: 0.5rem 0.75rem;
+        font-size: 0.8rem;
+    }
+}
+
+/* Mejoras para el hover en dispositivos táctiles */
+@media (hover: none) and (pointer: coarse) {
+    .apiaries-container.list-view .apiary-card:hover {
+        transform: none;
+        box-shadow: var(--shadow-md);
+    }
+
+    .apiaries-container.list-view .apiary-card:active {
+        transform: scale(0.98);
+        transition: transform 0.1s ease;
+    }
+
+    .apiaries-container.list-view .action-btn:active {
+        transform: scale(0.95);
+    }
+
+    .apiaries-container.list-view .stat:active {
+        background-color: var(--color-gray-100);
+    }
+}
+
+/* Mejoras para accesibilidad */
+@media (prefers-reduced-motion: reduce) {
+    .apiaries-container,
+    .apiaries-container.list-view .apiary-card,
+    .apiaries-container.list-view .stat,
+    .apiaries-container.list-view .action-btn {
+        transition: none;
+        animation: none;
+    }
+
+    .apiaries-container.list-view .apiary-card:hover {
+        transform: none;
+    }
+}
+
+/* Optimizaciones para pantallas de alta densidad */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+    .apiaries-container.list-view .apiary-card {
+        border-width: 0.5px;
+    }
+
+    .apiaries-container.list-view .stat {
+        border-width: 0.5px;
+    }
+
+    .apiaries-container.list-view .dropdown-panel {
+        border-width: 0.5px;
+    }
+}
+
+/* OCULTAR CONTROLES DE VISTA EN MÓVILES Y TABLETS PEQUEÑAS */
+@media (max-width: 768px) {
+    .view-controls {
+        display: none !important;
+    }
+
+    .control-panel {
+        justify-content: center;
+    }
+
+    .search-container {
+        width: 100%;
+        max-width: 100%;
+    }
+
+    /* Forzar vista de tarjetas en tablets pequeñas y móviles */
+    .apiaries-container {
+        grid-template-columns: 1fr !important;
+    }
+
+    .apiaries-container.list-view {
+        grid-template-columns: 1fr !important;
+    }
+
+    .apiaries-container.list-view .apiary-card {
+        display: block !important;
+        flex-direction: column !important;
+        height: auto !important;
+        min-height: auto !important;
+    }
+
+    .apiaries-container.list-view .card-header {
+        width: 100% !important;
+        border-right: none !important;
+        border-bottom: 1px solid var(--color-gray-100) !important;
+        flex-direction: row !important;
+        align-items: center !important;
+        display: flex !important;
+    }
+
+    .apiaries-container.list-view .card-body {
+        display: block !important;
+        flex-direction: column !important;
+        flex: none !important;
+    }
+
+    .apiaries-container.list-view .card-stats {
+        display: flex !important;
+        flex-direction: column !important;
+        margin-bottom: 1.5rem !important;
+    }
+
+    .apiaries-container.list-view .card-actions {
+        display: flex !important;
+        flex-direction: column !important;
+        width: 100% !important;
+        margin: 0 !important;
+    }
+}
+
+/* Ajustes para tablets medianas (mantener controles) */
+@media (min-width: 769px) and (max-width: 991px) {
+    .view-controls {
+        display: flex;
+    }
+}
+
+/* Ajustes específicos para móviles muy pequeños */
+@media (max-width: 479px) {
+    .control-panel {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.75rem;
+        margin-bottom: 1.25rem;
+    }
+
+    .search-container {
+        width: 100%;
+        min-width: auto;
+    }
+
+    .view-controls {
+        display: none !important;
+    }
 }

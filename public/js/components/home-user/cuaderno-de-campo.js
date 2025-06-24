@@ -4,14 +4,152 @@ let activeMenu = null;
 // Variable global para mantener el estado de la vista
 let currentViewType = "card"; // Vista por defecto
 
+// Función para detectar si es dispositivo con pantalla pequeña (incluyendo 768px)
+function isSmallScreen() {
+    return window.innerWidth <= 768;
+}
+
+// Función mejorada para cambiar vista
+function toggleView(viewType) {
+    // Prevenir cambio de vista en pantallas pequeñas
+    if (isSmallScreen()) {
+        return;
+    }
+
+    // Actualizar la variable global
+    currentViewType = viewType;
+
+    // Guardar la vista preferida en localStorage
+    localStorage.setItem("preferredView", viewType);
+
+    // Aplicar la vista a TODAS las pestañas
+    document.querySelectorAll(".apiaries-container").forEach((container) => {
+        container.className = `apiaries-container ${viewType}-view`;
+    });
+
+    // Actualizar botones
+    const viewButtons = document.querySelectorAll(".view-btn");
+    viewButtons.forEach((btn) => {
+        btn.classList.toggle(
+            "active",
+            btn.getAttribute("data-view") === viewType
+        );
+    });
+}
+
+// Función para manejar cambios responsive
+function handleResponsiveChanges() {
+    const viewControls = document.querySelector(".view-controls");
+
+    if (isSmallScreen()) {
+        // Ocultar controles de vista
+        if (viewControls) {
+            viewControls.style.display = "none";
+        }
+
+        // Forzar vista de tarjetas
+        currentViewType = "card";
+        document
+            .querySelectorAll(".apiaries-container")
+            .forEach((container) => {
+                container.className = `apiaries-container card-view`;
+            });
+
+        // Actualizar botones (aunque estén ocultos)
+        document.querySelectorAll(".view-btn").forEach((btn) => {
+            btn.classList.toggle(
+                "active",
+                btn.getAttribute("data-view") === "card"
+            );
+        });
+    } else {
+        // Mostrar controles de vista
+        if (viewControls) {
+            viewControls.style.display = "flex";
+        }
+
+        // Restaurar vista preferida
+        const savedView = localStorage.getItem("preferredView") || "card";
+        currentViewType = savedView;
+
+        document
+            .querySelectorAll(".apiaries-container")
+            .forEach((container) => {
+                container.className = `apiaries-container ${savedView}-view`;
+            });
+
+        document.querySelectorAll(".view-btn").forEach((btn) => {
+            btn.classList.toggle(
+                "active",
+                btn.getAttribute("data-view") === savedView
+            );
+        });
+    }
+}
+
+// Función para inicializar todas las vistas con el formato guardado
+function initializeAllViews() {
+    if (isSmallScreen()) {
+        // En pantallas pequeñas, siempre vista de tarjetas
+        currentViewType = "card";
+        document
+            .querySelectorAll(".apiaries-container")
+            .forEach((container) => {
+                container.className = `apiaries-container card-view`;
+            });
+
+        // Ocultar controles de vista
+        const viewControls = document.querySelector(".view-controls");
+        if (viewControls) {
+            viewControls.style.display = "none";
+        }
+
+        // Actualizar botones
+        document.querySelectorAll(".view-btn").forEach((btn) => {
+            btn.classList.toggle(
+                "active",
+                btn.getAttribute("data-view") === "card"
+            );
+        });
+    } else {
+        // En pantallas grandes, usar preferencia guardada
+        const savedView = localStorage.getItem("preferredView") || "card";
+        currentViewType = savedView;
+
+        // Aplicar la vista a todos los contenedores
+        document
+            .querySelectorAll(".apiaries-container")
+            .forEach((container) => {
+                container.className = `apiaries-container ${savedView}-view`;
+            });
+
+        // Mostrar controles de vista
+        const viewControls = document.querySelector(".view-controls");
+        if (viewControls) {
+            viewControls.style.display = "flex";
+        }
+
+        // Actualizar botones de vista
+        document.querySelectorAll(".view-btn").forEach((btn) => {
+            btn.classList.toggle(
+                "active",
+                btn.getAttribute("data-view") === savedView
+            );
+        });
+    }
+}
+
 function filterApiaries() {
     const searchInput = document.getElementById("apiarySearch");
     const clearButton = document.querySelector(".clear-search");
     const filter = searchInput.value.toLowerCase().trim();
-    const apiaryCards = document.querySelectorAll(".apiary-card");
-    const noResults = document.getElementById("noResults");
     const resultsCount = document.getElementById("resultsCount");
-    const container = document.getElementById("apiariesContainer");
+
+    // Obtener solo las tarjetas de la pestaña activa
+    const activeTabContent = document.querySelector(".tab-content.active");
+    if (!activeTabContent) return;
+
+    const apiaryCards = activeTabContent.querySelectorAll(".apiary-card");
 
     clearButton.style.display = filter ? "flex" : "none";
 
@@ -19,7 +157,7 @@ function filterApiaries() {
 
     apiaryCards.forEach((card) => {
         const apiaryName = card.getAttribute("data-name");
-        if (apiaryName.includes(filter)) {
+        if (apiaryName && apiaryName.toLowerCase().includes(filter)) {
             card.style.display = "";
             count++;
 
@@ -40,15 +178,6 @@ function filterApiaries() {
     } else {
         resultsCount.textContent = "";
     }
-
-    // Mostrar mensaje si no hay resultados
-    if (count === 0) {
-        noResults.style.display = "block";
-        container.style.display = "none";
-    } else {
-        noResults.style.display = "none";
-        container.style.display = "";
-    }
 }
 
 // Limpiar búsqueda
@@ -57,29 +186,6 @@ function clearSearch() {
     searchInput.value = "";
     filterApiaries();
     searchInput.focus();
-}
-
-// Alternar entre vistas de tarjeta y lista
-function toggleView(viewType) {
-    // Actualizar la variable global
-    currentViewType = viewType;
-
-    // Guardar la vista preferida en localStorage
-    localStorage.setItem("preferredView", viewType);
-
-    // Aplicar la vista a TODAS las pestañas
-    document.querySelectorAll(".apiaries-container").forEach((container) => {
-        container.className = `apiaries-container ${viewType}-view`;
-    });
-
-    // Actualizar botones
-    const viewButtons = document.querySelectorAll(".view-btn");
-    viewButtons.forEach((btn) => {
-        btn.classList.toggle(
-            "active",
-            btn.getAttribute("data-view") === viewType
-        );
-    });
 }
 
 // Manejar dropdowns de descargas
@@ -174,68 +280,6 @@ function switchTab(tabName) {
     }
 }
 
-// Función modificada para filtrar apiarios considerando la pestaña activa
-function filterApiaries() {
-    const searchInput = document.getElementById("apiarySearch");
-    const clearButton = document.querySelector(".clear-search");
-    const filter = searchInput.value.toLowerCase().trim();
-    const resultsCount = document.getElementById("resultsCount");
-
-    // Obtener solo las tarjetas de la pestaña activa
-    const activeTabContent = document.querySelector(".tab-content.active");
-    if (!activeTabContent) return;
-
-    const apiaryCards = activeTabContent.querySelectorAll(".apiary-card");
-
-    clearButton.style.display = filter ? "flex" : "none";
-
-    let count = 0;
-
-    apiaryCards.forEach((card) => {
-        const apiaryName = card.getAttribute("data-name");
-        if (apiaryName && apiaryName.toLowerCase().includes(filter)) {
-            card.style.display = "";
-            count++;
-
-            // Reiniciar la animación para que aparezca gradualmente
-            card.style.animation = "none";
-            card.offsetHeight; // Forzar reflow
-            card.style.animation = "cardFadeIn 0.4s forwards";
-        } else {
-            card.style.display = "none";
-        }
-    });
-
-    // Actualizar contador de resultados
-    if (filter) {
-        resultsCount.textContent = `${count} ${
-            count === 1 ? "apiario encontrado" : "apiarios encontrados"
-        }`;
-    } else {
-        resultsCount.textContent = "";
-    }
-}
-
-// Función para inicializar todas las vistas con el formato guardado
-function initializeAllViews() {
-    // Recuperar la vista preferida desde localStorage
-    const savedView = localStorage.getItem("preferredView") || "card";
-    currentViewType = savedView;
-
-    // Aplicar la vista a todos los contenedores
-    document.querySelectorAll(".apiaries-container").forEach((container) => {
-        container.className = `apiaries-container ${savedView}-view`;
-    });
-
-    // Actualizar botones de vista
-    document.querySelectorAll(".view-btn").forEach((btn) => {
-        btn.classList.toggle(
-            "active",
-            btn.getAttribute("data-view") === savedView
-        );
-    });
-}
-
 // Configuración al cargar el documento
 document.addEventListener("DOMContentLoaded", function () {
     // Evitar que los clics dentro de los menús los cierren
@@ -247,10 +291,12 @@ document.addEventListener("DOMContentLoaded", function () {
             });
         });
 
-    // Configurar botones de vista (modificado)
+    // Configurar botones de vista (modificado para prevenir en pantallas pequeñas)
     document.querySelectorAll(".view-btn").forEach((btn) => {
         btn.addEventListener("click", function () {
-            toggleView(this.getAttribute("data-view"));
+            if (!isSmallScreen()) {
+                toggleView(this.getAttribute("data-view"));
+            }
         });
     });
 
@@ -284,7 +330,7 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 
-    // Inicializar todas las vistas con el formato guardado
+    // Inicializar todas las vistas con el formato adecuado
     initializeAllViews();
 
     // Restaurar la pestaña activa desde localStorage
@@ -299,6 +345,11 @@ document.addEventListener("DOMContentLoaded", function () {
             switchTab(firstTabName);
         }
     }
+
+    // Event listener para cambios de tamaño de ventana
+    window.addEventListener("resize", function () {
+        handleResponsiveChanges();
+    });
 
     // Efecto parallax para el encabezado
     const headerElement = document.querySelector(".dashboard-header");

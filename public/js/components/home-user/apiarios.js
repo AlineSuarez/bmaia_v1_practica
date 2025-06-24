@@ -582,7 +582,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     const apicultorNombre =
                         fila
                             .querySelector("td:nth-child(2)")
-                            ?.textContent?.trim() || "N/A";
+                            ?.textContent?.trim() || "-";
 
                     const li = document.createElement("li");
                     li.className = "mb-2";
@@ -685,7 +685,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 selectedCheckboxes.forEach((chk) => {
                     const row = chk.closest("tr");
                     const apiarioName =
-                        row.querySelector(".apiario-id")?.textContent || "N/A";
+                        row.querySelector(".apiario-id")?.textContent || "-";
                     const numColmenas =
                         row.querySelector(".counter")?.textContent || "0";
 
@@ -1203,15 +1203,15 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         createFijosCard(cells) {
-            const nombre = cells[0]?.textContent?.trim() || "N/A";
-            const temporada = cells[1]?.textContent?.trim() || "N/A";
-            const registroSag = cells[2]?.textContent?.trim() || "N/A";
+            const nombre = cells[0]?.textContent?.trim() || "-";
+            const temporada = cells[1]?.textContent?.trim() || "-";
+            const registroSag = cells[2]?.textContent?.trim() || "-";
             const colmenas = cells[3]?.textContent?.trim() || "0";
-            const tipo = cells[4]?.textContent?.trim() || "N/A";
-            const manejo = cells[5]?.textContent?.trim() || "N/A";
-            const objetivo = cells[6]?.textContent?.trim() || "N/A";
-            const ubicacion = cells[7]?.textContent?.trim() || "N/A";
-            const coordenadas = cells[8]?.textContent?.trim() || "N/A";
+            const tipo = cells[4]?.textContent?.trim() || "-";
+            const manejo = cells[5]?.textContent?.trim() || "-";
+            const objetivo = cells[6]?.textContent?.trim() || "-";
+            const ubicacion = cells[7]?.textContent?.trim() || "-";
+            const coordenadas = cells[8]?.textContent?.trim() || "-";
 
             const imgElement = cells[9]?.querySelector("img");
             const actionLinks = cells[10]?.querySelectorAll("a, button");
@@ -1295,15 +1295,15 @@ document.addEventListener("DOMContentLoaded", function () {
 
         createBaseCard(cells) {
             const checkbox = cells[0]?.querySelector('input[type="checkbox"]');
-            const nombre = cells[1]?.textContent?.trim() || "N/A";
-            const temporada = cells[2]?.textContent?.trim() || "N/A";
-            const registroSag = cells[3]?.textContent?.trim() || "N/A";
+            const nombre = cells[1]?.textContent?.trim() || "-";
+            const temporada = cells[2]?.textContent?.trim() || "-";
+            const registroSag = cells[3]?.textContent?.trim() || "-";
             const colmenas = cells[4]?.textContent?.trim() || "0";
-            const tipo = cells[5]?.textContent?.trim() || "N/A";
-            const manejo = cells[6]?.textContent?.trim() || "N/A";
-            const objetivo = cells[7]?.textContent?.trim() || "N/A";
-            const ubicacion = cells[8]?.textContent?.trim() || "N/A";
-            const coordenadas = cells[9]?.textContent?.trim() || "N/A";
+            const tipo = cells[5]?.textContent?.trim() || "-";
+            const manejo = cells[6]?.textContent?.trim() || "-";
+            const objetivo = cells[7]?.textContent?.trim() || "-";
+            const ubicacion = cells[8]?.textContent?.trim() || "-";
+            const coordenadas = cells[9]?.textContent?.trim() || "-";
 
             const imgElement = cells[10]?.querySelector("img");
             const actionLinks = cells[11]?.querySelectorAll("a");
@@ -1396,15 +1396,15 @@ document.addEventListener("DOMContentLoaded", function () {
 
         createTemporalesCard(cells) {
             const checkbox = cells[0]?.querySelector('input[type="checkbox"]');
-            const nombre = cells[1]?.textContent?.trim() || "N/A";
+            const nombre = cells[1]?.textContent?.trim() || "-";
             const colmenas = cells[2]?.textContent?.trim() || "0";
-            const regionOrigen = cells[3]?.textContent?.trim() || "N/A";
-            const comunaOrigen = cells[4]?.textContent?.trim() || "N/A";
-            const regionDestino = cells[5]?.textContent?.trim() || "N/A";
-            const comunaDestino = cells[6]?.textContent?.trim() || "N/A";
-            const fechaMovimiento = cells[7]?.textContent?.trim() || "N/A";
-            const motivo = cells[8]?.textContent?.trim() || "N/A";
-            const cultivo = cells[9]?.textContent?.trim() || "N/A";
+            const regionOrigen = cells[3]?.textContent?.trim() || "-";
+            const comunaOrigen = cells[4]?.textContent?.trim() || "-";
+            const regionDestino = cells[5]?.textContent?.trim() || "-";
+            const comunaDestino = cells[6]?.textContent?.trim() || "-";
+            const fechaMovimiento = cells[7]?.textContent?.trim() || "-";
+            const motivo = cells[8]?.textContent?.trim() || "-";
+            const cultivo = cells[9]?.textContent?.trim() || "-";
             const actionLinks = cells[10]?.querySelectorAll("a");
 
             return `
@@ -1450,7 +1450,7 @@ document.addEventListener("DOMContentLoaded", function () {
                                 Cultivo
                             </span>
                             <span class="card-info-value-modern">${
-                                cultivo !== "—" ? cultivo : "N/A"
+                                cultivo !== "—" ? cultivo : "-"
                             }</span>
                         </div>
                     </div>

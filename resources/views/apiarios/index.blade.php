@@ -145,7 +145,7 @@
                                             </td>
                                             <td>
                                                 <div class="location-cell">
-                                                    {{ $apiario->comuna && $apiario->comuna->nombre ? $apiario->comuna->nombre : 'N/A' }}
+                                                    {{ $apiario->comuna && $apiario->comuna->nombre ? $apiario->comuna->nombre : '-' }}
                                                 </div>
                                             </td>
                                             <td>
@@ -316,7 +316,7 @@
                                                 </td>
                                                 <td>
                                                     <div class="location-cell">
-                                                        {{ $apiario->comuna && $apiario->comuna->nombre ? $apiario->comuna->nombre : 'N/A' }}
+                                                        {{ $apiario->comuna && $apiario->comuna->nombre ? $apiario->comuna->nombre : '-' }}
                                                     </div>
                                                 </td>
                                                 <td>
@@ -462,22 +462,22 @@
                                             </td>
                                             <td>
                                                 <div class="location-cell">
-                                                    {{ $apiarioOrigen && $apiarioOrigen->comuna && $apiarioOrigen->comuna->region ? $apiarioOrigen->comuna->region->nombre : 'N/A' }}
+                                                    {{ $apiarioOrigen && $apiarioOrigen->comuna && $apiarioOrigen->comuna->region ? $apiarioOrigen->comuna->region->nombre : '-' }}
                                                 </div>
                                             </td>
                                             <td>
                                                 <div class="location-cell">
-                                                    {{ $apiarioOrigen && $apiarioOrigen->comuna ? $apiarioOrigen->comuna->nombre : 'N/A' }}
+                                                    {{ $apiarioOrigen && $apiarioOrigen->comuna ? $apiarioOrigen->comuna->nombre : '-' }}
                                                 </div>
                                             </td>
                                             <td>
                                                 <div class="location-cell">
-                                                    {{ optional(optional($apiario->comuna)->region)->nombre ?? 'N/A' }}
+                                                    {{ optional(optional($apiario->comuna)->region)->nombre ?? '-' }}
                                                 </div>
                                             </td>
                                             <td>
                                                 <div class="location-cell">
-                                                    {{ optional($apiario->comuna)->nombre ?? 'N/A' }}
+                                                    {{ optional($apiario->comuna)->nombre ?? '-' }}
                                                 </div>
                                             </td>
                                             <td>
@@ -607,12 +607,12 @@
                                                 </td>
                                                 <td>
                                                     <div class="location-cell">
-                                                        {{ optional(optional($apiario->comuna)->region)->nombre ?? 'N/A' }}
+                                                        {{ optional(optional($apiario->comuna)->region)->nombre ?? '-' }}
                                                     </div>
                                                 </td>
                                                 <td>
                                                     <div class="location-cell">
-                                                        {{ optional($apiario->comuna)->nombre ?? 'N/A' }}
+                                                        {{ optional($apiario->comuna)->nombre ?? '-' }}
                                                     </div>
                                                 </td>
                                                 <td>
