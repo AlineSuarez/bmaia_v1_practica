@@ -30,11 +30,6 @@ class Colmena extends Model
         return $this->belongsTo(Apiario::class);
     }
 
-    public function apiarioBase()
-    {
-        return $this->belongsTo(Apiario::class, 'apiario_base_id');
-    }
-
     public function movimientos()
     {
         return $this->hasMany(MovimientoColmena::class);

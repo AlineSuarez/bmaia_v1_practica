@@ -1,23 +1,34 @@
-/* Paleta de colores para el dashboard apícola - Versión Azul */
 .dashboard-container {
-    /* Nueva paleta de colores azules */
-    --blue-light: #e1f5fe;
-    --blue-soft: #81d4fa;
-    --blue-medium: #29b6f6;
-    --blue-primary: #0288d1;
-    --blue-dark: #01579b;
-    --blue-navy: #0d47a1;
-    --blue-accent: #00b0ff;
-    --blue-pale: #b3e5fc;
-    --blue-midnight: #002171;
-    --blue-gray: #eceff1;
+    /* Paleta de colores amber */
+    --color-amber-50: #fffbeb;
+    --color-amber-100: #fef3c7;
+    --color-amber-200: #fde68a;
+    --color-amber-300: #fcd34d;
+    --color-amber-400: #fbbf24;
+    --color-amber-500: #f59e0b;
+    --color-amber-600: #d97706;
+    --color-amber-700: #b45309;
+    --color-amber-800: #92400e;
+    --color-amber-900: #78350f;
+
+    --primary: var(--color-amber-500);
+    --primary-light: var(--color-amber-100);
+    --primary-lighter: var(--color-amber-50);
+    --primary-dark: var(--color-amber-700);
+    --primary-darker: var(--color-amber-800);
+    --accent: var(--color-amber-400);
+    --surface: #ffffff;
+    --surface-variant: var(--color-amber-50);
+    --text-primary: #1f2937;
+    --text-secondary: #6b7280;
+    --border: #e5e7eb;
+    --shadow-amber: 0 4px 12px rgba(245, 158, 11, 0.15);
 
     padding: 30px 15px;
     max-width: 1600px;
     border-radius: 15px;
 }
 
-/* Header del Dashboard */
 .dashboard-container .dashboard-header {
     padding: 30px 0;
     margin-bottom: 40px;
@@ -25,10 +36,10 @@
     border-radius: 15px;
     background: linear-gradient(
         135deg,
-        var(--blue-primary) 0%,
-        var(--blue-dark) 100%
+        var(--primary) 0%,
+        var(--primary-dark) 100%
     );
-    box-shadow: 0 10px 20px rgba(1, 87, 155, 0.2);
+    box-shadow: var(--shadow-amber);
 }
 
 .dashboard-container .dashboard-header::before {
@@ -55,7 +66,7 @@
 }
 
 .dashboard-container .dashboard-title span {
-    color: var(--blue-light);
+    color: var(--primary-lighter);
     position: relative;
 }
 
@@ -66,7 +77,7 @@
     left: 0;
     width: 100%;
     height: 4px;
-    background-color: var(--blue-accent);
+    background-color: var(--accent);
     border-radius: 2px;
 }
 
@@ -78,39 +89,17 @@
     opacity: 0.9;
 }
 
-/* Tarjetas de información */
 .dashboard-container .info-card {
     background: linear-gradient(
         to bottom right,
-        var(--blue-primary),
-        var(--blue-dark)
+        var(--primary),
+        var(--primary-dark)
     );
     border-radius: 15px;
     padding: 20px;
     margin-bottom: 25px;
     border: none;
-    box-shadow: 0 10px 20px rgba(1, 87, 155, 0.15);
-    transition: all 0.3s ease;
-    overflow: hidden;
-    position: relative;
-    height: 100%;
-    word-wrap: break-word;
-    min-height: 180px; /* Altura mínima para uniformidad */
-    display: flex;
-    flex-direction: column;
-}
-
-.dashboard-container .info-card {
-    background: linear-gradient(
-        to bottom right,
-        var(--blue-primary),
-        var(--blue-dark)
-    );
-    border-radius: 15px;
-    padding: 20px;
-    margin-bottom: 25px;
-    border: none;
-    box-shadow: 0 10px 20px rgba(1, 87, 155, 0.15);
+    box-shadow: var(--shadow-amber);
     transition: all 0.3s ease;
     overflow: hidden;
     position: relative;
@@ -121,7 +110,6 @@
     flex-direction: column;
 }
 
-/* Fondo base con patrón SVG */
 .dashboard-container .info-card::before {
     content: "";
     position: absolute;
@@ -137,28 +125,26 @@
     pointer-events: none;
 }
 
-/* Círculo aleatorio 1 */
 .dashboard-container .info-card::after {
     content: "";
     position: absolute;
     width: 60px;
     height: 60px;
     border-radius: 50%;
-    background-color: rgba(255, 255, 255, 0.1);
+    background-color: rgba(254, 243, 199, 0.1);
     top: 15%;
     left: 20%;
     transform: translate(-50%, -50%) scale(0);
     animation: randomCircle1 8s infinite ease-in-out;
 }
 
-/* Círculo aleatorio 2 - usando un nuevo pseudo elemento */
 .dashboard-container .info-card-title::before {
     content: "";
     position: absolute;
     width: 80px;
     height: 80px;
     border-radius: 50%;
-    background-color: rgba(255, 255, 255, 0.08);
+    background-color: rgba(254, 243, 199, 0.08);
     top: 70%;
     right: 15%;
     z-index: 0;
@@ -166,14 +152,13 @@
     animation: randomCircle2 12s infinite ease-in-out 1s;
 }
 
-/* Círculo aleatorio 3 - usando otro pseudo elemento */
 .dashboard-container .info-card-value::after {
     content: "";
     position: absolute;
     width: 100px;
     height: 100px;
     border-radius: 50%;
-    background-color: rgba(255, 255, 255, 0.05);
+    background-color: rgba(254, 243, 199, 0.05);
     bottom: 10%;
     left: 40%;
     z-index: 0;
@@ -181,14 +166,13 @@
     animation: randomCircle3 15s infinite ease-in-out 3s;
 }
 
-/* Círculo aleatorio 4 - usando otro pseudo elemento */
 .dashboard-container .info-card-text::before {
     content: "";
     position: absolute;
     width: 40px;
     height: 40px;
     border-radius: 50%;
-    background-color: rgba(255, 255, 255, 0.12);
+    background-color: rgba(254, 243, 199, 0.12);
     top: 40%;
     right: 10%;
     z-index: 0;
@@ -196,7 +180,6 @@
     animation: randomCircle4 10s infinite ease-in-out 2s;
 }
 
-/* Animación para el círculo 1 */
 @keyframes randomCircle1 {
     0%,
     100% {
@@ -214,7 +197,6 @@
     }
 }
 
-/* Animación para el círculo 2 */
 @keyframes randomCircle2 {
     0%,
     100% {
@@ -232,7 +214,6 @@
     }
 }
 
-/* Animación para el círculo 3 */
 @keyframes randomCircle3 {
     0%,
     100% {
@@ -250,7 +231,6 @@
     }
 }
 
-/* Animación para el círculo 4 */
 @keyframes randomCircle4 {
     0%,
     100% {
@@ -268,17 +248,6 @@
     }
 }
 
-/* Animación para el patrón de fondo original */
-@keyframes floatingHexagons {
-    0% {
-        background-position: 0 0;
-    }
-    100% {
-        background-position: 400px 400px;
-    }
-}
-
-/* Aseguramos que el contenido esté por encima */
 .dashboard-container .info-card-title,
 .dashboard-container .info-card-value,
 .dashboard-container .info-card-icon {
@@ -286,26 +255,9 @@
     z-index: 2;
 }
 
-.dashboard-container .info-card-text {
-    font-size: 0.85rem;
-    color: rgba(255, 255, 255, 0.9);
-    line-height: 1.4;
-    margin-top: auto;
-    position: relative;
-    z-index: 2;
-}
-
-/* Efecto hover mejorado */
-.dashboard-container .info-card:hover::after,
-.dashboard-container .info-card:hover .info-card-title::before,
-.dashboard-container .info-card:hover .info-card-value::after,
-.dashboard-container .info-card:hover .info-card-text::before {
-    animation-play-state: paused;
-}
-
 .dashboard-container .info-card:hover {
     transform: translateY(-5px);
-    box-shadow: 0 15px 30px rgba(1, 87, 155, 0.25);
+    box-shadow: 0 15px 30px rgba(245, 158, 11, 0.25);
 }
 
 .dashboard-container .info-card-icon {
@@ -314,7 +266,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: var(--blue-navy);
+    background-color: var(--primary-darker);
     color: white;
     border-radius: 50%;
     margin-bottom: 15px;
@@ -328,7 +280,7 @@
     position: absolute;
     width: 100%;
     height: 100%;
-    background: radial-gradient(circle, var(--blue-accent) 0%, transparent 70%);
+    background: radial-gradient(circle, var(--accent) 0%, transparent 70%);
     opacity: 0.5;
 }
 
@@ -349,25 +301,24 @@
 
 .dashboard-container .info-card-text {
     font-size: 0.85rem;
-    color: rgba(0, 0, 0, 0.9);
+    color: rgba(255, 255, 255, 0.9);
     line-height: 1.4;
     margin-top: auto;
+    position: relative;
+    z-index: 2;
 }
 
-/* Tarjetas de gráficos */
 .dashboard-container .chart-card {
-    background: linear-gradient(135deg, white, var(--blue-light));
+    background: linear-gradient(135deg, white, var(--primary-lighter));
     border-radius: 15px;
     padding: 20px;
     margin-bottom: 25px;
     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
     position: relative;
     overflow: hidden;
-    border-left: 5px solid var(--blue-primary);
-    min-height: 280px; /* Altura mínima para uniformidad */
-    height: calc(
-        100% - 25px
-    ); /* Asegura que todas las tarjetas en la misma fila tengan la misma altura */
+    border-left: 5px solid var(--primary);
+    min-height: 280px;
+    height: calc(100% - 25px);
     display: flex;
     flex-direction: column;
 }
@@ -379,7 +330,7 @@
     right: 0;
     width: 120px;
     height: 120px;
-    background: var(--blue-primary);
+    background: var(--primary);
     opacity: 0.1;
     clip-path: polygon(100% 0, 100% 100%, 0 0);
 }
@@ -400,18 +351,18 @@
 .dashboard-container .chart-title {
     font-size: 1.2rem;
     font-weight: 700;
-    color: var(--blue-dark);
+    color: var(--primary-dark);
     margin-bottom: 5px;
 }
 
 .dashboard-container .chart-title i {
     margin-right: 8px;
-    color: var(--blue-accent);
+    color: var(--accent);
 }
 
 .dashboard-container .chart-subtitle {
     font-size: 0.85rem;
-    color: #333;
+    color: var(--text-secondary);
     opacity: 0.7;
 }
 
@@ -419,14 +370,14 @@
     position: relative;
     height: 280px;
     margin-bottom: 15px;
-    flex-grow: 1; /* Permite que el gráfico ocupe el espacio disponible */
+    flex-grow: 1;
 }
 
 .dashboard-container .chart-help {
     width: 22px;
     height: 22px;
     border-radius: 50%;
-    background-color: var(--blue-accent);
+    background-color: var(--accent);
     color: white;
     display: flex;
     align-items: center;
@@ -451,27 +402,26 @@
     border-radius: 10px;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
     font-size: 0.85rem;
-    color: #333;
+    color: var(--text-primary);
     display: none;
     z-index: 100;
-    border: 2px solid var(--blue-primary);
+    border: 2px solid var(--primary);
 }
 
 .dashboard-container .tooltip-container:hover .tooltip-content {
     display: block;
 }
 
-/* Sección educativa */
 .dashboard-container .edu-section {
     background: linear-gradient(
-        to right,
-        var(--blue-medium),
-        var(--blue-primary)
+        to bottom right,
+        var(--primary),
+        var(--primary-dark)
     );
     border-radius: 15px;
     padding: 25px;
     margin-bottom: 30px;
-    box-shadow: 0 10px 25px rgba(1, 87, 155, 0.25);
+    box-shadow: var(--shadow-amber);
     position: relative;
     overflow: hidden;
 }
@@ -483,7 +433,7 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M54.627 0l.83.828-1.415 1.415L51.8 0h2.827zM5.373 0l-.83.828L5.96 2.243 8.2 0H5.374zM48.97 0l3.657 3.657-1.414 1.414L46.143 0h2.828zM11.03 0L7.372 3.657 8.787 5.07 13.857 0H11.03zm32.284 0L49.8 6.485 48.384 7.9l-7.9-7.9h2.83zM16.686 0L10.2 6.485 11.616 7.9l7.9-7.9h-2.83zm20.97 0l9.315 9.314-1.414 1.414L34.828 0h2.83zM22.344 0L13.03 9.314l1.414 1.414L25.172 0h-2.83zM32 0l12.142 12.142-1.414 1.414L30 .828 17.272 13.556l-1.414-1.414L28 0h4zM.284 0l28 28-1.414 1.414L0 2.544v2.83L25.456 30l-1.414 1.414L0 7.97v2.828L22.627 34.14l-1.414 1.414L0 13.4v2.83L19.8 34.97l-1.414 1.414L0 18.83v2.828L16.97 37.8l-1.414 1.414L0 24.257v2.83L13.8 43.656l-1.414 1.414L0 29.685v2.83L10.97 44.97l-1.414 1.414L0 35.113v2.83L8.142 48.37l-1.414 1.414L0 40.54v2.83L5.314 50.2l-1.414 1.414L0 45.97v2.828L2.486 53.03 1.07 54.444 0 53.376v2.83L0 60h60L60 57.377v-2.83l-1.07 1.07-1.414-1.415L60 51.47v-2.83l-3.9 3.9-1.414-1.414L60 46.043v-2.83l-6.728 6.728-1.414-1.414L60 40.456v-2.83L49.8 47.77l-1.414-1.414L60 34.884v-2.83L46.97 44.3l-1.414-1.414L60 29.314v-2.83L44.142 41.97l-1.414-1.414L60 23.744v-2.83L41.314 39.284l-1.414-1.414L60 18.142v-2.83L38.486 36.456l-1.414-1.414L60 12.514v-2.83L35.657 33.656l-1.414-1.414L60 6.9V4.07L32.828 31.242l-1.414-1.414L60 1.314v-2.83L29.314 28.97l-1.414-1.414L60-4.286v-2.83L25.97 26.314l-1.414-1.414L60-9.857v-2.83L22.627 23.657l-1.414-1.414L60-15.43v-2.827L19.285 21.015l-1.414-1.414L60-21v-2.827L15.94 18.385l-1.414-1.414L60-26.57v-2.83L12.6 15.77 11.186 14.356 60-32.14v-2.83L9.257 13.15 7.843 11.737 60-37.714v-2.827L5.914 10.52 4.5 9.105 60-43.285v-2.83L2.57 7.9 1.157 6.486 60-48.856v-2.83L-.83 5.37 0 6.2v-2.83l-1.414-1.414L0 0h.284zM0 0L0 60h60L60 0H0z' fill='%23ffffff' fill-opacity='0.08'/%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M54.627 0l.83.828-1.415 1.415L51.8 0h2.827zM5.373 0l-.83.828L5.96 2.243 8.2 0H5.374zM48.97 0l3.657 3.657-1.414 1.414L46.143 0h2.828zM11.03 0L7.372 3.657 8.787 5.07 13.857 0H11.03zm32.284 0L49.8 6.485 48.384 7.9l-7.9-7.9h2.83zM16.686 0L10.2 6.485 11.616 7.9l7.9-7.9h-2.83zm20.97 0l9.315 9.314-1.414 1.414L34.828 0h2.83zM22.344 0L13.03 9.314l1.414 1.414L25.172 0h-2.83zM32 0l12.142 12.142-1.414 1.414L30 .828 17.272 13.556l-1.414-1.414L28 0h4z' fill='%23ffffff' fill-opacity='0.08'/%3E%3C/svg%3E");
     background-position: center center;
     background-size: 120px 120px;
     background-repeat: repeat;
@@ -518,14 +468,18 @@
 }
 
 .dashboard-container .edu-item {
-    background-color: rgba(255, 255, 255, 0.2);
+    background: linear-gradient(
+        to bottom right,
+        var(--primary),
+        var(--primary-dark)
+    );
     backdrop-filter: blur(5px);
     padding: 18px;
     border-radius: 10px;
-    border-left: 4px solid var(--blue-navy);
+    border-left: 4px solid var(--primary-darker);
     transition: all 0.3s ease;
     word-wrap: break-word;
-    min-height: 150px; /* Altura mínima para uniformidad */
+    min-height: 150px;
     display: flex;
     flex-direction: column;
 }
@@ -533,7 +487,11 @@
 .dashboard-container .edu-item:hover {
     transform: translateY(-5px);
     box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
-    background-color: rgba(255, 255, 255, 0.3);
+    background: linear-gradient(
+        to bottom right,
+        var(--primary),
+        var(--primary-dark)
+    );
 }
 
 .dashboard-container .edu-item-title {
@@ -545,7 +503,7 @@
 
 .dashboard-container .edu-item-title i {
     margin-right: 8px;
-    color: var(--blue-light);
+    color: var(--primary-lighter);
 }
 
 .dashboard-container .edu-item-text {
@@ -554,51 +512,16 @@
     line-height: 1.5;
 }
 
-/* Animaciones */
-.dashboard-container .animate {
-    opacity: 0;
-    transform: translateY(30px);
-    animation: honeycombFadeIn 0.8s ease forwards;
-}
-
-.dashboard-container .delay-1 {
-    animation-delay: 0.2s;
-}
-
-.dashboard-container .delay-2 {
-    animation-delay: 0.4s;
-}
-
-.dashboard-container .delay-3 {
-    animation-delay: 0.6s;
-}
-
-.dashboard-container .delay-4 {
-    animation-delay: 0.8s;
-}
-
-.dashboard-container .delay-5 {
-    animation-delay: 1s;
-}
-
-@keyframes honeycombFadeIn {
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-/* Sección de consejos */
 .dashboard-container .tips-section {
     background: linear-gradient(
-        to bottom,
-        var(--blue-soft),
-        var(--blue-medium)
+        to bottom right,
+        var(--primary),
+        var(--primary-dark)
     );
     border-radius: 15px;
     padding: 25px;
     margin-bottom: 30px;
-    box-shadow: 0 10px 25px rgba(1, 87, 155, 0.2);
+    box-shadow: 0 10px 25px rgba(245, 158, 11, 0.2);
     position: relative;
     overflow: hidden;
 }
@@ -610,7 +533,7 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0h20v20H0V0zm10 17a7 7 0 1 0 0-14 7 7 0 0 0 0 14zm20-17h20v20H30V0zm10 17a7 7 0 1 0 0-14 7 7 0 0 0 0 14zM0 40h20v20H0V40zm10 17a7 7 0 1 0 0-14 7 7 0 0 0 0 14zm20-17h20v20H30V40zm10 17a7 7 0 1 0 0-14 7 7 0 0 0 0 14zM60 0h20v20H60V0zm10 17a7 7 0 1 0 0-14 7 7 0 0 0 0 14zM60 40h20v20H60V40zm10 17a7 7 0 1 0 0-14 7 7 0 0 0 0 14zM0 80h20v20H0V80zm10 17a7 7 0 1 0 0-14 7 7 0 0 0 0 14zm20-17h20v20H30V80zm10 17a7 7 0 1 0 0-14 7 7 0 0 0 0 14zm20-17h20v20H60V80zm10 17a7 7 0 1 0 0-14 7 7 0 0 0 0 14z' fill='%23FFFFFF' fill-opacity='0.04'/%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0h20v20H0V0zm10 17a7 7 0 1 0 0-14 7 7 0 0 0 0 14zm20-17h20v20H30V0zm10 17a7 7 0 1 0 0-14 7 7 0 0 0 0 14zM0 40h20v20H0V40zm10 17a7 7 0 1 0 0-14 7 7 0 0 0 0 14zm20-17h20v20H30V40zm10 17a7 7 0 1 0 0-14 7 7 0 0 0 0 14z' fill='%23FFFFFF' fill-opacity='0.04'/%3E%3C/svg%3E");
     background-position: 0 0;
     background-size: 100px 100px;
     background-repeat: repeat;
@@ -626,7 +549,7 @@
 }
 
 .dashboard-container .tips-title i {
-    color: var(--blue-navy);
+    color: var(--primary-darker);
     margin-right: 10px;
 }
 
@@ -640,10 +563,10 @@
     background-color: rgba(255, 255, 255, 0.2);
     border-radius: 10px;
     padding: 15px;
-    border-left: 3px solid var(--blue-navy);
+    border-left: 3px solid var(--primary-darker);
     transition: all 0.3s ease;
     word-wrap: break-word;
-    min-height: 120px; /* Altura mínima para uniformidad */
+    min-height: 120px;
     display: flex;
     flex-direction: column;
 }
@@ -660,10 +583,9 @@
 }
 
 .dashboard-container .tip-text strong {
-    color: var(--blue-light);
+    color: var(--primary-lighter);
 }
 
-/* Calendario apícola - Ajustes mejorados */
 .dashboard-container .calendar-container {
     margin-top: 30px;
     margin-bottom: 30px;
@@ -671,29 +593,28 @@
 
 .dashboard-container .calendar-row {
     display: grid;
-    grid-template-columns: repeat(2, 1fr); /* 2 columnas siempre */
-    grid-gap: 20px; /* Espaciado entre tarjetas */
+    grid-template-columns: repeat(2, 1fr);
+    grid-gap: 20px;
     margin: 0;
 }
 
 .dashboard-container .calendar-card {
-    flex: none; /* Anula el flex para usar grid */
-    margin: 0; /* Elimina el margen porque ahora lo maneja grid-gap */
-    background-color: var(--blue-light) !important;
-    border: 1px solid var(--blue-primary);
+    flex: none;
+    margin: 0;
+    background-color: var(--primary-lighter) !important;
+    border: 1px solid var(--primary);
     border-radius: 10px;
-    padding: 18px; /* Un poco más de padding para dar aire */
-    min-height: 150px; /* Altura fija para todas las tarjetas */
+    padding: 18px;
+    min-height: 150px;
     display: flex;
     flex-direction: column;
     transition: all 0.3s ease;
-    box-shadow: 0 5px 15px rgba(1, 87, 155, 0.1);
+    box-shadow: 0 5px 15px rgba(245, 158, 11, 0.1);
 }
 
-/* Estilos alternativos para el calendario cuando se use BG-Light */
 .dashboard-container .bg-light {
-    background-color: var(--blue-light) !important;
-    border: 1px solid var(--blue-primary);
+    background-color: var(--primary-lighter) !important;
+    border: 1px solid var(--primary);
     border-radius: 10px;
     padding: 15px;
     margin-bottom: 20px;
@@ -706,27 +627,55 @@
 
 .dashboard-container .bg-light:hover {
     transform: translateY(-5px);
-    box-shadow: 0 10px 15px rgba(1, 87, 155, 0.15);
-    border-color: var(--blue-accent);
+    box-shadow: 0 10px 15px rgba(245, 158, 11, 0.15);
+    border-color: var(--accent);
 }
 
 .dashboard-container .text-primary {
-    color: var(--blue-dark) !important;
+    color: var(--primary-dark) !important;
 }
 
 .dashboard-container .text-success {
-    color: var(--blue-navy) !important;
+    color: var(--primary-darker) !important;
 }
 
 .dashboard-container .text-warning {
-    color: var(--blue-accent) !important;
+    color: var(--accent) !important;
 }
 
 .dashboard-container .text-danger {
-    color: var(--blue-dark) !important;
+    color: var(--primary-dark) !important;
 }
 
-/* Efectos honeycomb en carga */
+.dashboard-container .animate {
+    opacity: 0;
+    transform: translateY(30px);
+    animation: honeycombFadeIn 0.8s ease forwards;
+}
+
+.dashboard-container .delay-1 {
+    animation-delay: 0.2s;
+}
+.dashboard-container .delay-2 {
+    animation-delay: 0.4s;
+}
+.dashboard-container .delay-3 {
+    animation-delay: 0.6s;
+}
+.dashboard-container .delay-4 {
+    animation-delay: 0.8s;
+}
+.dashboard-container .delay-5 {
+    animation-delay: 1s;
+}
+
+@keyframes honeycombFadeIn {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
 @keyframes honeycombFade {
     0% {
         opacity: 0;
@@ -751,17 +700,15 @@
     animation: honeycombFade 0.5s ease forwards;
 }
 
-/* Hover effect para las cards */
 .dashboard-container .chart-card:hover,
 .dashboard-container .info-card:hover,
 .dashboard-container .edu-item:hover,
 .dashboard-container .tip-item:hover,
 .dashboard-container .bg-light:hover {
-    box-shadow: 0 12px 25px rgba(1, 87, 155, 0.25);
-    border-color: var(--blue-accent);
+    box-shadow: 0 12px 25px rgba(245, 158, 11, 0.25);
+    border-color: var(--accent);
 }
 
-/* Mejoras para tamaño uniforme en tarjetas */
 @media (max-width: 1200px) {
     .dashboard-container .info-card-title {
         font-size: 1rem;
@@ -773,10 +720,6 @@
 
     .dashboard-container .info-card-text {
         font-size: 0.8rem;
-    }
-
-    .dashboard-container .calendar-card {
-        flex: 0 0 calc(50% - 20px); /* 2 columnas en pantallas medianas */
     }
 }
 
@@ -804,7 +747,7 @@
 
     .dashboard-container .edu-content,
     .dashboard-container .tips-list {
-        grid-template-columns: repeat(2, 1fr); /* Dos columnas en tablets */
+        grid-template-columns: repeat(2, 1fr);
     }
 
     .dashboard-container .edu-item,
@@ -813,17 +756,13 @@
     }
 
     .dashboard-container .calendar-row {
-        grid-template-columns: repeat(
-            2,
-            1fr
-        ); /* Mantiene 2 columnas en tablets */
+        grid-template-columns: repeat(2, 1fr);
     }
 
     .dashboard-container .calendar-card {
-        min-height: 160px; /* Un poco más de altura en dispositivos medianos */
+        min-height: 160px;
     }
 
-    /* Asegura que las tarjetas de gráficos pares tengan la misma altura */
     .dashboard-container .row .chart-card {
         min-height: 300px;
     }
@@ -865,18 +804,9 @@
         height: 220px;
     }
 
-    .dashboard-container .edu-item-title {
-        font-size: 1.1rem;
-    }
-
-    .dashboard-container .edu-item-text,
-    .dashboard-container .tip-text {
-        font-size: 0.85rem;
-    }
-
     .dashboard-container .edu-content,
     .dashboard-container .tips-list {
-        grid-template-columns: 1fr; /* Una columna en móviles */
+        grid-template-columns: 1fr;
         gap: 15px;
     }
 
@@ -886,18 +816,11 @@
         margin-bottom: 15px;
     }
 
-    /* Separación clara entre elementos */
-    .dashboard-container .row + .row {
-        margin-top: 15px;
-    }
-
-    /* En móviles, una columna para el calendario también */
     .dashboard-container .calendar-row {
         grid-template-columns: 1fr;
     }
 
     .dashboard-container .calendar-card {
-        flex: 0 0 calc(100% - 20px); /* 1 columna en móviles */
         min-height: 140px;
     }
 }
@@ -936,7 +859,6 @@
         font-size: 1.3rem;
     }
 
-    /* Mejora del espaciado en móviles pequeños */
     .dashboard-container .row {
         margin-left: -10px;
         margin-right: -10px;

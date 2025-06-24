@@ -13,11 +13,13 @@ class ColmenaController extends Controller
 {
     public function index(Apiario $apiario)
     {
-        // si es temporal agrupamos por movimiento “traslado” que llegó aquí
-        if ($apiario->tipo_apiario === 'trashumante' && $apiario->es_temporal) {
-            $movs = MovimientoColmena::with('apiarioOrigen','colmena')
+        // Solo mostrar títulos si es trashumante temporal
+        $mostrarTitulos = ($apiario->tipo_apiario === 'trashumante' && $apiario->es_temporal);
+
+        if ($mostrarTitulos) {
+            $movs = MovimientoColmena::with('apiarioOrigen', 'colmena')
                 ->where('apiario_destino_id', $apiario->id)
-                ->where('tipo_movimiento','traslado')
+                ->where('tipo_movimiento', 'traslado')
                 ->get();
 
             $colmenasPorApiarioBase = $movs
@@ -28,14 +30,15 @@ class ColmenaController extends Controller
         } else {
             // caso no-temporal: muestro todas las colmenas bajo un único título
             $col = $apiario->colmenas()->get();
-            $colmenasPorApiarioBase   = collect([ $apiario->nombre => $col ]);
-            $apiariosBaseSeleccionados = [ $apiario->nombre ];
+            $colmenasPorApiarioBase = collect([$apiario->nombre => $col]);
+            $apiariosBaseSeleccionados = [$apiario->nombre];
         }
 
         return view('colmenas.index', compact(
             'apiario',
             'colmenasPorApiarioBase',
-            'apiariosBaseSeleccionados'
+            'apiariosBaseSeleccionados',
+            'mostrarTitulos'
         ));
     }
 

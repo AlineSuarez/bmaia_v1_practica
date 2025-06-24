@@ -1,0 +1,793 @@
+:root {
+    /* Colores principales */
+    --primary: #f5a700;
+    --primary-dark: #d4940d;
+    --primary-light: #fff8e7;
+    --primary-alpha: rgba(245, 167, 0, 0.1);
+    --primary-gradient: linear-gradient(135deg, #f5a700 0%, #d4940d 100%);
+
+    /* Colores neutros */
+    --gray-50: #f9fafb;
+    --gray-100: #f3f4f6;
+    --gray-200: #e5e7eb;
+    --gray-300: #d1d5db;
+    --gray-400: #9ca3af;
+    --gray-500: #6b7280;
+    --gray-600: #4b5563;
+    --gray-700: #374151;
+    --gray-800: #1f2937;
+    --gray-900: #111827;
+
+    /* Sombras */
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+        0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+        0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
+        0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+.main-layout {
+    min-height: 100vh;
+    padding: 1.5rem;
+}
+
+.container {
+    max-width: 100%;
+    margin: 0 auto;
+}
+
+.page-header {
+    background: linear-gradient(135deg, #ffffff 0%, var(--gray-50) 100%);
+    padding: 2.5rem;
+    border-radius: 1rem;
+    box-shadow: var(--shadow-lg);
+    margin-bottom: 2rem;
+    border-left: 6px solid var(--primary);
+    position: relative;
+    overflow: hidden;
+}
+
+.page-header::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 100px;
+    height: 100px;
+    background: var(--primary-alpha);
+    border-radius: 50%;
+    transform: translate(30px, -30px);
+}
+
+.page-title {
+    font-size: 2.25rem;
+    font-weight: 800;
+    color: var(--gray-900);
+    margin: 0 0 0.5rem 0;
+    letter-spacing: -0.025em;
+    position: relative;
+    z-index: 1;
+}
+
+.apiario-info {
+    color: var(--gray-600);
+    font-size: 1.125rem;
+    margin-bottom: 1.5rem;
+    font-weight: 500;
+    position: relative;
+    z-index: 1;
+}
+
+.apiario-stats {
+    display: flex;
+    gap: 2rem;
+    flex-wrap: wrap;
+    position: relative;
+    z-index: 1;
+}
+
+.stat-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    color: var(--gray-700);
+    font-size: 0.95rem;
+    font-weight: 500;
+    padding: 0.5rem 0;
+    transition: color 0.2s ease;
+}
+
+.stat-item:hover {
+    color: var(--primary-dark);
+}
+
+.stat-icon {
+    width: 24px;
+    height: 24px;
+    background: var(--primary-gradient);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1rem;
+    box-shadow: var(--shadow-md);
+    transition: transform 0.2s ease;
+}
+
+.stat-item:hover .stat-icon {
+    transform: scale(1.1);
+}
+
+.section-group {
+    background: white;
+    border-radius: 1rem;
+    box-shadow: var(--shadow-md);
+    margin-bottom: 2rem;
+    overflow: hidden;
+    transition: box-shadow 0.3s ease;
+    border: 1px solid var(--gray-100);
+}
+
+.section-group:hover {
+    box-shadow: var(--shadow-lg);
+}
+
+.section-title {
+    font-size: 1.375rem;
+    font-weight: 700;
+    color: var(--gray-800);
+    margin: 0;
+    padding: 2rem 2.5rem;
+    background: var(--primary-gradient);
+    color: white;
+    position: relative;
+    overflow: hidden;
+}
+
+.section-title::before {
+    content: "";
+    position: absolute;
+    top: -50%;
+    right: -20px;
+    width: 80px;
+    height: 200%;
+    background: rgba(255, 255, 255, 0.1);
+    transform: rotate(15deg);
+    transition: right 0.3s ease;
+}
+
+.section-group:hover .section-title::before {
+    right: 100%;
+}
+
+.section-title i {
+    margin-right: 0.5rem;
+    opacity: 0.9;
+}
+
+.colmenas-container {
+    padding: 2.5rem;
+}
+
+.colmenas-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 2px solid var(--gray-100);
+    position: relative;
+}
+
+.colmenas-info::after {
+    content: "";
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 60px;
+    height: 2px;
+    background: var(--primary-gradient);
+    border-radius: 1px;
+}
+
+.colmenas-count {
+    color: var(--gray-600);
+    font-size: 0.95rem;
+    font-weight: 500;
+}
+
+.colmenas-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(65px, 1fr));
+    gap: 1rem;
+    padding: 1rem;
+    background: linear-gradient(135deg, var(--gray-50) 0%, #ffffff 100%);
+    border-radius: 0.75rem;
+    border: 1px solid var(--gray-200);
+}
+
+.colmena-card {
+    width: 65px;
+    height: 65px;
+    border: 2px solid var(--gray-300);
+    border-radius: 0.75rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    background: linear-gradient(135deg, #ffffff 0%, var(--gray-50) 100%);
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+}
+
+.colmena-card.active {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px var(--primary-alpha);
+    background: linear-gradient(135deg, #ffffff 0%, var(--primary-light) 100%);
+    transform: translateY(-2px) scale(1.02);
+}
+
+.colmena-card:hover {
+    border-color: var(--primary);
+    box-shadow: var(--shadow-lg);
+    transform: translateY(-3px) scale(1.02);
+    background: linear-gradient(135deg, #ffffff 0%, var(--primary-light) 100%);
+}
+
+.colmena-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.8),
+        transparent
+    );
+    transition: left 0.5s ease;
+}
+
+.colmena-card:hover::before {
+    left: 100%;
+}
+
+.colmena-card::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: var(--gray-300);
+    transition: all 0.3s ease;
+}
+
+.colmena-card:hover::after {
+    background: var(--primary-gradient);
+    height: 4px;
+}
+
+.colmena-icon {
+    font-size: 1.125rem;
+    color: var(--gray-500);
+    margin-bottom: 3px;
+    transition: all 0.3s ease;
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.1));
+}
+
+.colmena-card:hover .colmena-icon {
+    color: var(--primary-dark);
+    transform: scale(1.15);
+    filter: drop-shadow(0 2px 4px rgba(245, 167, 0, 0.3));
+}
+
+.colmena-number {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--gray-700);
+    line-height: 1;
+    transition: color 0.3s ease;
+}
+
+.colmena-card:hover .colmena-number {
+    color: var(--primary-dark);
+}
+
+.empty-state {
+    text-align: center;
+    padding: 4rem 2rem;
+    color: var(--gray-500);
+    font-style: italic;
+    background: linear-gradient(135deg, var(--gray-50) 0%, #ffffff 100%);
+    border-radius: 0.75rem;
+    border: 2px dashed var(--gray-300);
+    transition: all 0.3s ease;
+}
+
+.empty-state:hover {
+    border-color: var(--primary-alpha);
+    background: linear-gradient(135deg, var(--primary-light) 0%, #ffffff 100%);
+}
+
+.empty-state-icon {
+    font-size: 2.5rem;
+    margin-bottom: 1.5rem;
+    color: var(--gray-400);
+    transition: color 0.3s ease;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+}
+
+.empty-state:hover .empty-state-icon {
+    color: var(--primary);
+}
+
+.qr-tooltip {
+    position: absolute;
+    background: linear-gradient(135deg, #ffffff 0%, var(--gray-50) 100%);
+    padding: 1rem;
+    border: 2px solid var(--primary);
+    border-radius: 1rem;
+    display: block;
+    z-index: 1000;
+    box-shadow: var(--shadow-xl);
+    pointer-events: none;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(10px) scale(0.95);
+    transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+    backdrop-filter: blur(10px);
+}
+
+.qr-tooltip.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0) scale(1);
+}
+
+.qr-tooltip.updating {
+    transition: all 0.1s ease;
+    transform: translateY(-2px) scale(0.98);
+}
+
+.qr-tooltip img {
+    border-radius: 0.5rem;
+    display: block;
+    box-shadow: var(--shadow-md);
+    transition: transform 0.2s ease;
+}
+
+.qr-tooltip.updating img {
+    transform: scale(0.95);
+}
+
+.qr-tooltip::after {
+    content: "";
+    position: absolute;
+    border: 10px solid transparent;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+    transition: all 0.2s ease;
+}
+
+.qr-tooltip::before {
+    content: "";
+    position: absolute;
+    border: 8px solid transparent;
+    z-index: 1;
+    transition: all 0.2s ease;
+}
+
+.qr-tooltip.top::after {
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border-top-color: var(--primary);
+}
+
+.qr-tooltip.top::before {
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border-top-color: white;
+    margin-top: -2px;
+}
+
+.qr-tooltip.bottom::after {
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border-bottom-color: var(--primary);
+}
+
+.qr-tooltip.bottom::before {
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border-bottom-color: white;
+    margin-bottom: -2px;
+}
+
+.qr-tooltip.left::after {
+    top: 50%;
+    left: 100%;
+    transform: translateY(-50%);
+    border-left-color: var(--primary);
+}
+
+.qr-tooltip.left::before {
+    top: 50%;
+    left: 100%;
+    transform: translateY(-50%);
+    border-left-color: white;
+    margin-left: -2px;
+}
+
+.qr-tooltip.right::after {
+    top: 50%;
+    right: 100%;
+    transform: translateY(-50%);
+    border-right-color: var(--primary);
+}
+
+.qr-tooltip.right::before {
+    top: 50%;
+    right: 100%;
+    transform: translateY(-50%);
+    border-right-color: white;
+    margin-right: -2px;
+}
+
+.colmena-card {
+    width: 65px;
+    height: 65px;
+    border: 2px solid var(--gray-300);
+    border-radius: 0.75rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    background: linear-gradient(135deg, #ffffff 0%, var(--gray-50) 100%);
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+}
+
+.colmena-card.active {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px var(--primary-alpha);
+    background: linear-gradient(135deg, #ffffff 0%, var(--primary-light) 100%);
+    transform: translateY(-2px) scale(1.02);
+}
+
+.colmena-card:hover {
+    border-color: var(--primary);
+    box-shadow: var(--shadow-lg);
+    transform: translateY(-3px) scale(1.02);
+    background: linear-gradient(135deg, #ffffff 0%, var(--primary-light) 100%);
+}
+
+@media (max-width: 1200px) {
+    .colmenas-grid {
+        grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+        gap: 0.875rem;
+    }
+
+    .colmena-card {
+        width: 60px;
+        height: 60px;
+    }
+}
+
+@media (max-width: 768px) {
+    .main-layout {
+        padding: 1rem;
+    }
+
+    .page-header {
+        padding: 2rem;
+        border-radius: 0.75rem;
+    }
+
+    .page-title {
+        font-size: 1.75rem;
+    }
+
+    .apiario-stats {
+        gap: 1.5rem;
+    }
+
+    .colmenas-container {
+        padding: 1.5rem;
+    }
+
+    .colmenas-grid {
+        grid-template-columns: repeat(auto-fill, minmax(55px, 1fr));
+        gap: 0.75rem;
+        padding: 0.75rem;
+    }
+
+    .colmena-card {
+        width: 55px;
+        height: 55px;
+    }
+
+    .colmena-icon {
+        font-size: 1rem;
+    }
+
+    .colmena-number {
+        font-size: 0.7rem;
+    }
+
+    .qr-tooltip {
+        padding: 0.75rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .page-header {
+        padding: 1.5rem;
+    }
+
+    .page-title {
+        font-size: 1.5rem;
+    }
+
+    .apiario-stats {
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .colmenas-grid {
+        grid-template-columns: repeat(auto-fill, minmax(50px, 1fr));
+        gap: 0.5rem;
+    }
+
+    .colmena-card {
+        width: 50px;
+        height: 50px;
+    }
+}
+
+@keyframes shimmer {
+    0% {
+        transform: translateX(-100%);
+    }
+    100% {
+        transform: translateX(100%);
+    }
+}
+
+.section-group {
+    animation: fadeInUp 0.6s ease-out;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.colmena-card.loading {
+    pointer-events: none;
+    opacity: 0.7;
+}
+
+.colmena-card.loading::before {
+    animation: shimmer 1.5s infinite;
+}
+
+.back-button-container {
+    margin-bottom: 1.5rem;
+}
+
+.back-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.25rem;
+    background: white;
+    border: 2px solid var(--gray-300);
+    border-radius: 0.75rem;
+    color: var(--gray-700);
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
+    box-shadow: var(--shadow-sm);
+}
+
+.back-button:hover {
+    background: var(--gray-50);
+    border-color: var(--primary);
+    color: var(--primary-dark);
+    transform: translateX(-2px);
+    box-shadow: var(--shadow-md);
+    text-decoration: none;
+}
+
+.back-button i {
+    font-size: 0.9rem;
+    transition: transform 0.2s ease;
+}
+
+.back-button:hover i {
+    transform: translateX(-2px);
+}
+
+.page-header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1.5rem;
+}
+
+.page-header-main {
+    flex: 1;
+}
+
+.page-header-actions {
+    display: flex;
+    gap: 1rem;
+    flex-shrink: 0;
+}
+
+.btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.875rem 1.5rem;
+    background: var(--primary-gradient);
+    color: white;
+    border: none;
+    border-radius: 0.75rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    box-shadow: var(--shadow-md);
+    cursor: pointer;
+}
+
+.btn-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-lg);
+    text-decoration: none;
+    color: white;
+}
+
+.btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background: white;
+    border: 2px solid var(--gray-300);
+    border-radius: 0.5rem;
+    color: var(--gray-700);
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+.btn-secondary:hover {
+    border-color: var(--primary);
+    color: var(--primary-dark);
+    background: var(--primary-light);
+}
+
+.btn-sm {
+    padding: 0.5rem 0.875rem;
+    font-size: 0.875rem;
+}
+
+.colmenas-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 2px solid var(--gray-100);
+    position: relative;
+}
+
+.colmenas-actions {
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+}
+
+.colmenas-grid.compact-view {
+    grid-template-columns: repeat(auto-fill, minmax(45px, 1fr));
+    gap: 0.5rem;
+}
+
+.compact-view .colmena-card {
+    width: 45px;
+    height: 45px;
+}
+
+.compact-view .colmena-icon {
+    font-size: 0.8rem;
+    margin-bottom: 1px;
+}
+
+.compact-view .colmena-number {
+    font-size: 0.6rem;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 4rem 2rem;
+    color: var(--gray-500);
+    background: linear-gradient(135deg, var(--gray-50) 0%, #ffffff 100%);
+    border-radius: 0.75rem;
+    border: 2px dashed var(--gray-300);
+    transition: all 0.3s ease;
+}
+
+.empty-state .btn-primary {
+    margin-top: 1rem;
+}
+
+@media (max-width: 768px) {
+    .page-header-content {
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .page-header-actions {
+        width: 100%;
+        justify-content: stretch;
+    }
+
+    .btn-primary,
+    .btn-secondary {
+        flex: 1;
+        justify-content: center;
+    }
+
+    .colmenas-info {
+        flex-direction: column;
+        gap: 1rem;
+        align-items: stretch;
+    }
+
+    .colmenas-actions {
+        justify-content: center;
+    }
+
+    .back-button {
+        padding: 0.625rem 1rem;
+        font-size: 0.875rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .back-button span {
+        display: none;
+    }
+
+    .back-button {
+        padding: 0.75rem;
+        border-radius: 50%;
+        width: 48px;
+        height: 48px;
+        justify-content: center;
+    }
+}
