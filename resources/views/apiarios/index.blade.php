@@ -65,7 +65,7 @@
                         <span class="tab-badge">{{ count($apiariosBase) }}</span>
                     </div>
                     <div class="tab-line">
-                        <span class="tab-title" style="font-size: small;" >Apiarios Temporales</span>
+                        <span class="tab-title" style="font-size: small;">Apiarios Temporales</span>
                         <span class="tab-badge">{{ count($apiariosTemporales) }}</span>
                     </div>
                 </div>

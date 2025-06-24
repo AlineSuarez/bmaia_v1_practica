@@ -867,6 +867,7 @@ button {
 }
 
 .action-btn.primary {
+    font-size: small;
     background-color: var(--color-primary);
     color: white;
     box-shadow: 0 2px 4px rgba(245, 158, 11, 0.3);
@@ -879,6 +880,7 @@ button {
 }
 
 .action-btn.secondary {
+    font-size: small;
     background-color: var(--color-gray-100);
     color: var(--color-gray-700);
 }
@@ -2059,4 +2061,267 @@ button {
     opacity: 1;
     visibility: visible;
     transition: opacity 0.3s, visibility 0s;
+}
+
+/* Sistema de pestañas mejorado */
+.tabs-container {
+    margin-bottom: 2rem;
+    width: 100%;
+}
+
+.tabs-nav {
+    display: flex;
+    width: 100%;
+    padding: 0.5rem;
+    border-bottom: 2px solid var(--color-gray-200);
+    background: linear-gradient(
+        135deg,
+        rgba(255, 255, 255, 0.98),
+        rgba(255, 251, 235, 0.95)
+    );
+    backdrop-filter: blur(15px);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-sm);
+    overflow: visible;
+    position: relative;
+}
+
+.tabs-nav::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: var(--radius-xl);
+    background: linear-gradient(
+        135deg,
+        var(--color-amber-50),
+        rgba(255, 255, 255, 0.8)
+    );
+    opacity: 0.6;
+    z-index: -1;
+}
+
+.tab-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    flex: 1;
+    padding: 0.875rem 0.75rem;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--color-gray-600);
+    transition: all var(--transition-normal);
+    border-radius: var(--radius-lg);
+    white-space: nowrap;
+    position: relative;
+    min-height: 50px;
+    text-align: center;
+}
+
+.tab-btn:hover {
+    background: rgba(245, 158, 11, 0.08);
+    color: var(--color-primary-dark);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(245, 158, 11, 0.15);
+}
+
+.tab-btn.active {
+    background: linear-gradient(
+        135deg,
+        var(--color-primary),
+        var(--color-primary-dark)
+    );
+    color: white;
+    box-shadow: 0 4px 12px rgba(245, 158, 11, 0.4);
+    transform: translateY(-2px);
+}
+
+.tab-btn.active::after {
+    content: "";
+    position: absolute;
+    bottom: -0.5rem;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 30px;
+    height: 3px;
+    background: linear-gradient(
+        135deg,
+        var(--color-primary),
+        var(--color-primary-dark)
+    );
+    border-radius: var(--radius-full);
+    box-shadow: 0 2px 4px rgba(245, 158, 11, 0.3);
+}
+
+.tab-btn i {
+    font-size: 1rem;
+    flex-shrink: 0;
+}
+
+.tab-btn span:not(.tab-count) {
+    font-weight: 600;
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.tab-count {
+    background: rgba(255, 255, 255, 0.25);
+    color: inherit;
+    padding: 0.2rem 0.4rem;
+    border-radius: var(--radius-full);
+    font-size: 0.7rem;
+    font-weight: 700;
+    min-width: 18px;
+    text-align: center;
+    line-height: 1;
+    flex-shrink: 0;
+    margin-left: 0.25rem;
+}
+
+.tab-btn.active .tab-count {
+    background: rgba(255, 255, 255, 0.35);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.tab-btn:not(.active) .tab-count {
+    background: var(--color-gray-200);
+    color: var(--color-gray-600);
+}
+
+/* Contenido de pestañas */
+.tab-content {
+    display: none;
+    animation: fadeInUp 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.tab-content.active {
+    display: block;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(15px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Responsive optimizado */
+@media (max-width: 1024px) {
+    .tab-btn {
+        font-size: 0.8rem;
+        padding: 0.75rem 0.5rem;
+        gap: 0.375rem;
+    }
+
+    .tab-btn span:not(.tab-count) {
+        display: none;
+    }
+
+    .tab-btn i {
+        font-size: 1.1rem;
+    }
+
+    .tab-count {
+        margin-left: 0;
+    }
+}
+
+@media (max-width: 768px) {
+    .tabs-nav {
+        padding: 0.375rem;
+        gap: 0.25rem;
+    }
+
+    .tab-btn {
+        flex-direction: column;
+        padding: 0.625rem 0.375rem;
+        font-size: 0.75rem;
+        min-height: 45px;
+        gap: 0.25rem;
+    }
+
+    .tab-btn i {
+        font-size: 1rem;
+    }
+
+    .tab-btn.active::after {
+        display: none;
+    }
+
+    .tab-btn.active {
+        border-bottom: 3px solid var(--color-primary);
+    }
+
+    .tab-count {
+        font-size: 0.65rem;
+        padding: 0.15rem 0.3rem;
+        margin-left: 0;
+        margin-top: 0.1rem;
+    }
+}
+
+@media (max-width: 540px) {
+    .tab-btn {
+        padding: 0.5rem 0.25rem;
+        min-height: 40px;
+    }
+
+    .tab-btn i {
+        font-size: 0.9rem;
+    }
+
+    .tab-count {
+        font-size: 0.6rem;
+        min-width: 16px;
+        padding: 0.1rem 0.25rem;
+    }
+}
+
+/* Mejoras visuales adicionales */
+.tabs-nav:hover .tab-btn:not(:hover):not(.active) {
+    opacity: 0.7;
+}
+
+.tab-btn:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.3);
+}
+
+.tab-btn.active:focus {
+    box-shadow: 0 4px 12px rgba(245, 158, 11, 0.4),
+        0 0 0 3px rgba(245, 158, 11, 0.3);
+}
+
+/* Indicador de carga suave */
+.tab-content.loading {
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+/* Animación para el cambio de pestañas */
+.tabs-nav {
+    position: relative;
+    overflow: visible;
+}
+
+.tab-indicator {
+    position: absolute;
+    bottom: -2px;
+    height: 2px;
+    background: linear-gradient(
+        135deg,
+        var(--color-primary),
+        var(--color-primary-dark)
+    );
+    border-radius: var(--radius-full);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 1;
 }
