@@ -10,6 +10,13 @@
             <link rel="stylesheet" href="{{ asset('./css/components/home-user/create/medicines.css') }}">
         </header>
 
+        @if(session('error'))
+            <div class="alert alert-danger">
+                {{ session('error') }}
+            </div>
+        @endif
+
+
         <form action="{{ route('apiarios.medicamentos-registro.store', $apiario) }}" method="POST" class="medication-form">
             @csrf
 
@@ -43,35 +50,36 @@
                         <span class="field-helper">Seleccione la fecha de aplicación del medicamento</span>
                     </div>
 
-                    <div class="form-field">
-                        <label for="num_colmenas_tratadas" class="field-label">
-                            <span class="label-icon">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
-                                    <polyline points="9,22 9,12 15,12 15,22" />
-                                </svg>
-                            </span>
-                            N° de Colmenas Tratadas
-                        </label>
-                        <input type="number" id="num_colmenas_tratadas" name="num_colmenas_tratadas"
-                            class="field-input number-input" min="1" placeholder="0"
-                            value="{{ old('num_colmenas_tratadas') }}" required>
-                        <span class="field-helper">Cantidad de colmenas que recibieron el tratamiento</span>
-                    </div>
+                    <div class="form-field full-width" x-data="{ motivo: '' }">
+                        <label for="motivo_tratamiento" class="field-label">Motivo del Tratamiento</label>
 
-                    <div class="form-field full-width">
-                        <label for="motivo_tratamiento" class="field-label">
-                            <span class="label-icon">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
-                                </svg>
-                            </span>
-                            Motivo del Tratamiento
-                        </label>
-                        <input type="text" id="motivo_tratamiento" name="motivo_tratamiento" class="field-input text-input"
-                            placeholder="Ej: Varroa, Nosema, Loque americana, etc." value="{{ old('motivo_tratamiento') }}"
-                            required>
+                        <select name="motivo_tratamiento" class="field-input text-input" x-model="motivo" required>
+                            <option value="">Seleccione...</option>
+                            <option value="varroa">Varroa</option>
+                            <option value="nosema">Nosema</option>
+                            <option value="otro">Otro</option>
+                        </select>
+
+                        <input
+                            type="text"
+                            name="motivo_otro"
+                            class="field-input text-input mt-2"
+                            placeholder="Especifique otro motivo"
+                            x-show="motivo === 'otro'"
+                            x-transition
+                        >
+
                         <span class="field-helper">Indique la enfermedad o condición que motivó el tratamiento</span>
+
+                        {{-- Formulario PCC4 (varroa) --}}
+                        <div x-show="motivo === 'varroa'" x-transition>
+                            @include('sistemaexperto.partials.pcc4')
+                        </div>
+
+                        {{-- Formulario PCC5 (nosema) --}}
+                        <div x-show="motivo === 'nosema'" x-transition>
+                            @include('sistemaexperto.partials.pcc5')
+                        </div>
                     </div>
 
                     <div class="form-field">
@@ -160,8 +168,9 @@
                         <div class="form-field">
                             <label for="periodo_resguardo" class="field-label">Período de Resguardo</label>
                             <input type="text" id="periodo_resguardo" name="periodo_resguardo"
-                                class="field-input text-input" placeholder="Ej: 30 días, 45 días, etc."
+                                class="field-input text-input" placeholder="Ej: 30, 45, etc."
                                 value="{{ old('periodo_resguardo') }}" required>
+                            <span class="field-helper">Tiempo de espera en días antes de cosechar miel</span>
                         </div>
                     </div>
                 </div>
@@ -239,6 +248,10 @@
             document.addEventListener('DOMContentLoaded', function () {
                 const form = document.querySelector('.medication-form');
                 const numberInputs = form.querySelectorAll('.number-input');
+                const motivoSelect = document.getElementById('motivo_tratamiento');
+                const motivoOtro = document.getElementById('motivo_otro');
+                const pcc4Form = document.getElementById('pcc4-form');
+                const pcc5Form = document.getElementById('pcc5-form');
 
                 // Validación de números
                 numberInputs.forEach(input => {
@@ -275,6 +288,18 @@
                 sections.forEach(section => {
                     observer.observe(section);
                 });
+
+                function toggleForms() {
+                    const selected = motivoSelect.value;
+                    motivoOtro.style.display = (selected === 'otro') ? 'block' : 'none';
+                    pcc4Form.style.display = (selected === 'varroa') ? 'block' : 'none';
+                    pcc5Form.style.display = (selected === 'nosema') ? 'block' : 'none';
+                }
+
+                if (motivoSelect) {
+                    motivoSelect.addEventListener('change', toggleForms);
+                    toggleForms(); // Ejecutar al cargar
+                }
             });
         </script>
     @endpush

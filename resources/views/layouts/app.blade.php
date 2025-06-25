@@ -44,6 +44,9 @@
     <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/es.js"></script>
 
 
+    <!-- reactividad-->
+     <script src="//unpkg.com/alpinejs" defer></script>
+
 </head>
 
 <body>

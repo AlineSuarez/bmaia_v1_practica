@@ -45,7 +45,10 @@ class Visita extends Model
         'rut', 
         'motivo',
         'telefono',
-        'firma', 
+        'firma',
+        // reconstruccion de uso de medicamentos del cuaderno de campo
+        'presencia_varroa_id',
+        'presencia_nosemosis_id',
     ];
 
     public function toPrompt()
@@ -75,5 +78,15 @@ class Visita extends Model
     public function usuario()
     {
         return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function presenciaVarroa()
+    {
+        return $this->belongsTo(PresenciaVarroa::class, 'presencia_varroa_id');
+    }
+
+    public function presenciaNosemosis()
+    {
+        return $this->belongsTo(PresenciaNosemosis::class, 'presencia_nosemosis_id');
     }
 }
