@@ -301,7 +301,7 @@
 
 .dashboard-container .info-card-text {
     font-size: 0.85rem;
-    color: rgba(255, 255, 255, 0.9);
+    color: black;
     line-height: 1.4;
     margin-top: auto;
     position: relative;
