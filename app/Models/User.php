@@ -40,8 +40,9 @@ class User extends Authenticatable
         'plan',
         'fecha_vencimiento',
         'webpay_status',
-        'direccion', 
+        'direccion',
         'profile_picture',
+        'last_name',
     ];
 
     /**
@@ -64,7 +65,7 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
-            'invoice_email_opt_in'=> 'boolean',
+            'invoice_email_opt_in' => 'boolean',
         ];
     }
 
@@ -98,7 +99,7 @@ class User extends Authenticatable
     {
         return $this->hasMany(Payment::class);
     }
-    
+
     public function alerts()
     {
         return $this->hasMany(\App\Models\Alert::class);
@@ -123,5 +124,5 @@ class User extends Authenticatable
     {
         return $this->hasOne(\App\Models\Preference::class);
     }
-    
+
 }

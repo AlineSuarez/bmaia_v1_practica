@@ -17,9 +17,18 @@
         <div class="apicola-sidebar-header">
             <div class="apicola-logo-container">
                 <div class="apicola-logo-icon">
-                    <i class="fas fas fa-user"></i>
+                    @if(Auth::check() && Auth::user()->profile_picture)
+                        <img src="{{ asset('storage/' . Auth::user()->profile_picture) }}" alt="Foto de perfil"
+                            style="width: 40px; height: 40px; border-radius: 8px; object-fit: cover;">
+                    @else
+                        <i class="fas fa-user"></i>
+                    @endif
                 </div>
-                <h3 class="apicola-logo-text">Usuario</h3>
+                @if(Auth::check())
+                    <h3 class="apicola-logo-text">
+                        {{ Auth::user()->name }}
+                    </h3>
+                @endif
             </div>
             <button id="sidebarToggleInside" class="apicola-toggle-inside" aria-label="Cerrar menú">
                 <i class="fas fa-times"></i>

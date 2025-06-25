@@ -21,7 +21,12 @@
                 <div class="apiario-navbar-user">
                     <div class="apiario-user-dropdown">
                         <button class="apiario-user-button" id="apiarioUserDropdownBtn" aria-expanded="false">
-                            <img src="/img/avatar/avatar_03.svg" alt="Usuario" class="apiario-user-avatar">
+                            @if(Auth::user()->profile_picture)
+                                <img src="{{ asset('storage/' . Auth::user()->profile_picture) }}" alt="Usuario"
+                                    class="apiario-user-avatar">
+                            @else
+                                <img src="{{ asset('img/avatar/avatar_03.svg') }}" alt="Usuario" class="apiario-user-avatar">
+                            @endif
                             <span class="apiario-user-name">Mi Cuenta</span>
                             <i class="fas fa-chevron-down"></i>
                         </button>
@@ -30,9 +35,9 @@
                             <a class="apiario-dropdown-item" href="{{route('user.settings')}}">
                                 <i class="fas fa-cog apiario-icon-gray"></i>Configuración de cuenta
                             </a>
-                            <a class="apiario-dropdown-item" href="#">
-                                <i class="fas fa-question-circle apiario-icon-gray"></i>Ayuda
-                            </a>
+                            <!-- <a class="apiario-dropdown-item" href="#">
+                                        <i class="fas fa-question-circle apiario-icon-gray"></i>Ayuda
+                                    </a> -->
                             <div class="apiario-dropdown-divider"></div>
                             <a class="apiario-dropdown-item apiario-logout-item" href="{{route('logout')}}"
                                 onclick="event.preventDefault(); document.getElementById('apiario-logout-form').submit();">

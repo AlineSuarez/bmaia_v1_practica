@@ -141,8 +141,7 @@
                                         <select id="region" class="form-select" name="id_region">
                                             <option value="">Seleccione una región</option>
                                             @foreach($regiones as $region)
-                                                <option
-                                                    value="{{ $region->id }} {{ $user->id_region == $region->id ? 'selected' : '' }}">
+                                                <option value="{{ $region->id }}" {{ $user->id_region == $region->id ? 'selected' : '' }}>
                                                     {{ $region->nombre }}
                                                 </option>
                                             @endforeach
@@ -152,7 +151,7 @@
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label for="comuna">Comuna</label>
-                                        <select id="comuna" class="form-select" name="id_comuna" disabled>
+                                        <select id="comuna" class="form-select" name="id_comuna" {{ $user->id_comuna ? '' : 'disabled' }}>
                                             <option value="">Seleccione una comuna</option>
                                         </select>
                                     </div>
@@ -181,6 +180,15 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="profile_picture">Foto de Perfil</label>
+
+                                        <!-- Previsualización de la imagen -->
+                                        <div class="profile-picture-preview mb-3">
+                                            <img id="imagePreview"
+                                                src="{{ $user->profile_picture ? asset('storage/' . $user->profile_picture) : asset('img/avatar/avatar_02.svg') }}"
+                                                alt="Vista previa"
+                                                style="width: 150px; height: 150px; border-radius: 50%; object-fit: cover; border: 3px solid #dee2e6; display: block; margin: 0 auto;">
+                                        </div>
+
                                         <input type="file" class="form-control" id="profile_picture" name="profile_picture"
                                             accept="image/*">
                                         <small class="form-text text-muted">Formatos aceptados: JPG, PNG (máx. 2MB)</small>
@@ -1031,6 +1039,32 @@
                 loadComunas(billingRegionSelect.value, billingComunaSelect, userBillingComunaId);
             }
 
+            // Previsualización de imagen de perfil
+            const profilePictureInput = document.getElementById('profile_picture');
+            const imagePreview = document.getElementById('imagePreview');
+
+            if (profilePictureInput) {
+                profilePictureInput.addEventListener('change', function (event) {
+                    const file = event.target.files[0];
+
+                    if (file) {
+                        // Validar que sea una imagen
+                        if (file.type.startsWith('image/')) {
+                            const reader = new FileReader();
+
+                            reader.onload = function (e) {
+                                imagePreview.src = e.target.result;
+                            };
+
+                            reader.readAsDataURL(file);
+                        } else {
+                            alert('Por favor selecciona un archivo de imagen válido');
+                            profilePictureInput.value = '';
+                        }
+                    }
+                });
+            }
+
             document.querySelectorAll('.toggle-password').forEach(button => {
                 button.addEventListener('click', function () {
                     const targetId = this.getAttribute('data-target');
@@ -1086,6 +1120,10 @@
             var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
             var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
                 return new bootstrap.Tooltip(tooltipTriggerEl)
+            });
+
+            document.querySelector('.user-data-form').addEventListener('submit', function () {
+                comunaSelect.disabled = false;
             });
         });
     </script>
