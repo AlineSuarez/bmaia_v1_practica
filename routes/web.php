@@ -71,7 +71,7 @@ Route::middleware(['auth'])->group(function () {
     // trashumancia - temporal
     Route::post('/trashumancia/store', [TrashumanciaController::class, 'store'])->name('trashumancia.store');
     Route::post('/apiarios/{id}/archivar', [TrashumanciaController::class, 'archivar'])->name('apiarios.archivar');
-    Route::post('/apiarios/archivar-multiples', [TrashumanciaController::class,'archivarMultiples'])->name('apiarios.archivarMultiples');
+    Route::post('/apiarios/archivar-multiples', [TrashumanciaController::class, 'archivarMultiples'])->name('apiarios.archivarMultiples');
 
 
     Route::resource('visita', VisitaController::class);
@@ -92,10 +92,10 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/generate-document/medicamentos/{apiarioId}', [DocumentController::class, 'generateMedicamentsDocument'])->name('generate.document.medicamentos');
     Route::post('/apiarios/massDelete', [ApiarioController::class, 'massDelete'])->name('apiarios.massDelete');
     // Rutas para registro de Alimentación
-    Route::get('visitas/create3/{id_apiario}', [VisitaController::class,'createAlimentacion'])->name('visitas.create3');
-    Route::post('visitas/store3/{apiario}', [VisitaController::class,'storeAlimentacion'])->name('visitas.store3');
+    Route::get('visitas/create3/{id_apiario}', [VisitaController::class, 'createAlimentacion'])->name('visitas.create3');
+    Route::post('visitas/store3/{apiario}', [VisitaController::class, 'storeAlimentacion'])->name('visitas.store3');
     Route::get('/generate-document/alimentacion-record/{apiarioId}', [DocumentController::class, 'generateAlimentacionDocument'])->name('generate.document.alimentacion');
-}); 
+});
 
 // Redirigir a Google para autenticación
 Route::get('login/google', function () {
@@ -158,6 +158,7 @@ Route::prefix('apiarios/{apiario}/colmenas')->name('colmenas.')->group(function 
     Route::put('/{colmena}', [ColmenaController::class, 'update'])->name('update');
     Route::delete('/{colmena}', [ColmenaController::class, 'destroy'])->name('destroy');
     Route::get('/{colmena}/historial', [ColmenaController::class, 'historial'])->name('historial');
+    Route::get('/{colmena}/historial/export', [ColmenaController::class, 'exportHistorial'])->name('historial.export');
 });
 
 
@@ -274,7 +275,7 @@ Route::get('/apiarios/{apiario}/obtener-consejo', [App\Http\Controllers\ApiarioC
 
 
 // Nuevas rutas para el sistema experto
-Route::prefix('sistemaexperto')->name('sistemaexperto.')->middleware(['auth'])->group(function(){
+Route::prefix('sistemaexperto')->name('sistemaexperto.')->middleware(['auth'])->group(function () {
     // Listado de apiarios para sistema experto
     Route::get('/', [SistemaExpertoController::class, 'index'])->name('index');
     // Formulario de creación para un apiario

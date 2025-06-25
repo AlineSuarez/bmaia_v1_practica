@@ -6,8 +6,8 @@ use App\Models\Apiario;
 use App\Models\Colmena;
 use App\Models\MovimientoColmena;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class ColmenaController extends Controller
 {
@@ -90,8 +90,12 @@ class ColmenaController extends Controller
 
     public function historial(Apiario $apiario, Colmena $colmena)
     {
-        $movimientos = $colmena->movimientos()->with(['origen', 'destino'])->orderByDesc('fecha_movimiento')->get();
-        return view('colmenas.historial', compact('colmena', 'apiario', 'movimientos'));
+        $movimientos = $colmena->movimientos()
+            ->with(['apiarioOrigen', 'apiarioDestino'])
+            ->orderByDesc('fecha_movimiento') // Más reciente primero para la vista
+            ->get();
+
+        return view('colmenas.historial', compact('apiario', 'colmena', 'movimientos'));
     }
 
     public function edit(Apiario $apiario, Colmena $colmena)
@@ -118,6 +122,103 @@ class ColmenaController extends Controller
         $colmena->delete();
 
         return redirect()->route('colmenas.index', $apiario->id)->with('success', 'Colmena eliminada.');
+    }
+
+    public function exportHistorial(Apiario $apiario, Colmena $colmena)
+    {
+        $movimientos = $colmena->movimientos()
+            ->with(['apiarioOrigen', 'apiarioDestino'])
+            ->orderByDesc('fecha_movimiento')
+            ->get();
+
+        // Estadísticas (igual que en historial web)
+        $apiariosVisitados = $movimientos->pluck('apiarioDestino.nombre')->unique()->filter()->count();
+        $tiempoEnActual = $movimientos->isNotEmpty() ?
+            \Carbon\Carbon::parse($movimientos->first()->fecha_movimiento)->diffForHumans(null, false, false, 2) : 'N/A';
+
+        // Convertir a español (igual que en historial web)
+        $tiempoEnActual = str_replace([
+            'seconds',
+            'second',
+            'minutes',
+            'minute',
+            'hours',
+            'hour',
+            'days',
+            'day',
+            'weeks',
+            'week',
+            'months',
+            'month',
+            'years',
+            'year',
+            'ago',
+            'from now',
+            'before',
+            'after'
+        ], [
+            'segundos',
+            'segundo',
+            'minutos',
+            'minuto',
+            'horas',
+            'hora',
+            'días',
+            'día',
+            'semanas',
+            'semana',
+            'meses',
+            'mes',
+            'años',
+            'año',
+            '',
+            'en',
+            'antes',
+            'después'
+        ], $tiempoEnActual);
+
+        // Apiario base (igual que en historial web)
+        $apiarioBase = null;
+        if ($movimientos->isNotEmpty()) {
+            $primerMovimiento = $movimientos->last();
+            $apiarioBase = $primerMovimiento->apiarioOrigen;
+            if (!$apiarioBase) {
+                $apiarioBase = $primerMovimiento->apiarioDestino;
+            }
+        } else {
+            $apiarioBase = $colmena->apiario;
+        }
+
+        // Resumen de ubicaciones (igual que en historial web)
+        $ubicacionesConTiempo = $movimientos->groupBy('apiarioDestino.nombre')->map(function ($group, $nombre) {
+            $movs = $group->sortBy('fecha_movimiento');
+            $primer = $movs->first();
+            $ultimo = $movs->last();
+
+            return [
+                'nombre' => $nombre ?: 'Sin especificar',
+                'visitas' => $group->count(),
+                'primera_visita' => $primer->fecha_movimiento,
+                'ultima_visita' => $ultimo->fecha_movimiento,
+                'tiempo_total' => abs((int) \Carbon\Carbon::parse($primer->fecha_movimiento)->diffInDays(\Carbon\Carbon::parse($ultimo->fecha_movimiento)))
+            ];
+        });
+
+        $data = [
+            'colmena' => $colmena,
+            'apiario' => $apiario,
+            'movimientos' => $movimientos,
+            'apiariosVisitados' => $apiariosVisitados,
+            'tiempoEnActual' => $tiempoEnActual,
+            'apiarioBase' => $apiarioBase,
+            'ubicacionesConTiempo' => $ubicacionesConTiempo,
+            'fechaGeneracion' => now()->format('d/m/Y H:i')
+        ];
+
+        $pdf = Pdf::loadView('documents.movimiento-colmenas', $data);
+        $filename = "historial_colmena_{$colmena->numero}_{$apiario->nombre}_" . now()->format('Y-m-d') . ".pdf";
+
+        return $pdf->download($filename);
     }
 
 }
