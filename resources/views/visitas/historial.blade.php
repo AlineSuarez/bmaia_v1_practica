@@ -312,7 +312,6 @@
                                                 <thead>
                                                     <tr>
                                                         <th>Fecha</th>
-                                                        <th>Colmenas Tratadas</th>
                                                         <th>Motivo</th>
                                                         <th>Nombre Comercial</th>
                                                         <th>Principio Activo</th>
@@ -330,7 +329,6 @@
                                                                     <span class="date-main">{{ \Carbon\Carbon::parse($visita->fecha_visita)->format('d/m/Y') }}</span>
                                                                 </div>
                                                             </td>
-                                                            <td class="number-cell">{{ $visita->num_colmenas_tratadas ?? 'N/A' }}</td>
                                                             <td class="motivo-treatment">{{ $visita->motivo_tratamiento ?? 'N/A' }}</td>
                                                             <td class="medication-name">{{ $visita->nombre_comercial_medicamento ?? 'N/A' }}</td>
                                                             <td class="active-ingredient">{{ $visita->principio_activo_medicamento ?? 'N/A' }}</td>
@@ -375,7 +373,7 @@
                                 @endif
                             </div>
                             <!-- Alimentaciones Tab -->
-                            <div class="tab-pane fade" id="medicamentos" role="tabpanel">
+                            <div class="tab-pane fade" id="alimentacion" role="tabpanel">  {{-- <- AQUÍ CAMBIAMOS EL ID --}}
                                 @if($apiario->visitas->where('tipo_visita', 'Alimentación')->isEmpty())
                                     <div class="no-data-message">
                                         <i class="fas fa-info-circle me-2"></i>
@@ -384,15 +382,15 @@
                                 @else
                                     <div class="table-container">
                                         <div class="table-header">
-                                            <h5><i class="fas fa-pills me-2"></i>Alimentación ({{ $apiario->visitas->where('tipo_visita', 'Alimentación')->count() }} registros)</h5>
-                                            <small class="text-muted">Historial de alimentose insumos utilizados en el apiario.</small>
+                                            <h5><i class="fas fa-utensils me-2"></i>Alimentación ({{ $apiario->visitas->where('tipo_visita', 'Alimentación')->count() }} registros)</h5>
+                                            <small class="text-muted">Historial de alimentos e insumos utilizados en el apiario.</small>
                                         </div>
                                         <div class="table-responsive">
-                                            <table class="custom-table medication-table" id="medicationTable">
+                                            <table class="custom-table" id="alimentacionTable"> {{-- <- Le ponemos un id único --}}
                                                 <thead>
                                                     <tr>
-                                                        <th>Tipo de Alimentacion</th>
-                                                        <th>Fecha de Aplicacións</th>
+                                                        <th>Tipo de Alimentación</th>
+                                                        <th>Fecha de Aplicación</th>
                                                         <th>Insumo Utilizado</th>
                                                         <th>Objetivo</th>
                                                         <th>Dosificación</th>
@@ -402,14 +400,12 @@
                                                 <tbody>
                                                     @foreach($apiario->visitas->where('tipo_visita', 'Alimentación')->sortByDesc('fecha_visita') as $visita)
                                                         <tr class="table-row" data-date="{{ $visita->fecha_visita }}">
-                                                            <td class="feeding-type">{{ $visita->estadoNutricional->tipo_alimentacion ?? 'N/A' }}</td>
-                                                            <td class="feeding-date">
-                                                                <span class="date-main">{{ \Carbon\Carbon::parse($visita->fecha_visita)->format('d/m/Y') }}</span>
-                                                            </td>
-                                                            <td class="feeding-supply">{{ $visita->estadoNutricional->insumo_utilizado ?? 'N/A' }}</td>
-                                                            <td class="feeding-objective">{{ $visita->estadoNutricional->objetivo ?? 'N/A' }}</td>
-                                                            <td class="feeding-dosage">{{ $visita->estadoNutricional->dosificacion ?? 'N/A' }}</td>
-                                                            <td class="feeding-method">{{ $visita->estadoNutricional->metodo_utilizado ?? 'N/A' }}</td>
+                                                            <td>{{ optional($visita->estadoNutricional)->tipo_alimentacion ?? 'N/A' }}</td>
+                                                            <td>{{ \Carbon\Carbon::parse($visita->fecha_visita)->format('d/m/Y') }}</td>
+                                                            <td>{{ optional($visita->estadoNutricional)->insumo_utilizado ?? 'N/A' }}</td>
+                                                            <td>{{ optional($visita->estadoNutricional)->objetivo ?? 'N/A' }}</td>
+                                                            <td>{{ optional($visita->estadoNutricional)->dosifiacion ?? 'N/A' }}</td>
+                                                            <td>{{ optional($visita->estadoNutricional)->metodo_utilizado ?? 'N/A' }}</td>
                                                         </tr>
                                                     @endforeach
                                                 </tbody>

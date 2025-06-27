@@ -11,6 +11,7 @@ class PresenciaVarroa extends Model
     protected $table = 'presencia_varroa';
 
     protected $fillable = [
+        'colmena_id',
         'diagnostico_visual',
         'muestreo_abejas_adultas',
         'muestreo_cria_operculada',

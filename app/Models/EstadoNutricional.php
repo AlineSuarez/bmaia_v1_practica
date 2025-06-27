@@ -11,13 +11,16 @@ class EstadoNutricional extends Model
     protected $table = 'estado_nutricional';
 
     protected $fillable = [
+        'colmena_id',
         'tipo_alimentacion',
         'fecha_aplicacion',
         'insumo_utilizado',
         'dosifiacion',
         'metodo_utilizado',
         // nuevo
+        'n_colmenas_tratadas',
         'objetivo',
+        
     ];
     public function visita()
     {

@@ -80,6 +80,11 @@ class Visita extends Model
         return $this->belongsTo(User::class, 'user_id');
     }
 
+    public function estadoNutricional()
+    {
+        return $this->belongsTo(EstadoNutricional::class, 'visita_id');
+    }
+
     public function presenciaVarroa()
     {
         return $this->belongsTo(PresenciaVarroa::class, 'presencia_varroa_id');

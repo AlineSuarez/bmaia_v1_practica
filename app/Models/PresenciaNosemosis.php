@@ -11,6 +11,7 @@ class PresenciaNosemosis extends Model
     protected $table = 'presencia_nosemosis';
 
     protected $fillable = [
+        'colmena_id',
         'signos_clinicos',
         'muestreo_laboratorio',
         // nuevos

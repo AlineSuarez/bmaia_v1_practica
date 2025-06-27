@@ -138,136 +138,242 @@ class VisitaController extends Controller
         return redirect()->route('visitas')->with('success', 'Registro de Inspección guardado correctamente.');
     }
 
+    /*
     public function storeMedicamentos(Request $request, Apiario $apiario)
     {
-        // Validación de todos los campos que pueden venir del formulario de medicamentos
-        $validatedData = $request->validate([
-            'fecha' => 'required|date',
-            'motivo_tratamiento' => 'required|string', // 'varroa', 'nosema', 'otro'
-            'motivo_otro' => 'nullable|string|required_if:motivo_tratamiento,otro', // Requerido si 'otro' está seleccionado
-            'responsable' => 'required|string',
-            'nombre_comercial_medicamento' => 'required|string',
-            'principio_activo_medicamento' => 'required|string',
-            'periodo_resguardo' => 'required|string',
-            'observaciones' => 'nullable|string',
-            // Campos de Varroa (PCC4) - se validan si están presentes, no son estrictamente requeridos por el form si no se selecciona 'varroa'
-            'varroa_diagnostico_visual' => 'nullable|string',
-            'varroa_muestreo_abejas_adultas' => 'nullable|string',
-            'varroa_muestreo_cria_operculada' => 'nullable|string',
-            'varroa_metodo_diagnostico' => 'nullable|string',
-            'varroa_tratamiento' => 'nullable|string',
-            'varroa_fecha_aplicacion' => 'nullable|date',
-            'varroa_dosificacion' => 'nullable|string',
-            'varroa_metodo_aplicacion' => 'nullable|string',
-            'varroa_n_colmenas_tratadas' => 'nullable|integer|min:0',
-            'varroa_fecha_monitoreo_varroa' => 'nullable|date',
-            'varroa_producto_comercial' => 'nullable|string',
-            'varroa_ingrediente_activo' => 'nullable|string',
-            'varroa_periodo_carencia' => 'nullable|string',
-            // Campos de Nosemosis (PCC5) - se validan si están presentes, no son estrictamente requeridos por el form si no se selecciona 'nosema'
-            'nosemosis_signos_clinicos' => 'nullable|string',
-            'nosemosis_muestreo_laboratorio' => 'nullable|string',
-            'nosemosis_metodo_diagnostico_laboratorio' => 'nullable|string',
-            'nosemosis_tratamiento' => 'nullable|string',
-            'nosemosis_fecha_aplicacion' => 'nullable|date',
-            'nosemosis_dosificacion' => 'nullable|string',
-            'nosemosis_metodo_aplicacion' => 'nullable|string',
-            'nosemosis_num_colmenas_tratadas' => 'nullable|integer|min:0',
-            'nosemosis_fecha_monitoreo_nosema' => 'nullable|date',
-            'nosemosis_producto_comercial' => 'nullable|string',
-            'nosemosis_ingrediente_activo' => 'nullable|string',
+        // 1) Validación de todos los campos
+        $data = $request->validate([
+            'fecha'                             => 'required|date',
+            'motivo_tratamiento'                => 'required|in:varroa,nosema,otro',
+            'motivo_otro'                       => 'nullable|string|required_if:motivo_tratamiento,otro',
+            'responsable'                       => 'required|string',
+            'nombre_comercial_medicamento'      => 'required|string',
+            'principio_activo_medicamento'      => 'required|string',
+            'periodo_resguardo'                 => 'required|string',
+            'observaciones'                     => 'nullable|string',
+            // PCC4 (Varroa)
+            'varroa_metodo_diagnostico'         => 'exclude_if:motivo_tratamiento,nosema|required_if:motivo_tratamiento,varroa|string',
+            'varroa_diagnostico_visual'         => 'nullable|string',
+            'varroa_muestreo_abejas_adultas'    => 'nullable|string',
+            'varroa_muestreo_cria_operculada'   => 'nullable|string',
+            'varroa_tratamiento'                => 'nullable|string',
+            'varroa_fecha_aplicacion'           => 'nullable|date',
+            'varroa_dosificacion'               => 'nullable|string',
+            'varroa_metodo_aplicacion'          => 'nullable|string',
+            'varroa_fecha_monitoreo_varroa'     => 'nullable|date',
+            'varroa_producto_comercial'         => 'nullable|string',
+            'varroa_ingrediente_activo'         => 'nullable|string',
+            'varroa_periodo_carencia'           => 'nullable|string',
+            // PCC5 (Nosemosis)
+            'nosemosis_metodo_diagnostico_laboratorio' => 'exclude_if:motivo_tratamiento,varroa|required_if:motivo_tratamiento,nosema|string',
+            'nosemosis_signos_clinicos'                => 'nullable|string',
+            'nosemosis_muestreo_laboratorio'           => 'nullable|string',
+            'nosemosis_tratamiento'                    => 'nullable|string',
+            'nosemosis_fecha_aplicacion'               => 'nullable|date',
+            'nosemosis_dosificacion'                   => 'nullable|string',
+            'nosemosis_metodo_aplicacion'              => 'nullable|string',
+            'nosemosis_fecha_monitoreo_nosema'         => 'nullable|date',
+            'nosemosis_producto_comercial'             => 'nullable|string',
+            'nosemosis_ingrediente_activo'             => 'nullable|string',
         ]);
 
-        DB::beginTransaction(); // Iniciar transacción para asegurar la integridad de los datos
-
+        DB::beginTransaction();
         try {
-            $presenciaVarroaId = null;
-            $presenciaNosemosisId = null;
+            // 2) Creamos la Visita única
+            $visita = Visita::create([
+                'apiario_id'                   => $apiario->id,
+                'user_id'                      => auth()->id(),
+                'fecha_visita'                 => $data['fecha'],
+                'tipo_visita'                  => 'Uso de Medicamentos',
+                'motivo_tratamiento'           => $data['motivo_tratamiento'],
+                'motivo'                       => $data['motivo_tratamiento'] === 'otro'
+                                                    ? $data['motivo_otro']
+                                                    : $data['motivo_tratamiento'],
+                'nombre_comercial_medicamento' => $data['nombre_comercial_medicamento'],
+                'principio_activo_medicamento' => $data['principio_activo_medicamento'],
+                'periodo_resguardo'            => $data['periodo_resguardo'],
+                'responsable'                  => $data['responsable'],
+                'observaciones'                => $data['observaciones'] ?? null,
+            ]);
 
-            // 1. Guardar datos específicos de Varroa o Nosemosis si el motivo corresponde
-            // Estos registros se crean una sola vez por el tratamiento general del apiario
-            if ($validatedData['motivo_tratamiento'] === 'varroa') {
-                $presenciaVarroa = PresenciaVarroa::create([
-                    'diagnostico_visual' => $validatedData['varroa_diagnostico_visual'] ?? null,
-                    'muestreo_abejas_adultas' => $validatedData['varroa_muestreo_abejas_adultas'] ?? null,
-                    'muestreo_cria_operculada' => $validatedData['varroa_muestreo_cria_operculada'] ?? null,
-                    'metodo_diagnostico' => $validatedData['varroa_metodo_diagnostico'] ?? null,
-                    'tratamiento' => $validatedData['varroa_tratamiento'] ?? null,
-                    'fecha_aplicacion' => $validatedData['varroa_fecha_aplicacion'] ?? null,
-                    'dosificacion' => $validatedData['varroa_dosificacion'] ?? null,
-                    'metodo_aplicacion' => $validatedData['varroa_metodo_aplicacion'] ?? null,
-                    'n_colmenas_tratadas' => $validatedData['varroa_n_colmenas_tratadas'] ?? null,
-                    'fecha_monitoreo_varroa' => $validatedData['varroa_fecha_monitoreo_varroa'] ?? null,
-                    'producto_comercial' => $validatedData['varroa_producto_comercial'] ?? null,
-                    'ingrediente_activo' => $validatedData['varroa_ingrediente_activo'] ?? null,
-                    'periodo_carencia' => $validatedData['varroa_periodo_carencia'] ?? null,
-                ]);
-                $presenciaVarroaId = $presenciaVarroa->id; // Guardar el ID para vincularlo a las visitas
-            } elseif ($validatedData['motivo_tratamiento'] === 'nosema') {
-                $presenciaNosemosis = PresenciaNosemosis::create([
-                    'signos_clinicos' => $validatedData['nosemosis_signos_clinicos'] ?? null,
-                    'muestreo_laboratorio' => $validatedData['nosemosis_muestreo_laboratorio'] ?? null,
-                    'metodo_diagnostico_laboratorio' => $validatedData['nosemosis_metodo_diagnostico_laboratorio'] ?? null,
-                    'tratamiento' => $validatedData['nosemosis_tratamiento'] ?? null,
-                    'fecha_aplicacion' => $validatedData['nosemosis_fecha_aplicacion'] ?? null,
-                    'dosificacion' => $validatedData['nosemosis_dosificacion'] ?? null,
-                    'metodo_aplicacion' => $validatedData['nosemosis_metodo_aplicacion'] ?? null,
-                    'num_colmenas_tratadas' => $validatedData['nosemosis_num_colmenas_tratadas'] ?? null,
-                    'fecha_monitoreo_nosema' => $validatedData['nosemosis_fecha_monitoreo_nosema'] ?? null,
-                    'producto_comercial' => $validatedData['nosemosis_producto_comercial'] ?? null,
-                    'ingrediente_activo' => $validatedData['nosemosis_ingrediente_activo'] ?? null,
-                ]);
-                $presenciaNosemosisId = $presenciaNosemosis->id; // Guardar el ID para vincularlo a las visitas
+            // 3) Por cada colmena, creamos el PCC correspondiente
+            if ($data['motivo_tratamiento'] === 'varroa') {
+                foreach ($apiario->colmenas as $colmena) {
+                    PresenciaVarroa::create([
+                        'colmena_id'               => $colmena->id,
+                        'metodo_diagnostico'       => $data['varroa_metodo_diagnostico'],
+                        'diagnostico_visual'       => $data['varroa_diagnostico_visual']      ?? null,
+                        'muestreo_abejas_adultas'  => $data['varroa_muestreo_abejas_adultas'] ?? null,
+                        'muestreo_cria_operculada' => $data['varroa_muestreo_cria_operculada']?? null,
+                        'tratamiento'              => $data['varroa_tratamiento']             ?? null,
+                        'fecha_aplicacion'         => $data['varroa_fecha_aplicacion']        ?? null,
+                        'dosificacion'             => $data['varroa_dosificacion']            ?? null,
+                        'metodo_aplicacion'        => $data['varroa_metodo_aplicacion']       ?? null,
+                        'fecha_monitoreo_varroa'   => $data['varroa_fecha_monitoreo_varroa']  ?? null,
+                        'producto_comercial'       => $data['varroa_producto_comercial']      ?? null,
+                        'ingrediente_activo'       => $data['varroa_ingrediente_activo']      ?? null,
+                        'periodo_carencia'         => $data['varroa_periodo_carencia']        ?? null,
+                        'n_colmenas_tratadas'      => 1,
+                    ]);
+                }
             }
-
-            // 2. Obtener todas las colmenas asociadas al apiario actual
-            $colmenas = $apiario->colmenas;
-
-            // Determinar el valor final para la columna 'motivo' en la tabla 'visitas'
-            $motivoColumnaVisita = ($validatedData['motivo_tratamiento'] === 'otro') ?
-                                   ($validatedData['motivo_otro'] ?? 'Otro motivo no especificado') :
-                                   $validatedData['motivo_tratamiento'];
-
-            // 3. Crear un registro de Visita para cada colmena del apiario
-            foreach ($colmenas as $colmena) {
-                Visita::create([
-                    'apiario_id' => $apiario->id,
-                    'user_id' => auth()->id(), // ID del usuario autenticado
-                    'colmena_id' => $colmena->id, // ID de la colmena actual en el bucle
-                    'fecha_visita' => $validatedData['fecha'],
-                    'num_colmenas_tratadas' => 1, // Asumimos 1 colmena tratada por cada registro de visita individual
-                    'motivo_tratamiento' => $validatedData['motivo_tratamiento'], // El motivo seleccionado (varroa, nosema, otro)
-                    'motivo' => $motivoColumnaVisita, // El motivo específico para la columna 'motivo'
-                    'nombre_comercial_medicamento' => $validatedData['nombre_comercial_medicamento'],
-                    'principio_activo_medicamento' => $validatedData['principio_activo_medicamento'],
-                    'periodo_resguardo' => $validatedData['periodo_resguardo'],
-                    'responsable' => $validatedData['responsable'],
-                    'observaciones' => $validatedData['observaciones'] ?? null,
-                    'tipo_visita' => 'Uso de Medicamentos',
-                    'presencia_varroa_id' => $presenciaVarroaId, // Enlaza el ID de Varroa (o null)
-                    'presencia_nosemosis_id' => $presenciaNosemosisId, // Enlaza el ID de Nosemosis (o null)
-                ]);
-
-                // Nota: La lógica anterior de "SistemaExperto::create" para PCC4 y PCC5
-                // ha sido removida de aquí, ya que los datos se guardan directamente
-                // en las tablas `presencia_varroa` y `presencia_nosemosis`.
-                // Si `SistemaExperto` tiene un propósito diferente (ej. un resumen posterior),
-                // esa lógica debería gestionarse de forma separada.
+            elseif ($data['motivo_tratamiento'] === 'nosema') {
+                foreach ($apiario->colmenas as $colmena) {
+                    PresenciaNosemosis::create([
+                        'colmena_id'                      => $colmena->id,
+                        'metodo_diagnostico_laboratorio'  => $data['nosemosis_metodo_diagnostico_laboratorio'],
+                        'signos_clinicos'                 => $data['nosemosis_signos_clinicos'] ?? null,
+                        'muestreo_laboratorio'            => $data['nosemosis_muestreo_laboratorio'] ?? null,
+                        'tratamiento'                     => $data['nosemosis_tratamiento']      ?? null,
+                        'fecha_aplicacion'                => $data['nosemosis_fecha_aplicacion'] ?? null,
+                        'dosificacion'                    => $data['nosemosis_dosificacion']     ?? null,
+                        'metodo_aplicacion'               => $data['nosemosis_metodo_aplicacion']?? null,
+                        'fecha_monitoreo_nosema'          => $data['nosemosis_fecha_monitoreo_nosema'] ?? null,
+                        'producto_comercial'              => $data['nosemosis_producto_comercial']   ?? null,
+                        'ingrediente_activo'              => $data['nosemosis_ingrediente_activo']   ?? null,
+                        'num_colmenas_tratadas'           => 1,
+                    ]);
+                }
             }
+            // Si es “otro”, no generamos PCC: todo está en la Visita única.
 
-            DB::commit(); // Confirmar la transacción si todo fue exitoso
+            DB::commit();
 
-            // Redirigir al usuario con un mensaje de éxito
-            return redirect()->route('visita.index', $apiario)->with('success', 'Medicamento y evaluaciones guardadas correctamente.');
+            return redirect()
+                ->route('visitas.historial', $apiario)
+                ->with('success', 'Registro de uso de medicamentos guardado correctamente.');
 
-        } catch (\Exception $e) {
-            DB::rollBack(); // Revertir la transacción si ocurre un error
-            // Registrar el error para depuración
-            Log::error('Error al registrar el medicamento en VisitaController: ' . $e->getMessage() . ' - Trace: ' . $e->getTraceAsString());
-            // Regresar al formulario con los datos anteriores y un mensaje de error
-            return back()->withInput()->with('error', 'Hubo un error al registrar el medicamento. Por favor, intente de nuevo. Detalle: ' . $e->getMessage());
+        } catch (\Throwable $e) {
+            DB::rollBack();
+            Log::error("Error storeMedicamentos: {$e->getMessage()}");
+            return back()
+                ->withInput()
+                ->with('error', 'Ocurrió un error al guardar. Por favor inténtalo de nuevo.');
         }
     }
+    */
+
+    public function storeMedicamentos(Request $request, Apiario $apiario)
+    {
+        // 1) Validar los campos comunes a todos los motivos
+        $commonRules = [
+            'fecha'                            => 'required|date',
+            'motivo_tratamiento'               => 'required|in:varroa,nosema,otro',
+            'motivo_otro'                      => 'nullable|string|required_if:motivo_tratamiento,otro',
+            'responsable'                      => 'required|string',
+            'nombre_comercial_medicamento'     => 'required|string',
+            'principio_activo_medicamento'     => 'required|string',
+            'periodo_resguardo'                => 'required|string',
+            'observaciones'                    => 'nullable|string',
+        ];
+        $commonData = $request->validate($commonRules);
+
+        // 2) Preparar reglas condicionales según el motivo
+        $pccRules = [];
+        if ($commonData['motivo_tratamiento'] === 'varroa') {
+            $pccRules = [
+                'varroa_metodo_diagnostico'         => 'required|string',
+                'varroa_diagnostico_visual'         => 'nullable|string',
+                'varroa_muestreo_abejas_adultas'    => 'nullable|string',
+                'varroa_muestreo_cria_operculada'   => 'nullable|string',
+                'varroa_tratamiento'                => 'nullable|string',
+                'varroa_fecha_aplicacion'           => 'nullable|date',
+                'varroa_dosificacion'               => 'nullable|string',
+                'varroa_metodo_aplicacion'          => 'nullable|string',
+                'varroa_fecha_monitoreo_varroa'     => 'nullable|date',
+                'varroa_producto_comercial'         => 'nullable|string',
+                'varroa_ingrediente_activo'         => 'nullable|string',
+                'varroa_periodo_carencia'           => 'nullable|integer',
+            ];
+        } elseif ($commonData['motivo_tratamiento'] === 'nosema') {
+            $pccRules = [
+                'nosemosis_metodo_diagnostico_laboratorio' => 'required|string',
+                'nosemosis_signos_clinicos'                => 'nullable|string',
+                'nosemosis_muestreo_laboratorio'           => 'nullable|string',
+                'nosemosis_tratamiento'                    => 'nullable|string',
+                'nosemosis_fecha_aplicacion'               => 'nullable|date',
+                'nosemosis_dosificacion'                   => 'nullable|string',
+                'nosemosis_metodo_aplicacion'              => 'nullable|string',
+                'nosemosis_fecha_monitoreo_nosema'         => 'nullable|date',
+                'nosemosis_producto_comercial'             => 'nullable|string',
+                'nosemosis_ingrediente_activo'             => 'nullable|string',
+            ];
+        }
+        // Si es "otro", $pccRules queda vacío y no validamos nada más.
+
+        $pccData = $pccRules
+            ? $request->validate($pccRules)
+            : [];
+
+        // 3) Unificar todos los datos validados
+        $data = array_merge($commonData, $pccData);
+
+        // 4) Guardar en transacción
+        DB::transaction(function() use ($data, $apiario) {
+            // 4.1) Creamos la Visita única
+            $visita = Visita::create([
+                'apiario_id'                   => $apiario->id,
+                'user_id'                      => auth()->id(),
+                'fecha_visita'                 => $data['fecha'],
+                'tipo_visita'                  => 'Uso de Medicamentos',
+                'motivo_tratamiento'           => $data['motivo_tratamiento'],
+                'motivo'                       => $data['motivo_tratamiento'] === 'otro'
+                                                    ? $data['motivo_otro']
+                                                    : $data['motivo_tratamiento'],
+                'nombre_comercial_medicamento' => $data['nombre_comercial_medicamento'],
+                'principio_activo_medicamento' => $data['principio_activo_medicamento'],
+                'periodo_resguardo'            => $data['periodo_resguardo'],
+                'responsable'                  => $data['responsable'],
+                'observaciones'                => $data['observaciones'] ?? null,
+            ]);
+
+            // 4.2) Por cada colmena, creamos el PCC correspondiente
+            if ($data['motivo_tratamiento'] === 'varroa') {
+                foreach ($apiario->colmenas as $colmena) {
+                    PresenciaVarroa::create([
+                        'colmena_id'              => $colmena->id,
+                        'metodo_diagnostico'      => $data['varroa_metodo_diagnostico'],
+                        'diagnostico_visual'      => $data['varroa_diagnostico_visual']      ?? null,
+                        'muestreo_abejas_adultas' => $data['varroa_muestreo_abejas_adultas'] ?? null,
+                        'muestreo_cria_operculada'=> $data['varroa_muestreo_cria_operculada']?? null,
+                        'tratamiento'             => $data['varroa_tratamiento']             ?? null,
+                        'fecha_aplicacion'        => $data['varroa_fecha_aplicacion']        ?? null,
+                        'dosificacion'            => $data['varroa_dosificacion']            ?? null,
+                        'metodo_aplicacion'       => $data['varroa_metodo_aplicacion']       ?? null,
+                        'fecha_monitoreo_varroa'  => $data['varroa_fecha_monitoreo_varroa']  ?? null,
+                        'producto_comercial'      => $data['varroa_producto_comercial']      ?? null,
+                        'ingrediente_activo'      => $data['varroa_ingrediente_activo']      ?? null,
+                        'periodo_carencia'        => $data['varroa_periodo_carencia']        ?? null,
+                        'n_colmenas_tratadas'     => 1,
+                    ]);
+                }
+            }
+            elseif ($data['motivo_tratamiento'] === 'nosema') {
+                foreach ($apiario->colmenas as $colmena) {
+                    PresenciaNosemosis::create([
+                        'colmena_id'                         => $colmena->id,
+                        'metodo_diagnostico_laboratorio'     => $data['nosemosis_metodo_diagnostico_laboratorio'],
+                        'signos_clinicos'                    => $data['nosemosis_signos_clinicos'] ?? null,
+                        'muestreo_laboratorio'               => $data['nosemosis_muestreo_laboratorio'] ?? null,
+                        'tratamiento'                        => $data['nosemosis_tratamiento']      ?? null,
+                        'fecha_aplicacion'                   => $data['nosemosis_fecha_aplicacion'] ?? null,
+                        'dosificacion'                       => $data['nosemosis_dosificacion']     ?? null,
+                        'metodo_aplicacion'                  => $data['nosemosis_metodo_aplicacion']?? null,
+                        'fecha_monitoreo_nosema'             => $data['nosemosis_fecha_monitoreo_nosema'] ?? null,
+                        'producto_comercial'                 => $data['nosemosis_producto_comercial']   ?? null,
+                        'ingrediente_activo'                 => $data['nosemosis_ingrediente_activo']   ?? null,
+                        'num_colmenas_tratadas'              => 1,
+                    ]);
+                }
+            }
+            // si es “otro” no creamos PCC adicional
+        });
+
+        return redirect()
+            ->route('visitas.historial', $apiario)
+            ->with('success', 'Registro de uso de medicamentos guardado correctamente.');
+    }
+
 
     public function storeGeneral(Request $request, Apiario $apiario)
     {
@@ -296,59 +402,46 @@ class VisitaController extends Controller
 
     public function storeAlimentacion(Request $request, Apiario $apiario)
     {
-        // 1) Validar
+        // 1) Validación de inputs
         $data = $request->validate([
-            'objetivo' => 'required|in:estimulacion,mantencion',
-            'tipo_alimentacion' => 'required|string|max:255',
+            'objetivo'                          => 'required|in:estimulacion,mantencion',
+            'tipo_alimentacion'                 => 'required|string|max:255',
             'fecha_aplicacion_insumo_utilizado' => 'required|date',
-            'insumo_utilizado' => 'nullable|string|max:255',
-            'dosificacion' => 'nullable|string|max:255',
-            'metodo_utilizado' => 'required|string|max:255',
+            'insumo_utilizado'                  => 'nullable|string|max:255',
+            'dosificacion'                      => 'nullable|string|max:255',
+            'metodo_utilizado'                  => 'required|string|max:255',
         ]);
 
-        // 2) Guardar en estado_nutricional
-        $nutricional = EstadoNutricional::create([
-            'objetivo' => $data['objetivo'],
-            'tipo_alimentacion' => $data['tipo_alimentacion'],
-            'fecha_aplicacion' => $data['fecha_aplicacion_insumo_utilizado'],
-            'insumo_utilizado' => $data['insumo_utilizado'],
-            'dosifiacion' => $data['dosificacion'],
-            'metodo_utilizado' => $data['metodo_utilizado'],
-        ]);
+        DB::transaction(function() use($data, $apiario) {
 
-        // 3) Elegir la colmena sobre la que actuamos
-        $colmena = $apiario->colmenas()->first();
-        if (!$colmena) {
-            return back()->withErrors('Este apiario no tiene colmenas.');
-        }
+            // 2) Creamos **UNA SOLA** Visita de Alimentación
+            $visita = Visita::create([
+                'apiario_id'   => $apiario->id,
+                'user_id'      => auth()->id(),
+                'tipo_visita'  => 'Alimentación',
+                'fecha_visita' => now(),
+            ]);
 
-        // 4) Crear la Visita y asociar estado_nutricional + colmena
-        $visita = Visita::create([
-            'apiario_id' => $apiario->id,
-            'user_id' => auth()->id(),
-            'tipo_visita' => 'Alimentación',
-            'fecha_visita' => now(),
-            'estado_nutricional_id' => $nutricional->id,
-        ]);
+            // 3) Por cada colmena, creamos el estado nutricional vinculado a esa visita
+            foreach ($apiario->colmenas as $colmena) {
+                EstadoNutricional::create([
+                    'colmena_id'          => $colmena->id,
+                    'visita_id'           => $visita->id,      // <- vínculo a la visita única
+                    'objetivo'            => $data['objetivo'],
+                    'tipo_alimentacion'   => $data['tipo_alimentacion'],
+                    'fecha_aplicacion'    => $data['fecha_aplicacion_insumo_utilizado'],
+                    'insumo_utilizado'    => $data['insumo_utilizado'],
+                    'dosifiacion'         => $data['dosificacion'],
+                    'metodo_utilizado'    => $data['metodo_utilizado'],
+                    'n_colmenas_tratadas' => 1,
+                ]);
+            }
+        });
 
-        // 5) Sincronizar PCC3 en SistemaExperto
-        SistemaExperto::updateOrCreate(
-            ['colmena_id' => $colmena->id],
-            [
-                'apiario_id' => $apiario->id,
-                'pcc3_objetivo' => $nutricional->objetivo,
-                'pcc3_tipo_alimentacion' => $nutricional->tipo_alimentacion,
-                'pcc3_fecha_aplicacion' => $nutricional->fecha_aplicacion,
-                'pcc3_insumo_utilizado' => $nutricional->insumo_utilizado,
-                'pcc3_dosificacion' => $nutricional->dosifiacion,
-                'pcc3_metodo_utilizado' => $nutricional->metodo_utilizado,
-            ]
-        );
-
-        // 5) Redirigir de vuelta al wizard o donde prefieras
+        // 4) Redirigimos al historial del apiario
         return redirect()
-            ->route('visitas', $apiario->id)
-            ->with('success', 'Alimentación guardada y PCC3 sincronizado.');
+            ->route('visitas.historial', $apiario)
+            ->with('success', 'Registros de alimentación guardados correctamente.');
     }
 
     public function showHistorial($apiarioId)

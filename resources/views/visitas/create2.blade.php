@@ -11,14 +11,25 @@
         </header>
 
         @if(session('error'))
-            <div class="alert alert-danger">
-                {{ session('error') }}
-            </div>
+            <div class="alert alert-danger">{{ session('error') }}</div>
         @endif
 
-
-        <form action="{{ route('apiarios.medicamentos-registro.store', $apiario) }}" method="POST" class="medication-form">
+        <form
+            action="{{ route('apiarios.medicamentos-registro.store', $apiario) }}"
+            method="POST"
+            class="medication-form"
+        >
             @csrf
+
+            @if ($errors->any())
+                <div class="alert alert-danger">
+                    <ul class="list-disc pl-5">
+                        @foreach ($errors->all() as $err)
+                            <li>{{ $err }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
 
             <!-- Información del Tratamiento -->
             <section class="form-section treatment-info">
@@ -50,34 +61,38 @@
                         <span class="field-helper">Seleccione la fecha de aplicación del medicamento</span>
                     </div>
 
-                    <div class="form-field full-width" x-data="{ motivo: '' }">
+                    <div class="form-field full-width">
                         <label for="motivo_tratamiento" class="field-label">Motivo del Tratamiento</label>
 
-                        <select name="motivo_tratamiento" class="field-input text-input" x-model="motivo" required>
+                        <select id="motivo_tratamiento" name="motivo_tratamiento" class="field-input text-input" required>
                             <option value="">Seleccione...</option>
-                            <option value="varroa">Varroa</option>
-                            <option value="nosema">Nosema</option>
-                            <option value="otro">Otro</option>
+                            <option value="varroa" {{ old('motivo_tratamiento')=='varroa'  ? 'selected':'' }}>Varroa</option>
+                            <option value="nosema" {{ old('motivo_tratamiento')=='nosema' ? 'selected':'' }}>Nosema</option>
+                            <option value="otro" {{ old('motivo_tratamiento')=='otro'   ? 'selected':'' }}>Otro</option>
                         </select>
 
                         <input
-                            type="text"
+                            id="motivo_otro"
                             name="motivo_otro"
+                            type="text"
                             class="field-input text-input mt-2"
                             placeholder="Especifique otro motivo"
-                            x-show="motivo === 'otro'"
-                            x-transition
+                            value="{{ old('motivo_otro') }}"
+                            style="display:none;"
                         >
+                        @error('motivo_otro')
+                            <div class="text-red-600 text-sm mt-1">{{ $message }}</div>
+                        @enderror
 
                         <span class="field-helper">Indique la enfermedad o condición que motivó el tratamiento</span>
 
                         {{-- Formulario PCC4 (varroa) --}}
-                        <div x-show="motivo === 'varroa'" x-transition>
+                        <div id="pcc4-form" class="form-section pcc-section" style="display:none">
                             @include('sistemaexperto.partials.pcc4')
                         </div>
 
                         {{-- Formulario PCC5 (nosema) --}}
-                        <div x-show="motivo === 'nosema'" x-transition>
+                        <div id="pcc5-form" class="form-section pcc-section" style="display:none">
                             @include('sistemaexperto.partials.pcc5')
                         </div>
                     </div>
@@ -248,10 +263,10 @@
             document.addEventListener('DOMContentLoaded', function () {
                 const form = document.querySelector('.medication-form');
                 const numberInputs = form.querySelectorAll('.number-input');
-                const motivoSelect = document.getElementById('motivo_tratamiento');
-                const motivoOtro = document.getElementById('motivo_otro');
-                const pcc4Form = document.getElementById('pcc4-form');
-                const pcc5Form = document.getElementById('pcc5-form');
+                const motivo      = document.getElementById('motivo_tratamiento');
+                const pcc4        = document.getElementById('pcc4-form');
+                const pcc5        = document.getElementById('pcc5-form');
+                const motivoOtro  = document.getElementById('motivo_otro');
 
                 // Validación de números
                 numberInputs.forEach(input => {
@@ -289,17 +304,15 @@
                     observer.observe(section);
                 });
 
-                function toggleForms() {
-                    const selected = motivoSelect.value;
-                    motivoOtro.style.display = (selected === 'otro') ? 'block' : 'none';
-                    pcc4Form.style.display = (selected === 'varroa') ? 'block' : 'none';
-                    pcc5Form.style.display = (selected === 'nosema') ? 'block' : 'none';
-                }
+                function toggleSections() {
+                const val = motivo.value;
+                pcc4.style.display       = (val === 'varroa') ? 'block' : 'none';
+                pcc5.style.display       = (val === 'nosema') ? 'block' : 'none';
+                motivoOtro.style.display = (val === 'otro')   ? 'block' : 'none';
+            }
 
-                if (motivoSelect) {
-                    motivoSelect.addEventListener('change', toggleForms);
-                    toggleForms(); // Ejecutar al cargar
-                }
+            motivo.addEventListener('change', toggleSections);
+            toggleSections(); // Mostrar según old()
             });
         </script>
     @endpush
