@@ -585,7 +585,7 @@
                                             <th>Región</th>
                                             <th>Comuna</th>
                                             <th>Fecha Archivado</th>
-                                            <th>Acciones</th>
+                                            <!-- <th>Acciones</th> -->
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -618,7 +618,7 @@
                                                 <td>
                                                     <span class="text-mono">{{ $apiario->updated_at->format('d/m/Y') }}</span>
                                                 </td>
-                                                <td>
+                                                <!-- <td>
                                                     <div class="action-group">
                                                         <form action="{{ route('apiarios.destroy', $apiario->id) }}" method="POST"
                                                             style="display: inline-block;"
@@ -631,7 +631,7 @@
                                                             </button>
                                                         </form>
                                                     </div>
-                                                </td>
+                                                </td> -->
                                             </tr>
                                         @endforeach
                                     </tbody>

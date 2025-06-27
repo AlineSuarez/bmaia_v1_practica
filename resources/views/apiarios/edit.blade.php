@@ -91,8 +91,11 @@
                     </label>
                     <select name="tipo_apiario" id="tipo_apiario" class="form-control" required>
                         <option value="">Seleccionar tipo...</option>
-                        <option value="fijo" {{ old('tipo_apiario') == 'fijo' ? 'selected' : '' }}>Fijo</option>
-                        <option value="trashumante" {{ old('tipo_apiario') == 'trashumante' ? 'selected' : '' }}>Trashumante
+                        <option value="fijo" {{ old('tipo_apiario', $apiario->tipo_apiario) == 'fijo' ? 'selected' : '' }}>
+                            Apiario Fijo
+                        </option>
+                        <option value="trashumante" {{ old('tipo_apiario', $apiario->tipo_apiario) == 'trashumante' ? 'selected' : '' }}>
+                            Apiario Base
                         </option>
                     </select>
                 </div>

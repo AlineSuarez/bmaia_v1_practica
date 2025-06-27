@@ -1209,8 +1209,9 @@ body {
     border-radius: var(--radius-lg);
     box-shadow: var(--shadow-xl);
     overflow: hidden;
-    /* Evitar scroll intermitente en modal */
     transform: translateZ(0);
+    max-width: 1300px;
+    min-width: 800px;
 }
 
 .modern-modal .modal-header {
