@@ -153,13 +153,15 @@ Route::prefix('apiarios/{apiario}/colmenas')->name('colmenas.')->group(function 
     Route::get('/', [ColmenaController::class, 'index'])->name('index');
     Route::get('/create', [ColmenaController::class, 'create'])->name('create');
     Route::post('/', [ColmenaController::class, 'store'])->name('store');
-    Route::get('/{colmena}', [ColmenaController::class, 'show'])->name('show')->withoutMiddleware('auth');
+    Route::get('/{colmena}', [ColmenaController::class, 'show'])->name('show');
     Route::get('/{colmena}/edit', [ColmenaController::class, 'edit'])->name('edit');
     Route::put('/{colmena}', [ColmenaController::class, 'update'])->name('update');
     Route::delete('/{colmena}', [ColmenaController::class, 'destroy'])->name('destroy');
     Route::get('/{colmena}/historial', [ColmenaController::class, 'historial'])->name('historial');
     Route::get('/{colmena}/historial/export', [ColmenaController::class, 'exportHistorial'])->name('historial.export');
 });
+
+Route::get('/colmena-publica/{colmena}', [ColmenaController::class, 'publicView'])->name('colmenas.public');
 
 
 

@@ -72,6 +72,11 @@ class ColmenaController extends Controller
 
     public function show(Apiario $apiario, Colmena $colmena)
     {
+        if (!auth()->check()) {
+            // Si NO está autenticado, redirige a la vista pública
+            return redirect()->route('colmenas.public', ['colmena' => $colmena->id]);
+        }
+
         $pccs = \App\Models\SistemaExperto::where('colmena_id', $colmena->id)
             ->with([
                 'desarrolloCria',
@@ -82,7 +87,7 @@ class ColmenaController extends Controller
                 'indiceCosecha',
                 'preparacionInvernada',
             ])
-            ->orderByDesc('fecha') // o created_at
+            ->orderByDesc('fecha')
             ->get();
 
         return view('colmenas.show', compact('apiario', 'colmena', 'pccs'));
@@ -221,4 +226,22 @@ class ColmenaController extends Controller
         return $pdf->download($filename);
     }
 
+    public function publicView(Colmena $colmena)
+    {
+        $apiario = $colmena->apiario;
+        $pccs = \App\Models\SistemaExperto::where('colmena_id', $colmena->id)
+            ->with([
+                'desarrolloCria',
+                'calidadReina',
+                'estadoNutricional',
+                'presenciaVarroa',
+                'presenciaNosemosis',
+                'indiceCosecha',
+                'preparacionInvernada',
+            ])
+            ->orderByDesc('fecha')
+            ->get();
+
+        return view('colmenas.public', compact('colmena', 'apiario', 'pccs'));
+    }
 }
