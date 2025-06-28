@@ -41,7 +41,7 @@
                                 <div class="card-header bg-warning text-white">
                                     <h5 class="mb-0"><i class="fas fa-box"></i> Colmena #{{ $colmena->numero }}</h5>
                                 </div>
-                                <div id="qr-container" class="card-body text-center">
+                                <div class="card-body text-center">
                                     @php
                                             $url = route('colmenas.show', [
                                                 'apiario' => $apiario->id,
@@ -53,7 +53,7 @@
                                         alt="QR Colmena #{{ $colmena->numero }}" class="mb-3" />
 
                                     <div class="mb-2">
-                                        <a href="#" id="qr-print" class="btn btn-sm btn-outline-secondary" onclick="window.print(); return false;">
+                                        <a href="#" class="btn btn-sm btn-outline-secondary">
                                             <i class="fas fa-print"></i> Imprimir QR
                                         </a>
                                     </div>
@@ -447,50 +447,6 @@
             .rounded {
                 border-radius: 0.3rem !important;
             }
-
-            @media print {
-            /* Oculta todo */
-            body * {
-                visibility: hidden !important;
-            }
-            /* Muestra únicamente el contenedor del QR */
-            #qr-container, 
-            #qr-container * {
-                visibility: visible !important;
-            }
-            /* Sitúa el QR en la esquina superior */
-            #qr-container {
-                position: absolute;
-                top: 0;
-                left: 0;
-                width: 100%;
-                text-align: center;
-            }
-            }
         </style>
-
-        <script>
-            document.getElementById('print-qr').addEventListener('click', function(e){
-                e.preventDefault();
-
-                // 1) toma sólo el QR
-                var qrHtml = document.getElementById('qr-print').innerHTML;
-
-                // 2) abre ventana emergente
-                var w = window.open('', 'PrintQR','width=300,height=300');
-                w.document.write(`
-                <html>
-                    <head><title>Imprimir QR</title></head>
-                    <body style="text-align:center;margin:0;padding:1em">
-                    ${qrHtml}
-                    </body>
-                </html>`);
-
-                w.document.close();
-                w.focus();
-                w.print();
-                w.close();
-            });
-        </script>
 
 @endsection
