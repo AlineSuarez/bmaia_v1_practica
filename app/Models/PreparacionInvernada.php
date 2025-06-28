@@ -26,6 +26,10 @@ class PreparacionInvernada extends Model
         'fecha_cierre_temporada',
         'alimentacion_suplementaria',
     ];
+    protected $casts = [
+      'fecha_cierre_temporada'              => 'date',
+      'fecha_ultima_revision_previa_receso' => 'date',
+    ];
 
     public function visita()
     {

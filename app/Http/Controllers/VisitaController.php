@@ -61,8 +61,27 @@ class VisitaController extends Controller
 
     public function show(Apiario $apiario)
     {
-        $visitas = $apiario->visitas()->latest()->get();
-        return view('visitas.show', compact('apiario', 'visitas'));
+        // 1) PCC de sistema experto
+        $pccs = SistemaExperto::where('colmena_id',$colmena->id)
+                ->with([
+                'desarrolloCria','calidadReina','estadoNutricional',
+                'presenciaVarroa','presenciaNosemosis',
+                'indiceCosecha','preparacionInvernada'
+                ])
+                ->orderByDesc('fecha')
+                ->get();
+
+        // 2) Últimos registros de campo
+        $lastAlimentacion = EstadoNutricional::where('colmena_id',$colmena->id)
+                            ->orderByDesc('created_at')->first();
+        $lastVarroa       = PresenciaVarroa::where('colmena_id',$colmena->id)
+                            ->orderByDesc('created_at')->first();
+        $lastNosemosis    = PresenciaNosemosis::where('colmena_id',$colmena->id)
+                            ->orderByDesc('created_at')->first();
+
+        return view('colmenas.show',
+            compact('apiario','colmena','pccs',
+                    'lastAlimentacion','lastVarroa','lastNosemosis'));
     }
 
     public function create($id_apiario)

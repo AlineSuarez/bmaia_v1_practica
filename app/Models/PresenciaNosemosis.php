@@ -23,6 +23,9 @@ class PresenciaNosemosis extends Model
         'dosificacion',
         'metodo_aplicacion',
     ];
+    protected $casts = [
+      'fecha_aplicacion' => 'date',
+    ];
     
     public function visita()
     {

@@ -22,6 +22,11 @@ class CalidadReina extends Model
         'estado_actual',
         'reemplazos_realizados',
     ];
+
+    protected $casts = [
+        'fecha_introduccion' => 'date',
+    ];
+
     public function visita()
     {
         return $this->hasOne(\App\Models\Visita::class, 'calidad_reina_id');

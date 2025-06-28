@@ -34,4 +34,23 @@ class Colmena extends Model
     {
         return $this->hasMany(MovimientoColmena::class);
     }
+    public function alimentaciones()
+    {
+        return $this->hasMany(\App\Models\EstadoNutricional::class);
+    }
+
+    public function varroas()
+    {
+        return $this->hasMany(\App\Models\PresenciaVarroa::class);
+    }
+
+    public function nosemosis()
+    {
+        return $this->hasMany(\App\Models\PresenciaNosemosis::class);
+    }
+
+    public function sistemaExpertos()
+    {
+        return $this->hasMany(\App\Models\SistemaExperto::class);
+    }
 }

@@ -5,6 +5,10 @@ namespace App\Http\Controllers;
 use App\Models\Apiario;
 use App\Models\Colmena;
 use App\Models\MovimientoColmena;
+use App\Models\SistemaExperto;
+use App\Models\EstadoNutricional;
+use App\Models\PresenciaVarroa;
+use App\Models\PresenciaNosemosis;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -76,21 +80,21 @@ class ColmenaController extends Controller
             // Si NO está autenticado, redirige a la vista pública
             return redirect()->route('colmenas.public', ['colmena' => $colmena->id]);
         }
+        // 1) PCC del sistema experto (solo 1,2,6,7)
+        $pccs = $colmena->sistemaExpertos()
+                        ->with(['desarrolloCria','calidadReina','indiceCosecha','preparacionInvernada'])
+                        ->orderByDesc('fecha')
+                        ->get();
 
-        $pccs = \App\Models\SistemaExperto::where('colmena_id', $colmena->id)
-            ->with([
-                'desarrolloCria',
-                'calidadReina',
-                'estadoNutricional',
-                'presenciaVarroa',
-                'presenciaNosemosis',
-                'indiceCosecha',
-                'preparacionInvernada',
-            ])
-            ->orderByDesc('fecha')
-            ->get();
+        // 2) Últimos registros del cuaderno de campo
+        $lastAlimentacion = $colmena->alimentaciones()->latest('created_at')->first();
+        $lastVarroa       = $colmena->varroas()->latest('created_at')->first();
+        $lastNosemosis    = $colmena->nosemosis()->latest('created_at')->first();
 
-        return view('colmenas.show', compact('apiario', 'colmena', 'pccs'));
+        return view('colmenas.show', compact(
+            'apiario','colmena','pccs',
+            'lastAlimentacion','lastVarroa','lastNosemosis'
+        ));
     }
 
     public function historial(Apiario $apiario, Colmena $colmena)

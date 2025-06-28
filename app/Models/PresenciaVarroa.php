@@ -28,6 +28,9 @@ class PresenciaVarroa extends Model
         'periodo_carencia',
         'n_colmenas_tratadas',
     ];
+    protected $casts = [
+      'fecha_aplicacion' => 'date',
+    ];
     public function visita()
     {
         return $this->hasOne(\App\Models\Visita::class, 'presencia_varroa_id');
