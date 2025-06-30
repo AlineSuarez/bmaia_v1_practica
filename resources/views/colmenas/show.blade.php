@@ -53,7 +53,7 @@
                                         alt="QR Colmena #{{ $colmena->numero }}" class="mb-3" />
 
                                     <div class="mb-2">
-                                        <a href="#" class="btn btn-sm btn-outline-secondary">
+                                        <a href="{{ route('colmenas.qr-pdf', [$apiario->id, $colmena->id]) }}" class="btn btn-sm btn-outline-secondary">
                                             <i class="fas fa-print"></i> Imprimir QR
                                         </a>
                                     </div>
@@ -373,7 +373,7 @@
                                 <div class="card-footer d-flex justify-content-between">
                                     <div>
                                         @if($pccActual)
-                                        <a href="{{ route('sistemaexperto.editpcc', $pccActual) }}"
+                                        <a href="{{ route('sistemaexperto.editpcc', $colmena->id) }}"
                                         class="btn btn-outline-primary btn-sm">
                                             <i class="fas fa-edit"></i> Editar PCC
                                         </a>

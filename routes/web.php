@@ -159,6 +159,7 @@ Route::prefix('apiarios/{apiario}/colmenas')->name('colmenas.')->group(function 
     Route::delete('/{colmena}', [ColmenaController::class, 'destroy'])->name('destroy');
     Route::get('/{colmena}/historial', [ColmenaController::class, 'historial'])->name('historial');
     Route::get('/{colmena}/historial/export', [ColmenaController::class, 'exportHistorial'])->name('historial.export');
+    Route::get('/{colmena}/qr-pdf',[\App\Http\Controllers\DocumentController::class, 'qrPdf'])->name('qr-pdf');
 });
 
 Route::get('/colmena-publica/{colmena}', [ColmenaController::class, 'publicView'])->name('colmenas.public');

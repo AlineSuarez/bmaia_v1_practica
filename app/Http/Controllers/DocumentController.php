@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Apiario;
 use App\Models\Visita;
+use App\Models\Colmena;
 use Auth;
 use Barryvdh\DomPDF\Facade\Pdf;
 use App\Models\SistemaExperto;
@@ -471,6 +472,23 @@ class DocumentController extends Controller
             \Log::error('Error al generar documento de alimentación: ' . $e->getMessage());
             return back()->with('error', 'Error al generar el documento de alimentación.');
         }
+    }
+
+    public function qrPdf(Apiario $apiario, Colmena $colmena)
+    {
+        // URL a codigicar en el QR
+        $url = route('colmenas.show', [
+            'apiario' => $apiario->id,
+            'colmena' => $colmena->id,
+        ]);
+        // Generar PDF 
+        $pdf = Pdf::setOptions([
+            'isRemoteEnabled' => true,
+        ])->loadView('documents.colmena-qr-pdf', compact('url','apiario','colmena'));
+        // Nombre dinámico
+        $filename = "qr_colmena_{$colmena->numero}_{$apiario->nombre}.pdf";
+        // Descargar el archivo PDF
+        return $pdf->download($filename);
     }
 
 }

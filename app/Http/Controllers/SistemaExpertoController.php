@@ -204,7 +204,7 @@ class SistemaExpertoController extends Controller
             'preparacion_invernada'=> optional($sistemaexperto->preparacionInvernada)->toArray()?? [],
         ];
 
-        return view('sistemaexperto.create', compact('apiario', 'colmena', 'valores'));
+        return view('sistemaexperto.create', compact('apiario', 'colmena', 'sistemaexperto','valores'));
     }
 
 
