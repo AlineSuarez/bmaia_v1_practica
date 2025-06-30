@@ -1,12 +1,13 @@
-
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <title>Colmena #{{ $colmena->numero }}</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 </head>
+
 <body class="bg-light">
     <div class="container-sm py-2">
         <div class="row g-2">
@@ -17,6 +18,19 @@
                         <h5 class="mb-0"><i class="fas fa-box"></i> Colmena #{{ $colmena->numero }}</h5>
                     </div>
                     <div class="card-body text-center">
+                        @php
+                            $url = route('colmenas.public', ['colmena' => $colmena->id]);
+                        @endphp
+                        <img src="https://api.qrserver.com/v1/create-qr-code/?data={{ urlencode($url) }}&size=150x150"
+                            alt="QR Colmena #{{ $colmena->numero }}" class="mb-3" />
+
+                        <div class="mb-2">
+                            <a href="{{ route('colmenas.qr-pdf', [$colmena->apiario_id, $colmena->id]) }}"
+                                class="btn btn-sm btn-outline-secondary">
+                                <i class="fas fa-print"></i> Imprimir QR
+                            </a>
+                        </div>
+
                         <!-- Información básica de la colmena -->
                         <div class="text-start">
                             <h6 class="fw-bold mb-2 text-primary">
@@ -109,6 +123,7 @@
                     </div>
                 </div>
             </div>
+
             <!-- Columna derecha: Detalles del PCC actual -->
             <div class="col-md-8">
                 <div class="card shadow-sm">
@@ -116,184 +131,215 @@
                         <h5 class="mb-0"><i class="fas fa-clipboard-list"></i> Evaluación PCC Actual</h5>
                     </div>
                     <div class="card-body">
-                        @php $pccActual = $pccs->first(); @endphp
+                        @php
+                            $pccActual = $pccs->first();
+                            $pcc3 = $lastAlimentacion ?? null;
+                            $pcc4 = $lastVarroa ?? null;
+                            $pcc5 = $lastNosemosis ?? null;
+                            $pcc6 = optional($pccActual)->indiceCosecha;
+                            $pcc7 = optional($pccActual)->preparacionInvernada;
+                            $hasAny = $pccActual || $pcc3 || $pcc4 || $pcc5 || $pcc6 || $pcc7;
+                        @endphp
+
+                        {{-- Fecha --}}
                         @if($pccActual)
                             <div class="d-flex justify-content-between align-items-center mb-4">
-                                <h6 class="text-primary mb-0">
+                                <h6 class="text-white mb-0">
                                     <i class="fas fa-calendar-alt"></i>
-                                    Fecha de evaluación: {{ \Carbon\Carbon::parse($pccActual->fecha)->format('d/m/Y') }}
+                                    Fecha de evaluación: {{ $pccActual->fecha->format('d/m/Y') }}
                                 </h6>
-                                <span class="badge bg-success">
-                                    <i class="fas fa-star"></i> Última evaluación
-                                </span>
+                                <span class="badge bg-success"><i class="fas fa-star"></i> Última evaluación</span>
                             </div>
-                            <div class="row">
-                                <!-- PCC1 - Desarrollo Cámara de Cría -->
-                                <div class="col-md-6 mb-4">
-                                    <div class="border rounded p-3 h-100 shadow-sm">
-                                        <h6 class="text-warning mb-3">
-                                            <i class="fas fa-baby"></i> PCC1 – Desarrollo Cámara de Cría
-                                        </h6>
+                        @endif
+
+                        <div class="row">
+                            {{-- PCC1 --}}
+                            <div class="col-md-6 mb-4">
+                                <div class="border rounded p-3 h-100 shadow-sm">
+                                    <h6 class="text-warning mb-3"><i class="fas fa-baby"></i> PCC1 – Desarrollo Cámara
+                                        de Cría</h6>
+                                    @if($pccActual && $pccActual->desarrolloCria)
                                         <ul class="list-unstyled small">
-                                            <li class="mb-2">
-                                                <strong>Vigor colmena:</strong>
-                                                <span class="text-muted">{{ $pccActual->desarrolloCria->vigor_colmena ?? 'N/A' }}</span>
-                                            </li>
-                                            <li class="mb-2">
-                                                <strong>Actividad abejas:</strong>
-                                                <span class="text-muted">{{ $pccActual->desarrolloCria->actividad_abejas ?? 'N/A' }}</span>
-                                            </li>
-                                            <li class="mb-2">
-                                                <strong>Ingreso polen:</strong>
-                                                <span class="text-muted">{{ $pccActual->desarrolloCria->ingreso_polen ?? 'N/A' }}</span>
-                                            </li>
-                                            <li class="mb-2">
-                                                <strong>Celdas reales:</strong>
-                                                <span class="text-muted">{{ $pccActual->desarrolloCria->presencia_celdas_reales ?? 'N/A' }}</span>
-                                            </li>
-                                            <li class="mb-2">
-                                                <strong>Marcos con cría:</strong>
-                                                <span class="text-muted">{{ $pccActual->desarrolloCria->cantidad_marcos_con_cria ?? 'N/A' }}</span>
-                                            </li>
+                                            <li><strong>Vigor colmena:</strong>
+                                                {{ $pccActual->desarrolloCria->vigor_colmena }}</li>
+                                            <li><strong>Actividad abejas:</strong>
+                                                {{ $pccActual->desarrolloCria->actividad_abejas }}</li>
+                                            <li><strong>Ingreso polen:</strong>
+                                                {{ $pccActual->desarrolloCria->ingreso_polen }}</li>
+                                            <li><strong>Celdas reales:</strong>
+                                                {{ $pccActual->desarrolloCria->presencia_celdas_reales }}</li>
+                                            <li><strong>Marcos con cría:</strong>
+                                                {{ $pccActual->desarrolloCria->cantidad_marcos_con_cria }}</li>
                                         </ul>
-                                    </div>
-                                </div>
-                                <!-- PCC2 - Calidad de la Reina -->
-                                <div class="col-md-6 mb-4">
-                                    <div class="border rounded p-3 h-100 shadow-sm">
-                                        <h6 class="text-warning mb-3">
-                                            <i class="fas fa-crown"></i> PCC2 – Calidad de la Reina
-                                        </h6>
-                                        <ul class="list-unstyled small">
-                                            <li class="mb-2">
-                                                <strong>Postura reina:</strong>
-                                                <span class="text-muted">{{ $pccActual->calidadReina->postura_reina ?? 'N/A' }}</span>
-                                            </li>
-                                            <li class="mb-2">
-                                                <strong>Estado cría:</strong>
-                                                <span class="text-muted">{{ $pccActual->calidadReina->estado_cria ?? 'N/A' }}</span>
-                                            </li>
-                                            <li class="mb-2">
-                                                <strong>Fecha introducción:</strong>
-                                                <span class="text-muted">{{ optional(optional($pccActual->calidadReina)->fecha_introduccion)->format('d/m/Y') ?? 'N/A' }}</span>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </div>
-                                <!-- PCC3 - Estado Nutricional -->
-                                <div class="col-md-6 mb-4">
-                                    <div class="border rounded p-3 h-100 shadow-sm">
-                                        <h6 class="text-warning mb-3">
-                                            <i class="fas fa-utensils"></i> PCC3 – Estado Nutricional
-                                        </h6>
-                                        <ul class="list-unstyled small">
-                                            <li class="mb-2">
-                                                <strong>Objetivo:</strong>
-                                                <span class="text-muted">{{ $pccActual->estadoNutricional->objetivo ?? 'N/A' }}</span>
-                                            </li>
-                                            <li class="mb-2">
-                                                <strong>Tipo alimentación:</strong>
-                                                <span class="text-muted">{{ $pccActual->estadoNutricional->tipo_alimentacion ?? 'N/A' }}</span>
-                                            </li>
-                                            <li class="mb-2">
-                                                <strong>Insumo utilizado:</strong>
-                                                <span class="text-muted">{{ $pccActual->estadoNutricional->insumo_utilizado ?? 'N/A' }}</span>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </div>
-                                <!-- PCC4 - Varroa -->
-                                <div class="col-md-6 mb-4">
-                                    <div class="border rounded p-3 h-100 shadow-sm">
-                                        <h6 class="text-warning mb-3">
-                                            <i class="fas fa-bug"></i> PCC4 – Varroa
-                                        </h6>
-                                        <ul class="list-unstyled small">
-                                            <li class="mb-2">
-                                                <strong>Diagnóstico visual:</strong>
-                                                <span class="text-muted">{{ $pccActual->presenciaVarroa->diagnostico_visual ?? 'N/A' }}</span>
-                                            </li>
-                                            <li class="mb-2">
-                                                <strong>Método diagnóstico:</strong>
-                                                <span class="text-muted">{{ $pccActual->presenciaVarroa->metodo_diagnostico ?? 'N/A' }}</span>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </div>
-                                <!-- PCC5 - Nosemosis -->
-                                <div class="col-md-6 mb-4">
-                                    <div class="border rounded p-3 h-100 shadow-sm">
-                                        <h6 class="text-warning mb-3">
-                                            <i class="fas fa-microscope"></i> PCC5 – Nosemosis
-                                        </h6>
-                                        <ul class="list-unstyled small">
-                                            <li class="mb-2">
-                                                <strong>Signos clínicos:</strong>
-                                                <span class="text-muted">{{ $pccActual->presenciaNosemosis->signos_clinicos ?? 'N/A' }}</span>
-                                            </li>
-                                            <li class="mb-2">
-                                                <strong>Tratamiento:</strong>
-                                                <span class="text-muted">{{ $pccActual->presenciaNosemosis->tratamiento ?? 'N/A' }}</span>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </div>
-                                <!-- PCC6 - Índice de Cosecha -->
-                                <div class="col-md-6 mb-4">
-                                    <div class="border rounded p-3 h-100 shadow-sm">
-                                        <h6 class="text-warning mb-3">
-                                            <i class="fas fa-honey-pot"></i> PCC6 – Índice de Cosecha
-                                        </h6>
-                                        <ul class="list-unstyled small">
-                                            <li class="mb-2">
-                                                <strong>Madurez miel:</strong>
-                                                <span class="text-muted">{{ $pccActual->indiceCosecha->madurez_miel ?? 'N/A' }}</span>
-                                            </li>
-                                            <li class="mb-2">
-                                                <strong>Alzas promedio:</strong>
-                                                <span class="text-muted">{{ $pccActual->indiceCosecha->num_alzadas ?? 'N/A' }}</span>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </div>
-                                <!-- PCC7 - Preparación Invernada -->
-                                <div class="col-md-12 mb-4">
-                                    <div class="border rounded p-3 shadow-sm">
-                                        <h6 class="text-warning mb-3">
-                                            <i class="fas fa-snowflake"></i> PCC7 – Preparación Invernada
-                                        </h6>
-                                        <div class="row">
-                                            <div class="col-md-6">
-                                                <ul class="list-unstyled small">
-                                                    <li class="mb-2">
-                                                        <strong>Control sanitario:</strong>
-                                                        <span class="text-muted">{{ $pccActual->preparacionInvernada->control_sanitario ?? 'N/A' }}</span>
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <ul class="list-unstyled small">
-                                                    <li class="mb-2">
-                                                        <strong>Reina presente:</strong>
-                                                        <span class="text-muted">
-                                                            @if(isset($pccActual->preparacionInvernada) && $pccActual->preparacionInvernada->presencia_reina !== null)
-                                                                <span class="badge {{ $pccActual->preparacionInvernada->presencia_reina ? 'bg-success' : 'bg-danger' }}">
-                                                                    {{ $pccActual->preparacionInvernada->presencia_reina ? 'Sí' : 'No' }}
-                                                                </span>
-                                                            @else
-                                                                N/A
-                                                            @endif
-                                                        </span>
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                        </div>
-                                    </div>
+                                    @else
+                                        <p class="small mb-0">No hay datos registrados.</p>
+                                    @endif
                                 </div>
                             </div>
-                        @else
+
+                            {{-- PCC2 --}}
+                            <div class="col-md-6 mb-4">
+                                <div class="border rounded p-3 h-100 shadow-sm">
+                                    <h6 class="text-warning mb-3"><i class="fas fa-crown"></i> PCC2 – Calidad de la
+                                        Reina</h6>
+                                    @if($pccActual && $pccActual->calidadReina)
+                                        <ul class="list-unstyled small">
+                                            <li><strong>Postura reina:</strong>
+                                                {{ $pccActual->calidadReina->postura_reina }}</li>
+                                            <li><strong>Estado cría:</strong> {{ $pccActual->calidadReina->estado_cria }}
+                                            </li>
+                                            <li><strong>Fecha introducción:</strong>
+                                                {{ optional($pccActual->calidadReina->fecha_introduccion)->format('d/m/Y') }}
+                                            </li>
+                                        </ul>
+                                    @else
+                                        <p class="small mb-0">No hay datos registrados.</p>
+                                    @endif
+                                </div>
+                            </div>
+
+                            {{-- PCC3 --}}
+                            @php
+                                $sist3 = optional($pccActual)->estadoNutricional;
+                                $vis3 = $lastAlimentacion ?? null;
+                            @endphp
+                            <div class="col-md-6 mb-4">
+                                <div class="border rounded p-3 h-100 shadow-sm">
+                                    <h6 class="text-warning mb-3"><i class="fas fa-utensils"></i> PCC3 – Estado
+                                        Nutricional</h6>
+                                    @if($sist3)
+                                        <ul class="list-unstyled small">
+                                            <li><strong>Objetivo:</strong> {{ $sist3->objetivo }}</li>
+                                            <li><strong>Tipo alimentación:</strong> {{ $sist3->tipo_alimentacion }}</li>
+                                            <li><strong>Insumo utilizado:</strong> {{ $sist3->insumo_utilizado }}</li>
+                                        </ul>
+                                    @elseif($vis3)
+                                        <ul class="list-unstyled small">
+                                            <li><strong>Objetivo:</strong> {{ $vis3->objetivo }}</li>
+                                            <li><strong>Tipo alimentación:</strong> {{ $vis3->tipo_alimentacion }}</li>
+                                            <li><strong>Insumo utilizado:</strong> {{ $vis3->insumo_utilizado }}</li>
+                                        </ul>
+                                    @else
+                                        <p class="small mb-0">No hay datos registrados.</p>
+                                    @endif
+                                </div>
+                            </div>
+
+                            {{-- PCC4 --}}
+                            @php
+                                $sist4 = optional($pccActual)->presenciaVarroa;
+                                $vis4 = $lastVarroa ?? null;
+                            @endphp
+                            <div class="col-md-6 mb-4">
+                                <div class="border rounded p-3 h-100 shadow-sm">
+                                    <h6 class="text-warning mb-3"><i class="fas fa-bug"></i> PCC4 – Varroa</h6>
+                                    @if($sist4)
+                                        <ul class="list-unstyled small">
+                                            <li><strong>Diagnóstico visual:</strong> {{ $sist4->diagnostico_visual }}</li>
+                                            <li><strong>Método diagnóstico:</strong> {{ $sist4->metodo_diagnostico }}</li>
+                                            <li><strong>Tratamiento:</strong> {{ $sist4->tratamiento }}</li>
+                                            <li><strong>Fecha aplicación:</strong>
+                                                {{ optional($sist4->fecha_aplicacion)->format('d/m/Y') }}</li>
+                                        </ul>
+                                    @elseif($vis4)
+                                        <ul class="list-unstyled small">
+                                            <li><strong>Diagnóstico visual:</strong> {{ $vis4->diagnostico_visual }}</li>
+                                            <li><strong>Método diagnóstico:</strong> {{ $vis4->metodo_diagnostico }}</li>
+                                            <li><strong>Tratamiento:</strong> {{ $vis4->tratamiento }}</li>
+                                            <li><strong>Fecha aplicación:</strong>
+                                                {{ optional($vis4->fecha_aplicacion)->format('d/m/Y') }}</li>
+                                        </ul>
+                                    @else
+                                        <p class="small mb-0">No hay datos registrados.</p>
+                                    @endif
+                                </div>
+                            </div>
+
+                            {{-- PCC5 --}}
+                            @php
+                                $sist5 = optional($pccActual)->presenciaNosemosis;
+                                $vis5 = $lastNosemosis ?? null;
+                            @endphp
+                            <div class="col-md-6 mb-4">
+                                <div class="border rounded p-3 h-100 shadow-sm">
+                                    <h6 class="text-warning mb-3"><i class="fas fa-microscope"></i> PCC5 – Nosemosis
+                                    </h6>
+                                    @if($sist5)
+                                        <ul class="list-unstyled small">
+                                            <li><strong>Signos clínicos:</strong> {{ $sist5->signos_clinicos }}</li>
+                                            <li><strong>Método diagnóstico lab.:</strong>
+                                                {{ $sist5->metodo_diagnostico_laboratorio }}</li>
+                                            <li><strong>Fecha aplicación:</strong>
+                                                {{ optional($sist5->fecha_aplicacion)->format('d/m/Y') }}</li>
+                                        </ul>
+                                    @elseif($vis5)
+                                        <ul class="list-unstyled small">
+                                            <li><strong>Signos clínicos:</strong> {{ $vis5->signos_clinicos }}</li>
+                                            <li><strong>Método diagnóstico lab.:</strong>
+                                                {{ $vis5->metodo_diagnostico_laboratorio }}</li>
+                                            <li><strong>Fecha aplicación:</strong>
+                                                {{ optional($vis5->fecha_aplicacion)->format('d/m/Y') }}</li>
+                                        </ul>
+                                    @else
+                                        <p class="small mb-0">No hay datos registrados.</p>
+                                    @endif
+                                </div>
+                            </div>
+
+                            {{-- PCC6 --}}
+                            <div class="col-md-6 mb-4">
+                                <div class="border rounded p-3 h-100 shadow-sm">
+                                    <h6 class="text-warning mb-3"><i class="fas fa-honey-pot"></i> PCC6 – Índice de
+                                        Cosecha</h6>
+                                    @if($pcc6)
+                                        <ul class="list-unstyled small">
+                                            <li><strong>Madurez miel:</strong> {{ $pcc6->madurez_miel }}</li>
+                                            <li><strong>Alzas promedio:</strong> {{ $pcc6->num_alzadas }}</li>
+                                        </ul>
+                                    @else
+                                        <p class="small mb-0">No hay datos registrados.</p>
+                                    @endif
+                                </div>
+                            </div>
+
+                            {{-- PCC7 --}}
+                            <div class="col-md-12 mb-4">
+                                <div class="border rounded p-3 shadow-sm">
+                                    <h6 class="text-warning mb-3"><i class="fas fa-snowflake"></i> PCC7 – Preparación
+                                        Invernada</h6>
+                                    @if($pcc7)
+                                        <ul class="list-unstyled small">
+                                            <li>
+                                                <strong>Fecha cierre temporada:</strong>
+                                                {{ optional($pcc7->fecha_cierre_temporada)->format('d/m/Y') ?? 'N/A' }}
+                                            </li>
+                                            <li>
+                                                <strong>Última revisión previa receso:</strong>
+                                                {{ optional($pcc7->fecha_ultima_revision_previa_receso)->format('d/m/Y') ?? 'N/A' }}
+                                            </li>
+                                            <li>
+                                                <strong>Signos enfermedades visibles:</strong>
+                                                {{ $pcc7->signos_enfermedades_visibles ?? 'N/A' }}
+                                            </li>
+                                            <li>
+                                                <strong>Reina presente:</strong>
+                                                <span
+                                                    class="badge {{ $pcc7->presencia_reina ? 'bg-success' : 'bg-danger' }}">
+                                                    {{ $pcc7->presencia_reina ? 'Sí' : 'No' }}
+                                                </span>
+                                            </li>
+                                        </ul>
+                                    @else
+                                        <p class="small mb-0">No hay datos registrados.</p>
+                                    @endif
+                                </div>
+                            </div>
+                        </div>
+
+                        {{-- Mensaje global sólo si NO hay ningún dato --}}
+                        @if(!$hasAny)
                             <div class="alert alert-info">
-                                <i class="fas fa-info-circle"></i> No hay evaluaciones PCC registradas para esta colmena.
+                                <i class="fas fa-info-circle"></i> No hay registros para esta colmena.
                             </div>
                         @endif
                     </div>
@@ -307,5 +353,60 @@
         </div>
         <p class="text-center text-muted mt-3 small">Vista pública generada por QR</p>
     </div>
+    <style>
+        body,
+        .container-sm,
+        .card,
+        .card-body,
+        .card-header,
+        .card-footer {
+            font-size: 0.90rem !important;
+        }
+
+        .card,
+        .card-body,
+        .card-header,
+        .card-footer {
+            padding: 0.5rem !important;
+        }
+
+        .list-unstyled li,
+        .mb-3,
+        .mb-2,
+        .mb-1 {
+            margin-bottom: 0.3rem !important;
+        }
+
+        .row.g-2 {
+            --bs-gutter-x: 0.5rem;
+        }
+
+        .form-control,
+        .btn,
+        .badge {
+            font-size: 0.85em !important;
+            padding: 0.25em 0.5em !important;
+        }
+
+        h5,
+        h6 {
+            font-size: 1rem !important;
+        }
+
+        .breadcrumb {
+            font-size: 0.85rem !important;
+            margin-bottom: 0.5rem !important;
+        }
+
+        .p-3,
+        .p-2 {
+            padding: 0.5rem !important;
+        }
+
+        .rounded {
+            border-radius: 0.3rem !important;
+        }
+    </style>
 </body>
+
 </html>
