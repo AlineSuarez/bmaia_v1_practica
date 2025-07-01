@@ -10,7 +10,9 @@ class AddVisitaIdToPresenciaVarroaNosemosisEstadoNutricional extends Migration
     {
         // 1) presencia_varroa
         Schema::table('presencia_varroa', function (Blueprint $table) {
-            $table->unsignedBigInteger('visita_id')->after('colmena_id');
+            // crea la columna como nullable
+            $table->unsignedBigInteger('visita_id')->nullable()->after('colmena_id');
+            // agrega la FK
             $table->foreign('visita_id')
                   ->references('id')->on('visitas')
                   ->onDelete('cascade');
@@ -18,7 +20,7 @@ class AddVisitaIdToPresenciaVarroaNosemosisEstadoNutricional extends Migration
 
         // 2) presencia_nosemosis
         Schema::table('presencia_nosemosis', function (Blueprint $table) {
-            $table->unsignedBigInteger('visita_id')->after('colmena_id');
+            $table->unsignedBigInteger('visita_id')->nullable()->after('colmena_id');
             $table->foreign('visita_id')
                   ->references('id')->on('visitas')
                   ->onDelete('cascade');
@@ -26,7 +28,7 @@ class AddVisitaIdToPresenciaVarroaNosemosisEstadoNutricional extends Migration
 
         // 3) estado_nutricional
         Schema::table('estado_nutricional', function (Blueprint $table) {
-            $table->unsignedBigInteger('visita_id')->after('colmena_id');
+            $table->unsignedBigInteger('visita_id')->nullable()->after('colmena_id');
             $table->foreign('visita_id')
                   ->references('id')->on('visitas')
                   ->onDelete('cascade');
@@ -35,7 +37,7 @@ class AddVisitaIdToPresenciaVarroaNosemosisEstadoNutricional extends Migration
 
     public function down()
     {
-        // Para rollback: eliminar primero la FK y luego la columna, en orden inverso
+        // Para el rollback, elimina primero la FK y luego la columna
 
         Schema::table('estado_nutricional', function (Blueprint $table) {
             $table->dropForeign(['visita_id']);
