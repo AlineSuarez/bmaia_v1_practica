@@ -100,13 +100,10 @@
 
 <h1>REGISTRO DE USO DE MEDICAMENTOS</h1>
 
-<p><strong>Apiario:</strong> {{ $data['apiary_name'] }} ({{ $data['apiary_number'] }})</p>
-
 <table>
     <thead>
         <tr>
             <th>FECHA</th>
-            <th>N° COLMENAS TRATADAS</th>
             <th>MOTIVO</th>
             <th>MEDICAMENTO</th>
             <th>PRINCIPIO ACTIVO</th>
@@ -119,7 +116,6 @@
         @forelse($data['visits'] as $visit)
             <tr>
                 <td>{{ $visit->fecha_visita ?? 'N/A' }}</td>
-                <td>{{ $visit->num_colmenas_tratadas ?? 'N/A' }}</td>
                 <td>{{ $visit->motivo_tratamiento ?? 'N/A' }}</td>
                 <td>{{ $visit->nombre_comercial_medicamento ?? 'N/A' }}</td>
                 <td>{{ $visit->principio_activo_medicamento ?? 'N/A' }}</td>

@@ -12,6 +12,7 @@ class PresenciaVarroa extends Model
 
     protected $fillable = [
         'colmena_id',
+        'visita_id',
         'diagnostico_visual',
         'muestreo_abejas_adultas',
         'muestreo_cria_operculada',
@@ -33,7 +34,7 @@ class PresenciaVarroa extends Model
     ];
     public function visita()
     {
-        return $this->hasOne(\App\Models\Visita::class, 'presencia_varroa_id');
+        return $this->hasOne(\App\Models\Visita::class, 'visita_id');
     }
 
 }

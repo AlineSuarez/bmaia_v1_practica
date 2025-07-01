@@ -12,6 +12,7 @@ class PresenciaNosemosis extends Model
 
     protected $fillable = [
         'colmena_id',
+        'visita_id',
         'signos_clinicos',
         'muestreo_laboratorio',
         // nuevos
@@ -29,6 +30,6 @@ class PresenciaNosemosis extends Model
     
     public function visita()
     {
-        return $this->hasOne(\App\Models\Visita::class, 'presencia_nosemosis_id');
+        return $this->hasOne(\App\Models\Visita::class, 'visita_id');
     }
 }

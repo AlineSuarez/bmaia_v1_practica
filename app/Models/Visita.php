@@ -49,6 +49,7 @@ class Visita extends Model
         // reconstruccion de uso de medicamentos del cuaderno de campo
         'presencia_varroa_id',
         'presencia_nosemosis_id',
+        'estado_nutricional_id',
     ];
 
     public function toPrompt()
@@ -82,7 +83,7 @@ class Visita extends Model
 
     public function estadoNutricional()
     {
-        return $this->belongsTo(EstadoNutricional::class, 'visita_id');
+        return $this->belongsTo(EstadoNutricional::class, 'estado_nutricional_id');
     }
 
     public function presenciaVarroa()

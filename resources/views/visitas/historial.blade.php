@@ -397,17 +397,28 @@
                                                         <th>Método Utilizado</th>
                                                     </tr>
                                                 </thead>
+                                                @php
+                                                    $colmenasIds = $apiario->colmenas->pluck('id'); // ← IDs de las colmenas del apiario
+                                                    $estado = \App\Models\EstadoNutricional::whereIn('colmena_id', $colmenasIds)
+                                                                ->latest('fecha_aplicacion')
+                                                                ->first();
+                                                @endphp
+
                                                 <tbody>
-                                                    @foreach($apiario->visitas->where('tipo_visita', 'Alimentación')->sortByDesc('fecha_visita') as $visita)
-                                                        <tr class="table-row" data-date="{{ $visita->fecha_visita }}">
-                                                            <td>{{ optional($visita->estadoNutricional)->tipo_alimentacion ?? 'N/A' }}</td>
-                                                            <td>{{ \Carbon\Carbon::parse($visita->fecha_visita)->format('d/m/Y') }}</td>
-                                                            <td>{{ optional($visita->estadoNutricional)->insumo_utilizado ?? 'N/A' }}</td>
-                                                            <td>{{ optional($visita->estadoNutricional)->objetivo ?? 'N/A' }}</td>
-                                                            <td>{{ optional($visita->estadoNutricional)->dosifiacion ?? 'N/A' }}</td>
-                                                            <td>{{ optional($visita->estadoNutricional)->metodo_utilizado ?? 'N/A' }}</td>
-                                                        </tr>
-                                                    @endforeach
+                                                @if ($estado)
+                                                    <tr>
+                                                        <td>{{ $estado->tipo_alimentacion ?? 'N/A' }}</td>
+                                                        <td>{{ $estado->fecha_aplicacion ?? 'N/A' }}</td>
+                                                        <td>{{ $estado->insumo_utilizado ?? 'N/A' }}</td>
+                                                        <td>{{ $estado->objetivo ?? 'N/A' }}</td>
+                                                        <td>{{ $estado->dosifiacion ?? 'N/A' }}</td>
+                                                        <td>{{ $estado->metodo_utilizado ?? 'N/A' }}</td>
+                                                    </tr>
+                                                @else
+                                                    <tr>
+                                                        <td colspan="6" class="text-center text-muted">No hay datos de alimentación registrados.</td>
+                                                    </tr>
+                                                @endif
                                                 </tbody>
                                             </table>
                                         </div>

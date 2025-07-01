@@ -373,15 +373,25 @@
                                 <div class="card-footer d-flex justify-content-between">
                                     <div>
                                         @if($pccActual)
-                                        <a href="{{ route('sistemaexperto.editpcc', $colmena->id) }}"
-                                        class="btn btn-outline-primary btn-sm">
-                                            <i class="fas fa-edit"></i> Editar PCC
-                                        </a>
+                                            {{-- Ya existe un SistemaExperto: editarlo --}}
+                                            <a href="{{ route('sistemaexperto.editpcc', $colmena->id) }}"
+                                            class="btn btn-outline-primary btn-sm">
+                                                <i class="fas fa-edit"></i> Editar PCC
+                                            </a>
+
+                                        @elseif($lastAlimentacion || $lastVarroa || $lastNosemosis)
+                                            {{-- No hay SistemaExperto, pero sí hay visitas PCC3‐5: editar registro de campo --}}
+                                            <a href="{{ route('visitas.create3', $apiario->id) }}?colmena={{ $colmena->id }}"
+                                            class="btn btn-outline-warning btn-sm">
+                                                <i class="fas fa-edit"></i> Editar
+                                            </a>
+
                                         @else
-                                        <a href="{{ route('sistemaexperto.create', $apiario) }}"
-                                        class="btn btn-outline-success btn-sm">
-                                            <i class="fas fa-plus"></i> Crear PCC
-                                        </a>
+                                            {{-- Ni SistemaExperto ni visitas: crear un nuevo PCC --}}
+                                            <a href="{{ route('sistemaexperto.create', $apiario->id) }}"
+                                            class="btn btn-outline-success btn-sm">
+                                                <i class="fas fa-plus"></i> Crear PCC
+                                            </a>
                                         @endif
                                     </div>
                                     <a href="{{ route('colmenas.index', $apiario->id) }}"

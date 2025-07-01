@@ -12,6 +12,7 @@ class EstadoNutricional extends Model
 
     protected $fillable = [
         'colmena_id',
+        'visita_id',
         'tipo_alimentacion',
         'fecha_aplicacion',
         'insumo_utilizado',
@@ -24,7 +25,7 @@ class EstadoNutricional extends Model
     ];
     public function visita()
     {
-        return $this->hasOne(\App\Models\Visita::class, 'estado_nutricional_id');
+        return $this->hasOne(\App\Models\Visita::class, 'visita_id');
     }
 }
 

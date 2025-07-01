@@ -435,43 +435,38 @@ class DocumentController extends Controller
 
     public function generateAlimentacionDocument($apiarioId)
     {
-        \Log::info("Se ha llamado a la generación del documento de alimentación para el apiario ID: {$apiarioId}");
-        try {
-            // Obtiene el apiario con sus relaciones
-            $apiario = Apiario::with(['comuna.region'])->findOrFail($apiarioId);
-            // Obtenemos los registros de SistemaExperto para el apiario
-            $sistemaExpertoVisitas = SistemaExperto::with('estadoNutricional', 'colmena')
-                ->where('apiario_id', $apiarioId)
-                ->get();
-            if ($sistemaExpertoVisitas->isEmpty()) {
-                \Log::warning("No hay registros de SistemaExperto para este apiario.");
-                return back()->with('error', 'No hay registros de alimentación válidos para este apiario.');
-            }
-            // Filtrar las visitas que realmente tengan la relación estadoNutricional cargada
-            $sistemaExpertoVisitas = $sistemaExpertoVisitas->filter(function ($visita) {
-                return $visita->estadoNutricional !== null; // Asegura que la relación estadoNutricional no sea nula
-            });
-            // Obtener los datos del apicultor y apiario
-            $beekeeperData = $this->getBeekeeperData();
-            $apiaryData = $this->getApiaryData($apiario);
-            // Combina todos los datos
-            $data = array_merge($beekeeperData, $apiaryData, ['visits' => $sistemaExpertoVisitas]);
-            // Crear el PDF
-            $pdf = Pdf::loadView('documents.alimentacion-record', compact('data'));
-            $pdf->setPaper('A4', 'portrait');
-            $pdf->setOptions([
-                'isHtml5ParserEnabled' => true,
-                'isPhpEnabled' => false,
-                'defaultFont' => 'DejaVu Sans',
-                'enable_remote' => false,
-                'debugKeepTemp' => false,
-            ]);
-            // Descargar el archivo PDF
-            return $pdf->download('Alimentacion_Colmenas_Apiario_' . $apiario->nombre . '.pdf');
-        } catch (\Exception $e) {
-            \Log::error('Error al generar documento de alimentación: ' . $e->getMessage());
-            return back()->with('error', 'Error al generar el documento de alimentación.');
+        $apiario = Apiario::with(['comuna.region'])->findOrFail($apiarioId);
+
+        // Trae todas las visitas de tipo "Alimentación" con su EstadoNutricional y la Colmena
+        $visitas = Visita::with(['estadoNutricional','colmena'])
+            ->where('apiario_id', $apiarioId)
+            ->where('tipo_visita', 'Alimentación')
+            ->get();
+
+        if ($visitas->isEmpty()) {
+            return back()->with('error', 'No hay registros de alimentación válidos para este apiario.');
         }
+
+        $beekeeper  = $this->getBeekeeperData();
+        $apiaryData = $this->getApiaryData($apiario);
+
+        // Usamos la Opción A: un solo $data para tu vista Blade existente
+        $data = array_merge(
+            $beekeeper,
+            $apiaryData,
+            ['visits' => $visitas]
+        );
+
+        $pdf = Pdf::loadView('documents.alimentacion-record', compact('data'))
+            ->setPaper('A4','portrait')
+            ->setOptions([
+                'isHtml5ParserEnabled'=>true,
+                'isPhpEnabled'=>false,
+                'defaultFont'=>'DejaVu Sans',
+                'enable_remote'=>false,
+            ]);
+
+        return $pdf->download("Alimentacion_{$apiario->nombre}.pdf");
     }
 
     public function qrPdf(Apiario $apiario, Colmena $colmena)
