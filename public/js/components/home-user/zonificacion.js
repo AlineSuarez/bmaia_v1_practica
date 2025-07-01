@@ -437,11 +437,9 @@ document.addEventListener("DOMContentLoaded", function () {
             );
         }
 
-        // ... [resto del código del mapa y clima permanece igual] ...
-
         const map = L.map("map").setView([-33.4489, -70.6693], 6);
         const beeIcon = L.icon({
-            iconUrl: "https://apicheck.cl/img/bee_icon.svg",
+            iconUrl: "/img/bee_icon.svg",
             iconSize: [52, 52],
             iconAnchor: [26, 26],
             popupAnchor: [0, -32],
