@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'MaiA - Panel de Control Apícola')
+@section('title', 'B-MaiA - Panel de Control Apícola')
 
 @section('content')
 
@@ -29,7 +29,7 @@
       </div>
     @endfor
     </div>
-    <div class="loader-brand">MaiA</div>
+    <div class="loader-brand">B-MaiA</div>
     <div class="loader-text">Cargando panel de control</div>
     </div>
   </div>

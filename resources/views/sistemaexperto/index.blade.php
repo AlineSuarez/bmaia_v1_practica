@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Maia - Sistema Experto de Apiarios')
+@section('title', 'B-Maia - Sistema Experto de Apiarios')
 
 @section('content')
 

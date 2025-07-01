@@ -1,5 +1,8 @@
 @extends('layouts.app')
 
+@section('title', 'B-MaiA - Apiarios')
+
+
 @section('content')
 
     <head>

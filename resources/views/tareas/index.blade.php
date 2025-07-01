@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Colmena de Tareas - Organiza tu Proyecto')
+@section('title', 'B-MaiA - Colmena de Tareas')
 
 @section('content')
 

@@ -1,5 +1,7 @@
 @extends('layouts.app')
 
+@section('title', 'B-MaiA - Cuaderno de Campo')
+
 @push('styles')
     <link href="{{ asset('css/components/home-user/cuaderno-de-campo.css') }}" rel="stylesheet">
 @endpush
