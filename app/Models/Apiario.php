@@ -97,4 +97,9 @@ class Apiario extends Model
         return true;
     }
 
+    public function ultimaVisita()
+    {
+        return $this->hasOne(Visita::class)->latestOfMany('fecha_visita');
+    }
+
 }

@@ -22,10 +22,6 @@
                             <!-- Statistics Cards -->
                             <div class="stats-container d-none d-lg-flex">
                                 <div class="stat-card">
-                                    <div class="stat-number">{{ $apiario->visitas->count() }}</div>
-                                    <div class="stat-label">Total Visitas</div>
-                                </div>
-                                <div class="stat-card">
                                     <div class="stat-number">{{ $apiario->visitas->where('tipo_visita', 'Visita General')->count() }}</div>
                                     <div class="stat-label">Generales</div>
                                 </div>
