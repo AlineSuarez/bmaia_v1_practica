@@ -1664,3 +1664,100 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 });
+
+// ============================================================
+// GUARDADO Y RESTAURACIÓN DE SCROLL Y PESTAÑA ACTIVA POR MÓDULO
+// ============================================================
+
+(function () {
+    // Devuelve un ID único para la pestaña/módulo actual
+    function getScrollKey(tabId) {
+        const module = window.location.pathname || "apiarios";
+        return `scrollPos_${module}_${tabId}`;
+    }
+
+    // Guarda el scroll actual
+    function saveScrollPosition(tabId) {
+        const key = getScrollKey(tabId);
+        localStorage.setItem(key, window.scrollY || window.pageYOffset);
+    }
+
+    // Restaura el scroll guardado
+    function restoreScrollPosition(tabId) {
+        const key = getScrollKey(tabId);
+        const pos = parseInt(localStorage.getItem(key), 10);
+        if (!isNaN(pos)) {
+            setTimeout(() => window.scrollTo(0, pos), 10);
+        }
+    }
+
+    // Guarda la pestaña activa
+    function saveActiveTab(tabId) {
+        const module = window.location.pathname || "apiarios";
+        localStorage.setItem(`activeTab_${module}`, tabId);
+    }
+
+    // Restaura la pestaña activa
+    function restoreActiveTab() {
+        const module = window.location.pathname || "apiarios";
+        const savedTabId = localStorage.getItem(`activeTab_${module}`);
+        if (savedTabId) {
+            const tabBtn = document.querySelector(
+                `[data-bs-target="#${savedTabId}"]`
+            );
+            if (tabBtn) {
+                // Si ya está activa, solo restaurar scroll
+                if (!tabBtn.classList.contains("active")) {
+                    tabBtn.click();
+                } else {
+                    restoreScrollPosition(savedTabId);
+                }
+            }
+        }
+    }
+
+    // Guardar scroll y pestaña al cambiar de pestaña
+    document.querySelectorAll('[data-bs-toggle="tab"]').forEach((tabBtn) => {
+        tabBtn.addEventListener("show.bs.tab", function (e) {
+            const currentTab = document.querySelector(
+                ".tab-pane.active, .tab-content.active"
+            );
+            if (currentTab) {
+                saveScrollPosition(currentTab.id);
+            }
+        });
+        tabBtn.addEventListener("shown.bs.tab", function (e) {
+            const targetTabId = tabBtn
+                .getAttribute("data-bs-target")
+                ?.replace("#", "");
+            if (targetTabId) {
+                saveActiveTab(targetTabId);
+                restoreScrollPosition(targetTabId);
+            }
+        });
+    });
+
+    // Guardar scroll antes de salir del módulo/página
+    window.addEventListener("beforeunload", function () {
+        const currentTab = document.querySelector(
+            ".tab-pane.active, .tab-content.active"
+        );
+        if (currentTab) {
+            saveScrollPosition(currentTab.id);
+        }
+    });
+
+    // Restaurar pestaña activa y scroll al cargar la página
+    document.addEventListener("DOMContentLoaded", function () {
+        restoreActiveTab();
+        // Si no hay pestaña guardada, restaurar scroll de la actual
+        setTimeout(() => {
+            const currentTab = document.querySelector(
+                ".tab-pane.active, .tab-content.active"
+            );
+            if (currentTab) {
+                restoreScrollPosition(currentTab.id);
+            }
+        }, 20);
+    });
+})();

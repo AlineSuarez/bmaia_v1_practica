@@ -22,12 +22,28 @@ class DashboardController extends Controller
                 ->with('error', 'Debe iniciar sesión para acceder al dashboard.');
         }
 
-        // 1. Defino los tipos de visita que quiero contar
         $tiposOk = [
             'Visita General',
             'Inspección de Visita',
             'Uso de Medicamentos',
         ];
+
+        // Conteo de apiarios por tipo
+        $apiariosFijos = Apiario::where('user_id', $user->id)
+            ->where('tipo_apiario', 'fijo')
+            ->count();
+
+        $apiariosBase = Apiario::where('user_id', $user->id)
+            ->where('tipo_apiario', 'trashumante')
+            ->where('activo', 1)
+            ->where('es_temporal', false)
+            ->count();
+
+        $apiariosTemporales = Apiario::where('user_id', $user->id)
+            ->where('tipo_apiario', 'trashumante')
+            ->where('activo', 1)
+            ->where('es_temporal', true)
+            ->count();
 
         // 2. Conteo total de apiarios y colmenas (igual que antes)
         $totalApiarios = Apiario::where('user_id', $user->id)->count();
@@ -72,14 +88,18 @@ class DashboardController extends Controller
         return view('dashboard', compact(
             'totalApiarios',
             'totalColmenas',
-            'visitas',           // ahora ya es el conteo filtrado
+            'visitas',
             't_progreso',
             't_pendientes',
             't_urgentes',
             't_completadas',
             'dataApiarios',
             'dataVisitas',
-            'user'
+            'user',
+            // Agrega los nuevos conteos
+            'apiariosFijos',
+            'apiariosBase',
+            'apiariosTemporales'
         ));
     }
 

@@ -220,130 +220,130 @@
     </div>
 
     <!-- Secciones del Dashboard -->
-    <div class="dashboard-sections">
+    <!-- <div class="dashboard-sections">
       <div class="section-row">
-      <!-- Actividad Reciente -->
+      <!-- Actividad Reciente
       <div class="dashboard-section">
-        <div class="section-header">
-        <h2>Actividad Reciente</h2>
-        <div class="section-actions">
-          <div class="dashboard-dropdown">
-          <button class="btn-filter">
-            <i class="fas fa-filter"></i>
-            <span>Filtrar</span>
-          </button>
-          <div class="dashboard-dropdown-menu">
-            <a href="#" class="dashboard-dropdown-item active">Todas</a>
-            <a href="#" class="dashboard-dropdown-item">Inspecciones</a>
-            <a href="#" class="dashboard-dropdown-item">Tareas</a>
-            <a href="#" class="dashboard-dropdown-item">Sistema</a>
-          </div>
-          </div>
-        </div>
-        </div>
-        <div class="section-content">
-        <div class="activity-list">
-          @if(isset($actividades) && count($actividades) > 0)
-        @foreach($actividades as $actividad)
-        <div class="activity-item">
-        <div class="activity-time-line">
-        <div class="activity-time">{{ $actividad->fecha ?? '10:30 AM' }}</div>
-        <div class="activity-line"></div>
-        </div>
-        <div class="activity-content">
-        <div class="activity-icon {{ $actividad->tipo ?? 'inspeccion' }}">
-        <i
-        class="fas fa-{{ $actividad->tipo == 'tarea' ? 'tasks' : ($actividad->tipo == 'sistema' ? 'cog' : 'clipboard-check') }}"></i>
-        </div>
-        <div class="activity-details">
-        <div class="activity-text">{{ $actividad->descripcion ?? 'Inspección completada en Apiario Norte' }}
-        </div>
-        <div class="activity-meta">
-        <span class="activity-type">{{ ucfirst($actividad->tipo ?? 'Inspección') }}</span>
-        <span class="activity-user">{{ $actividad->usuario ?? 'Juan Pérez' }}</span>
-        </div>
-        </div>
-        </div>
-        </div>
+      <div class="section-header">
+      <h2>Actividad Reciente</h2>
+      <div class="section-actions">
+      <div class="dashboard-dropdown">
+      <button class="btn-filter">
+      <i class="fas fa-filter"></i>
+      <span>Filtrar</span>
+      </button>
+      <div class="dashboard-dropdown-menu">
+      <a href="#" class="dashboard-dropdown-item active">Todas</a>
+      <a href="#" class="dashboard-dropdown-item">Inspecciones</a>
+      <a href="#" class="dashboard-dropdown-item">Tareas</a>
+      <a href="#" class="dashboard-dropdown-item">Sistema</a>
+      </div>
+      </div>
+      </div>
+      </div>
+      <div class="section-content">
+      <div class="activity-list">
+      @if(isset($actividades) && count($actividades) > 0)
+      @foreach($actividades as $actividad)
+      <div class="activity-item">
+      <div class="activity-time-line">
+      <div class="activity-time">{{ $actividad->fecha ?? '10:30 AM' }}</div>
+      <div class="activity-line"></div>
+      </div>
+      <div class="activity-content">
+      <div class="activity-icon {{ $actividad->tipo ?? 'inspeccion' }}">
+      <i
+      class="fas fa-{{ $actividad->tipo == 'tarea' ? 'tasks' : ($actividad->tipo == 'sistema' ? 'cog' : 'clipboard-check') }}"></i>
+      </div>
+      <div class="activity-details">
+      <div class="activity-text">{{ $actividad->descripcion ?? 'Inspección completada en Apiario Norte' }}
+      </div>
+      <div class="activity-meta">
+      <span class="activity-type">{{ ucfirst($actividad->tipo ?? 'Inspección') }}</span>
+      <span class="activity-user">{{ $actividad->usuario ?? 'Juan Pérez' }}</span>
+      </div>
+      </div>
+      </div>
+      </div>
       @endforeach
       @else
-        <div class="empty-state">
-        <div class="empty-icon">
-        <i class="fas fa-clipboard-list"></i>
-        </div>
-        <p>No hay actividades recientes</p>
-        <button class="btn-action">Crear actividad</button>
-        </div>
+      <div class="empty-state">
+      <div class="empty-icon">
+      <i class="fas fa-clipboard-list"></i>
+      </div>
+      <p>No hay actividades recientes</p>
+      <button class="btn-action">Crear actividad</button>
+      </div>
       @endif
-        </div>
-        </div>
+      </div>
+      </div>
       </div>
 
-      <!-- Próximas Tareas -->
+      Próximas Tareas
       <div class="dashboard-section">
-        <div class="section-header">
-        <h2>Próximas Tareas</h2>
-        <div class="section-actions">
-          <button class="btn-add">
-          <i class="fas fa-plus"></i>
-          <span>Nueva tarea</span>
-          </button>
-          <a href="{{ route('tareas') }}" class="btn-view-all">Ver todas</a>
-        </div>
-        </div>
-        <div class="section-content">
-        <div class="tasks-list">
-          @if(isset($proximasTareas) && count($proximasTareas) > 0)
-        @foreach($proximasTareas as $tarea)
-        <div class="task-item priority-{{ $tarea->prioridad ?? 'media' }}">
-        <div class="task-content">
-        <div class="task-header">
-        <div class="task-priority">
-        <span class="priority-indicator"></span>
-        <span class="priority-text">{{ ucfirst($tarea->prioridad ?? 'Media') }}</span>
-        </div>
-        <div class="task-date">
-        <i class="far fa-calendar-alt"></i>
-        <span>{{ $tarea->fecha_limite ?? 'Mañana' }}</span>
-        </div>
-        </div>
-        <div class="task-body">
-        <h3 class="task-title">{{ $tarea->titulo ?? 'Inspección de colmenas' }}</h3>
-        <p class="task-description">
-        {{ $tarea->descripcion ?? 'Revisar estado de las colmenas en el apiario principal' }}
-        </p>
-        </div>
-        <div class="task-footer">
-        <div class="task-status">
-        <span
-        class="status-badge {{ $tarea->estado ?? 'pendiente' }}">{{ ucfirst($tarea->estado ?? 'Pendiente') }}</span>
-        </div>
-        <div class="task-actions">
-        <button class="task-action-btn">
-        <i class="fas fa-check-circle"></i>
-        </button>
-        <button class="task-action-btn">
-        <i class="fas fa-edit"></i>
-        </button>
-        </div>
-        </div>
-        </div>
-        </div>
+      <div class="section-header">
+      <h2>Próximas Tareas</h2>
+      <div class="section-actions">
+      <button class="btn-add">
+      <i class="fas fa-plus"></i>
+      <span>Nueva tarea</span>
+      </button>
+      <a href="{{ route('tareas') }}" class="btn-view-all">Ver todas</a>
+      </div>
+      </div>
+      <div class="section-content">
+      <div class="tasks-list">
+      @if(isset($proximasTareas) && count($proximasTareas) > 0)
+      @foreach($proximasTareas as $tarea)
+      <div class="task-item priority-{{ $tarea->prioridad ?? 'media' }}">
+      <div class="task-content">
+      <div class="task-header">
+      <div class="task-priority">
+      <span class="priority-indicator"></span>
+      <span class="priority-text">{{ ucfirst($tarea->prioridad ?? 'Media') }}</span>
+      </div>
+      <div class="task-date">
+      <i class="far fa-calendar-alt"></i>
+      <span>{{ $tarea->fecha_limite ?? 'Mañana' }}</span>
+      </div>
+      </div>
+      <div class="task-body">
+      <h3 class="task-title">{{ $tarea->titulo ?? 'Inspección de colmenas' }}</h3>
+      <p class="task-description">
+      {{ $tarea->descripcion ?? 'Revisar estado de las colmenas en el apiario principal' }}
+      </p>
+      </div>
+      <div class="task-footer">
+      <div class="task-status">
+      <span
+      class="status-badge {{ $tarea->estado ?? 'pendiente' }}">{{ ucfirst($tarea->estado ?? 'Pendiente') }}</span>
+      </div>
+      <div class="task-actions">
+      <button class="task-action-btn">
+      <i class="fas fa-check-circle"></i>
+      </button>
+      <button class="task-action-btn">
+      <i class="fas fa-edit"></i>
+      </button>
+      </div>
+      </div>
+      </div>
+      </div>
       @endforeach
       @else
-        <div class="empty-state">
-        <div class="empty-icon">
-        <i class="fas fa-check-circle"></i>
-        </div>
-        <p>No hay tareas pendientes</p>
-        <button class="btn-action">Crear tarea</button>
-        </div>
+      <div class="empty-state">
+      <div class="empty-icon">
+      <i class="fas fa-check-circle"></i>
+      </div>
+      <p>No hay tareas pendientes</p>
+      <button class="btn-action">Crear tarea</button>
+      </div>
       @endif
-        </div>
-        </div>
       </div>
       </div>
-    </div>
+      </div>
+      </div>
+    </div> -->
 
     <!-- Sección de Clima y Condiciones -->
     <div class="weather-section">
@@ -514,7 +514,23 @@
     function renderMainCards() {
       let html = '';
       for (let i = 0; i < 6; i++) {
-      if (!daysArray[i]) continue;
+      if (!daysArray[i]) {
+        // Si no hay datos para este día, muestra tarjeta vacía
+        html += `<div class="weather-card${i === 0 ? ' today' : ''}">
+      <div class="weather-header">
+        <div class="weather-day">${dias[i]}</div>
+        <div class="weather-date">${dayKeys[i] || ''}</div>
+      </div>
+      <div class="weather-icon">
+        <i class="fas fa-question" style="color:#ccc;font-size:2.2em"></i>
+      </div>
+      <div class="weather-temp">---</div>
+      <div class="weather-details" style="margin-top:8px">
+        <div class="weather-detail">No hay datos para este día.</div>
+      </div>
+      </div>`;
+        continue;
+      }
       const day = daysArray[i];
       const main = day.weather[0].main;
       const color = iconColors[main] || '#FFD600';

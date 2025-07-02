@@ -209,16 +209,12 @@
 }
 
 .apiario-navbar-logo {
-    height: 42px;
+    height: 95px;
     width: auto;
     max-width: 180px;
     object-fit: contain;
     filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
     transition: all var(--apiario-transition-bounce-fast);
-}
-
-.apiario-navbar-brand:hover {
-    transform: translateX(-50%) translateY(-4px);
 }
 
 .apiario-navbar-brand:hover .apiario-navbar-logo {
@@ -228,7 +224,6 @@
 }
 
 .apiario-navbar-brand::after {
-    content: "";
     position: absolute;
     top: -30px;
     left: -30px;
@@ -244,7 +239,6 @@
     transition: opacity var(--apiario-transition-normal);
     pointer-events: none;
     z-index: -1;
-    border-radius: var(--apiario-radius-full);
 }
 
 .apiario-navbar-brand:hover::after {
@@ -253,7 +247,6 @@
 }
 
 .apiario-navbar-brand::before {
-    content: "";
     position: absolute;
     top: -10px;
     left: -20px;
@@ -264,7 +257,6 @@
     opacity: 0;
     transform: scale(0.8);
     transition: all var(--apiario-transition-normal);
-    box-shadow: var(--apiario-shadow-neo);
     z-index: -1;
 }
 
@@ -322,7 +314,6 @@
     margin-right: 12px;
     border-radius: var(--apiario-radius-full);
     padding: 2px;
-    background: var(--apiario-gradient-honey-glow);
     box-shadow: var(--apiario-shadow-sm);
     transition: all var(--apiario-transition-normal);
     overflow: hidden;

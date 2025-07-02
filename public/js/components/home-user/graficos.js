@@ -1,3 +1,17 @@
+function mostrarAnimados() {
+    document.querySelectorAll(".animate").forEach((el) => {
+        el.style.opacity = "1";
+    });
+}
+
+document.addEventListener("DOMContentLoaded", mostrarAnimados);
+document.addEventListener("visibilitychange", function () {
+    if (!document.hidden) {
+        mostrarAnimados();
+    }
+});
+window.addEventListener("focus", mostrarAnimados);
+
 document.addEventListener("DOMContentLoaded", function () {
     // Activar animaciones al cargar
     document.querySelectorAll(".animate").forEach((el) => {

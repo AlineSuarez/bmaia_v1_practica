@@ -112,18 +112,24 @@ document.addEventListener("DOMContentLoaded", function () {
                 }
 
                 rowHTML += `
-                    <td class="temp-data weather-data">Cargando...</td>
-                    <td class="humidity-data weather-data">Cargando...</td>
-                    <td class="weather-desc weather-data">Cargando...</td>
-                    <td>
-                        <div class="action-buttons">
-                            <button class="action-btn locate-btn" title="Localizar en mapa"
-                                data-lat="${apiario.latitud}" data-lon="${apiario.longitud}">
-                                <i class="fa-solid fa-location-crosshairs"></i>
-                            </button>
-                        </div>
-                    </td>
-                `;
+        <td class="temp-data weather-data">Cargando...</td>
+        <td class="humidity-data weather-data">Cargando...</td>
+        <td class="weather-desc weather-data">Cargando...</td>
+    `;
+
+                // Solo agregar columna de acciones si NO es temporales
+                if (tabName !== "temporales") {
+                    rowHTML += `
+        <td>
+            <div class="action-buttons">
+                <button class="action-btn locate-btn" title="Localizar en mapa"
+                    data-lat="${apiario.latitud}" data-lon="${apiario.longitud}">
+                    <i class="fa-solid fa-location-crosshairs"></i>
+                </button>
+            </div>
+        </td>
+        `;
+                }
 
                 row.innerHTML = rowHTML;
                 tbody.appendChild(row);
@@ -161,67 +167,66 @@ document.addEventListener("DOMContentLoaded", function () {
                 card.setAttribute("data-id", apiario.id);
 
                 card.innerHTML = `
-                    <div class="card-header">
-                        <h3>${apiario.nombre}</h3>
-                        <div class="card-actions">
-                            <button class="card-action locate-btn" title="Localizar en mapa"
-                                data-lat="${apiario.latitud}" data-lon="${
-                    apiario.longitud
-                }">
-                                <i class="fa-solid fa-location-crosshairs"></i>
-                            </button>
-                        </div>
-                    </div>
-                    ${
-                        (tabName === "fijos" || tabName === "base") &&
-                        apiario.foto
-                            ? `
-                        <div class="card-image">
-                            <img src="storage/${apiario.foto}" alt="Foto Apiario">
-                        </div>
-                    `
-                            : tabName === "fijos" || tabName === "base"
-                            ? `
-                        <div class="card-image">
-                            <div class="no-image">
-                                <i class="fa-solid fa-image-slash"></i>
-                            </div>
-                        </div>
-                    `
-                            : ""
-                    }
-                    <div class="card-body">
-                        <div class="card-info">
-                            <div class="info-item">
-                                <i class="fa-solid fa-location-dot"></i>
-                                <span title="Lat: ${apiario.latitud}, Lon: ${
+    <div class="card-header">
+        <h3>${apiario.nombre}</h3>
+        <div class="card-actions">
+            ${
+                tabName !== "temporales"
+                    ? `<button class="card-action locate-btn" title="Localizar en mapa"
+                        data-lat="${apiario.latitud}" data-lon="${apiario.longitud}">
+                        <i class="fa-solid fa-location-crosshairs"></i>
+                    </button>`
+                    : ""
+            }
+        </div>
+    </div>
+    ${
+        (tabName === "fijos" || tabName === "base") && apiario.foto
+            ? `
+    <div class="card-image">
+        <img src="storage/${apiario.foto}" alt="Foto Apiario">
+    </div>
+`
+            : tabName === "fijos" || tabName === "base"
+            ? `
+    <div class="card-image">
+        <div class="no-image">
+            <i class="fa-solid fa-image-slash"></i>
+        </div>
+    </div>
+`
+            : ""
+    }
+    <div class="card-body">
+        <div class="card-info">
+            <div class="info-item">
+                <i class="fa-solid fa-location-dot"></i>
+                <span title="Lat: ${apiario.latitud}, Lon: ${
                     apiario.longitud
                 }" class="coordinates-tooltip">
-                                    ${parseFloat(apiario.latitud).toFixed(
-                                        5
-                                    )}, ${parseFloat(apiario.longitud).toFixed(
-                    5
-                )}
-                                </span>
-                            </div>
-                            <div class="info-item">
-                                <i class="fa-solid fa-cubes-stacked"></i>
-                                <span>${apiario.num_colmenas} colmenas</span>
-                            </div>
-                            <div class="info-item">
-                                <i class="fa-solid fa-temperature-half"></i>
-                                <span class="temp-data">Cargando...</span>
-                            </div>
-                            <div class="info-item">
-                                <i class="fa-solid fa-droplet"></i>
-                                <span class="humidity-data">Cargando...</span>
-                            </div>
-                            <div class="info-item">
-                                <span class="weather-desc">Cargando...</span>
-                            </div>
-                        </div>
-                    </div>
-                `;
+                    ${parseFloat(apiario.latitud).toFixed(5)}, ${parseFloat(
+                    apiario.longitud
+                ).toFixed(5)}
+                </span>
+            </div>
+            <div class="info-item">
+                <i class="fa-solid fa-cubes-stacked"></i>
+                <span>${apiario.num_colmenas} colmenas</span>
+            </div>
+            <div class="info-item">
+                <i class="fa-solid fa-temperature-half"></i>
+                <span class="temp-data">Cargando...</span>
+            </div>
+            <div class="info-item">
+                <i class="fa-solid fa-droplet"></i>
+                <span class="humidity-data">Cargando...</span>
+            </div>
+            <div class="info-item">
+                <span class="weather-desc">Cargando...</span>
+            </div>
+        </div>
+    </div>
+`;
 
                 cardsContainer.appendChild(card);
             });
@@ -372,6 +377,39 @@ document.addEventListener("DOMContentLoaded", function () {
                     }, 100);
                 }
             }
+
+            if (e.target.closest(".locate-btn")) {
+                const btn = e.target.closest(".locate-btn");
+                const lat = parseFloat(btn.getAttribute("data-lat"));
+                const lon = parseFloat(btn.getAttribute("data-lon"));
+
+                if (!isNaN(lat) && !isNaN(lon)) {
+                    map.setView([lat, lon], 12);
+
+                    const row = btn.closest("tr");
+                    const card = btn.closest(".apiary-card");
+                    let apiarioId;
+
+                    if (row) {
+                        apiarioId = parseInt(row.getAttribute("data-id"));
+                    } else if (card) {
+                        apiarioId = parseInt(card.getAttribute("data-id"));
+                    }
+
+                    if (apiarioId && markerMap.has(apiarioId)) {
+                        const marker = markerMap.get(apiarioId);
+                        marker.openPopup();
+                    }
+
+                    // --- NUEVO BLOQUEO DE BOTONES ---
+                    // Habilita todos los botones primero
+                    document
+                        .querySelectorAll(".locate-btn")
+                        .forEach((b) => (b.disabled = false));
+                    // Deshabilita solo el botón del apiario activo
+                    btn.disabled = true;
+                }
+            }
         });
 
         // Función auxiliar para obtener apiarios por pestaña
@@ -505,6 +543,8 @@ document.addEventListener("DOMContentLoaded", function () {
         const markers = L.featureGroup().addTo(map);
         const otrosGroup = L.layerGroup();
         const markerMap = new Map();
+        const radioGroup = L.layerGroup().addTo(map); // Nuevo grupo para radios
+        const radioMap = new Map(); // Para guardar los círculos por apiario.id
 
         // Variables para estadísticas
         let totalTemp = 0;
@@ -512,6 +552,9 @@ document.addEventListener("DOMContentLoaded", function () {
         let countWithData = 0;
         let tempData = [];
         let humidityData = [];
+
+        // Cache de datos climáticos
+        const weatherCache = {}; // Guardar datos de clima por apiario.id
 
         // Función para obtener datos del clima
         function fetchWeatherData(apiario) {
@@ -616,7 +659,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
                         // Actualizar popup
                         const popupWeather = document.querySelector(
-                            `.popup-weather[data-id="${apiario.id}"]`
+                            '.leaflet-popup .popup-weather[data-id="' +
+                                apiario.id +
+                                '"]'
                         );
                         if (popupWeather) {
                             popupWeather.innerHTML = `
@@ -659,6 +704,13 @@ document.addEventListener("DOMContentLoaded", function () {
                                 )}%`;
                             }
                         }
+
+                        weatherCache[apiario.id] = {
+                            temp: data.main.temp,
+                            humidity: data.main.humidity,
+                            icon: data.weather[0].icon,
+                            desc: data.weather[0].main,
+                        };
                     }
                 })
                 .catch((err) => {
@@ -683,61 +735,70 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         // Agregar marcadores para todos los tipos (excluyendo archivados del mapa)
-        [...apiariosFijos, ...apiariosBase, ...apiariosTemporales].forEach(
-            (apiario) => {
-                if (apiario.latitud && apiario.longitud) {
-                    const marker = L.marker(
-                        [apiario.latitud, apiario.longitud],
-                        {
-                            icon: beeIcon,
-                        }
-                    ).bindPopup(`
-                    <div class="custom-popup">
-                        ${
-                            apiario.foto
-                                ? `<img src="storage/${apiario.foto}" class="popup-image">`
-                                : ""
-                        }
-                        <h3>${apiario.nombre}</h3>
-                        <div class="popup-info">
-                            <p><i class="fa-solid fa-location-dot"></i> ${
-                                apiario.nombre_comuna || "Sin ubicación"
-                            }</p>
-                            <p><i class="fa-solid fa-cubes-stacked"></i> Colmenas: ${
-                                apiario.num_colmenas
-                            }</p>
-                            <p class="popup-weather" data-id="${apiario.id}">
-                                <i class="fa-solid fa-cloud"></i> Cargando datos del clima...
-                            </p>
-                        </div>
-                    </div>
-                `);
-                    marker.addTo(markers);
-                    markerMap.set(apiario.id, marker);
+        [...apiariosFijos, ...apiariosBase].forEach((apiario) => {
+            if (apiario.latitud && apiario.longitud) {
+                const weatherHtml =
+                    weatherCache[apiario.id] &&
+                    typeof weatherCache[apiario.id].temp !== "undefined"
+                        ? `<i class="fa-solid fa-temperature-half"></i> ${weatherCache[
+                              apiario.id
+                          ].temp.toFixed(1)}°C, 
+       <i class="fa-solid fa-droplet"></i> ${
+           weatherCache[apiario.id].humidity
+       }%, 
+       ${weatherIcons[weatherCache[apiario.id].icon] || ""} ${
+                              weatherEs[weatherCache[apiario.id].desc] ||
+                              weatherCache[apiario.id].desc
+                          }`
+                        : `<i class="fa-solid fa-cloud"></i> Cargando datos del clima...`;
 
-                    // Determinar color del círculo según tipo
-                    let circleColor = "#f0941b"; // Default naranja para fijos
-                    if (apiario.tipo_apiario === "trashumante") {
-                        if (apiario.es_temporal) {
-                            circleColor = "#27ae60"; // Verde para temporales
-                        } else {
-                            circleColor = "#3498db"; // Azul para base
-                        }
+                const marker = L.marker([apiario.latitud, apiario.longitud], {
+                    icon: beeIcon,
+                }).bindPopup(`
+    <div class="custom-popup">
+        ${
+            apiario.foto
+                ? `<img src="storage/${apiario.foto}" class="popup-image">`
+                : ""
+        }
+        <h3>${apiario.nombre}</h3>
+        <div class="popup-info">
+            <p><i class="fa-solid fa-location-dot"></i> ${
+                apiario.nombre_comuna || "Sin ubicación"
+            }</p>
+            <p><i class="fa-solid fa-cubes-stacked"></i> Colmenas: ${
+                apiario.num_colmenas
+            }</p>
+            <p class="popup-weather" data-id="${apiario.id}">
+                ${weatherHtml}
+            </p>
+        </div>
+    </div>
+`);
+                marker.addTo(markers);
+                markerMap.set(apiario.id, marker);
+
+                // Determinar color del círculo según tipo
+                let circleColor = "#f0941b"; // Default naranja para fijos
+                if (apiario.tipo_apiario === "trashumante") {
+                    if (apiario.es_temporal) {
+                        circleColor = "#27ae60"; // Verde para temporales
+                    } else {
+                        circleColor = "#3498db"; // Azul para base
                     }
-
-                    const circle = L.circle(
-                        [apiario.latitud, apiario.longitud],
-                        {
-                            color: circleColor,
-                            fillColor: circleColor,
-                            fillOpacity: 0.3,
-                            radius: 3500,
-                            interactive: false,
-                        }
-                    ).addTo(map);
                 }
+
+                // Crear círculo pero NO agregarlo al mapa aún
+                const circle = L.circle([apiario.latitud, apiario.longitud], {
+                    color: circleColor,
+                    fillColor: circleColor,
+                    fillOpacity: 0.03, // Opacidad baja para el relleno
+                    radius: 3000, // 3km
+                    interactive: false,
+                });
+                radioMap.set(apiario.id, circle);
             }
-        );
+        });
 
         // Agregar marcadores para apiarios archivados en el grupo de "otros"
         apiariosArchivados.forEach((apiario) => {
@@ -795,8 +856,14 @@ document.addEventListener("DOMContentLoaded", function () {
         if (toggleOthers) {
             toggleOthers.addEventListener("change", function () {
                 if (this.checked) {
+                    // Mostrar radios de todos los apiarios activos
+                    radioMap.forEach((circle) => radioGroup.addLayer(circle));
+                    // Mostrar archivados
                     otrosGroup.addTo(map);
                 } else {
+                    // Quitar radios
+                    radioGroup.clearLayers();
+                    // Quitar archivados
                     otrosGroup.removeFrom(map);
                 }
             });
@@ -931,6 +998,14 @@ document.addEventListener("DOMContentLoaded", function () {
                         const marker = markerMap.get(apiarioId);
                         marker.openPopup();
                     }
+
+                    // --- NUEVO BLOQUEO DE BOTONES ---
+                    // Habilita todos los botones primero
+                    document
+                        .querySelectorAll(".locate-btn")
+                        .forEach((b) => (b.disabled = false));
+                    // Deshabilita solo el botón del apiario activo
+                    btn.disabled = true;
                 }
             }
         });
@@ -965,5 +1040,51 @@ document.addEventListener("DOMContentLoaded", function () {
                 }
             });
         }, 100);
+
+        if (toggleOthers) {
+            toggleOthers.checked = false;
+            radioGroup.clearLayers();
+            otrosGroup.removeFrom(map);
+        }
+
+        markers.eachLayer(function (marker) {
+            marker.on("popupopen", function (e) {
+                const popupWeather = e.popup
+                    .getElement()
+                    .querySelector(".popup-weather");
+                if (popupWeather) {
+                    const apiarioId = parseInt(
+                        popupWeather.getAttribute("data-id")
+                    );
+                    if (!isNaN(apiarioId)) {
+                        // Mostrar SIEMPRE los datos en cache si existen
+                        if (weatherCache[apiarioId]) {
+                            const w = weatherCache[apiarioId];
+                            const faIcon = weatherIcons[w.icon] || "";
+                            const weatherDesc = weatherEs[w.desc] || w.desc;
+                            popupWeather.innerHTML = `
+                        <i class="fa-solid fa-temperature-half"></i> ${w.temp.toFixed(
+                            1
+                        )}°C, 
+                        <i class="fa-solid fa-droplet"></i> ${w.humidity}%, 
+                        ${faIcon} ${weatherDesc}
+                    `;
+                        }
+                        // Si no hay datos, mostrar "Cargando..."
+                        else {
+                            popupWeather.innerHTML = `<i class="fa-solid fa-cloud"></i> Cargando datos del clima...`;
+                        }
+                        // Siempre vuelve a pedir el clima para actualizarlo
+                        const apiario = [
+                            ...apiariosFijos,
+                            ...apiariosBase,
+                        ].find((a) => a.id === apiarioId);
+                        if (apiario && apiario.latitud && apiario.longitud) {
+                            fetchWeatherData(apiario);
+                        }
+                    }
+                }
+            });
+        });
     };
 });

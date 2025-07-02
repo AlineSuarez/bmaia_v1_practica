@@ -9,7 +9,7 @@
             <div class="apiario-navbar-container">
                 <div class="apiario-navbar-brand">
                     <a href="{{ route('home') }}">
-                        <img src="{{ asset('img/logo.png') }}" alt="Logo" class="apiario-navbar-logo">
+                        <img src="{{ asset('img/logo-2.png') }}" alt="Logo" class="apiario-navbar-logo">
                     </a>
                 </div>
 

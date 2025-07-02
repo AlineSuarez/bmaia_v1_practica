@@ -36,10 +36,9 @@
                 </div>
             </div>
             <div class="header-actions">
-                <button id="showArchivedButton" class="action-btn secondary" data-bs-toggle="modal"
-                    data-bs-target="#archivedModal">
+                <button id="showArchivedButton" class="action-btn secondary" data-bs-toggle="modal" data-bs-target="#archivedModal">
                     <i class="fas fa-archive"></i>
-                    <span>Archivados</span>
+                    <span>Archivados ({{ $apiariosArchivados->count() }})</span>
                 </button>
             </div>
         </header>
@@ -243,6 +242,10 @@
                                 <i class="fas fa-home"></i>
                                 Apiarios Base
                             </h2>
+                            <span class="info-text" style="margin-left: 1rem; color: #888; font-size: 0.95em;">
+                                <i class="fas fa-info-circle"></i>
+                                Selecciona un apiario base para trasladar a un apiario temporal
+                            </span>
                         </div>
 
                         <div class="toolbar-right">
@@ -251,10 +254,6 @@
                                 <i class="fas fa-plus"></i>
                                 <span>Nuevo Base</span>
                             </a>
-                            <button id="trasladarColmenasButton" class="action-btn warning" disabled>
-                                <i class="fas fa-arrow-right"></i>
-                                <span>Trasladar</span>
-                            </button>
                         </div>
                     </div>
 
@@ -407,9 +406,13 @@
                                 Apiarios Temporales
                             </h2>
                         </div>
-
                         <div class="toolbar-right">
-                            <!-- EL SWITCH SE AÑADE AUTOMÁTICAMENTE VÍA JAVASCRIPT -->
+                            <!-- Botón Trasladar (ahora aquí) -->
+                            <button id="trasladarColmenasButton" class="action-btn warning" disabled>
+                                <i class="fas fa-arrow-right"></i>
+                                <span>Trasladar</span>
+                            </button>
+                            <!-- Botón Retornar (queda después) -->
                             <button id="retornarColmenasButton" class="action-btn success" disabled>
                                 <i class="fas fa-arrow-left"></i>
                                 <span>Retornar</span>

@@ -13,7 +13,6 @@
             <div class="apiario-header">
                 <h1 class="apiario-title"><span>Colmena de Tareas</span></h1>
                 <p class="apiario-subtitle">Organiza y gestiona tus tareas con eficiencia</p>
-                <small class="tip-sutil">Cada tarea completada es un paso hacia el éxito de tu proyecto</small>
             </div>
 
             <!-- Controles de vista -->
@@ -184,17 +183,6 @@
 
             <!-- Contenedor de vistas de tareas -->
             <div id="task-view-container" class="contenedor-vistas">
-                <!-- Pequeña guía de vistas -->
-                <div class="vista-guia">
-                    <p class="vista-tip">Cambia entre las diferentes vistas para gestionar tus tareas según tus necesidades
-                    </p>
-                    <div class="vista-info">
-                        <span class="vista-info-item">Lista: Visión detallada</span>
-                        <span class="vista-info-item">Tablero: Organización por estados</span>
-                        <span class="vista-info-item">Línea de Tiempo: Secuencia cronológica</span>
-                        <span class="vista-info-item">Calendario: Planificación temporal</span>
-                    </div>
-                </div>
 
                 <!-- Vistas -->
                 <div class="view list active">

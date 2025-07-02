@@ -62,7 +62,7 @@
                             <input type="checkbox" id="toggle-others">
                             <span class="slider"></span>
                         </label>
-                        <span class="toggle-label">Apiarios Archivados</span>
+                        <span class="toggle-label">Activar Radio</span>
                     </div>
                 </div>
             </div>
@@ -84,10 +84,6 @@
                     <div class="legend-item">
                         <span class="legend-color" style="background:#27ae60;"></span>
                         <span>Apiarios Temporales</span>
-                    </div>
-                    <div class="legend-item">
-                        <span class="legend-color" style="background:#e74c3c;"></span>
-                        <span>Apiarios Archivados</span>
                     </div>
                 </div>
             </div>
@@ -124,11 +120,6 @@
                         <i class="fa-solid fa-clock"></i>
                         <span class="tab-text">Temporales</span>
                         <span class="tab-count">({{ count($apiariosTemporales) }})</span>
-                    </button>
-                    <button class="tab-btn" data-tab="archivados" data-tooltip="Archivados">
-                        <i class="fa-solid fa-archive"></i>
-                        <span class="tab-text">Archivados</span>
-                        <span class="tab-count">({{ count($apiariosArchivados) }})</span>
                     </button>
                 </div>
 
@@ -192,29 +183,6 @@
                                         <th>Temperatura</th>
                                         <th>Humedad</th>
                                         <th>Clima</th>
-                                        <th>Acciones</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <!-- El contenido será generado por JavaScript -->
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-
-                    <!-- TAB ARCHIVADOS -->
-                    <div class="tab-content" data-tab="archivados">
-                        <div class="table-responsive">
-                            <table class="apiary-table">
-                                <thead>
-                                    <tr>
-                                        <th>Nombre</th>
-                                        <th>Ubicación</th>
-                                        <th>Colmenas</th>
-                                        <th>Temperatura</th>
-                                        <th>Humedad</th>
-                                        <th>Clima</th>
-                                        <th>Acciones</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -243,13 +211,6 @@
 
                     <!-- TAB TEMPORALES -->
                     <div class="tab-content" data-tab="temporales">
-                        <div class="apiary-cards">
-                            <!-- El contenido será generado por JavaScript -->
-                        </div>
-                    </div>
-
-                    <!-- TAB ARCHIVADOS -->
-                    <div class="tab-content" data-tab="archivados">
                         <div class="apiary-cards">
                             <!-- El contenido será generado por JavaScript -->
                         </div>
