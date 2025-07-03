@@ -236,7 +236,7 @@
     background: white;
     border-radius: 15px;
     box-shadow: 0 6px 25px rgba(0, 0, 0, 0.1);
-    border: 1px solid var(--color-amber-200);
+    border: 1px solid rgb(212, 212, 212);
     overflow: hidden;
     transition: all 0.3s ease;
 }
@@ -249,11 +249,11 @@
 .card-header {
     background: linear-gradient(
         135deg,
-        var(--color-amber-100),
-        var(--color-amber-200)
+        #f3f4f6,
+        #e5e7eb
     );
     padding: 1rem 1.5rem;
-    border-bottom: 1px solid var(--color-amber-300);
+    border-bottom: 1px solid #f3f4f6;
 }
 
 .movement-type {
@@ -287,11 +287,11 @@
 
 .movement-date {
     font-weight: 600;
-    color: var(--color-amber-800);
+    color: black;
 }
 
 .movement-time {
-    color: var(--color-amber-600);
+    color: black;
     font-size: 0.9rem;
 }
 
@@ -306,9 +306,9 @@
     justify-content: space-between;
     margin-bottom: 1.5rem;
     padding: 1rem;
-    background: var(--color-amber-50);
+    background: linear-gradient(135deg, #f3f4f6, #e5e7eb);
+    border: 1px solid #e5e7eb;
     border-radius: 12px;
-    border: 1px solid var(--color-amber-200);
 }
 
 .location-item {
@@ -318,7 +318,7 @@
 
 .location-label {
     font-size: 0.8rem;
-    color: var(--color-amber-600);
+    color: #374151;
     text-transform: uppercase;
     font-weight: 600;
     margin-bottom: 0.25rem;
@@ -326,13 +326,13 @@
 
 .location-name {
     font-weight: 600;
-    color: var(--color-amber-800);
+    color: black;
     font-size: 1rem;
 }
 
 .flow-arrow {
     flex: 0 0 auto;
-    color: var(--color-amber-500);
+    color: black;
     font-size: 1.2rem;
     margin: 0 1rem;
 }
@@ -364,12 +364,12 @@
 
 .detail-label {
     font-weight: 600;
-    color: var(--color-amber-700);
+    color: black;
     min-width: 100px;
 }
 
 .detail-value {
-    color: var(--color-amber-800);
+    color: rgb(68, 68, 68);
     flex: 1;
     word-wrap: break-word;
     overflow-wrap: break-word;
@@ -506,7 +506,7 @@
 
 .location-card .location-name {
     font-weight: 600;
-    color: var(--color-amber-800);
+    color: black;
     margin-bottom: 0.5rem;
 }
 
@@ -537,9 +537,9 @@
     align-items: center;
     gap: 0.75rem;
     padding: 1rem;
-    background: var(--color-amber-50);
+    background: linear-gradient(135deg, #f3f4f6, #e5e7eb);
     border-radius: 10px;
-    border: 1px solid var(--color-amber-200);
+    border: 1px solid #e5e7eb;
 }
 
 .location-current i {
@@ -553,18 +553,18 @@
 
 .location-details .location-name {
     font-weight: 600;
-    color: var(--color-amber-800);
+    color: black;
     margin-bottom: 0.25rem;
 }
 
 .location-from {
     font-size: 0.85rem;
-    color: var(--color-amber-600);
+    color: black;
 }
 
 .dias-ubicacion {
-    background: var(--color-amber-100);
-    color: var(--color-amber-700);
+    background: #dfdfdf;
+    color: black;
     padding: 0.25rem 0.5rem;
     border-radius: 6px;
     font-size: 0.75rem;
