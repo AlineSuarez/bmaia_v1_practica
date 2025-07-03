@@ -90,8 +90,8 @@
                     </label>
                     <select name="tipo_apiario" id="tipo_apiario" class="form-control" required>
                         <option value="">Seleccionar tipo...</option>
-                        <option value="fijo" {{ old('tipo_apiario') == 'fijo' ? 'selected' : '' }}>Fijo</option>
-                        <option value="trashumante" {{ old('tipo_apiario') == 'trashumante' ? 'selected' : '' }}>Trashumante
+                        <option value="fijo" {{ old('tipo_apiario') == 'fijo' ? 'selected' : '' }}>Apiario Fijo</option>
+                        <option value="trashumante" {{ old('tipo_apiario') == 'trashumante' ? 'selected' : '' }}>Apiario Base
                         </option>
                     </select>
                 </div>
@@ -281,20 +281,20 @@
                 // Personalizar el icono del marcador
                 const apiaryIcon = L.icon({
                     iconUrl: 'data:image/svg+xml;base64,' + btoa(`
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 36" width="24" height="36">
-                                <defs>
-                                    <linearGradient id="grad1" x1="0%" y1="0%" x2="0%" y2="100%">
-                                        <stop offset="0%" style="stop-color:#FFD700;stop-opacity:1" />
-                                        <stop offset="100%" style="stop-color:#FFA500;stop-opacity:1" />
-                                    </linearGradient>
-                                </defs>
-                                <path d="M12,2 C8.1,2 5,5.1 5,9 C5,14.2 12,22 12,22 S19,14.2 19,9 C19,5.1 15.9,2 12,2 Z" 
-                                        fill="url(#grad1)" stroke="#B8860B" stroke-width="1"/>
-                                <circle cx="12" cy="9" r="4" fill="#FFFFFF" stroke="#B8860B" stroke-width="1"/>
-                                <path d="M12,6 L13.5,8.5 L16,8.5 L14.2,10.2 L15,12.5 L12,11 L9,12.5 L9.8,10.2 L8,8.5 L10.5,8.5 Z" 
-                                        fill="#FFD700"/>
-                            </svg>
-                        `),
+                                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 36" width="24" height="36">
+                                                        <defs>
+                                                            <linearGradient id="grad1" x1="0%" y1="0%" x2="0%" y2="100%">
+                                                                <stop offset="0%" style="stop-color:#FFD700;stop-opacity=1" />
+                                                                <stop offset="100%" style="stop-color:#FFA500;stop-opacity=1" />
+                                                            </linearGradient>
+                                                        </defs>
+                                                        <path d="M12,2 C8.1,2 5,5.1 5,9 C5,14.2 12,22 12,22 S19,14.2 19,9 C19,5.1 15.9,2 12,2 Z" 
+                                                                fill="url(#grad1)" stroke="#B8860B" stroke-width="1"/>
+                                                        <circle cx="12" cy="9" r="4" fill="#FFFFFF" stroke="#B8860B" stroke-width="1"/>
+                                                        <path d="M12,6 L13.5,8.5 L16,8.5 L14.2,10.2 L15,12.5 L12,11 L9,12.5 L9.8,10.2 L8,8.5 L10.5,8.5 Z" 
+                                                                fill="#FFD700"/>
+                                                    </svg>
+                                                `),
                     iconSize: [32, 48],
                     iconAnchor: [16, 48],
                     popupAnchor: [0, -48]
@@ -307,15 +307,15 @@
 
                 // Personalizar el popup
                 const popupContent = `
-                        <div class="custom-popup">
-                            <h4><i class="fas fa-map-pin"></i> Tu Apiario</h4>
-                            <p>Arrastra el marcador para ajustar la ubicación exacta.</p>
-                            <div class="popup-coordinates">
-                                <span><strong>Lat:</strong> ${lat.toFixed(6)}</span><br>
-                                <span><strong>Lng:</strong> ${lng.toFixed(6)}</span>
-                            </div>
-                        </div>
-                    `;
+                                                <div class="custom-popup">
+                                                    <h4><i class="fas fa-map-pin"></i> Tu Apiario</h4>
+                                                    <p>Arrastra el marcador para ajustar la ubicación exacta.</p>
+                                                    <div class="popup-coordinates">
+                                                        <span><strong>Lat:</strong> ${lat.toFixed(6)}</span><br>
+                                                        <span><strong>Lng:</strong> ${lng.toFixed(6)}</span>
+                                                    </div>
+                                                </div>
+                                            `;
 
                 marker.bindPopup(popupContent).openPopup();
 
@@ -326,15 +326,15 @@
 
                     // Actualizar el popup con las nuevas coordenadas
                     const updatedPopupContent = `
-                            <div class="custom-popup">
-                                <h4><i class="fas fa-map-pin"></i> Tu Apiario</h4>
-                                <p>Ubicación actualizada correctamente.</p>
-                                <div class="popup-coordinates">
-                                    <span><strong>Lat:</strong> ${position.lat.toFixed(6)}</span><br>
-                                    <span><strong>Lng:</strong> ${position.lng.toFixed(6)}</span>
-                                </div>
-                            </div>
-                        `;
+                                                    <div class="custom-popup">
+                                                        <h4><i class="fas fa-map-pin"></i> Tu Apiario</h4>
+                                                        <p>Ubicación actualizada correctamente.</p>
+                                                        <div class="popup-coordinates">
+                                                            <span><strong>Lat:</strong> ${position.lat.toFixed(6)}</span><br>
+                                                            <span><strong>Lng:</strong> ${position.lng.toFixed(6)}</span>
+                                                        </div>
+                                                    </div>
+                                                `;
                     marker.getPopup().setContent(updatedPopupContent);
                     marker.openPopup();
 
@@ -349,15 +349,15 @@
 
                     // Actualizar el popup con las nuevas coordenadas
                     const updatedPopupContent = `
-                            <div class="custom-popup">
-                                <h4><i class="fas fa-map-pin"></i> Tu Apiario</h4>
-                                <p>Ubicación actualizada correctamente.</p>
-                                <div class="popup-coordinates">
-                                    <span><strong>Lat:</strong> ${e.latlng.lat.toFixed(6)}</span><br>
-                                    <span><strong>Lng:</strong> ${e.latlng.lng.toFixed(6)}</span>
-                                </div>
-                            </div>
-                        `;
+                                                    <div class="custom-popup">
+                                                        <h4><i class="fas fa-map-pin"></i> Tu Apiario</h4>
+                                                        <p>Ubicación actualizada correctamente.</p>
+                                                        <div class="popup-coordinates">
+                                                            <span><strong>Lat:</strong> ${e.latlng.lat.toFixed(6)}</span><br>
+                                                            <span><strong>Lng:</strong> ${e.latlng.lng.toFixed(6)}</span>
+                                                        </div>
+                                                    </div>
+                                                `;
                     marker.getPopup().setContent(updatedPopupContent);
                     marker.openPopup();
 
@@ -376,39 +376,39 @@
                 // Añadir estilos personalizados para el popup
                 const style = document.createElement('style');
                 style.textContent = `
-                    .custom-popup {
-                        font-family: var(--font-body);
-                        padding: 8px;
-                    }
-                    .custom-popup h4 {
-                        color: var(--color-brown);
-                        margin: 0 0 8px 0;
-                        font-size: 16px;
-                        font-weight: 600;
-                    }
-                    .custom-popup p {
-                        margin: 0 0 8px 0;
-                        font-size: 14px;
-                    }
-                    .popup-coordinates {
-                        font-family: var(--font-mono);
-                        font-size: 12px;
-                        color: var(--color-text-light);
-                        background-color: rgba(212, 175, 55, 0.05);
-                        padding: 8px;
-                        border-radius: 4px;
-                        margin-top: 5px;
-                        border-left: 2px solid var(--color-gold);
-                    }
-                    .map-instructions {
-                        text-align: center;
-                        padding: 10px 15px;
-                        border-radius: 8px;
-                        margin: 10px 0 15px 0;
-                        font-size: 14px;
-                        color: var(--color-brown);
-                    }
-                `;
+                                            .custom-popup {
+                                                font-family: var(--font-body);
+                                                padding: 8px;
+                                            }
+                                            .custom-popup h4 {
+                                                color: var(--color-brown);
+                                                margin: 0 0 8px 0;
+                                                font-size: 16px;
+                                                font-weight: 600;
+                                            }
+                                            .custom-popup p {
+                                                margin: 0 0 8px 0;
+                                                font-size: 14px;
+                                            }
+                                            .popup-coordinates {
+                                                font-family: var(--font-mono);
+                                                font-size: 12px;
+                                                color: var(--color-text-light);
+                                                background-color: rgba(212, 175, 55, 0.05);
+                                                padding: 8px;
+                                                border-radius: 4px;
+                                                margin-top: 5px;
+                                                border-left: 2px solid var(--color-gold);
+                                            }
+                                            .map-instructions {
+                                                text-align: center;
+                                                padding: 10px 15px;
+                                                border-radius: 8px;
+                                                margin: 10px 0 15px 0;
+                                                font-size: 14px;
+                                                color: var(--color-brown);
+                                            }
+                                        `;
                 document.head.appendChild(style);
             }
 
@@ -429,15 +429,15 @@
 
                     // Actualizar el popup con las nuevas coordenadas
                     const updatedPopupContent = `
-                            <div class="custom-popup">
-                                <h4><i class="fas fa-map-pin"></i> Comuna: ${comunaNombre}</h4>
-                                <p>Ubicación central de la comuna seleccionada.</p>
-                                <div class="popup-coordinates">
-                                    <span><strong>Lat:</strong> ${position.lat.toFixed(6)}</span><br>
-                                    <span><strong>Lng:</strong> ${position.lng.toFixed(6)}</span>
-                                </div>
-                            </div>
-                        `;
+                                                    <div class="custom-popup">
+                                                        <h4><i class="fas fa-map-pin"></i> Comuna: ${comunaNombre}</h4>
+                                                        <p>Ubicación central de la comuna seleccionada.</p>
+                                                        <div class="popup-coordinates">
+                                                            <span><strong>Lat:</strong> ${position.lat.toFixed(6)}</span><br>
+                                                            <span><strong>Lng:</strong> ${position.lng.toFixed(6)}</span>
+                                                        </div>
+                                                    </div>
+                                                `;
                     marker.getPopup().setContent(updatedPopupContent);
                     marker.openPopup();
 
@@ -474,15 +474,15 @@
                     }
 
                     // Validar el tamaño del archivo
-                    if (file.size > maxSize) {
-                        previewImage.style.display = 'none';
-                        errorMessage.textContent = 'La imagen excede el tamaño máximo de 5MB.';
-                        errorMessage.style.display = 'block';
-                        fileName.textContent = 'Archivo demasiado grande';
-                        event.target.value = ''; // Limpiar el input
-                        showNotification('La imagen excede el tamaño máximo de 5MB.', 'error');
-                        return;
-                    }
+                    // if (file.size > maxSize) {
+                    //     previewImage.style.display = 'none';
+                    //     errorMessage.textContent = 'La imagen excede el tamaño máximo de 5MB.';
+                    //     errorMessage.style.display = 'block';
+                    //     fileName.textContent = 'Archivo demasiado grande';
+                    //     event.target.value = '';
+                    //     showNotification('La imagen excede el tamaño máximo de 5MB.', 'error');
+                    //     return;
+                    // }
 
                     errorMessage.style.display = 'none';
                     fileName.textContent = file.name;
@@ -643,12 +643,12 @@
                 if (type === 'error') icon = 'times-circle';
 
                 notification.innerHTML = `
-                        <div class="notification-icon">
-                            <i class="fas fa-${icon}"></i>
-                        </div>
-                        <div class="notification-content">${message}</div>
-                        <button class="notification-close"><i class="fas fa-times"></i></button>
-                    `;
+                                                <div class="notification-icon">
+                                                    <i class="fas fa-${icon}"></i>
+                                                </div>
+                                                <div class="notification-content">${message}</div>
+                                                <button class="notification-close"><i class="fas fa-times"></i></button>
+                                            `;
 
                 document.body.appendChild(notification);
 
@@ -682,10 +682,10 @@
                 const loadingContainer = document.createElement('div');
                 loadingContainer.className = 'loading-container';
                 loadingContainer.innerHTML = `
-                                                                                                                                <div class="loading-indicator">
-                                                                                                                                    <div></div><div></div><div></div><div></div>
-                                                                                                                                </div>
-                                                                                                                            `;
+                                                                                                                                                        <div class="loading-indicator">
+                                                                                                                                                            <div></div><div></div><div></div><div></div>
+                                                                                                                                                        </div>
+                                                                                                                                                    `;
 
                 // Si es el mapa, añadir directamente al contenedor
                 if (elementId === 'map') {
@@ -744,60 +744,60 @@
             // Añadir estilos para efectos visuales
             const styleElement = document.createElement('style');
             styleElement.textContent = `
-                    .highlight-animation {
-                        animation: highlightPulse 1s ease;
-                    }
+                                            .highlight-animation {
+                                                animation: highlightPulse 1s ease;
+                                            }
 
-                    @keyframes highlightPulse {
-                        0% { background-color: var(--color-background); }
-                        50% { background-color: rgba(212, 175, 55, 0.2); }
-                        100% { background-color: var(--color-background); }
-                    }
+                                            @keyframes highlightPulse {
+                                                0% { background-color: var(--color-background); }
+                                                50% { background-color: rgba(212, 175, 55, 0.2); }
+                                                100% { background-color: var(--color-background); }
+                                            }
 
-                    .loading-container {
-                        display: flex;
-                        align-items: center;
-                        justify-content: center;
-                        padding: 10px;
-                    }
+                                            .loading-container {
+                                                display: flex;
+                                                align-items: center;
+                                                justify-content: center;
+                                                padding: 10px;
+                                            }
 
-                    .loading-indicator {
-                        display: inline-block;
-                        position: relative;
-                        width: 80px;
-                        height: 13px;
-                    }
+                                            .loading-indicator {
+                                                display: inline-block;
+                                                position: relative;
+                                                width: 80px;
+                                                height: 13px;
+                                            }
 
-                    .loading-indicator div {
-                        position: absolute;
-                        top: 0;
-                        width: 13px;
-                        height: 13px;
-                        border-radius: 50%;
-                        background: var(--color-gold);
-                        animation-timing-function: cubic-bezier(0, 1, 1, 0);
-                    }
+                                            .loading-indicator div {
+                                                position: absolute;
+                                                top: 0;
+                                                width: 13px;
+                                                height: 13px;
+                                                border-radius: 50%;
+                                                background: var(--color-gold);
+                                                animation-timing-function: cubic-bezier(0, 1, 1, 0);
+                                            }
 
-                    .loading-indicator div:nth-child(1) {
-                        left: 8px;
-                        animation: loading1 0.6s infinite;
-                    }
+                                            .loading-indicator div:nth-child(1) {
+                                                left: 8px;
+                                                animation: loading1 0.6s infinite;
+                                            }
 
-                    .loading-indicator div:nth-child(2) {
-                        left: 8px;
-                        animation: loading2 0.6s infinite;
-                    }
+                                            .loading-indicator div:nth-child(2) {
+                                                left: 8px;
+                                                animation: loading2 0.6s infinite;
+                                            }
 
-                    .loading-indicator div:nth-child(3) {
-                        left: 32px;
-                        animation: loading2 0.6s infinite;
-                    }
+                                            .loading-indicator div:nth-child(3) {
+                                                left: 32px;
+                                                animation: loading2 0.6s infinite;
+                                            }
 
-                    .loading-indicator div:nth-child(4) {
-                        left: 56px;
-                        animation: loading3 0.6s infinite;
-                    }
-                `;
+                                            .loading-indicator div:nth-child(4) {
+                                                left: 56px;
+                                                animation: loading3 0.6s infinite;
+                                            }
+                                        `;
             document.head.appendChild(styleElement);
 
             // Añadir efectos de animación al enviar el formulario
@@ -855,56 +855,56 @@
                 // Añadir estilos para la animación de envío
                 const submitStyle = document.createElement('style');
                 submitStyle.textContent = `
-                    .submitting {
-                        position: relative;
-                    }
+                                            .submitting {
+                                                position: relative;
+                                            }
 
-                    .submitting::after {
-                        content: "";
-                        position: absolute;
-                        top: 0;
-                        left: 0;
-                        width: 100%;
-                        height: 100%;
-                        background-color: rgba(255, 255, 255, 0.7);
-                        backdrop-filter: blur(3px);
-                        z-index: 1000;
-                        display: flex;
-                        align-items: center;
-                        justify-content: center;
-                        font-size: 1.5rem;
-                        color: var(--color-gold);
-                        border-radius: var(--border-radius);
-                    }
+                                            .submitting::after {
+                                                content: "";
+                                                position: absolute;
+                                                top: 0;
+                                                left: 0;
+                                                width: 100%;
+                                                height: 100%;
+                                                background-color: rgba(255, 255, 255, 0.7);
+                                                backdrop-filter: blur(3px);
+                                                z-index: 1000;
+                                                display: flex;
+                                                align-items: center;
+                                                justify-content: center;
+                                                font-size: 1.5rem;
+                                                color: var(--color-gold);
+                                                border-radius: var(--border-radius);
+                                            }
 
-                    .shake-animation {
-                        animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
-                    }
+                                            .shake-animation {
+                                                animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
+                                            }
 
-                    @keyframes shake {
-                        10%, 90% { transform: translate3d(-1px, 0, 0); }
-                        20%, 80% { transform: translate3d(2px, 0, 0); }
-                        30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
-                        40%, 60% { transform: translate3d(4px, 0, 0); }
-                    }
+                                            @keyframes shake {
+                                                10%, 90% { transform: translate3d(-1px, 0, 0); }
+                                                20%, 80% { transform: translate3d(2px, 0, 0); }
+                                                30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
+                                                40%, 60% { transform: translate3d(4px, 0, 0); }
+                                            }
 
-                    .error-message {
-                        color: var(--color-error);
-                        font-size: 0.8rem;
-                        margin-top: 0.25rem;
-                        animation: fadeIn 0.3s ease;
-                    }
+                                            .error-message {
+                                                color: var(--color-error);
+                                                font-size: 0.8rem;
+                                                margin-top: 0.25rem;
+                                                animation: fadeIn 0.3s ease;
+                                            }
 
-                    .is-invalid {
-                        border-color: var(--color-error) !important;
-                        background-color: rgba(244, 67, 54, 0.05) !important;
-                    }
+                                            .is-invalid {
+                                                border-color: var(--color-error) !important;
+                                                background-color: rgba(244, 67, 54, 0.05) !important;
+                                            }
 
-                    @keyframes fadeIn {
-                        from { opacity: 0; transform: translateY(-10px); }
-                        to { opacity: 1; transform: translateY(0); }
-                    }
-                `;
+                                            @keyframes fadeIn {
+                                                from { opacity: 0; transform: translateY(-10px); }
+                                                to { opacity: 1; transform: translateY(0); }
+                                            }
+                                        `;
                 document.head.appendChild(submitStyle);
             });
 
@@ -929,12 +929,12 @@
             // Añadir estilos para efectos de hover
             const hoverStyle = document.createElement('style');
             hoverStyle.textContent = `
-                    .hover-effect {
-                        transform: translateY(-2px);
-                        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-                        transition: all 0.3s ease;
-                    }
-                `;
+                                            .hover-effect {
+                                                transform: translateY(-2px);
+                                                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+                                                transition: all 0.3s ease;
+                                            }
+                                        `;
             document.head.appendChild(hoverStyle);
 
 
@@ -987,6 +987,102 @@
                 }
                 $('#objetivo-produccion-counter').text(`${$(this).val().length} / ${max} caracteres`);
             });
+        });
+
+        $(document).ready(function () {
+            const params = new URLSearchParams(window.location.search);
+            const tipo = params.get('tipo');
+            if (tipo === 'fijo' || tipo === 'trashumante') {
+                $('#tipo_apiario').val(tipo);
+            }
+        });
+
+        // Agrega esto después de tu código de manejo de archivos, antes del submit del formulario
+        document.getElementById('foto').addEventListener('change', function (event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const validImageTypes = ['image/jpeg', 'image/png', 'image/webp'];
+            if (!validImageTypes.includes(file.type)) return;
+
+            const maxSize = 5 * 1024 * 1024; // 5MB
+            const minCompressSize = 300 * 1024; // 300KB
+
+            // Si la imagen ya pesa menos de 300KB, no la comprimas
+            if (file.size < minCompressSize) {
+                // Mostrar en la interfaz
+                const fileName = document.getElementById('file-name');
+                if (fileName) {
+                    fileName.textContent = `Peso: ${(file.size / 1024).toFixed(1)} KB (sin comprimir)`;
+                }
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    const previewImage = document.getElementById('preview-image');
+                    if (previewImage) {
+                        previewImage.src = e.target.result;
+                        previewImage.style.display = 'block';
+                    }
+                };
+                reader.readAsDataURL(file);
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                const img = new Image();
+                img.onload = function () {
+                    const canvas = document.createElement('canvas');
+                    const ctx = canvas.getContext('2d');
+                    const MAX_WIDTH = 1920;
+                    const scaleSize = MAX_WIDTH / img.width;
+                    canvas.width = MAX_WIDTH;
+                    canvas.height = img.height * scaleSize;
+                    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+                    canvas.toBlob(function (blob) {
+                        const compressedFile = new File([blob], file.name, { type: 'image/jpeg' });
+
+                        // Validar el tamaño después de comprimir
+                        if (compressedFile.size > maxSize) {
+                            const previewImage = document.getElementById('preview-image');
+                            const errorMessage = document.getElementById('error-message');
+                            const fileName = document.getElementById('file-name');
+                            if (previewImage) previewImage.style.display = 'none';
+                            if (errorMessage) {
+                                errorMessage.textContent = 'La imagen comprimida excede el tamaño máximo de 5MB.';
+                                errorMessage.style.display = 'block';
+                            }
+                            if (fileName) fileName.textContent = 'Archivo demasiado grande';
+                            event.target.value = '';
+                            return;
+                        }
+
+                        // Reemplaza el archivo en el input
+                        const dataTransfer = new DataTransfer();
+                        dataTransfer.items.add(compressedFile);
+                        event.target.files = dataTransfer.files;
+
+                        // Mostrar tamaños en consola o en pantalla
+                        console.log('Tamaño original:', file.size, 'bytes');
+                        console.log('Tamaño comprimido:', compressedFile.size, 'bytes');
+
+                        // Mostrar en la interfaz
+                        const fileName = document.getElementById('file-name');
+                        if (fileName) {
+                            fileName.textContent = `Original: ${(file.size / 1024).toFixed(1)} KB | Comprimida: ${(compressedFile.size / 1024).toFixed(1)} KB`;
+                        }
+
+                        // Actualiza la vista previa si la tienes
+                        const previewImage = document.getElementById('preview-image');
+                        if (previewImage) {
+                            previewImage.src = URL.createObjectURL(blob);
+                            previewImage.style.display = 'block';
+                        }
+                    }, 'image/jpeg', 0.7);
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
         });
     </script>
 @endsection

@@ -92,9 +92,9 @@
 
                     <div class="toolbar-right">
                         <!-- EL SWITCH SE AÑADE AUTOMÁTICAMENTE VÍA JAVASCRIPT -->
-                        <a href="{{ route('apiarios.create') }}" class="action-btn primary">
-                            <i class="fas fa-plus"></i>
-                            <span>Nuevo Apiario</span>
+                        <a href="{{ route('apiarios.create', ['tipo' => 'fijo']) }}" class="action-btn primary">
+                        <i class="fas fa-plus"></i>
+                        <span>Nuevo Apiario Fijo</span>
                         </a>
                     </div>
                 </div>
@@ -250,9 +250,9 @@
 
                         <div class="toolbar-right">
                             <!-- EL SWITCH SE AÑADE AUTOMÁTICAMENTE VÍA JAVASCRIPT -->
-                            <a href="{{ route('apiarios.create') }}?tipo=base" class="action-btn primary">
+                            <a href="{{ route('apiarios.create', ['tipo' => 'trashumante']) }}" class="action-btn primary">
                                 <i class="fas fa-plus"></i>
-                                <span>Nuevo Base</span>
+                                <span>Nuevo Apiario Base</span>
                             </a>
                         </div>
                     </div>
