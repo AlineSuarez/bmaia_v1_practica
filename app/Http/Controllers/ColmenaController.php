@@ -76,26 +76,34 @@ class ColmenaController extends Controller
 
     public function show(Apiario $apiario, Colmena $colmena)
     {
+        if (!auth()->check()) {
+            return redirect()->route('colmenas.public', ['colmena' => $colmena->id]);
+        }
+
         // 1) PCC del sistema experto (1,2,6,7)
         $pccs = $colmena->sistemaExpertos()
-                        ->with(['desarrolloCria','calidadReina','indiceCosecha','preparacionInvernada'])
-                        ->orderByDesc('fecha')
-                        ->get();
+            ->with(['desarrolloCria', 'calidadReina', 'indiceCosecha', 'preparacionInvernada'])
+            ->orderByDesc('fecha')
+            ->get();
 
         // 2) Últimos registros del cuaderno de campo
         $lastAlimentacion = $colmena->alimentaciones()->latest('created_at')->first();
-        $lastVarroa       = $colmena->varroas()->latest('created_at')->first();
-        $lastNosemosis    = $colmena->nosemosis()->latest('created_at')->first();
+        $lastVarroa = $colmena->varroas()->latest('created_at')->first();
+        $lastNosemosis = $colmena->nosemosis()->latest('created_at')->first();
 
         // 3) Elegimos la Visita (PCC3/4/5) que usaremos para “Completar PCC”
         $visitaPcc = optional($lastAlimentacion)->visita
-                ?: optional($lastVarroa)->visita
-                ?: optional($lastNosemosis)->visita
-                ?: null;
+            ?: optional($lastVarroa)->visita
+            ?: optional($lastNosemosis)->visita
+            ?: null;
 
         return view('colmenas.show', compact(
-            'apiario','colmena','pccs',
-            'lastAlimentacion','lastVarroa','lastNosemosis',
+            'apiario',
+            'colmena',
+            'pccs',
+            'lastAlimentacion',
+            'lastVarroa',
+            'lastNosemosis',
             'visitaPcc'
         ));
     }
@@ -236,19 +244,35 @@ class ColmenaController extends Controller
     public function publicView(Colmena $colmena)
     {
         $apiario = $colmena->apiario;
-        $pccs = \App\Models\SistemaExperto::where('colmena_id', $colmena->id)
-            ->with([
-                'desarrolloCria',
-                'calidadReina',
-                'estadoNutricional',
-                'presenciaVarroa',
-                'presenciaNosemosis',
-                'indiceCosecha',
-                'preparacionInvernada',
-            ])
+
+        // Cargar PCCs del sistema experto
+        $pccs = $colmena->sistemaExpertos()
+            ->with(['desarrolloCria', 'calidadReina', 'presenciaVarroa', 'presenciaNosemosis', 'indiceCosecha', 'preparacionInvernada'])
             ->orderByDesc('fecha')
             ->get();
 
-        return view('colmenas.public', compact('colmena', 'apiario', 'pccs'));
+        $pccActual = $pccs->first();
+
+        // Últimas visitas y registros relacionados
+        $lastAlimentacion = $colmena->alimentaciones()->latest('created_at')->first();
+        $lastVarroa = $colmena->varroas()->latest('created_at')->first();
+        $lastNosemosis = $colmena->nosemosis()->latest('created_at')->first();
+        $lastIndiceCosecha = $colmena->indiceCosecha()->latest('created_at')->first();
+        $lastPreparacionInvernada = $colmena->preparacionInvernada()->latest('created_at')->first();
+
+        $visitas = $colmena->visitas()->orderByDesc('created_at')->get();
+
+        return view('colmenas.public', compact(
+            'colmena',
+            'apiario',
+            'visitas',
+            'pccs',
+            'pccActual',
+            'lastAlimentacion',
+            'lastVarroa',
+            'lastNosemosis',
+            'lastIndiceCosecha',
+            'lastPreparacionInvernada'
+        ));
     }
 }

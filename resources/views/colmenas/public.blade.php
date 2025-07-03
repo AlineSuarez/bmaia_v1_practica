@@ -3,119 +3,190 @@
 
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Colmena #{{ $colmena->numero }}</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link href="{{ asset('./css/components/home-user/show/show-colmenas.css') }}" rel="stylesheet">
 </head>
 
-<body class="bg-light">
-    <div class="container-sm py-2">
-        <div class="row g-2">
-            <!-- Columna izquierda: QR y datos básicos -->
-            <div class="col-md-4">
-                <div class="card shadow-sm h-100" style="font-size: 0.95rem;">
-                    <div class="card-header bg-warning text-white">
-                        <h5 class="mb-0"><i class="fas fa-box"></i> Colmena #{{ $colmena->numero }}</h5>
-                    </div>
-                    <div class="card-body text-center">
-                        @php
-                            $url = route('colmenas.public', ['colmena' => $colmena->id]);
-                        @endphp
-                        <img src="https://api.qrserver.com/v1/create-qr-code/?data={{ urlencode($url) }}&size=150x150"
-                            alt="QR Colmena #{{ $colmena->numero }}" class="mb-3" />
+<body>
+    <style>
+        * {
+            font-family: 'Arial', sans-serif;
+        }
+    </style>
+    @php
+        $pcc3 = $lastAlimentacion;
+        $pcc4 = $lastVarroa;
+        $pcc5 = $lastNosemosis;
+        $pcc6 = $lastIndiceCosecha;
+        $pcc7 = $lastPreparacionInvernada;
+        $hasAny = $pcc3 || $pcc4 || $pcc5 || $pcc6 || $pcc7;
+    @endphp
 
-                        <div class="mb-2">
-                            <a href="{{ route('colmenas.qr-pdf', [$colmena->apiario_id, $colmena->id]) }}"
-                                class="btn btn-sm btn-outline-secondary">
-                                <i class="fas fa-print"></i> Imprimir QR
-                            </a>
+    <div class="main-container">
+        <!-- Breadcrumb -->
+        <nav class="breadcrumb-nav" aria-label="breadcrumb">
+            <ol class="breadcrumb-list">
+                <li class="breadcrumb-item">
+                    <a href="{{ route('welcome') }}" class="breadcrumb-link">Inicio</a>
+                </li>
+                <li class="breadcrumb-item breadcrumb-current" aria-current="page">
+                    Colmena #{{ $colmena->numero }}
+                </li>
+            </ol>
+
+            <a href="{{ route('welcome') }}" class="btn btn-ghost btn-sm">
+                <i class="fas fa-arrow-left"></i> Volver
+            </a>
+        </nav>
+
+        <!-- Grid principal -->
+        <div class="grid grid-cols-12">
+            <!-- Columna izquierda: QR y datos básicos -->
+            <div class="col-span-12 md:col-span-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title">
+                            <i class="fas fa-box card-title-icon"></i>
+                            Colmena #{{ $colmena->numero }}
+                        </h5>
+                    </div>
+
+                    <div class="card-body">
+                        <!-- QR Section -->
+                        <div class="qr-section">
+                            @php
+                                $url = route('colmenas.public', ['colmena' => $colmena->id]);
+                            @endphp
+
+                            <div class="qr-container">
+                                <div class="qr-wrapper">
+                                    <img src="https://api.qrserver.com/v1/create-qr-code/?data={{ urlencode($url) }}&size=150x150"
+                                        alt="QR Colmena #{{ $colmena->numero }}" class="qr-image" width="150"
+                                        height="150" />
+                                </div>
+                            </div>
+
+                            <div class="mb-4 flex gap-3">
+                                <a href="{{ route('colmenas.qr-pdf', [$colmena->apiario_id, $colmena->id]) }}"
+                                    class="btn btn-secondary btn-sm">
+                                    <i class="fas fa-print"></i> Imprimir QR
+                                </a>
+                            </div>
                         </div>
 
-                        <!-- Información básica de la colmena -->
-                        <div class="text-start">
-                            <h6 class="fw-bold mb-2 text-primary">
-                                <i class="fas fa-info-circle"></i> Información Básica
+                        <!-- Información básica -->
+                        <div class="info-section">
+                            <h6 class="info-section-title flex items-center gap-3 mb-4">
+                                <i class="fas fa-info-circle info-icon primary"></i>
+                                Información Básica
                             </h6>
-                            <ul class="list-unstyled mb-2">
-                                <li class="mb-3">
-                                    <div class="d-flex align-items-center mb-1">
-                                        <i class="fas fa-map-marker-alt text-success me-2"></i>
-                                        <strong>Apiario:</strong>
+
+                            <div class="info-list">
+                                <div class="info-item" style="--index: 0">
+                                    <div class="info-icon success">
+                                        <i class="fas fa-map-marker-alt"></i>
                                     </div>
-                                    <span class="text-muted ps-3">{{ $apiario->nombre }}</span>
-                                </li>
-                                <li class="mb-3">
-                                    <div class="d-flex align-items-center mb-1">
-                                        <i class="fas fa-hashtag text-primary me-2"></i>
-                                        <strong>Número:</strong>
+                                    <div class="info-content">
+                                        <span class="info-label">Apiario:</span>
+                                        <span class="info-value">{{ $apiario->nombre }}</span>
                                     </div>
-                                    <span class="text-muted ps-3">#{{ $colmena->numero }}</span>
-                                </li>
+                                </div>
+
+                                <div class="info-item" style="--index: 1">
+                                    <div class="info-icon primary">
+                                        <i class="fas fa-hashtag"></i>
+                                    </div>
+                                    <div class="info-content">
+                                        <span class="info-label">Número:</span>
+                                        <span class="info-value">#{{ $colmena->numero }}</span>
+                                    </div>
+                                </div>
+
                                 @if($colmena->numero_marcos)
-                                    <li class="mb-3">
-                                        <div class="d-flex align-items-center mb-1">
-                                            <i class="fas fa-layer-group text-warning me-2"></i>
-                                            <strong>Marcos:</strong>
+                                    <div class="info-item" style="--index: 2">
+                                        <div class="info-icon"
+                                            style="background: linear-gradient(135deg, var(--color-amber-500), var(--color-amber-600));">
+                                            <i class="fas fa-layer-group"></i>
                                         </div>
-                                        <span class="text-muted ps-3">{{ $colmena->numero_marcos }}</span>
-                                    </li>
+                                        <div class="info-content">
+                                            <span class="info-label">Marcos:</span>
+                                            <span class="info-value">{{ $colmena->numero_marcos }}</span>
+                                        </div>
+                                    </div>
                                 @endif
+
                                 @if($colmena->estado_inicial)
-                                    <li class="mb-3">
-                                        <div class="d-flex align-items-center mb-1">
-                                            <i class="fas fa-chart-line text-secondary me-2"></i>
-                                            <strong>Estado inicial:</strong>
+                                    <div class="info-item" style="--index: 3">
+                                        <div class="info-icon secondary">
+                                            <i class="fas fa-chart-line"></i>
                                         </div>
-                                        <span class="badge bg-light text-dark ps-3">{{ $colmena->estado_inicial }}</span>
-                                    </li>
-                                @endif
-                                <li class="mb-3">
-                                    <div class="d-flex align-items-center mb-1">
-                                        <i class="fas fa-calendar-plus text-success me-2"></i>
-                                        <strong>Fecha de registro:</strong>
+                                        <div class="info-content">
+                                            <span class="info-label">Estado inicial:</span>
+                                            <span class="badge badge-light">{{ $colmena->estado_inicial }}</span>
+                                        </div>
                                     </div>
-                                    <span class="text-muted ps-3">{{ $colmena->created_at->format('d/m/Y') }}</span>
-                                </li>
+                                @endif
+
+                                <div class="info-item" style="--index: 4">
+                                    <div class="info-icon success">
+                                        <i class="fas fa-calendar-plus"></i>
+                                    </div>
+                                    <div class="info-content">
+                                        <span class="info-label">Fecha de registro:</span>
+                                        <span class="info-value">{{ $colmena->created_at->format('d/m/Y') }}</span>
+                                    </div>
+                                </div>
+
                                 @if($colmena->updated_at != $colmena->created_at)
-                                    <li class="mb-3">
-                                        <div class="d-flex align-items-center mb-1">
-                                            <i class="fas fa-edit text-info me-2"></i>
-                                            <strong>Última actualización:</strong>
+                                    <div class="info-item" style="--index: 5">
+                                        <div class="info-icon info">
+                                            <i class="fas fa-edit"></i>
                                         </div>
-                                        <span class="text-muted ps-3">{{ $colmena->updated_at->format('d/m/Y H:i') }}</span>
-                                    </li>
-                                @endif
-                            </ul>
-                            @if($colmena->observaciones)
-                                <div class="mt-4 p-3 bg-light rounded">
-                                    <div class="d-flex align-items-center mb-2">
-                                        <i class="fas fa-sticky-note text-warning me-2"></i>
-                                        <strong>Observaciones:</strong>
+                                        <div class="info-content">
+                                            <span class="info-label">Últ. actualización:</span>
+                                            <span class="info-value">{{ $colmena->updated_at->format('d/m/Y') }}</span>
+                                        </div>
                                     </div>
-                                    <p class="text-muted small mb-0">{{ $colmena->observaciones }}</p>
+                                @endif
+                            </div>
+
+                            @if($colmena->observaciones)
+                                <div class="observations-section">
+                                    <div class="observations-content">
+                                        <div class="flex items-center gap-2 mb-3">
+                                            <i class="fas fa-sticky-note" style="color: var(--color-amber-600);"></i>
+                                            <strong style="color: var(--color-amber-800);">Observaciones:</strong>
+                                        </div>
+                                        <p style="color: var(--color-amber-700); font-size: var(--font-sm); margin: 0;">
+                                            {{ $colmena->observaciones }}
+                                        </p>
+                                    </div>
                                 </div>
                             @endif
-                            <!-- Estadísticas rápidas -->
-                            <div class="mt-3 p-2 bg-primary bg-opacity-10 rounded">
-                                <h6 class="fw-bold mb-3 text-primary">
+
+                            <!-- Estadísticas -->
+                            <div class="stats-section">
+                                <h6
+                                    style="margin: 0; font-weight: 700; font-size: var(--font-base); display: flex; align-items: center; gap: var(--spacing-2);">
                                     <i class="fas fa-chart-bar"></i> Estadísticas
                                 </h6>
-                                <div class="row text-center">
-                                    <div class="col-6">
-                                        <div class="border-end">
-                                            <h5 class="text-primary mb-1">{{ $pccs->count() }}</h5>
-                                            <small class="text-muted">Evaluaciones PCC</small>
-                                        </div>
+
+                                <div class="stats-grid">
+                                    <div class="stat-item">
+                                        <div class="stat-value">{{ $pccs->count() }}</div>
+                                        <div class="stat-label">Evaluaciones PCC</div>
                                     </div>
-                                    <div class="col-6">
-                                        <h5 class="text-success mb-1">
+                                    <div class="stat-item">
+                                        <div class="stat-value">
                                             @if($pccs->isNotEmpty())
                                                 {{ (int) \Carbon\Carbon::parse($pccs->first()->created_at)->diffInDays(\Carbon\Carbon::now()) }}
                                             @else
                                                 0
                                             @endif
-                                        </h5>
-                                        <small class="text-muted">Días desde última evaluación</small>
+                                        </div>
+                                        <div class="stat-label">Días desde última evaluación</div>
                                     </div>
                                 </div>
                             </div>
@@ -125,102 +196,133 @@
             </div>
 
             <!-- Columna derecha: Detalles del PCC actual -->
-            <div class="col-md-8">
-                <div class="card shadow-sm">
-                    <div class="card-header bg-primary text-white">
-                        <h5 class="mb-0"><i class="fas fa-clipboard-list"></i> Evaluación PCC Actual</h5>
+            <div class="col-span-12 md:col-span-8">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title">
+                            <i class="fas fa-clipboard-list card-title-icon"></i>
+                            Evaluación PCC Actual
+                        </h5>
                     </div>
-                    <div class="card-body">
-                        @php
-                            $pccActual = $pccs->first();
-                            $pcc3 = $lastAlimentacion ?? null;
-                            $pcc4 = $lastVarroa ?? null;
-                            $pcc5 = $lastNosemosis ?? null;
-                            $pcc6 = optional($pccActual)->indiceCosecha;
-                            $pcc7 = optional($pccActual)->preparacionInvernada;
-                            $hasAny = $pccActual || $pcc3 || $pcc4 || $pcc5 || $pcc6 || $pcc7;
-                        @endphp
 
-                        {{-- Fecha --}}
+                    <div class="card-body">
+                        {{-- Fecha de evaluación --}}
                         @if($pccActual)
-                            <div class="d-flex justify-content-between align-items-center mb-4">
-                                <h6 class="text-white mb-0">
+                            <div class="evaluation-date">
+                                <h6 class="evaluation-date-title">
                                     <i class="fas fa-calendar-alt"></i>
                                     Fecha de evaluación: {{ $pccActual->fecha->format('d/m/Y') }}
                                 </h6>
-                                <span class="badge bg-success"><i class="fas fa-star"></i> Última evaluación</span>
+                                <span class="badge badge-success">
+                                    <i class="fas fa-star"></i> Última evaluación
+                                </span>
                             </div>
                         @endif
 
-                        <div class="row">
+                        <!-- Grid de PCC -->
+                        <div class="pcc-grid">
                             {{-- PCC1 --}}
-                            <div class="col-md-6 mb-4">
-                                <div class="border rounded p-3 h-100 shadow-sm">
-                                    <h6 class="text-warning mb-3"><i class="fas fa-baby"></i> PCC1 – Desarrollo Cámara
-                                        de Cría</h6>
+                            <div class="pcc-card">
+                                <div class="pcc-header">
+                                    <div class="pcc-icon">
+                                        <i class="fas fa-baby"></i>
+                                    </div>
+                                    <h6 class="pcc-title">PCC1 – Desarrollo Cámara de Cría</h6>
+                                </div>
+                                <div class="pcc-content">
                                     @if($pccActual && $pccActual->desarrolloCria)
-                                        <ul class="list-unstyled small">
-                                            <li><strong>Vigor colmena:</strong>
-                                                {{ $pccActual->desarrolloCria->vigor_colmena }}</li>
-                                            <li><strong>Actividad abejas:</strong>
-                                                {{ $pccActual->desarrolloCria->actividad_abejas }}</li>
-                                            <li><strong>Ingreso polen:</strong>
-                                                {{ $pccActual->desarrolloCria->ingreso_polen }}</li>
-                                            <li><strong>Celdas reales:</strong>
-                                                {{ $pccActual->desarrolloCria->presencia_celdas_reales }}</li>
-                                            <li><strong>Marcos con cría:</strong>
-                                                {{ $pccActual->desarrolloCria->cantidad_marcos_con_cria }}</li>
+                                        <ul class="pcc-list">
+                                            <li class="pcc-list-item">
+                                                <span class="pcc-list-label">Vigor colmena:</span>
+                                                <span
+                                                    class="pcc-list-value">{{ $pccActual->desarrolloCria->vigor_colmena }}</span>
+                                            </li>
+                                            <li class="pcc-list-item">
+                                                <span class="pcc-list-label">Actividad abejas:</span>
+                                                <span
+                                                    class="pcc-list-value">{{ $pccActual->desarrolloCria->actividad_abejas }}</span>
+                                            </li>
+                                            <li class="pcc-list-item">
+                                                <span class="pcc-list-label">Ingreso polen:</span>
+                                                <span
+                                                    class="pcc-list-value">{{ $pccActual->desarrolloCria->ingreso_polen }}</span>
+                                            </li>
+                                            <li class="pcc-list-item">
+                                                <span class="pcc-list-label">Celdas reales:</span>
+                                                <span
+                                                    class="pcc-list-value">{{ $pccActual->desarrolloCria->presencia_celdas_reales }}</span>
+                                            </li>
+                                            <li class="pcc-list-item">
+                                                <span class="pcc-list-label">Marcos con cría:</span>
+                                                <span
+                                                    class="pcc-list-value">{{ $pccActual->desarrolloCria->cantidad_marcos_con_cria }}</span>
+                                            </li>
                                         </ul>
                                     @else
-                                        <p class="small mb-0">No hay datos registrados.</p>
+                                        <p style="font-size: var(--font-sm); margin: 0;">No hay datos registrados.</p>
                                     @endif
                                 </div>
                             </div>
 
                             {{-- PCC2 --}}
-                            <div class="col-md-6 mb-4">
-                                <div class="border rounded p-3 h-100 shadow-sm">
-                                    <h6 class="text-warning mb-3"><i class="fas fa-crown"></i> PCC2 – Calidad de la
-                                        Reina</h6>
+                            <div class="pcc-card">
+                                <div class="pcc-header">
+                                    <div class="pcc-icon">
+                                        <i class="fas fa-crown"></i>
+                                    </div>
+                                    <h6 class="pcc-title">PCC2 – Calidad de la Reina</h6>
+                                </div>
+                                <div class="pcc-content">
                                     @if($pccActual && $pccActual->calidadReina)
-                                        <ul class="list-unstyled small">
-                                            <li><strong>Postura reina:</strong>
-                                                {{ $pccActual->calidadReina->postura_reina }}</li>
-                                            <li><strong>Estado cría:</strong> {{ $pccActual->calidadReina->estado_cria }}
+                                        <ul class="pcc-list">
+                                            <li class="pcc-list-item">
+                                                <span class="pcc-list-label">Postura reina:</span>
+                                                <span
+                                                    class="pcc-list-value">{{ $pccActual->calidadReina->postura_reina }}</span>
                                             </li>
-                                            <li><strong>Fecha introducción:</strong>
-                                                {{ optional($pccActual->calidadReina->fecha_introduccion)->format('d/m/Y') }}
+                                            <li class="pcc-list-item">
+                                                <span class="pcc-list-label">Estado cría:</span>
+                                                <span
+                                                    class="pcc-list-value">{{ $pccActual->calidadReina->estado_cria }}</span>
+                                            </li>
+                                            <li class="pcc-list-item">
+                                                <span class="pcc-list-label">Fecha introducción:</span>
+                                                <span
+                                                    class="pcc-list-value">{{ optional($pccActual->calidadReina->fecha_introduccion)->format('d/m/Y') }}</span>
                                             </li>
                                         </ul>
                                     @else
-                                        <p class="small mb-0">No hay datos registrados.</p>
+                                        <p style="font-size: var(--font-sm); margin: 0;">No hay datos registrados.</p>
                                     @endif
                                 </div>
                             </div>
 
                             {{-- PCC3 --}}
-                            @php
-                                $sist3 = optional($pccActual)->estadoNutricional;
-                                $vis3 = $lastAlimentacion ?? null;
-                            @endphp
-                            <div class="col-md-6 mb-4">
-                                <div class="border rounded p-3 h-100 shadow-sm">
-                                    <h6 class="text-warning mb-3"><i class="fas fa-utensils"></i> PCC3 – Estado
-                                        Nutricional</h6>
-                                    @if($sist3)
-                                        <ul class="list-unstyled small">
-                                            <li><strong>Objetivo:</strong> {{ $sist3->objetivo }}</li>
-                                            <li><strong>Tipo alimentación:</strong> {{ $sist3->tipo_alimentacion }}</li>
-                                            <li><strong>Insumo utilizado:</strong> {{ $sist3->insumo_utilizado }}</li>
-                                        </ul>
-                                    @elseif($vis3)
-                                        <ul class="list-unstyled small">
-                                            <li><strong>Objetivo:</strong> {{ $vis3->objetivo }}</li>
-                                            <li><strong>Tipo alimentación:</strong> {{ $vis3->tipo_alimentacion }}</li>
-                                            <li><strong>Insumo utilizado:</strong> {{ $vis3->insumo_utilizado }}</li>
+                            <div class="pcc-card">
+                                <div class="pcc-header">
+                                    <div class="pcc-icon">
+                                        <i class="fas fa-utensils"></i>
+                                    </div>
+                                    <h6 class="pcc-title">PCC3 – Estado Nutricional</h6>
+                                </div>
+                                <div class="pcc-content">
+                                    @if($pcc3)
+                                        <ul class="pcc-list">
+                                            <li class="pcc-list-item">
+                                                <span class="pcc-list-label">Objetivo:</span>
+                                                <span class="pcc-list-value">{{ $pcc3->objetivo }}</span>
+                                            </li>
+                                            <li class="pcc-list-item">
+                                                <span class="pcc-list-label">Tipo alimentación:</span>
+                                                <span class="pcc-list-value">{{ $pcc3->tipo_alimentacion }}</span>
+                                            </li>
+                                            <li class="pcc-list-item">
+                                                <span class="pcc-list-label">Insumo utilizado:</span>
+                                                <span class="pcc-list-value">{{ $pcc3->insumo_utilizado }}</span>
+                                            </li>
                                         </ul>
                                     @else
-                                        <p class="small mb-0">No hay datos registrados.</p>
+                                        <p style="font-size: var(--font-sm); margin: 0;">No hay datos registrados.</p>
                                     @endif
                                 </div>
                             </div>
@@ -228,29 +330,58 @@
                             {{-- PCC4 --}}
                             @php
                                 $sist4 = optional($pccActual)->presenciaVarroa;
-                                $vis4 = $lastVarroa ?? null;
+                                $vis4 = $lastVarroa;
                             @endphp
-                            <div class="col-md-6 mb-4">
-                                <div class="border rounded p-3 h-100 shadow-sm">
-                                    <h6 class="text-warning mb-3"><i class="fas fa-bug"></i> PCC4 – Varroa</h6>
+                            <div class="pcc-card">
+                                <div class="pcc-header">
+                                    <div class="pcc-icon">
+                                        <i class="fas fa-bug"></i>
+                                    </div>
+                                    <h6 class="pcc-title">PCC4 – Varroa</h6>
+                                </div>
+                                <div class="pcc-content">
                                     @if($sist4)
-                                        <ul class="list-unstyled small">
-                                            <li><strong>Diagnóstico visual:</strong> {{ $sist4->diagnostico_visual }}</li>
-                                            <li><strong>Método diagnóstico:</strong> {{ $sist4->metodo_diagnostico }}</li>
-                                            <li><strong>Tratamiento:</strong> {{ $sist4->tratamiento }}</li>
-                                            <li><strong>Fecha aplicación:</strong>
-                                                {{ optional($sist4->fecha_aplicacion)->format('d/m/Y') }}</li>
+                                        <ul class="pcc-list">
+                                            <li class="pcc-list-item">
+                                                <span class="pcc-list-label">Diagnóstico visual:</span>
+                                                <span class="pcc-list-value">{{ $sist4->diagnostico_visual }}</span>
+                                            </li>
+                                            <li class="pcc-list-item">
+                                                <span class="pcc-list-label">Método diagnóstico:</span>
+                                                <span class="pcc-list-value">{{ $sist4->metodo_diagnostico }}</span>
+                                            </li>
+                                            <li class="pcc-list-item">
+                                                <span class="pcc-list-label">Tratamiento:</span>
+                                                <span class="pcc-list-value">{{ $sist4->tratamiento }}</span>
+                                            </li>
+                                            <li class="pcc-list-item">
+                                                <span class="pcc-list-label">Fecha aplicación:</span>
+                                                <span
+                                                    class="pcc-list-value">{{ optional($sist4->fecha_aplicacion)->format('d/m/Y') }}</span>
+                                            </li>
                                         </ul>
                                     @elseif($vis4)
-                                        <ul class="list-unstyled small">
-                                            <li><strong>Diagnóstico visual:</strong> {{ $vis4->diagnostico_visual }}</li>
-                                            <li><strong>Método diagnóstico:</strong> {{ $vis4->metodo_diagnostico }}</li>
-                                            <li><strong>Tratamiento:</strong> {{ $vis4->tratamiento }}</li>
-                                            <li><strong>Fecha aplicación:</strong>
-                                                {{ optional($vis4->fecha_aplicacion)->format('d/m/Y') }}</li>
+                                        <ul class="pcc-list">
+                                            <li class="pcc-list-item">
+                                                <span class="pcc-list-label">Diagnóstico visual:</span>
+                                                <span class="pcc-list-value">{{ $vis4->diagnostico_visual }}</span>
+                                            </li>
+                                            <li class="pcc-list-item">
+                                                <span class="pcc-list-label">Método diagnóstico:</span>
+                                                <span class="pcc-list-value">{{ $vis4->metodo_diagnostico }}</span>
+                                            </li>
+                                            <li class="pcc-list-item">
+                                                <span class="pcc-list-label">Tratamiento:</span>
+                                                <span class="pcc-list-value">{{ $vis4->tratamiento }}</span>
+                                            </li>
+                                            <li class="pcc-list-item">
+                                                <span class="pcc-list-label">Fecha aplicación:</span>
+                                                <span
+                                                    class="pcc-list-value">{{ optional($vis4->fecha_aplicacion)->format('d/m/Y') }}</span>
+                                            </li>
                                         </ul>
                                     @else
-                                        <p class="small mb-0">No hay datos registrados.</p>
+                                        <p style="font-size: var(--font-sm); margin: 0;">No hay datos registrados.</p>
                                     @endif
                                 </div>
                             </div>
@@ -258,155 +389,139 @@
                             {{-- PCC5 --}}
                             @php
                                 $sist5 = optional($pccActual)->presenciaNosemosis;
-                                $vis5 = $lastNosemosis ?? null;
+                                $vis5 = $lastNosemosis;
                             @endphp
-                            <div class="col-md-6 mb-4">
-                                <div class="border rounded p-3 h-100 shadow-sm">
-                                    <h6 class="text-warning mb-3"><i class="fas fa-microscope"></i> PCC5 – Nosemosis
-                                    </h6>
+                            <div class="pcc-card">
+                                <div class="pcc-header">
+                                    <div class="pcc-icon">
+                                        <i class="fas fa-microscope"></i>
+                                    </div>
+                                    <h6 class="pcc-title">PCC5 – Nosemosis</h6>
+                                </div>
+                                <div class="pcc-content">
                                     @if($sist5)
-                                        <ul class="list-unstyled small">
-                                            <li><strong>Signos clínicos:</strong> {{ $sist5->signos_clinicos }}</li>
-                                            <li><strong>Método diagnóstico lab.:</strong>
-                                                {{ $sist5->metodo_diagnostico_laboratorio }}</li>
-                                            <li><strong>Fecha aplicación:</strong>
-                                                {{ optional($sist5->fecha_aplicacion)->format('d/m/Y') }}</li>
+                                        <ul class="pcc-list">
+                                            <li class="pcc-list-item">
+                                                <span class="pcc-list-label">Signos clínicos:</span>
+                                                <span class="pcc-list-value">{{ $sist5->signos_clinicos }}</span>
+                                            </li>
+                                            <li class="pcc-list-item">
+                                                <span class="pcc-list-label">Método diagnóstico lab.:</span>
+                                                <span
+                                                    class="pcc-list-value">{{ $sist5->metodo_diagnostico_laboratorio }}</span>
+                                            </li>
+                                            <li class="pcc-list-item">
+                                                <span class="pcc-list-label">Fecha aplicación:</span>
+                                                <span
+                                                    class="pcc-list-value">{{ optional($sist5->fecha_aplicacion)->format('d/m/Y') }}</span>
+                                            </li>
                                         </ul>
                                     @elseif($vis5)
-                                        <ul class="list-unstyled small">
-                                            <li><strong>Signos clínicos:</strong> {{ $vis5->signos_clinicos }}</li>
-                                            <li><strong>Método diagnóstico lab.:</strong>
-                                                {{ $vis5->metodo_diagnostico_laboratorio }}</li>
-                                            <li><strong>Fecha aplicación:</strong>
-                                                {{ optional($vis5->fecha_aplicacion)->format('d/m/Y') }}</li>
+                                        <ul class="pcc-list">
+                                            <li class="pcc-list-item">
+                                                <span class="pcc-list-label">Signos clínicos:</span>
+                                                <span class="pcc-list-value">{{ $vis5->signos_clinicos }}</span>
+                                            </li>
+                                            <li class="pcc-list-item">
+                                                <span class="pcc-list-label">Método diagnóstico lab.:</span>
+                                                <span
+                                                    class="pcc-list-value">{{ $vis5->metodo_diagnostico_laboratorio }}</span>
+                                            </li>
+                                            <li class="pcc-list-item">
+                                                <span class="pcc-list-label">Fecha aplicación:</span>
+                                                <span
+                                                    class="pcc-list-value">{{ optional($vis5->fecha_aplicacion)->format('d/m/Y') }}</span>
+                                            </li>
                                         </ul>
                                     @else
-                                        <p class="small mb-0">No hay datos registrados.</p>
+                                        <p style="font-size: var(--font-sm); margin: 0;">No hay datos registrados.</p>
                                     @endif
                                 </div>
                             </div>
 
                             {{-- PCC6 --}}
-                            <div class="col-md-6 mb-4">
-                                <div class="border rounded p-3 h-100 shadow-sm">
-                                    <h6 class="text-warning mb-3"><i class="fas fa-honey-pot"></i> PCC6 – Índice de
-                                        Cosecha</h6>
+                            <div class="pcc-card">
+                                <div class="pcc-header">
+                                    <div class="pcc-icon">
+                                        <i class="fas fa-tractor"></i>
+                                    </div>
+                                    <h6 class="pcc-title">PCC6 – Índice de Cosecha</h6>
+                                </div>
+                                <div class="pcc-content">
                                     @if($pcc6)
-                                        <ul class="list-unstyled small">
-                                            <li><strong>Madurez miel:</strong> {{ $pcc6->madurez_miel }}</li>
-                                            <li><strong>Alzas promedio:</strong> {{ $pcc6->num_alzadas }}</li>
+                                        <ul class="pcc-list">
+                                            <li class="pcc-list-item">
+                                                <span class="pcc-list-label">Madurez miel:</span>
+                                                <span class="pcc-list-value">{{ $pcc6->madurez_miel }}</span>
+                                            </li>
+                                            <li class="pcc-list-item">
+                                                <span class="pcc-list-label">Alzas promedio:</span>
+                                                <span class="pcc-list-value">{{ $pcc6->num_alzadas }}</span>
+                                            </li>
                                         </ul>
                                     @else
-                                        <p class="small mb-0">No hay datos registrados.</p>
+                                        <p style="font-size: var(--font-sm); margin: 0;">No hay datos registrados.</p>
                                     @endif
                                 </div>
                             </div>
 
                             {{-- PCC7 --}}
-                            <div class="col-md-12 mb-4">
-                                <div class="border rounded p-3 shadow-sm">
-                                    <h6 class="text-warning mb-3"><i class="fas fa-snowflake"></i> PCC7 – Preparación
-                                        Invernada</h6>
+                            <div class="pcc-card" style="grid-column: span 2;">
+                                <div class="pcc-header">
+                                    <div class="pcc-icon">
+                                        <i class="fas fa-snowflake"></i>
+                                    </div>
+                                    <h6 class="pcc-title">PCC7 – Preparación Invernada</h6>
+                                </div>
+                                <div class="pcc-content">
                                     @if($pcc7)
-                                        <ul class="list-unstyled small">
-                                            <li>
-                                                <strong>Fecha cierre temporada:</strong>
-                                                {{ optional($pcc7->fecha_cierre_temporada)->format('d/m/Y') ?? 'N/A' }}
-                                            </li>
-                                            <li>
-                                                <strong>Última revisión previa receso:</strong>
-                                                {{ optional($pcc7->fecha_ultima_revision_previa_receso)->format('d/m/Y') ?? 'N/A' }}
-                                            </li>
-                                            <li>
-                                                <strong>Signos enfermedades visibles:</strong>
-                                                {{ $pcc7->signos_enfermedades_visibles ?? 'N/A' }}
-                                            </li>
-                                            <li>
-                                                <strong>Reina presente:</strong>
+                                        <ul class="pcc-list">
+                                            <li class="pcc-list-item">
+                                                <span class="pcc-list-label">Fecha cierre temporada:</span>
                                                 <span
-                                                    class="badge {{ $pcc7->presencia_reina ? 'bg-success' : 'bg-danger' }}">
+                                                    class="pcc-list-value">{{ optional($pcc7->fecha_cierre_temporada)->format('d/m/Y') ?? 'N/A' }}</span>
+                                            </li>
+                                            <li class="pcc-list-item">
+                                                <span class="pcc-list-label">Última revisión previa receso:</span>
+                                                <span
+                                                    class="pcc-list-value">{{ optional($pcc7->fecha_ultima_revision_previa_receso)->format('d/m/Y') ?? 'N/A' }}</span>
+                                            </li>
+                                            <li class="pcc-list-item">
+                                                <span class="pcc-list-label">Signos enfermedades visibles:</span>
+                                                <span
+                                                    class="pcc-list-value">{{ $pcc7->signos_enfermedades_visibles ?? 'N/A' }}</span>
+                                            </li>
+                                            <li class="pcc-list-item">
+                                                <span class="pcc-list-label">Reina presente:</span>
+                                                <span
+                                                    class="badge {{ $pcc7->presencia_reina ? 'badge-success' : 'badge-danger' }}">
                                                     {{ $pcc7->presencia_reina ? 'Sí' : 'No' }}
                                                 </span>
                                             </li>
                                         </ul>
                                     @else
-                                        <p class="small mb-0">No hay datos registrados.</p>
+                                        <p style="font-size: var(--font-sm); margin: 0;">No hay datos registrados.</p>
                                     @endif
                                 </div>
                             </div>
                         </div>
 
-                        {{-- Mensaje global sólo si NO hay ningún dato --}}
+                        {{-- Mensaje global si no hay datos --}}
                         @if(!$hasAny)
                             <div class="alert alert-info">
-                                <i class="fas fa-info-circle"></i> No hay registros para esta colmena.
+                                <i class="fas fa-info-circle alert-icon"></i>
+                                <span>No hay registros para esta colmena.</span>
                             </div>
                         @endif
-                    </div>
-                    <div class="card-footer d-flex justify-content-end">
-                        <a href="{{ route('welcome') }}" class="btn btn-secondary btn-sm">
-                            <i class="fas fa-arrow-left"></i> Volver a inicio
-                        </a>
                     </div>
                 </div>
             </div>
         </div>
-        <p class="text-center text-muted mt-3 small">Vista pública generada por QR</p>
+
+        <p class="text-center" style="margin-top: 2rem; color: var(--color-amber-600); font-size: var(--font-sm);">
+            Vista pública generada por QR
+        </p>
     </div>
-    <style>
-        body,
-        .container-sm,
-        .card,
-        .card-body,
-        .card-header,
-        .card-footer {
-            font-size: 0.90rem !important;
-        }
-
-        .card,
-        .card-body,
-        .card-header,
-        .card-footer {
-            padding: 0.5rem !important;
-        }
-
-        .list-unstyled li,
-        .mb-3,
-        .mb-2,
-        .mb-1 {
-            margin-bottom: 0.3rem !important;
-        }
-
-        .row.g-2 {
-            --bs-gutter-x: 0.5rem;
-        }
-
-        .form-control,
-        .btn,
-        .badge {
-            font-size: 0.85em !important;
-            padding: 0.25em 0.5em !important;
-        }
-
-        h5,
-        h6 {
-            font-size: 1rem !important;
-        }
-
-        .breadcrumb {
-            font-size: 0.85rem !important;
-            margin-bottom: 0.5rem !important;
-        }
-
-        .p-3,
-        .p-2 {
-            padding: 0.5rem !important;
-        }
-
-        .rounded {
-            border-radius: 0.3rem !important;
-        }
-    </style>
 </body>
 
 </html>

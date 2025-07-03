@@ -21,6 +21,11 @@ use Illuminate\Support\Facades\Log;
 
 class VisitaController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth')->except(['publicView']);
+    }
+
     public function index()
     {
         $user = auth()->user();
@@ -387,89 +392,89 @@ class VisitaController extends Controller
     {
         // 1) Recojo la colmena seleccionada por query-string ?colmena=XX
         $colmenaId = request('colmena');
-        $colmena   = Colmena::findOrFail($colmenaId);
+        $colmena = Colmena::findOrFail($colmenaId);
         // 2) Fuerzo que la visita apunte a esa colmena
-        if($visita->colmena_id !== $colmenaId){
+        if ($visita->colmena_id !== $colmenaId) {
             $visita->colmena_id = $colmenaId;
             $visita->save();
         }
         // arrays vacíos para no romper el blade
         $valores = [
-            'desarrollo_cria'       => [],
-            'calidad_reina'         => [],
-            'estado_nutricional'    => [],
-            'presencia_varroa'      => [],
-            'presencia_nosemosis'   => [],
-            'indice_cosecha'        => [],
+            'desarrollo_cria' => [],
+            'calidad_reina' => [],
+            'estado_nutricional' => [],
+            'presencia_varroa' => [],
+            'presencia_nosemosis' => [],
+            'indice_cosecha' => [],
             'preparacion_invernada' => [],
         ];
 
-        return view('visitas.pcc_edit', compact('visita','colmena','valores'));
+        return view('visitas.pcc_edit', compact('visita', 'colmena', 'valores'));
     }
 
     public function storePcc(Request $request, Visita $visita)
     {
         // 1) Validar colmena_id + arrays
         $data = $request->validate([
-            'colmena_id'            => 'required|integer|exists:colmenas,id',
-            'desarrollo_cria'       => 'array',
-            'calidad_reina'         => 'array',
-            'estado_nutricional'    => 'array',
-            'presencia_varroa'      => 'array',
-            'presencia_nosemosis'   => 'array',
-            'indice_cosecha'        => 'array',
+            'colmena_id' => 'required|integer|exists:colmenas,id',
+            'desarrollo_cria' => 'array',
+            'calidad_reina' => 'array',
+            'estado_nutricional' => 'array',
+            'presencia_varroa' => 'array',
+            'presencia_nosemosis' => 'array',
+            'indice_cosecha' => 'array',
             'preparacion_invernada' => 'array',
         ]);
 
         $colmenaId = $data['colmena_id'];
 
-        DB::transaction(function() use($data, $visita, $colmenaId) {
+        DB::transaction(function () use ($data, $visita, $colmenaId) {
             // 2) Siempre ligamos la visita a esa colmena
-            $visita->colmena_id   = $colmenaId;
+            $visita->colmena_id = $colmenaId;
             $visita->fecha_visita = now();
             $visita->save();
 
             // 2) Para cada PCC: solo guardar si hay algún valor realmente útil
-        $pccCampos = [
-            'desarrollo_cria'       => DesarrolloCria::class,
-            'calidad_reina'         => CalidadReina::class,
-            'estado_nutricional'    => EstadoNutricional::class,
-            'presencia_varroa'      => PresenciaVarroa::class,
-            'presencia_nosemosis'   => PresenciaNosemosis::class,
-            'indice_cosecha'        => IndiceCosecha::class,
-            'preparacion_invernada' => PreparacionInvernada::class,
-        ];
+            $pccCampos = [
+                'desarrollo_cria' => DesarrolloCria::class,
+                'calidad_reina' => CalidadReina::class,
+                'estado_nutricional' => EstadoNutricional::class,
+                'presencia_varroa' => PresenciaVarroa::class,
+                'presencia_nosemosis' => PresenciaNosemosis::class,
+                'indice_cosecha' => IndiceCosecha::class,
+                'preparacion_invernada' => PreparacionInvernada::class,
+            ];
 
-        foreach ($pccCampos as $clave => $modelo) {
-            if (!array_key_exists($clave, $data)) {
-                continue;
+            foreach ($pccCampos as $clave => $modelo) {
+                if (!array_key_exists($clave, $data)) {
+                    continue;
+                }
+
+                // Filtrar los datos eliminando claves vacías o nulas
+                $datos = array_filter($data[$clave] ?? [], function ($valor) {
+                    return !is_null($valor) && $valor !== '';
+                });
+
+                if (!empty($datos)) {
+                    $modelo::updateOrCreate(
+                        ['colmena_id' => $colmenaId],
+                        $datos
+                    );
+                }
             }
+        });
 
-            // Filtrar los datos eliminando claves vacías o nulas
-            $datos = array_filter($data[$clave] ?? [], function ($valor) {
-                return !is_null($valor) && $valor !== '';
-            });
-
-            if (!empty($datos)) {
-                $modelo::updateOrCreate(
-                    ['colmena_id' => $colmenaId],
-                    $datos
-                );
-            }
-        }
-    });
-
-    return redirect()
-        ->route('colmenas.show', [
-            'apiario' => $visita->apiario_id,
-            'colmena' => $colmenaId,
-        ])
-        ->with('success', 'PCC registrado correctamente.');
+        return redirect()
+            ->route('colmenas.show', [
+                'apiario' => $visita->apiario_id,
+                'colmena' => $colmenaId,
+            ])
+            ->with('success', 'PCC registrado correctamente.');
     }
 
     public function updatePcc(Request $request, Visita $visita)
     {
         return $this->storePcc($request, $visita)
-            ->with('success','PCC actualizado correctamente.');
+            ->with('success', 'PCC actualizado correctamente.');
     }
 }

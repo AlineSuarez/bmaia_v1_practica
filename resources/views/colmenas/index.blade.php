@@ -10,15 +10,16 @@
 
     <div class="main-layout">
         <div class="container">
-            <!-- Botón de volver -->
-            <div class="back-button-container">
-                <a href="{{ route('apiarios') }}" class="back-button">
-                    <i class="fas fa-arrow-left"></i>
-                    <span>Volver a Apiarios</span>
-                </a>
-            </div>
             <div class="page-header">
-                <h1 class="page-title">Colmenas del Apiario</h1>
+                <div class="header-row">
+                    <h1 class="page-title">Colmenas del Apiario</h1>
+                    <div class="back-button-container">
+                        <a href="{{ route('apiarios') }}" class="back-button">
+                            <i class="fas fa-arrow-left"></i>
+                            <span>Volver a Apiarios</span>
+                        </a>
+                    </div>
+                </div>
                 <div class="apiario-info">{{ $apiario->nombre }}</div>
                 <div class="apiario-stats">
                     <div class="stat-item">
@@ -63,7 +64,7 @@
                                 @php
                                     $url = route('colmenas.show', [
                                         'apiario' => $apiario->id,
-                                        'colmena'  => $colmena->id,
+                                        'colmena' => $colmena->id,
                                     ]);
                                 @endphp
 

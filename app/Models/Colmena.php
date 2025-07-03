@@ -53,4 +53,19 @@ class Colmena extends Model
     {
         return $this->hasMany(\App\Models\SistemaExperto::class);
     }
+
+    public function visitas()
+    {
+        return $this->hasMany(\App\Models\Visita::class);
+    }
+
+    public function indiceCosecha()
+    {
+        return $this->hasMany(\App\Models\IndiceCosecha::class);
+    }
+
+    public function preparacionInvernada()
+    {
+        return $this->hasMany(\App\Models\PreparacionInvernada::class);
+    }
 }
