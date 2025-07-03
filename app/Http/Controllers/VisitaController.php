@@ -446,19 +446,26 @@ class VisitaController extends Controller
             ];
 
             foreach ($pccCampos as $clave => $modelo) {
-                if (!array_key_exists($clave, $data)) {
+                if (! array_key_exists($clave, $data)) {
                     continue;
                 }
 
                 // Filtrar los datos eliminando claves vacías o nulas
-                $datos = array_filter($data[$clave] ?? [], function ($valor) {
-                    return !is_null($valor) && $valor !== '';
-                });
+                $datos = array_filter(
+                    $data[$clave] ?? [],
+                    fn($valor) => !is_null($valor) && $valor !== ''
+                );
 
-                if (!empty($datos)) {
+                if (! empty($datos)) {
+                    $attributes = [
+                        'colmena_id' => $colmenaId,
+                        'visita_id'  => $visita->id,
+                    ];
+                    $values = array_merge($datos, $attributes);
+
                     $modelo::updateOrCreate(
-                        ['colmena_id' => $colmenaId],
-                        $datos
+                        $attributes,
+                        $values
                     );
                 }
             }
@@ -470,6 +477,39 @@ class VisitaController extends Controller
                 'colmena' => $colmenaId,
             ])
             ->with('success', 'PCC registrado correctamente.');
+    }
+
+    public function editPcc(Visita $visita)
+    {
+        // 1) Recojo la colmena seleccionada por query-string ?colmena=XX
+        $colmenaId = request('colmena');
+        $colmena   = Colmena::findOrFail($colmenaId);
+
+        // 2) Para cada tabla hija, cargo el registro que tenga colmena_id + visita_id
+        $pccMap = [
+            'desarrollo_cria'       => DesarrolloCria::class,
+            'calidad_reina'         => CalidadReina::class,
+            'estado_nutricional'    => EstadoNutricional::class,
+            'presencia_varroa'      => PresenciaVarroa::class,
+            'presencia_nosemosis'   => PresenciaNosemosis::class,
+            'indice_cosecha'        => IndiceCosecha::class,
+            'preparacion_invernada' => PreparacionInvernada::class,
+        ];
+
+        $valores = [];
+        foreach ($pccMap as $key => $model) {
+            $registro = $model::where('colmena_id', $colmenaId)
+                            ->where('visita_id',  $visita->id)
+                            ->first();
+
+            // si existe, lo convierto a array (para rellenar inputs); si no, array vacío
+            $valores[$key] = $registro
+                ? $registro->toArray()
+                : [];
+        }
+
+        // 3) Llamo a la misma vista de edición de PCC
+        return view('visitas.pcc_edit', compact('visita','colmena','valores'));
     }
 
     public function updatePcc(Request $request, Visita $visita)

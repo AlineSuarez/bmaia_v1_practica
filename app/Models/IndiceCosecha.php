@@ -14,6 +14,8 @@ class IndiceCosecha extends Model
         'madurez_miel',
         'num_alzadas',
         'marcos_miel',
+        'colmena_id',
+        'visita_id',
     ];
 
     public function visita()

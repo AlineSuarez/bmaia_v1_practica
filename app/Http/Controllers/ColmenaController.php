@@ -12,6 +12,7 @@ use App\Models\PresenciaNosemosis;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\DB;
 
 class ColmenaController extends Controller
 {
@@ -80,31 +81,64 @@ class ColmenaController extends Controller
             return redirect()->route('colmenas.public', ['colmena' => $colmena->id]);
         }
 
-        // 1) PCC del sistema experto (1,2,6,7)
-        $pccs = $colmena->sistemaExpertos()
-            ->with(['desarrolloCria', 'calidadReina', 'indiceCosecha', 'preparacionInvernada'])
-            ->orderByDesc('fecha')
-            ->get();
+        // 1) Cada tabla hija usando colmena_id
+        $pcc1 = DB::table('desarrollo_cria')
+            ->where('colmena_id', $colmena->id)
+            ->latest('id')
+            ->first();
 
-        // 2) Últimos registros del cuaderno de campo
-        $lastAlimentacion = $colmena->alimentaciones()->latest('created_at')->first();
-        $lastVarroa = $colmena->varroas()->latest('created_at')->first();
-        $lastNosemosis = $colmena->nosemosis()->latest('created_at')->first();
+        $pcc2 = DB::table('calidad_reina')
+            ->where('colmena_id', $colmena->id)
+            ->latest('id')
+            ->first();
 
-        // 3) Elegimos la Visita (PCC3/4/5) que usaremos para “Completar PCC”
-        $visitaPcc = optional($lastAlimentacion)->visita
-            ?: optional($lastVarroa)->visita
-            ?: optional($lastNosemosis)->visita
-            ?: null;
+        $pcc3 = DB::table('estado_nutricional')
+            ->where('colmena_id', $colmena->id)
+            ->latest('id')
+            ->first();
+
+        $pcc4 = DB::table('presencia_varroa')
+            ->where('colmena_id', $colmena->id)
+            ->latest('id')
+            ->first();
+
+        $pcc5 = DB::table('presencia_nosemosis')
+            ->where('colmena_id', $colmena->id)
+            ->latest('id')
+            ->first();
+
+        $pcc6 = DB::table('indice_cosecha')
+            ->where('colmena_id', $colmena->id)
+            ->latest('id')
+            ->first();
+
+        $pcc7 = DB::table('preparacion_invernada')
+            ->where('colmena_id', $colmena->id)
+            ->latest('id')
+            ->first();
+
+        // 2) Estadísticas
+        // Contamos cuántos registros hay en total en esas tablas
+        $pccCount = collect([$pcc1, $pcc2, $pcc3, $pcc4, $pcc5, $pcc6, $pcc7])
+            ->filter()
+            ->count();
+
+        // La fecha más reciente entre todas las tablas
+        $lastFecha = collect([
+            optional($pcc1)->fecha      ?? optional($pcc1)->created_at,
+            optional($pcc2)->fecha      ?? optional($pcc2)->created_at,
+            optional($pcc3)->fecha      ?? optional($pcc3)->created_at,
+            optional($pcc4)->fecha      ?? optional($pcc4)->created_at,
+            optional($pcc5)->fecha      ?? optional($pcc5)->created_at,
+            optional($pcc6)->fecha      ?? optional($pcc6)->created_at,
+            optional($pcc7)->fecha      ?? optional($pcc7)->created_at,
+        ])->filter()->max();
 
         return view('colmenas.show', compact(
             'apiario',
             'colmena',
-            'pccs',
-            'lastAlimentacion',
-            'lastVarroa',
-            'lastNosemosis',
-            'visitaPcc'
+            'pcc1','pcc2','pcc3','pcc4','pcc5','pcc6','pcc7',
+            'pccCount','lastFecha'
         ));
     }
 

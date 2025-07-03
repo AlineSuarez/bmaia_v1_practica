@@ -21,6 +21,8 @@ class DesarrolloCria extends Model
         'cantidad_marcos_con_abejas',
         'cantidad_reservas',
         'presencia_zanganos',
+        'colmena_id',
+        'visita_id',
     ];
     
     public function visita()

@@ -25,6 +25,8 @@ class PreparacionInvernada extends Model
         'fecha_ultima_revision_previa_receso',
         'fecha_cierre_temporada',
         'alimentacion_suplementaria',
+        'colmena_id',
+        'visita_id',
     ];
     protected $casts = [
       'fecha_cierre_temporada'              => 'date',

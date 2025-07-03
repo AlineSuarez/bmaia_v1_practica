@@ -21,6 +21,8 @@ class CalidadReina extends Model
         'fecha_introduccion',
         'estado_actual',
         'reemplazos_realizados',
+        'colmena_id',
+        'visita_id',
     ];
 
     protected $casts = [
