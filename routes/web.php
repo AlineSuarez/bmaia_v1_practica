@@ -95,7 +95,31 @@ Route::middleware(['auth'])->group(function () {
     Route::get('visitas/create3/{id_apiario}', [VisitaController::class, 'createAlimentacion'])->name('visitas.create3');
     Route::post('visitas/store3/{apiario}', [VisitaController::class, 'storeAlimentacion'])->name('visitas.store3');
     Route::get('/generate-document/alimentacion-record/{apiarioId}', [DocumentController::class, 'generateAlimentacionDocument'])->name('generate.document.alimentacion');
+
 });
+
+
+// pccs para colmenas
+
+Route::middleware('auth')
+     ->prefix('visitas')
+     ->name('visitas.')
+     ->group(function(){
+       
+        // listado, etc
+        Route::get('/', [VisitaController::class, 'index'])->name('index');
+        // ...
+
+        // Crear PCC
+        Route::get('{visita}/pcc/create', [VisitaController::class, 'createPcc'])->name('pcc.create');
+        // Guardar PCC 
+        Route::post('{visita}/pcc', [VisitaController::class, 'storePcc'])->name('pcc.store');
+        // Editar PCC si ya existe
+        Route::get('{visita}/pcc/edit',   [VisitaController::class, 'editPcc'])->name('pcc.edit');
+
+        // Guardar (tanto de create como de edit)
+        Route::put('{visita}/pcc',        [VisitaController::class, 'updatePcc'])->name('pcc.update');
+     });
 
 // Redirigir a Google para autenticación
 Route::get('login/google', function () {
@@ -275,6 +299,7 @@ Route::middleware(['auth'])->group(function () {
 //Route::post('/sistemaexperto/guardar', [App\Http\Controllers\VisitaController::class, 'storeSistemaExperto'])->name('sistemaexperto.store');
 // AJAX individual: obtener consejo por apiario (simulado)
 Route::get('/apiarios/{apiario}/obtener-consejo', [App\Http\Controllers\ApiarioController::class, 'obtenerConsejo']);
+
 
 
 // Nuevas rutas para el sistema experto

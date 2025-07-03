@@ -76,11 +76,7 @@ class ColmenaController extends Controller
 
     public function show(Apiario $apiario, Colmena $colmena)
     {
-        if (!auth()->check()) {
-            // Si NO está autenticado, redirige a la vista pública
-            return redirect()->route('colmenas.public', ['colmena' => $colmena->id]);
-        }
-        // 1) PCC del sistema experto (solo 1,2,6,7)
+        // 1) PCC del sistema experto (1,2,6,7)
         $pccs = $colmena->sistemaExpertos()
                         ->with(['desarrolloCria','calidadReina','indiceCosecha','preparacionInvernada'])
                         ->orderByDesc('fecha')
@@ -91,9 +87,16 @@ class ColmenaController extends Controller
         $lastVarroa       = $colmena->varroas()->latest('created_at')->first();
         $lastNosemosis    = $colmena->nosemosis()->latest('created_at')->first();
 
+        // 3) Elegimos la Visita (PCC3/4/5) que usaremos para “Completar PCC”
+        $visitaPcc = optional($lastAlimentacion)->visita
+                ?: optional($lastVarroa)->visita
+                ?: optional($lastNosemosis)->visita
+                ?: null;
+
         return view('colmenas.show', compact(
             'apiario','colmena','pccs',
-            'lastAlimentacion','lastVarroa','lastNosemosis'
+            'lastAlimentacion','lastVarroa','lastNosemosis',
+            'visitaPcc'
         ));
     }
 

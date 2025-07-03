@@ -25,7 +25,7 @@ class DesarrolloCria extends Model
     
     public function visita()
     {
-        return $this->hasOne(\App\Models\Visita::class, 'desarrollo_cria_id');
+        return $this->belongsTo(\App\Models\Visita::class);
     }
 
 }

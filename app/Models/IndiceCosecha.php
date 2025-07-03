@@ -15,8 +15,10 @@ class IndiceCosecha extends Model
         'num_alzadas',
         'marcos_miel',
     ];
+
     public function visita()
     {
-        return $this->hasOne(\App\Models\Visita::class, 'indice_cosecha_id');
+        return $this->belongsTo(\App\Models\Visita::class);
     }
+
 }

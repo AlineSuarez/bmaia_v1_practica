@@ -23,9 +23,10 @@ class EstadoNutricional extends Model
         'objetivo',
         
     ];
+    
     public function visita()
     {
-        return $this->hasOne(\App\Models\Visita::class, 'visita_id');
+        return $this->belongsTo(\App\Models\Visita::class);
     }
 }
 

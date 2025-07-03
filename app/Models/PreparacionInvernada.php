@@ -31,8 +31,9 @@ class PreparacionInvernada extends Model
       'fecha_ultima_revision_previa_receso' => 'date',
     ];
 
-    public function visita()
+   public function visita()
     {
-        return $this->hasOne(\App\Models\Visita::class, 'preparacion_invernada_id');
+        return $this->belongsTo(\App\Models\Visita::class);
     }
+
 }

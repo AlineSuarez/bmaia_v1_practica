@@ -81,18 +81,38 @@ class Visita extends Model
         return $this->belongsTo(User::class, 'user_id');
     }
 
+    public function desarrolloCria()
+    {
+        return $this->belongsTo(DesarrolloCria::class, 'desarrollo_cria_id');
+    }
+
+    public function calidadReina()
+    {
+        return $this->belongsTo(CalidadReina::class, 'calidad_reina_id');
+    }
+
     public function estadoNutricional()
     {
-        return $this->belongsTo(EstadoNutricional::class, 'estado_nutricional_id');
+        return $this->hasOne(EstadoNutricional::class, 'visita_id');
     }
 
     public function presenciaVarroa()
     {
-        return $this->belongsTo(PresenciaVarroa::class, 'presencia_varroa_id');
+        return $this->hasOne(PresenciaVarroa::class, 'visita_id');
     }
 
     public function presenciaNosemosis()
     {
-        return $this->belongsTo(PresenciaNosemosis::class, 'presencia_nosemosis_id');
+        return $this->hasOne(PresenciaNosemosis::class, 'visita_id');
+    }
+
+    public function indiceCosecha()
+    {
+        return $this->belongsTo(IndiceCosecha::class, 'indice_cosecha_id');
+    }
+
+    public function preparacionInvernada()
+    {
+        return $this->belongsTo(PreparacionInvernada::class, 'preparacion_invernada_id');
     }
 }

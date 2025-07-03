@@ -372,35 +372,46 @@
                                     {{-- Footer --}}
                                     <div class="card-footer d-flex justify-content-between">
                                         <div>
+                                            @php
+                                                $visitaPcc = $lastAlimentacion
+                                                    ? $lastAlimentacion->visita
+                                                    : ($lastVarroa
+                                                        ? $lastVarroa->visita
+                                                        : ($lastNosemosis
+                                                            ? $lastNosemosis->visita
+                                                            : null
+                                                            )
+                                                        );
+                                            @endphp
+
                                             @if($pccActual)
-                                                {{-- Ya existe un SistemaExperto: editarlo --}}
-                                                <a href="{{ route('sistemaexperto.editpcc', $colmena->id) }}"
-                                                class="btn btn-outline-primary btn-sm">
+                                                {{-- ya tienes un PCC completo, lo editas --}}
+                                                <a href="{{ route('visitas.pcc.edit', ['visita' => $visitaPcc->id]) }}?colmena={{ $colmena->id }}"
+                                                    class="btn btn-outline-primary btn-sm ms-2">
                                                     <i class="fas fa-edit"></i> Editar PCC
                                                 </a>
 
-                                            @elseif($lastAlimentacion || $lastVarroa || $lastNosemosis)
-                                                {{-- No hay SistemaExperto, pero sí hay visitas PCC3‐5: editar registro de campo --}}
-                                                <a href="{{ route('visitas.create3', $apiario->id) }}?colmena={{ $colmena->id }}"
-                                                class="btn btn-outline-warning btn-sm">
-                                                    <i class="fas fa-edit"></i> Editar
+                                            @elseif($visitaPcc)
+                                                {{-- aún no hay PCC1,2,6,7: lo creas --}}
+                                                <a href="{{ route('visitas.pcc.create', ['visita' => $visitaPcc->id]) }}?colmena={{ $colmena->id }}"
+                                                    class="btn btn-outline-success btn-sm">
+                                                    <i class="fas fa-plus"></i> Editar PCC
                                                 </a>
 
                                             @else
-                                                {{-- Ni SistemaExperto ni visitas: crear un nuevo PCC --}}
-                                                <a href="{{ route('sistemaexperto.create', $apiario->id) }}"
-                                                class="btn btn-outline-success btn-sm">
-                                                    <i class="fas fa-plus"></i> Crear PCC
-                                                </a>
+                                                <span class="text-warning small">
+                                                    Primero ingresa PCC 3,4 o 5 en el Cuaderno de Campo
+                                                </span>
                                             @endif
 
-                                            {{-- Botón para ver historial de movimientos --}}
-                                            <a href="{{ route('colmenas.historial', [$apiario->id, $colmena->id]) }}" class="btn btn-outline-info btn-sm ms-2">
-                                                <i class="fas fa-history"></i> Ver historial
+                                            <a href="{{ route('colmenas.historial', [$apiario->id, $colmena->id]) }}"
+                                            class="btn btn-outline-info btn-sm ms-2">
+                                            <i class="fas fa-history"></i> Ver historial
                                             </a>
                                         </div>
+
                                         <a href="{{ route('colmenas.index', $apiario->id) }}"
-                                        class="btn btn-secondary btn-sm">
+                                            class="btn btn-secondary btn-sm">
                                             <i class="fas fa-arrow-left"></i> Volver
                                         </a>
                                     </div>

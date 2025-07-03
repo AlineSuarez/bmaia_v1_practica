@@ -25,11 +25,13 @@ class CalidadReina extends Model
 
     protected $casts = [
         'fecha_introduccion' => 'date',
+        'reemplazos_realizados' => 'array',
     ];
 
     public function visita()
     {
-        return $this->hasOne(\App\Models\Visita::class, 'calidad_reina_id');
+        return $this->belongsTo(\App\Models\Visita::class);
     }
+
 
 }

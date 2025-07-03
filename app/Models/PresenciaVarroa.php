@@ -32,9 +32,10 @@ class PresenciaVarroa extends Model
     protected $casts = [
       'fecha_aplicacion' => 'date',
     ];
+    
     public function visita()
     {
-        return $this->hasOne(\App\Models\Visita::class, 'visita_id');
+        return $this->belongsTo(\App\Models\Visita::class);
     }
 
 }
