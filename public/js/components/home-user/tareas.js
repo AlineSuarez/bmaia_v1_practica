@@ -752,4 +752,65 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Llamar a la función para añadir estilos
     agregarEstilosKanban();
+
+
+    // --- Agregar nueva etapa dinámicamente ---
+    const btnNuevaEtapa = document.getElementById("btn-nueva-etapa");
+    const formNuevaEtapa = document.getElementById("form-nueva-etapa");
+    const inputNombreEtapa = document.getElementById("nombre_nueva_etapa");
+    const selectEtapas = document.getElementById("tarea_general_id");
+
+    if (btnNuevaEtapa && formNuevaEtapa && inputNombreEtapa && selectEtapas) {
+        btnNuevaEtapa.addEventListener("click", () => {
+            formNuevaEtapa.style.display =
+                formNuevaEtapa.style.display === "none" ? "block" : "none";
+        });
+
+        document
+            .getElementById("guardar-nueva-etapa")
+            .addEventListener("click", () => {
+                const nombre = inputNombreEtapa.value.trim();
+                if (!nombre) {
+                    mostrarNotificacion("Debes ingresar un nombre para la etapa.", "warning");
+                    return;
+                }
+
+                const csrfToken = document
+                    .querySelector('meta[name="csrf-token"]')
+                    ?.getAttribute("content");
+
+                fetch("/tareas-generales", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRF-TOKEN": csrfToken,
+                    },
+                    body: JSON.stringify({ nombre }),
+                })
+                    .then((res) => {
+                        if (!res.ok) throw new Error("Error al guardar etapa");
+                        return res.json();
+                    })
+                    .then((data) => {
+                        // Agregar nueva opción al select y seleccionarla
+                        const newOption = document.createElement("option");
+                        newOption.value = data.id;
+                        newOption.textContent = data.nombre;
+                        newOption.selected = true;
+                        selectEtapas.appendChild(newOption);
+
+                        // Limpiar y ocultar formulario
+                        inputNombreEtapa.value = "";
+                        formNuevaEtapa.style.display = "none";
+
+                        mostrarNotificacion("Etapa creada correctamente.", "success");
+                    })
+                    .catch((err) => {
+                        console.error(err);
+                        mostrarNotificacion("Error al crear la etapa.", "error");
+                    });
+            });
+    }
+
+
 });

@@ -68,11 +68,13 @@
                                                 aria-label="Regenerar consejo para {{ $apiario->nombre }}">
                                                 <i class="fas fa-sync"></i>
                                             </button>
-                                            <a href="{{ route('sistemaexperto.create', $apiario->id) }}"
+<!--
+<a href="{{ route('sistemaexperto.create', $apiario->id) }}"
                                                 class="btn btn-success btn-sm" title="Registrar PCC"
                                                 aria-label="Registrar PCC para {{ $apiario->nombre }}">
                                                 <i class="fas fa-plus"></i>
-                                            </a>
+                                            </a>                                            
+-->
                                         </div>
                                     </td>
                                 </tr>

@@ -210,6 +210,9 @@ Route::get('/tareas/calendario', [TaskController::class, 'calendario'])->name('t
 // 2) JSON de eventos para FullCalendar
 Route::get('/tareas/json', [TaskController::class, 'obtenerEventosJson'])->name('tareas.json');
 
+// Crear etapa en módulo de Tareas
+Route::post('/tareas-generales', [TaskController::class, 'storeAjax']);
+
 
 
 // Visitas

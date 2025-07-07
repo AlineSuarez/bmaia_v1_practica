@@ -111,12 +111,25 @@
                         <!-- Selector de etapa -->
                         <div class="grupo-form">
                             <label for="tarea_general_id" class="etiqueta-miel">Etapa del proyecto</label>
-                            <select name="tarea_general_id" id="tarea_general_id" class="select-miel" required>
-                                <option value="" disabled selected>Seleccione una etapa</option>
-                                @foreach($listaEtapa as $tarea)
-                                    <option value="{{ $tarea->id }}">{{ $tarea->nombre }}</option>
-                                @endforeach
-                            </select>
+                            <div style="display: flex; gap: 10px; align-items: center;">
+                                <select name="tarea_general_id" id="tarea_general_id" class="select-miel" required>
+                                    <option value="" disabled selected>Seleccione una etapa</option>
+                                    @foreach($listaEtapa as $tarea)
+                                        <option value="{{ $tarea->id }}">{{ $tarea->nombre }}</option>
+                                    @endforeach
+                                </select>
+                                <!-- Botón para abrir formulario modal -->
+                                <button type="button" class="btn-agregar btn-nueva-etapa" id="btn-nueva-etapa">
+                                    + Nueva Etapa
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Formulario oculto para nueva etapa -->
+                        <div id="form-nueva-etapa" style="display: none; margin-top: 15px;">
+                            <label for="nombre_nueva_etapa" class="etiqueta-miel">Nombre de nueva etapa</label>
+                            <input type="text" id="nombre_nueva_etapa" class="input-miel" placeholder="Ej: Inspección de apiarios">
+                            <button type="button" class="btn-miel-submit" id="guardar-nueva-etapa">Guardar Etapa</button>
                         </div>
 
                         <!-- Contenedor de subtareas -->

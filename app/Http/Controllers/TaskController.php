@@ -342,4 +342,17 @@ class TaskController extends Controller
         return response()->json($tareasGenerales);
     }
    */
+
+   public function storeAjax(Request $request)
+    {
+        $request->validate([
+            'nombre' => 'required|string|max:255'
+        ]);
+
+        $etapa = TareaGeneral::create([
+            'nombre' => $request->nombre,
+        ]);
+
+        return response()->json($etapa);
+    }
 }
