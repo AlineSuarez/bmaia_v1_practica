@@ -591,7 +591,7 @@
                                             <th>Región</th>
                                             <th>Comuna</th>
                                             <th>Fecha Archivado</th>
-                                            <!-- <th>Acciones</th> -->
+                                            <th>Acciones</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -624,20 +624,19 @@
                                                 <td>
                                                     <span class="text-mono">{{ $apiario->updated_at->format('d/m/Y') }}</span>
                                                 </td>
-                                                <!-- <td>
+                                                <td>
                                                     <div class="action-group">
-                                                        <form action="{{ route('apiarios.destroy', $apiario->id) }}" method="POST"
-                                                            style="display: inline-block;"
-                                                            onsubmit="return confirm('¿Está seguro de eliminar permanentemente este apiario?')">
-                                                            @csrf
-                                                            @method('DELETE')
-                                                            <button type="submit" class="action-icon delete"
-                                                                title="Eliminar Permanentemente">
-                                                                <i class="fas fa-trash"></i>
-                                                            </button>
-                                                        </form>
+                                                        <a href="{{ route('colmenas.historicas', $apiario->id) }}"
+                                                            class="action-icon view" title="Ver Colmenas Historicas">
+                                                            <i class="fas fa-cubes"></i>
+                                                        </a>
+                                                        <a href="{{ route('colmenas.historicas.export', $apiario->id) }}"
+                                                            class="action-icon download"
+                                                            title="Exportar historial de todas las colmenas">
+                                                            <i class="fas fa-download"></i>
+                                                        </a>
                                                     </div>
-                                                </td> -->
+                                                </td>
                                             </tr>
                                         @endforeach
                                     </tbody>

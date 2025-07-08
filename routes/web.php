@@ -177,6 +177,8 @@ Route::prefix('apiarios/{apiario}/colmenas')->name('colmenas.')->group(function 
     Route::get('/', [ColmenaController::class, 'index'])->name('index');
     Route::get('/create', [ColmenaController::class, 'create'])->name('create');
     Route::post('/', [ColmenaController::class, 'store'])->name('store');
+    Route::get('/historicas', [ColmenaController::class, 'historicas'])->name('historicas');
+    Route::get('/historicas/export', [ColmenaController::class, 'exportHistoricas'])->name('historicas.export');
     Route::get('/{colmena}', [ColmenaController::class, 'show'])->name('show');
     Route::get('/{colmena}/edit', [ColmenaController::class, 'edit'])->name('edit');
     Route::put('/{colmena}', [ColmenaController::class, 'update'])->name('update');

@@ -309,4 +309,54 @@ class ColmenaController extends Controller
             'lastPreparacionInvernada'
         ));
     }
+
+    public function historicas(Apiario $apiario)
+    {
+        // 1) Traigo todos los movimientos donde este apiario fue destino
+        $movimientos = MovimientoColmena::with(['colmena', 'apiarioOrigen'])
+            ->where('apiario_destino_id', $apiario->id)
+            ->orderBy('fecha_movimiento')
+            ->get();
+
+        // 2) Agrupo por el nombre de su apiario de origen
+        $colmenasPorOrigen = $movimientos
+            ->groupBy(fn($mov) => $mov->apiarioOrigen?->nombre ?? 'Sin especificar')
+            ->map(fn($grupo) => $grupo
+                ->pluck('colmena')
+                ->sortBy('numero')
+                ->values()
+            );
+
+        return view('colmenas.historicas', compact('apiario', 'colmenasPorOrigen'));
+    }
+
+    public function exportHistoricas(Apiario $apiario)
+    {
+        $movimientos = MovimientoColmena::where('apiario_destino_id', $apiario->id)
+            ->orWhere('apiario_origen_id', $apiario->id)
+            ->with(['apiarioOrigen', 'apiarioDestino', 'colmena'])
+            ->orderByDesc('fecha_movimiento')
+            ->get();
+
+        // 2) Agrupo por cada colmena los movimientos que encontró
+        $colmenas = $movimientos
+            ->groupBy(fn($mov) => $mov->colmena->id)
+            ->map(function($movs){
+                $col = $movs->first()->colmena;      // modelo Colmena
+                $col->movimientos = $movs;           // le inyecto la colección de movimientos
+                return $col;
+            })
+            ->sortBy('numero')                       // opcional: ordenarlas por número
+            ->values();
+
+        // 3) Genero el PDF con la vista
+        $pdf = Pdf::loadView('documents.historial-apiario', [
+            'apiario'         => $apiario,
+            'colmenas'        => $colmenas,
+            'fechaGeneracion' => now()->format('d/m/Y H:i'),
+        ]);
+
+        $filename = "historial_apiario_{$apiario->nombre}_" . now()->format('Y-m-d') . ".pdf";
+        return $pdf->download($filename);
+    }
 }
