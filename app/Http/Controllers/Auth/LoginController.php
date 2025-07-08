@@ -22,21 +22,21 @@ class LoginController extends Controller
             'password' => 'required',
         ]);
 
-        if (Auth::attempt($credentials)) {
-            // ¡Login OK!
-            // Ahora elegimos la ruta final según la preferencia:
+        $remember = $request->filled('remember');
+
+        if (Auth::attempt($credentials, $remember)) {
             $defaultView = Auth::user()->preference->default_view ?? 'dashboard';
 
             // Mapa de keys → route names (falta analizar que los nombres coincidan)
             $map = [
-                'dashboard'      => 'dashboard',
-                'apiaries'       => 'apiarios',
-                'calendar'       => 'tareas.calendario',
-                'reports'        => 'dashboard', 
-                'home'           => 'home',
-                'cuaderno'       => 'visitas.index',
-                'tareas'         => 'tareas',
-                'zonificacion'   => 'zonificacion',
+                'dashboard' => 'dashboard',
+                'apiaries' => 'apiarios',
+                'calendar' => 'tareas.calendario',
+                'reports' => 'dashboard',
+                'home' => 'home',
+                'cuaderno' => 'visitas.index',
+                'tareas' => 'tareas',
+                'zonificacion' => 'zonificacion',
                 'sistemaexperto' => 'sistemaexperto',
             ];
 

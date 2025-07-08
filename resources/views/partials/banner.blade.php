@@ -42,12 +42,41 @@
 
     <!-- Botones de acción -->
     <div class="navbar-actions">
-        <!-- Botón de Ingresar -->
-        <button class="action-button action-button-enter"
-            style="background-color:#ecc100; color:rgb(255, 255, 255); justify-content: center;"
-            onclick="openModal('login-modal')">
-            Ingresar
-        </button>
+        @if(Auth::check())
+            @php
+                $defaultView = Auth::user()->preference->default_view ?? 'dashboard';
+                $map = [
+                    'dashboard' => 'dashboard',
+                    'apiaries' => 'apiarios',
+                    'calendar' => 'tareas.calendario',
+                    'reports' => 'dashboard',
+                    'home' => 'home',
+                    'cuaderno' => 'visitas.index',
+                    'tareas' => 'tareas',
+                    'zonificacion' => 'zonificacion',
+                    'sistemaexperto' => 'sistemaexperto',
+                ];
+                $routeName = $map[$defaultView] ?? 'dashboard';
+            @endphp
+            <button class="action-button action-button-enter"
+                style="background-color:#ecc100; color:rgb(255, 255, 255); justify-content: center; height: 50px; margin-top: 7px;"
+                onclick="window.location.href='{{ route($routeName) }}'">
+                Ir a mi cuenta
+            </button>
+            <form id="logout-form-banner" action="{{ route('logout') }}" method="POST" style="display:inline;">
+                @csrf
+                <button type="submit" class="action-button" title="Cerrar sesión"
+                    style="background: none; border: none; color: #d9534f; vertical-align: middle; margin-top: 11px; height: 40px; width: 40px; padding: 0;">
+                    <i class="fas fa-sign-out-alt" style="font-size: 1em;"></i>
+                </button>
+            </form>
+        @else
+            <button class="action-button action-button-enter"
+                style="background-color:#ecc100; color:rgb(255, 255, 255); justify-content: center;"
+                onclick="openModal('login-modal')">
+                Ingresar
+            </button>
+        @endif
     </div>
 
     <!-- Botón de menú móvil -->
@@ -87,9 +116,38 @@
     </ul>
 
     <div class="mobile-actions">
-        <button class="mobile-action-button mobile-action-enter" onclick="openModal('login-modal')">
-            Ingresar
-        </button>
+        @if(Auth::check())
+            @php
+                $defaultView = Auth::user()->preference->default_view ?? 'dashboard';
+                $map = [
+                    'dashboard' => 'dashboard',
+                    'apiaries' => 'apiarios',
+                    'calendar' => 'tareas.calendario',
+                    'reports' => 'dashboard',
+                    'home' => 'home',
+                    'cuaderno' => 'visitas.index',
+                    'tareas' => 'tareas',
+                    'zonificacion' => 'zonificacion',
+                    'sistemaexperto' => 'sistemaexperto',
+                ];
+                $routeName = $map[$defaultView] ?? 'dashboard';
+            @endphp
+            <button class="mobile-action-button mobile-action-enter"
+                onclick="window.location.href='{{ route($routeName) }}'">
+                Ir a mi cuenta
+            </button>
+            <form id="logout-form-mobile" action="{{ route('logout') }}" method="POST" style="display:inline;">
+                @csrf
+                <button type="submit" class="mobile-action-button" title="Cerrar sesión"
+                    style="background: none; border: none; color: #d9534f; vertical-align: middle; margin-left: 10px; height: 40px; width: 40px; padding: 0;">
+                    <i class="fas fa-sign-out-alt" style="font-size: 1.2em;"></i>
+                </button>
+            </form>
+        @else
+            <button class="mobile-action-button mobile-action-enter" onclick="openModal('login-modal')">
+                Ingresar
+            </button>
+        @endif
     </div>
 </div>
 </header>

@@ -37,11 +37,10 @@
             </div>
             <div class="form-options">
                 <label class="checkbox-container">
-                    <input type="checkbox" name="remember">
+                    <input type="checkbox" name="remember" id="remember">
                     <span class="checkmark"></span>
                     <span class="checkbox-text">Recordarme</span>
                 </label>
-                <a href="#" class="forgot-password">¿Olvidaste tu contraseña?</a>
             </div>
             <div class="form-group">
                 <button type="submit" class="primary-button">
@@ -58,6 +57,12 @@
                 </div>
             </div>
         </form>
+        <!-- Enlace fuera del form -->
+        <div style="text-align:center;">
+            <a href="#" class="forgot-password">
+                ¿Olvidaste tu contraseña?
+            </a>
+        </div>
         <div class="modal-divider">
             <span>o</span>
         </div>
@@ -113,6 +118,8 @@
                     <input type="password" name="password" id="register-password" placeholder="Contraseña" required>
                     <i class="fa-solid fa-eye password-toggle" onclick="togglePassword('register-password', this)"></i>
                 </div>
+                <!-- Indicador de fortaleza de contraseña -->
+                <div id="password-strength" class="password-strength"></div>
             </div>
             <div class="form-group">
                 <div class="input-icon-wrapper password-wrapper">
@@ -126,6 +133,8 @@
                     <i class="fa-solid fa-eye password-toggle"
                         onclick="togglePassword('register-confirm-password', this)"></i>
                 </div>
+                <!-- Debajo del input de confirmación de contraseña -->
+                <div id="password-match-error" style="min-height:20px;"></div>
             </div>
 
             <!-- Enlace para abrir los términos y condiciones -->
@@ -299,5 +308,100 @@
                 })
             }
         })
+
+        // Indicador de fortaleza de contraseña
+        const passwordInput = document.getElementById("register-password");
+        const strengthDiv = document.getElementById("password-strength");
+        if (passwordInput && strengthDiv) {
+            passwordInput.addEventListener("input", () => {
+                const val = passwordInput.value;
+                let strength = 0;
+                let messages = [];
+
+                // Reglas de validación
+                if (val.length >= 8) {
+                    strength++;
+                } else {
+                    messages.push("Al menos 8 caracteres");
+                }
+                if (/[A-Z]/.test(val)) {
+                    strength++;
+                } else {
+                    messages.push("Una mayúscula");
+                }
+                if (/[a-z]/.test(val)) {
+                    strength++;
+                } else {
+                    messages.push("Una minúscula");
+                }
+                if (/\d/.test(val)) {
+                    strength++;
+                } else {
+                    messages.push("Un número");
+                }
+                if (/[^A-Za-z0-9]/.test(val)) {
+                    strength++;
+                } else {
+                    messages.push("Un carácter especial");
+                }
+
+                // Determinar nivel de fortaleza
+                let nivel = "";
+                let color = "";
+                switch (strength) {
+                    case 5:
+                        nivel = "Muy fuerte";
+                        color = "green";
+                        break;
+                    case 4:
+                        nivel = "Fuerte";
+                        color = "limegreen";
+                        break;
+                    case 3:
+                        nivel = "Media";
+                        color = "orange";
+                        break;
+                    case 2:
+                        nivel = "Débil";
+                        color = "orangered";
+                        break;
+                    default:
+                        nivel = "Muy débil";
+                        color = "red";
+                }
+
+                strengthDiv.innerHTML = `<strong style="color:white">Fortaleza:</strong> <span style="color:${color}">${nivel}</span>`;
+                if (messages.length > 0 && val.length > 0) {
+                    strengthDiv.innerHTML += `<br><small style="color:white">Falta: ${messages.join(", ")}</small>`;
+                }
+            });
+        }
+
+        const confirmInput = document.getElementById("register-confirm-password");
+        if (passwordInput && confirmInput) {
+            // Función para validar coincidencia en tiempo real
+            function checkPasswordMatch() {
+                let errorDiv = document.getElementById("password-match-error");
+                if (!errorDiv) {
+                    errorDiv = document.createElement("div");
+                    errorDiv.id = "password-match-error";
+                    errorDiv.style.color = "#ffb347";
+                    confirmInput.parentNode.appendChild(errorDiv);
+                }
+                if (confirmInput.value.length === 0) {
+                    errorDiv.textContent = "";
+                    return;
+                }
+                if (confirmInput.value !== passwordInput.value) {
+                    errorDiv.textContent = "Las contraseñas no coinciden";
+                    errorDiv.style.color = "red";
+                } else {
+                    errorDiv.textContent = "";
+                }
+            }
+
+            confirmInput.addEventListener("input", checkPasswordMatch);
+            passwordInput.addEventListener("input", checkPasswordMatch);
+        }
     })
 </script>
