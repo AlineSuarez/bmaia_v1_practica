@@ -8,6 +8,7 @@ use App\Models\MovimientoColmena;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
+use App\Models\Region;
 
 class TrashumanciaController extends Controller
 {
@@ -333,5 +334,85 @@ class TrashumanciaController extends Controller
         ));
     }
 
+    // 1) Cargar el temporal y el primer movimiento de traslado
+    public function editTemporal(Apiario $apiario)
+    {
+        abort_unless(
+            $apiario->tipo_apiario === 'trashumante' && $apiario->es_temporal,
+            404
+        );
+
+        // EN LUGAR DE $apiario->movimientos(), haz:
+        $mov = MovimientoColmena::where('apiario_destino_id', $apiario->id)
+            ->where('tipo_movimiento', 'traslado')
+            ->oldest('fecha_movimiento')
+            ->first();
+
+        $regiones = Region::with('comunas')->get();
+        $traslados = MovimientoColmena::with('apiarioOrigen','colmena')
+            ->where('apiario_destino_id', $apiario->id)
+            ->where('tipo_movimiento','traslado')
+            ->oldest('fecha_movimiento')
+            ->get();
+
+        $colmenasPorApiarioBase = $traslados
+            ->groupBy(fn($m) => optional($m->apiarioOrigen)->nombre ?: 'Sin apiario base')
+            ->map(fn($grupo) => $grupo->pluck('colmena'));
+
+        return view('apiarios.edit-temporal', compact('apiario','mov','regiones','colmenasPorApiarioBase'));
+    }
+
+    // 2) Validar y actualizar solamente los datos del apiario y de ese movimiento
+    public function updateTemporal(Request $r, Apiario $apiario)
+    {
+        abort_unless(
+            $apiario->tipo_apiario === 'trashumante' && $apiario->es_temporal,
+            404
+        );
+
+        $data = $r->validate([
+            'nombre'              => 'required|string|max:255',
+            'destino_region_id'   => 'required|exists:regiones,id',
+            'destino_comuna_id'   => 'required|exists:comunas,id',
+            'fecha_inicio_mov'    => 'required|date',
+            'fecha_termino_mov'   => 'required|date|after_or_equal:fecha_inicio_mov',
+            'motivo_movimiento'   => 'required|in:Producción,Polinización',
+            'cultivo'             => 'nullable|string|max:255',
+            'periodo_floracion'   => 'nullable|string|max:255',
+            'hectareas'           => 'nullable|integer|min:0',
+            'transportista'       => 'nullable|string|max:255',
+            'vehiculo'            => 'nullable|string|max:50',
+        ]);
+
+        // 1) Actualiza sólo los metadatos del Apiario
+        $apiario->update([
+            'nombre'    => $data['nombre'],
+            'region_id' => $data['destino_region_id'],
+            'comuna_id' => $data['destino_comuna_id'],
+        ]);
+
+        // 2) Recupera de nuevo el movimiento original
+        $mov = MovimientoColmena::where('apiario_destino_id', $apiario->id)
+            ->where('tipo_movimiento', 'traslado')
+            ->oldest('fecha_movimiento')
+            ->first();
+
+        if ($mov) {
+            $mov->update([
+                'fecha_inicio_mov'   => $data['fecha_inicio_mov'],
+                'fecha_termino_mov'  => $data['fecha_termino_mov'],
+                'motivo_movimiento'  => $data['motivo_movimiento'],
+                'cultivo'            => $data['cultivo'] ?? null,
+                'periodo_floracion'  => $data['periodo_floracion'] ?? null,
+                'hectareas'          => $data['hectareas'] ?? null,
+                'transportista'      => $data['transportista'] ?? null,
+                'vehiculo'           => $data['vehiculo'] ?? null,
+            ]);
+        }
+
+        return redirect()
+            ->route('apiarios')
+            ->with('success', 'Apiario temporal actualizado correctamente.');
+    }
 
 }

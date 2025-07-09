@@ -178,7 +178,7 @@
                                                         <i class="fas fa-cubes"></i>
                                                     </a>
                                                     <a href="{{ route('generate.document', $apiario->id) }}"
-                                                        class="action-icon download" title="Descargar PDF">
+                                                        class="action-icon download" title="Descargar Detalle del Apiario">
                                                         <i class="fas fa-download"></i>
                                                     </a>
                                                     <button class="action-icon delete" data-bs-toggle="modal"
@@ -350,7 +350,7 @@
                                                             <i class="fas fa-cubes"></i>
                                                         </a>
                                                         <a href="{{ route('generate.document', $apiario->id) }}"
-                                                            class="action-icon download" title="Descargar PDF">
+                                                            class="action-icon download" title="Descargar Detalle del Apiario">
                                                             <i class="fas fa-download"></i>
                                                         </a>
                                                     </div>
@@ -503,16 +503,22 @@
                                             </td>
                                             <td>
                                                 <div class="action-group">
-                                                    <a href="{{ route('apiarios.editar', $apiario->id) }}"
-                                                        class="action-icon edit" title="Editar">
+                                                    <a href="{{ route('apiarios.editTemporal', $apiario->id) }}"
+                                                        class="action-icon edit"
+                                                        title="Editar Apiario Temporal">
                                                         <i class="fas fa-edit"></i>
                                                     </a>
                                                     <a href="{{ route('colmenas.index', $apiario->id) }}"
                                                         class="action-icon view" title="Ver Colmenas">
                                                         <i class="fas fa-cubes"></i>
                                                     </a>
+                                                    <a href="{{ route('colmenas.historicas.export', $apiario->id) }}"
+                                                            class="action-icon download"
+                                                            title="Exportar historial de todas las colmenas">
+                                                            <i class="fas fa-file-alt"></i>
+                                                        </a>
                                                     <a href="{{ route('generate.document', $apiario->id) }}"
-                                                        class="action-icon download" title="Descargar PDF">
+                                                        class="action-icon download" title="Descargar Detalle del Apiario">
                                                         <i class="fas fa-download"></i>
                                                     </a>
                                                 </div>
@@ -633,8 +639,12 @@
                                                         <a href="{{ route('colmenas.historicas.export', $apiario->id) }}"
                                                             class="action-icon download"
                                                             title="Exportar historial de todas las colmenas">
-                                                            <i class="fas fa-download"></i>
+                                                            <i class="fas fa-file-alt"></i>
                                                         </a>
+                                                        <a href="{{ route('generate.document', $apiario->id) }}"
+                                                        class="action-icon download" title="Descargar Detalle del Apiario">
+                                                        <i class="fas fa-download"></i>
+                                                    </a>
                                                     </div>
                                                 </td>
                                             </tr>

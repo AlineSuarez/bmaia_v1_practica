@@ -73,6 +73,11 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/apiarios/{id}/archivar', [TrashumanciaController::class, 'archivar'])->name('apiarios.archivar');
     Route::post('/apiarios/archivar-multiples', [TrashumanciaController::class, 'archivarMultiples'])->name('apiarios.archivarMultiples');
 
+    // Mostrar el formulario de edición del temporal
+    Route::get('apiarios/{apiario}/edit-temporal', [TrashumanciaController::class, 'editTemporal'])->name('apiarios.editTemporal');
+    // Procesar la actualización
+    Route::patch('apiarios/{apiario}/update-temporal', [TrashumanciaController::class, 'updateTemporal'])->name('apiarios.updateTemporal');
+
 
     Route::resource('visita', VisitaController::class);
     Route::get('/visitas', [VisitaController::class, 'index'])->name('visitas.index');

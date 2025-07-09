@@ -305,12 +305,12 @@ class ApiarioController extends Controller
 
         // Obtener los datos de los apiarios seleccionados
         $apiariosData = Apiario::whereIn('id', $apiarioIds)->get();
-
+        $regiones     = Region::all();       
         if ($apiariosData->isEmpty()) {
             return redirect()->route('apiarios.index')->with('error', 'No se encontraron los apiarios seleccionados.');
         }
 
-        return view('apiarios.create-temporal', compact('tipo', 'apiariosData'));
+        return view('apiarios.create-temporal', compact('tipo', 'apiariosData', 'regiones'));
     }
 
     // Método show que falta

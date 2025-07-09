@@ -125,62 +125,45 @@
                                     Apiario y Ubicación
                                 </h4>
 
-                                <!-- Origen -->
-                                <div class="section-card">
-                                    <h5 class="section-title">Información del Apiario</h5>
-                                    <div class="form-row">
-                                        <div class="form-col">
-                                            <label>Nombre del Apiario</label>
-                                            <input type="text" class="form-input"
-                                                value="{{ $apiariosData->first()->nombre }}" readonly>
-                                        </div>
-                                        <div class="form-col">
-                                            <label>Nº Apiario</label>
-                                            <input type="text" class="form-input"
-                                                value="AP-{{ $apiariosData->first()->id }}" readonly>
-                                        </div>
-                                        <div class="form-col">
-                                            <label>Colmenas seleccionadas</label>
-                                            <input type="text" class="form-input" id="origen_colmenas"
-                                                value="0 seleccionadas" readonly>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!-- Ubicación Origen -->
-                                <div class="section-card">
-                                    <h5 class="section-title">Ubicación Origen</h5>
-                                    <div class="form-row">
-                                        <div class="form-col">
-                                            <label>Región</label>
-                                            <input type="text" class="form-input"
-                                                value="{{ optional(optional($apiariosData->first()->comuna)->region)->nombre ?? 'Sin región' }}"
-                                                readonly>
-                                        </div>
-                                        <div class="form-col">
-                                            <label>Comuna</label>
-                                            <input type="text" class="form-input"
-                                                value="{{ optional($apiariosData->first()->comuna)->nombre ?? 'Sin comuna' }}" readonly>
-                                        </div>
-                                        <div class="form-col">
-                                            <label>Coordenadas Origen</label>
-                                            <input type="text" class="form-input" value="{{ $apiariosData->first()->latitud }}, {{ $apiariosData->first()->longitud }}" readonly>
+                                {{-- Recorremos cada apiario base para mostrar su info de origen --}}
+                                @foreach($apiariosData as $apiario)
+                                    <div class="section-card mb-4">
+                                        <h5 class="section-title">Apiario: {{ $apiario->nombre }} (AP-{{ $apiario->id }})</h5>
+                                        <div class="form-row">
+                                            <div class="form-col">
+                                                <label>Región Origen</label>
+                                                <input type="text" class="form-input"
+                                                    value="{{ optional(optional($apiario->comuna)->region)->nombre ?? 'Sin región' }}"
+                                                    readonly>
+                                            </div>
+                                            <div class="form-col">
+                                                <label>Comuna Origen</label>
+                                                <input type="text" class="form-input"
+                                                    value="{{ optional($apiario->comuna)->nombre ?? 'Sin comuna' }}"
+                                                    readonly>
+                                            </div>
+                                            <div class="form-col">
+                                                <label>Coordenadas Origen</label>
+                                                <input type="text" class="form-input"
+                                                    value="{{ $apiario->latitud }}, {{ $apiario->longitud }}"
+                                                    readonly>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
+                                @endforeach
 
                                 @if($tipo == 'traslado')
-                                    <!-- Ubicación Destino -->
+                                    <!-- Una sola ubicación destino para TODO el temporal -->
                                     <div class="section-card">
                                         <h5 class="section-title">Ubicación Destino</h5>
                                         <div class="form-row">
                                             <div class="form-col">
                                                 <label>Región Destino</label>
-                                                <select class="form-input" name="destino_region_id" id="destinoRegionSelect">
-                                                    <option value="">Seleccionar región...</option>
-                                                    @foreach(\App\Models\Region::all() as $reg)
+                                                <select class="form-input" name="destino_region_id" id="destinoRegionSelect" required>
+                                                    <option value="">Seleccionar región…</option>
+                                                    @foreach($regiones as $reg)
                                                         <option value="{{ $reg->id }}"
-                                                            {{ old('destino_region') == $reg->id ? 'selected' : '' }}>
+                                                            {{ old('destino_region_id') == $reg->id ? 'selected' : '' }}>
                                                             {{ $reg->nombre }}
                                                         </option>
                                                     @endforeach
@@ -188,24 +171,16 @@
                                             </div>
                                             <div class="form-col">
                                                 <label>Comuna Destino</label>
-                                                <select class="form-input" name="destino_comuna_id" id="destinoComunaSelect">
-                                                    <option value="">Seleccionar comuna...</option>
-                                                    @php
-    $regInicial = old('destino_region', $apiariosData->first()->region_id);
-    $comunasInicial = \App\Models\Comuna::where('region_id', $regInicial)->get();
-                                                    @endphp
-                                                    @foreach($comunasInicial as $com)
-                                                        <option value="{{ $com->id }}"
-                                                            {{ old('destino_comuna') == $com->id ? 'selected' : '' }}>
-                                                            {{ $com->nombre }}
-                                                        </option>
-                                                    @endforeach
+                                                <select class="form-input" name="destino_comuna_id" id="destinoComunaSelect" required>
+                                                    <option value="">Seleccionar comuna…</option>
+                                                    {{-- Se rellenará con JS --}}
                                                 </select>
                                             </div>
                                             <div class="form-col">
                                                 <label>Coordenadas Destino</label>
                                                 <input type="text" class="form-input" name="coordenadas_destino"
-                                                    value="{{ old('coordenadas_destino', '-33.0472, -71.4419') }}" placeholder="Lat, Lng">
+                                                    value="{{ old('coordenadas_destino', '-33.0472, -71.4419') }}"
+                                                    placeholder="Lat, Lng" required>
                                             </div>
                                         </div>
                                     </div>
