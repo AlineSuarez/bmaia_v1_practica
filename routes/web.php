@@ -206,6 +206,7 @@ Route::get('/tareas/{id}', [TaskController::class, 'show'])->name('tareas.show')
 Route::post('/tareas/update/{id}', [TaskController::class, 'guardarCambios']);
 Route::patch('/tareas/{id}/update', [TaskController::class, 'updateTarea']);
 Route::get('/todas-las-tareas/imprimir', [TaskController::class, 'imprimirTodas'])->name('tareas.imprimirTodas');
+Route::get('/datos-subtareas', [TaskController::class, 'obtenerSubtareasJson'])->name('tareas.datos');
 
 // 1) Pantalla del calendario
 Route::get('/tareas/calendario', [TaskController::class, 'calendario'])->name('tareas.calendario');

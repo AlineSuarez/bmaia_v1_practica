@@ -16,41 +16,43 @@ class TaskController extends Controller
     {
         // Obtener el usuario autenticado
         $user = Auth::user();
-    
+
         // Obtener solo las subtareas que pertenecen al usuario autenticado
         $subtareas = Subtarea::where('user_id', $user->id)->get();
-    
+
         // Obtener los ids de las TareasGenerales asociadas a las subtareas
         $tareasGeneralesIds = $subtareas->pluck('tarea_general_id')->unique();
-        $listaEtapa=TareaGeneral::with('predefinidas')->get();
+        $listaEtapa = TareaGeneral::with('predefinidas')->get();
         // Obtener las TareasGenerales correspondientes a las subtareas
         $tareasGenerales = TareaGeneral::whereIn('id', $tareasGeneralesIds)
-            ->with(['subtareas' => function ($query) use ($user) {
-                $query->where('user_id', $user->id); // Cargar solo las subtareas del usuario
-            }])
+            ->with([
+                'subtareas' => function ($query) use ($user) {
+                    $query->where('user_id', $user->id); // Cargar solo las subtareas del usuario
+                }
+            ])
             ->get();
         // Obtener los apiarios del usuario autenticado
         $apiarios = $user->apiarios; // Asumiendo que la relación está definida en el modelo User
         // Formatear fechas en TareasGenerales y Subtareas
         $tareasGenerales->each(function ($tarea) {
             if ($tarea->fecha_inicio) {
-                $tarea->fecha_inicio_formatted = \Carbon\Carbon::parse($tarea->fecha_inicio)->format('d-m-Y');
+                $tarea->fecha_inicio_formatted = Carbon::parse($tarea->fecha_inicio)->format('d-m-Y');
             }
             if ($tarea->fecha_fin) {
-                $tarea->fecha_fin_formatted = \Carbon\Carbon::parse($tarea->fecha_fin)->format('d-m-Y');
+                $tarea->fecha_fin_formatted = Carbon::parse($tarea->fecha_fin)->format('d-m-Y');
             }
             // Formatear fechas en cada subtarea
             $tarea->subtareas->each(function ($subtarea) {
                 if ($subtarea->fecha_inicio) {
-                    $subtarea->fecha_inicio_formatted = \Carbon\Carbon::parse($subtarea->fecha_inicio)->format('d-m-Y');
+                    $subtarea->fecha_inicio_formatted = Carbon::parse($subtarea->fecha_inicio)->format('d-m-Y');
                 }
                 if ($subtarea->fecha_limite) {
-                    $subtarea->fecha_fin_formatted = \Carbon\Carbon::parse($subtarea->fecha_limite)->format('d-m-Y');
+                    $subtarea->fecha_fin_formatted = Carbon::parse($subtarea->fecha_limite)->format('d-m-Y');
                 }
             });
         });
         // Devolver la vista con los datos
-        return view('tareas.index', compact('subtareas', 'tareasGenerales', 'apiarios','listaEtapa'));
+        return view('tareas.index', compact('subtareas', 'tareasGenerales', 'apiarios', 'listaEtapa'));
     }
 
     public function loadView($view)
@@ -65,18 +67,18 @@ class TaskController extends Controller
         // Formatear fechas en TareasGenerales y Subtareas
         $tareasGenerales->each(function ($tarea) {
             if ($tarea->fecha_inicio) {
-                $tarea->fecha_inicio_formatted = \Carbon\Carbon::parse($tarea->fecha_inicio)->format('d-m-Y');
+                $tarea->fecha_inicio_formatted = Carbon::parse($tarea->fecha_inicio)->format('d-m-Y');
             }
             if ($tarea->fecha_fin) {
-                $tarea->fecha_fin_formatted = \Carbon\Carbon::parse($tarea->fecha_fin)->format('d-m-Y');
+                $tarea->fecha_fin_formatted = Carbon::parse($tarea->fecha_fin)->format('d-m-Y');
             }
             // Formatear fechas en cada subtarea
             $tarea->subtareas->each(function ($subtarea) {
                 if ($subtarea->fecha_inicio) {
-                    $subtarea->fecha_inicio_formatted = \Carbon\Carbon::parse($subtarea->fecha_inicio)->format('d-m-Y');
+                    $subtarea->fecha_inicio_formatted = Carbon::parse($subtarea->fecha_inicio)->format('d-m-Y');
                 }
                 if ($subtarea->fecha_limite) {
-                    $subtarea->fecha_fin_formatted = \Carbon\Carbon::parse($subtarea->fecha_fin)->format('d-m-Y');
+                    $subtarea->fecha_fin_formatted = Carbon::parse($subtarea->fecha_fin)->format('d-m-Y');
                 }
             });
         });
@@ -95,31 +97,31 @@ class TaskController extends Controller
         // También puedes cargar todas las tareas generales si es necesario
         $tareasGenerales = TareaGeneral::with('subtareas')->get();
         // Pasar las tareas generales a la vista
-        return view('tareas.show', compact('tareaGeneral', 'tareasGenerales','task'));
+        return view('tareas.show', compact('tareaGeneral', 'tareasGenerales', 'task'));
     }
 
     public function updateTarea(Request $request, $id)
-        {
-            try {
-                $subtarea = Subtarea::findOrFail($id);
-                $subtarea->update([
-                    'fecha_inicio' => $request->input('fecha_inicio'),
-                    'fecha_limite' => $request->input('fecha_limite'),
-                    'prioridad' => $request->input('prioridad'),
-                    'estado' => $request->input('estado'),
-                ]);
-                if ($request->ajax()) {
-                    return response()->json(['message' => 'Subtarea actualizada con éxito.']);
-                }
-                return redirect()->back()->with('success', 'Subtarea actualizada correctamente');
-            } catch (\Exception $e) {
-                \Log::error('Error al actualizar tarea: '.$e->getMessage());
-                if ($request->ajax()) {
-                    return response()->json(['message' => 'Error interno'], 500);
-                }
-                return redirect()->back()->with('error', 'Error al actualizar tarea.');
+    {
+        try {
+            $subtarea = Subtarea::findOrFail($id);
+            $subtarea->update([
+                'fecha_inicio' => $request->input('fecha_inicio'),
+                'fecha_limite' => $request->input('fecha_limite'),
+                'prioridad' => $request->input('prioridad'),
+                'estado' => $request->input('estado'),
+            ]);
+            if ($request->ajax()) {
+                return response()->json(['message' => 'Subtarea actualizada con éxito.']);
             }
+            return redirect()->back()->with('success', 'Subtarea actualizada correctamente');
+        } catch (\Exception $e) {
+            \Log::error('Error al actualizar tarea: ' . $e->getMessage());
+            if ($request->ajax()) {
+                return response()->json(['message' => 'Error interno'], 500);
+            }
+            return redirect()->back()->with('error', 'Error al actualizar tarea.');
         }
+    }
 
     public function update(Request $request, Subtarea $subtarea)
     {
@@ -141,7 +143,6 @@ class TaskController extends Controller
             'prioridad' => $request->prioridad,
             'estado' => $request->estado,
         ]);
-        $subtarea->update($validated);
         return redirect()->route('tareas')->with('success', 'Subtarea actualizada exitosamente.');
     }
 
@@ -152,16 +153,16 @@ class TaskController extends Controller
         $subtarea = Subtarea::where('user_id', $user->id)->findOrFail($id);
         $subtarea->delete();
         /* return redirect()->route('tareas')->with('success', 'Subtarea eliminada exitosamente.'); */
-        return response()->json(['message' => 'Subtarea eliminada exitosamente.'],200);
+        return response()->json(['message' => 'Subtarea eliminada exitosamente.'], 200);
     }
 
     public function guardarCambios(Request $request, $id)
     {
         $request->validate([
-            'estado'       => 'nullable|in:Pendiente,En progreso,Completada,Vencida',
+            'estado' => 'nullable|in:Pendiente,En progreso,Completada,Vencida',
             'fecha_inicio' => 'nullable|date',
             'fecha_limite' => 'nullable|date|after_or_equal:fecha_inicio',
-            'prioridad'    => 'nullable|in:baja,media,alta,urgente',
+            'prioridad' => 'nullable|in:baja,media,alta,urgente',
         ]);
         $subtarea = Subtarea::findOrFail($id);
         $data = array_filter($request->only([
@@ -176,14 +177,14 @@ class TaskController extends Controller
         }
         return redirect()->route('tareas')->with('success', 'Tarea modificada con éxito');
     }
-    
+
 
     public function updateStatus(Request $request, $id)
     {
         \Log::info('Entró a updateStatus', [
-        'id' => $id,
-        'estado' => $request->estado
-    ]);
+            'id' => $id,
+            'estado' => $request->estado
+        ]);
         $request->validate([
             'estado' => 'required|in:Pendiente,En progreso,Completada,Vencida',
         ]);
@@ -206,17 +207,17 @@ class TaskController extends Controller
         // Trae las subtareas del usuario (o Task si prefieres)
         $subtareas = SubTarea::where('user_id', Auth::id())->get();
         // Mapea a lo que FullCalendar espera
-        $events = $subtareas->map(function($st) {
+        $events = $subtareas->map(function ($st) {
             return [
-                'id'           => $st->id,
-                'title'        => $st->nombre,
+                'id' => $st->id,
+                'title' => $st->nombre,
                 // FullCalendar trata `end` como exclusivo, así que sumamos un día
-                'start'        => $st->fecha_inicio->toDateString(),
-                'end'          => $st->fecha_limite->copy()->addDay()->toDateString(),
+                'start' => Carbon::parse($st->fecha_inicio)->toDateString(),
+                'end' => Carbon::parse($st->fecha_limite)->addDay()->toDateString(),
                 // Todo lo extra va en extendedProps
-                'extendedProps'=> [
-                    'estado'      => $st->estado,
-                    'prioridad'   => $st->prioridad,
+                'extendedProps' => [
+                    'estado' => $st->estado,
+                    'prioridad' => $st->prioridad,
                     'description' => $st->descripcion,
                 ],
             ];
@@ -233,14 +234,14 @@ class TaskController extends Controller
         ]);
         // Obtener el usuario autenticado
         $user = Auth::user();
-         // Iterar sobre las subtareas seleccionadas
+        // Iterar sobre las subtareas seleccionadas
         foreach ($request->subtareas as $subtareaId) {
-             // Buscar la tarea predefinida
+            // Buscar la tarea predefinida
             $tareaPredefinida = TareasPredefinidas::findOrFail($subtareaId);
             // Ajustar fechas
-            $fechaInicio = \Carbon\Carbon::parse($tareaPredefinida->fecha_inicio);
-            $fechaLimite = \Carbon\Carbon::parse($tareaPredefinida->fecha_limite);
-            $hoy = \Carbon\Carbon::now();
+            $fechaInicio = Carbon::parse($tareaPredefinida->fecha_inicio);
+            $fechaLimite = Carbon::parse($tareaPredefinida->fecha_limite);
+            $hoy = Carbon::now();
             if ($fechaInicio->isPast() && $fechaInicio->isSameDay($hoy)) {
                 $fechaInicio->addYear();
             }
@@ -255,8 +256,8 @@ class TaskController extends Controller
                 'fecha_inicio' => $fechaInicio,
                 'fecha_limite' => $fechaLimite,
                 'prioridad' => $tareaPredefinida->prioridad,
-        ]);
-    }
+            ]);
+        }
         // Redireccionar con un mensaje de éxito
         return redirect()->route('tareas')->with('success', 'Las tareas seleccionadas se han agregado correctamente a tu tablero.');
     }
@@ -272,7 +273,7 @@ class TaskController extends Controller
             'subtareas.*.fecha_inicio' => 'required|date',
             'subtareas.*.fecha_fin' => 'required|date',
         ]);
-         // Validación personalizada de fechas
+        // Validación personalizada de fechas
         foreach ($request->subtareas as $subtarea) {
             if (strtotime($subtarea['fecha_fin']) < strtotime($subtarea['fecha_inicio'])) {
                 return redirect()->back()
@@ -301,7 +302,7 @@ class TaskController extends Controller
             //Log::error('Error al crear la Tarea General o Subtareas: ' . $e->getMessage());
             // En caso de error
             return redirect()->back()
-                ->with('error', 'Ocurrió un error al crear las tareas. '.$e->getMessage())
+                ->with('error', 'Ocurrió un error al crear las tareas. ' . $e->getMessage())
                 ->withInput();
         }
     }
@@ -312,17 +313,17 @@ class TaskController extends Controller
         if (!$query) {
             return response()->json([], 200);
         }
-    
+
         $tareas = TareaGeneral::where('nombre', 'LIKE', '%' . $query . '%')
             ->where('user_id', Auth::id()) // Asegúrate de filtrar por usuario autenticado
             ->get(['id', 'nombre']); // Selecciona solo los campos necesarios
-    
+
         return response()->json($tareas);
     }
 
     public function imprimirTodas()
     {
-        $subtareas = \App\Models\SubTarea::with('tareaGeneral')->get(); // o tu relación correcta
+        $subtareas = SubTarea::with('tareaGeneral')->get(); // o tu relación correcta
         return view('tareas.imprimir-todas', compact('subtareas'));
     }
 
@@ -343,7 +344,7 @@ class TaskController extends Controller
     }
    */
 
-   public function storeAjax(Request $request)
+    public function storeAjax(Request $request)
     {
         $request->validate([
             'nombre' => 'required|string|max:255'
@@ -354,5 +355,23 @@ class TaskController extends Controller
         ]);
 
         return response()->json($etapa);
+    }
+
+    public function obtenerSubtareasJson()
+    {
+        $user = Auth::user();
+
+        $tareasGenerales = TareaGeneral::whereIn(
+            'id',
+            SubTarea::where('user_id', $user->id)->pluck('tarea_general_id')
+        )
+            ->with([
+                'subtareas' => function ($query) use ($user) {
+                    $query->where('user_id', $user->id);
+                }
+            ])
+            ->get();
+
+        return response()->json($tareasGenerales);
     }
 }

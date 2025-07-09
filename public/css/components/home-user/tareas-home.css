@@ -5,7 +5,7 @@
     --color-amber-200: #fde68a;
     --color-amber-300: #fcd34d;
     --color-amber-400: #fbbf24;
-    --color-amber-500: #f59e0b; /* Color principal */
+    --color-amber-500: #f59e0b;
     --color-amber-600: #d97706;
     --color-amber-700: #b45309;
     --color-amber-800: #92400e;
@@ -812,4 +812,72 @@ body {
 
 .tabla-wrapper::-webkit-scrollbar-thumb:hover {
     background: var(--primary);
+}
+
+/* Mejora el ancho de las tareas */
+
+.apiario-container-full-width {
+    width: 100%;
+    min-height: 100vh;
+    background: #f8f9fa;
+}
+
+.apiario-wrapper {
+    max-width: none;
+    width: 100%;
+    padding: var(--spacing-xl, 2rem);
+    margin: 0;
+}
+
+.panel-grid-container {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: var(--spacing-xl, 2rem);
+    align-items: start;
+}
+
+.panel-column {
+    background: var(--surface, #ffffff);
+    border-radius: var(--radius-lg, 8px);
+    padding: var(--spacing-xl, 2rem);
+    box-shadow: var(--shadow, 0 1px 3px rgba(0, 0, 0, 0.1));
+}
+
+.separador-sutil {
+    width: 1px;
+    background: var(--border, #e5e7eb);
+    min-height: 400px;
+    align-self: stretch;
+    margin: 0;
+}
+
+.tabla-wrapper {
+    overflow-x: auto;
+    margin: var(--spacing-lg, 1.5rem) 0;
+    border-radius: var(--radius-md, 6px);
+    border: 1px solid var(--border, #e5e7eb);
+}
+
+/* Responsive ajustes */
+@media (max-width: 1200px) {
+    .panel-grid-container {
+        grid-template-columns: 1fr;
+        gap: var(--spacing-lg, 1.5rem);
+    }
+
+    .separador-sutil {
+        width: 100%;
+        height: 1px;
+        min-height: auto;
+    }
+}
+
+@media (max-width: 768px) {
+    .apiario-wrapper {
+        padding: var(--spacing-md, 1rem);
+    }
+
+    .panel-column {
+        padding: var(--spacing-lg, 1.5rem);
+    }
 }

@@ -521,18 +521,17 @@ body {
    TABLAS - SCROLL VISIBLE EN PANTALLAS PEQUEÑAS
    ============================================================ */
 
-.table-container {
-    overflow-x: auto;
+   .table-container {
+    overflow-x: auto !important;
     overflow-y: hidden;
     position: relative;
     width: 100%;
     -webkit-overflow-scrolling: touch;
     scroll-behavior: smooth;
-    /* Scroll invisible en pantallas grandes */
-    scrollbar-width: none;
+    scrollbar-width: thin;
+    scrollbar-color: var(--primary) var(--bg-alt);
 }
 
-/* Scrollbar invisible para WebKit en pantallas grandes */
 .table-container::-webkit-scrollbar {
     width: 0px;
     height: 0px;
@@ -557,7 +556,6 @@ body {
 
 /* Tablet y menores - mostrar scroll horizontal */
 @media (max-width: 1600px) {
-    /* Cambiar de 1024px a 1600px */
     .table-container {
         scrollbar-width: thin;
         scrollbar-color: var(--gray-300) var(--bg-alt);
@@ -1205,7 +1203,7 @@ body {
    MODALES - SOLUCIÓN PARA SCROLL INTERMITENTE EN MODAL
    ============================================================ */
 
-.modern-modal {
+   .modern-modal {
     border: none;
     border-radius: var(--radius-lg);
     box-shadow: var(--shadow-xl);
@@ -1213,6 +1211,11 @@ body {
     transform: translateZ(0);
     max-width: 1300px;
     min-width: 800px;
+    margin: 0 auto !important;
+    position: relative !important;
+    left: auto !important;
+    right: auto !important;
+    top: auto !important;
 }
 
 .modern-modal .modal-header {
@@ -3270,4 +3273,85 @@ body {
 
 .tab-line .tab-badge {
     margin-left: 0.5rem;
+}
+
+@media (max-width: 991px) {
+    .modern-modal {
+        max-width: 90vw !important;
+        min-width: 85vw !important;
+        margin: 0 auto !important;
+        /* NUEVO: Forzar centrado específico para 991px */
+        position: relative !important;
+        left: 50% !important;
+        transform: translateX(-50%) !important;
+    }
+    
+    .modal-dialog {
+        width: 100% !important;
+        align-items: center !important;
+        justify-content: center !important;
+    }
+    
+    .modern-modal .modal-header,
+    .modern-modal .modal-body {
+        padding: var(--space-4);
+    }
+}
+
+@media (max-width: 768px) {
+    .modern-modal {
+        max-width: 95vw !important;
+        min-width: 90vw !important;
+        margin: 0 auto !important;
+        left: 50% !important;
+        transform: translateX(-50%) !important;
+    }
+    
+    .modal-dialog {
+        padding: var(--space-2) !important;
+    }
+    
+    .modern-modal .modal-header,
+    .modern-modal .modal-body {
+        padding: var(--space-3);
+    }
+}
+
+@media (max-width: 576px) {
+    .modern-modal {
+        max-width: 98vw !important;
+        min-width: 95vw !important;
+        margin: 0 auto !important;
+        left: 50% !important;
+        transform: translateX(-50%) !important;
+    }
+    
+    .modal-dialog {
+        padding: var(--space-1) !important;
+    }
+    
+    .modern-modal .modal-header,
+    .modern-modal .modal-body {
+        padding: var(--space-2);
+    }
+}
+
+/* NUEVO: Override para cualquier estilo conflictivo */
+.modal.show .modal-dialog {
+    transform: none !important;
+}
+
+.modal.show .modern-modal {
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+}
+
+/* NUEVO: Asegurar que el backdrop no interfiera */
+.modal-backdrop {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    z-index: 1040 !important;
 }

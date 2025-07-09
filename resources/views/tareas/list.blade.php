@@ -1,319 +1,237 @@
-<div class="LIST" id="printableArea">
-    <div class="table-responsive">
-        <a href="{{ route('tareas.imprimirTodas') }}" target="_blank" class="btn btn-dark mb-2">
-            <i class="fa fa-print"></i> Imprimir todas las tareas
-        </a>
-        <table id="subtareasTable" class="table table-striped table-hover">
-            <thead class="table-dark">
-                <tr>
-                    <th><i class="fa-solid fa-thumbtack"></i> Nombre</th>
-                    <th><i class="fa-solid fa-calendar-day"></i> Fecha Inicio</th>
-                    <th><i class="fa-solid fa-calendar-check"></i> Fecha Fin</th>
-                    <th><i class="fa-solid fa-bolt"></i> Prioridad</th>
-                    <th><i class="fa-solid fa-check-circle"></i> Estado</th>
-                    <th><i class="fa-solid fa-gears"></i> Acciones</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach ($subtareas as $task)
-                    <tr>
-                        <td>{{ $task->nombre }}</td>
-                        <!-- Editable Fecha Inicio -->
-                        <td>
-                            <input type="date" class="form-control fecha-inicio"
-                                value="{{ \Carbon\Carbon::parse($task->fecha_inicio)->format('Y-m-d') }}"
-                                data-id="{{ $task->id }}" />
-                        </td>
-                        <!-- Editable Fecha Fin -->
-                        <td>
-                            <input type="date" class="form-control fecha-fin"
-                                value="{{ \Carbon\Carbon::parse($task->fecha_limite)->format('Y-m-d') }}"
-                                data-id="{{ $task->id }}" />
-                        </td>
-                        <!-- Editable Prioridad -->
-                        <td>
-                            <select class="form-select prioridad-select prioridad" data-id="{{ $task->id }}">
-                                <option value="alta" {{ $task->prioridad === 'alta' ? 'selected' : '' }}>Alta</option>
-                                <option value="media" {{ $task->prioridad === 'media' ? 'selected' : '' }}>Media</option>
-                                <option value="baja" {{ $task->prioridad === 'baja' ? 'selected' : '' }}>Baja</option>
-                                <option value="urgente" {{ $task->prioridad === 'urgente' ? 'selected' : '' }}>Urgente
-                                </option>
-                            </select>
-                        </td>
-                        <!-- Editable Estado -->
-                        <td>
-                            <select class="form-select estado-select estado" data-id="{{ $task->id }}">
-                                <option value="Pendiente" {{ $task->estado === 'Pendiente' ? 'selected' : '' }}>Pendiente
-                                </option>
-                                <option value="En progreso" {{ $task->estado === 'En progreso' ? 'selected' : '' }}>En
-                                    Progreso</option>
-                                <option value="Completada" {{ $task->estado === 'Completada' ? 'selected' : '' }}>Completada
-                                </option>
-                                <option value="Vencida" {{ $task->estado === 'Vencida' ? 'selected' : '' }}>Vencida</option>
-                            </select>
-                        </td>
-                        <!-- Botón Acciones -->
-                        <!-- Botón Eliminar -->
-                        <td>
-                            <div class="btn-group" role="group" aria-label="Acciones de Tarea">
-                                <!-- Botón Guardar Cambios -->
-                                <button class="btn btn-success btn-sm guardar-cambios" data-id="{{ $task->id }}"
-                                    title="Guardar los cambios sobre ésta tarea.">
-                                    <i class="fa-solid fa-save"></i>
-                                </button>
-                                <!-- Botón Eliminar -->
-                                <button class="btn btn-danger btn-sm eliminar-tarea" data-id="{{ $task->id }}"
-                                    title="Eliminar esta tarea">
-                                    <i class="fa-solid fa-trash"></i>
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
-                @endforeach
-            </tbody>
-        </table>
+
+{{-- Meta tags requeridos --}}
+<head>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <link href="{{ asset('./css/components/home-user/tasks/list.css') }}" rel="stylesheet">
+</head>
+
+{{-- Contenedor principal de la lista de tareas --}}
+<div class="task-list-container" id="printableArea">
+    
+    {{-- Header con acciones globales --}}
+    <div class="task-list-header">
+        <div class="header-content">
+            <div class="header-left">
+                <h1 class="header-title">
+                    <i class="fa-solid fa-list-check"></i>
+                    Lista de Tareas
+                </h1>
+                <p class="header-subtitle">Gestiona y organiza tus tareas de manera eficiente</p>
+            </div>
+            <div class="header-actions">
+                <div class="task-stats">
+                    <span class="stat-item">
+                        <i class="fa-solid fa-tasks"></i>
+                        <span>{{ $subtareas->count() }} tareas</span>
+                    </span>
+                </div>
+                <a href="{{ route('tareas.imprimirTodas') }}" 
+                   target="_blank" 
+                   class="print-button">
+                    <i class="fa fa-print"></i>
+                    <span>Imprimir</span>
+                </a>
+            </div>
+        </div>
     </div>
+
+    {{-- Contenedor de filtros rápidos --}}
+    <div class="filters-container">
+        <div class="filter-buttons">
+            <button class="filter-btn active" data-filter="all">
+                <i class="fa-solid fa-list"></i>
+                Todas
+            </button>
+            <button class="filter-btn" data-filter="Pendiente">
+                <i class="fa-solid fa-hourglass-start"></i>
+                Pendientes
+            </button>
+            <button class="filter-btn" data-filter="En progreso">
+                <i class="fa-solid fa-spinner"></i>
+                En Progreso
+            </button>
+            <button class="filter-btn" data-filter="Completada">
+                <i class="fa-solid fa-check-circle"></i>
+                Completadas
+            </button>
+        </div>
+    </div>
+
+    {{-- Contenedor de tarjetas --}}
+    <div class="tasks-grid" id="tasksGrid">
+        @forelse ($subtareas as $task)
+            <div class="task-card" data-task-id="{{ $task->id }}" data-status="{{ $task->estado }}" data-priority="{{ $task->prioridad }}">
+                
+                {{-- Header de la tarjeta --}}
+                <div class="task-card-header">
+                    <div class="task-title-section">
+                        <h3 class="task-title">{{ $task->nombre }}</h3>
+                        <div class="task-meta">
+                            <span class="priority-badge priority-{{ $task->prioridad }}">
+                                <i class="fa-solid fa-flag"></i>
+                                {{ ucfirst($task->prioridad) }}
+                            </span>
+                            <span class="status-badge status-{{ str_replace(' ', '-', strtolower($task->estado)) }}">
+                                @switch($task->estado)
+                                    @case('Pendiente')
+                                        <i class="fa-solid fa-hourglass-start"></i>
+                                        @break
+                                    @case('En progreso')
+                                        <i class="fa-solid fa-spinner"></i>
+                                        @break
+                                    @case('Completada')
+                                        <i class="fa-solid fa-check-circle"></i>
+                                        @break
+                                    @case('Vencida')
+                                        <i class="fa-solid fa-exclamation-triangle"></i>
+                                        @break
+                                @endswitch
+                                {{ $task->estado }}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                {{-- Contenido de la tarjeta --}}
+                <div class="task-card-content">
+                    
+                    {{-- Fechas --}}
+                    <div class="task-dates">
+                        <div class="date-group">
+                            <label class="date-label">
+                                <i class="fa-solid fa-calendar-day"></i>
+                                Inicio
+                            </label>
+                            <input type="date" 
+                                   class="date-input fecha-inicio"
+                                   value="{{ \Carbon\Carbon::parse($task->fecha_inicio)->format('Y-m-d') }}"
+                                   data-id="{{ $task->id }}"
+                                   aria-label="Fecha de inicio para {{ $task->nombre }}" />
+                        </div>
+                        
+                        <div class="date-group">
+                            <label class="date-label">
+                                <i class="fa-solid fa-calendar-check"></i>
+                                Fin
+                            </label>
+                            <input type="date" 
+                                   class="date-input fecha-fin"
+                                   value="{{ \Carbon\Carbon::parse($task->fecha_limite)->format('Y-m-d') }}"
+                                   data-id="{{ $task->id }}"
+                                   aria-label="Fecha límite para {{ $task->nombre }}" />
+                        </div>
+                    </div>
+
+                    {{-- Controles --}}
+                    <div class="task-controls">
+                        <div class="control-group">
+                            <label class="control-label">
+                                <i class="fa-solid fa-bolt"></i>
+                                Prioridad
+                            </label>
+                            <select class="priority-select prioridad-select prioridad" 
+                                    data-id="{{ $task->id }}"
+                                    aria-label="Prioridad para {{ $task->nombre }}">
+                                @foreach(['baja' => 'Baja', 'media' => 'Media', 'alta' => 'Alta', 'urgente' => 'Urgente'] as $value => $label)
+                                    <option value="{{ $value }}" 
+                                            @selected($task->prioridad === $value)>
+                                        {{ $label }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <div class="control-group">
+                            <label class="control-label">
+                                <i class="fa-solid fa-tasks"></i>
+                                Estado
+                            </label>
+                            <select class="status-select estado-select estado" 
+                                    data-id="{{ $task->id }}"
+                                    aria-label="Estado para {{ $task->nombre }}">
+                                @foreach(['Pendiente', 'En progreso', 'Completada', 'Vencida'] as $estado)
+                                    <option value="{{ $estado }}" 
+                                            @selected($task->estado === $estado)>
+                                        {{ $estado }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                {{-- Footer de la tarjeta --}}
+                <div class="task-card-footer">
+                    <div class="task-actions">
+                        <button type="button"
+                                class="action-button save-button guardar-cambios" 
+                                data-id="{{ $task->id }}"
+                                title="Guardar cambios">
+                            <i class="fa-solid fa-save"></i>
+                            <span>Guardar</span>
+                        </button>
+
+                        <button type="button"
+                                class="action-button delete-button eliminar-tarea" 
+                                data-id="{{ $task->id }}"
+                                title="Eliminar tarea">
+                            <i class="fa-solid fa-trash"></i>
+                            <span>Eliminar</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        @empty
+            {{-- Estado vacío --}}
+            <div class="empty-state">
+                <div class="empty-state-content">
+                    <div class="empty-icon">
+                        <i class="fa-solid fa-inbox"></i>
+                    </div>
+                    <h3 class="empty-title">No hay tareas disponibles</h3>
+                    <p class="empty-message">Las tareas aparecerán aquí cuando sean creadas</p>
+                </div>
+            </div>
+        @endforelse
+    </div>
+
+    <div class="pagination-container" id="tasksPagination"></div>
+
+    {{-- Loading state --}}
+    <div class="loading-state hidden" id="taskListLoading">
+        <div class="loading-content">
+            <div class="loading-spinner"></div>
+            <p class="loading-message">Actualizando lista de tareas...</p>
+        </div>
+    </div>
+
+    {{-- Footer informativo --}}
+    @if($subtareas->count() > 0)
+        <div class="task-list-footer">
+            <div class="footer-content">
+                <div class="footer-stats">
+                    <div class="stat-group">
+                        <i class="fa-solid fa-check-circle text-success"></i>
+                        <span id="count-completadas">{{ $subtareas->where('estado', 'Completada')->count() }} Completadas</span>
+                    </div>
+                    <div class="stat-group">
+                        <i class="fa-solid fa-spinner text-primary"></i>
+                        <span id="count-enprogreso">{{ $subtareas->where('estado', 'En progreso')->count() }} En Progreso</span>
+                    </div>
+                    <div class="stat-group">
+                        <i class="fa-solid fa-hourglass-start text-warning"></i>
+                        <span id="count-pendientes">{{ $subtareas->where('estado', 'Pendiente')->count() }} Pendientes</span>
+                    </div>
+                </div>
+                <div class="footer-info">
+                    <i class="fa-solid fa-clock"></i>
+                    <span>Actualizado {{ now()->format('d/m/Y H:i') }}</span>
+                </div>
+            </div>
+        </div>
+    @endif
 </div>
 
 @section('optional-scripts')
-    <script>
-
-        function recargarSubtareas() {
-            fetch('/datos-subtareas')
-                .then(response => response.json())
-                .then(data => {
-                    console.log(data);
-                    actualizarLista(data);
-                    // dejar otras funciones listas para luego:
-                    actualizarKanban(data);
-                    actualizarTimeline(data);
-                })
-                .catch(error => console.error('Error al recargar las subtareas:', error));
-        }
-        function actualizarLista(tareasGenerales) {
-            const tbody = document.querySelector('#subtareasTable tbody');
-            if (!tbody) return;
-            tbody.innerHTML = '';
-
-            tareasGenerales.forEach(tg => {
-                tg.subtareas.forEach(task => {
-                    const row = document.createElement("tr");
-                    row.innerHTML = `
-                                            <td>${task.nombre}</td>
-                                            <td><input type="date" class="form-control fecha-inicio" value="${task.fecha_inicio}" data-id="${task.id}" /></td>
-                                            <td><input type="date" class="form-control fecha-fin" value="${task.fecha_limite}" data-id="${task.id}" /></td>
-                                            <td>
-                                                <select class="form-select prioridad" data-id="${task.id}">
-                                                    <option value="baja" ${task.prioridad === 'baja' ? 'selected' : ''}>Baja</option>
-                                                    <option value="media" ${task.prioridad === 'media' ? 'selected' : ''}>Media</option>
-                                                    <option value="alta" ${task.prioridad === 'alta' ? 'selected' : ''}>Alta</option>
-                                                    <option value="urgente" ${task.prioridad === 'urgente' ? 'selected' : ''}>Urgente</option>
-                                                </select>
-                                            </td>
-                                            <td>
-                                                <select class="form-select estado" data-id="${task.id}">
-                                                    <option value="Pendiente" ${task.estado === 'Pendiente' ? 'selected' : ''}>Pendiente</option>
-                                                    <option value="En progreso" ${task.estado === 'En progreso' ? 'selected' : ''}>En progreso</option>
-                                                    <option value="Completada" ${task.estado === 'Completada' ? 'selected' : ''}>Completada</option>
-                                                    <option value="Vencida" ${task.estado === 'Vencida' ? 'selected' : ''}>Vencida</option>
-                                                </select>
-                                            </td>
-                                            <td>
-                                                <div class="btn-group" role="group" aria-label="Acciones de Tarea">
-                                                    <button class="btn btn-success btn-sm guardar-cambios" data-id="${task.id}" 
-                                                        title="Guardar los cambios sobre ésta tarea.">
-                                                        <i class="fa-solid fa-save"></i>
-                                                    </button>
-                                                    <button class="btn btn-danger btn-sm eliminar-tarea" data-id="${task.id}" 
-                                                        title="Eliminar esta tarea">
-                                                        <i class="fa-solid fa-trash"></i>
-                                                    </button>
-                                                </div>
-                                            </td>
-                                        `;
-                    tbody.appendChild(row);
-                });
-            });
-
-            // Reasociar eventos despues de regenerar el DOM
-            reasociarEventosLista();
-        }
-
-        function getEstadoIcon(estado) {
-            switch (estado) {
-                case "Pendiente": return '<i class="fa fa-hourglass-start me-1 text-secondary"></i>';
-                case "En progreso": return '<i class="fa fa-spinner me-1 text-primary"></i>';
-                case "Completada": return '<i class="fa fa-check-circle me-1 text-success"></i>';
-                case "Vencida": return '<i class="fa fa-exclamation-circle me-1 text-danger"></i>';
-                default: return '<i class="fa fa-question-circle me-1 text-muted"></i>';
-            }
-        }
-        function getPrioridadIcon(prioridad) {
-            switch (prioridad) {
-                case "alta": return '<i class="fa fa-flag me-1 text-warning"></i>';
-                case "media": return '<i class="fa fa-flag me-1 text-info"></i>';
-                case "baja": return '<i class="fa fa-flag me-1 text-success"></i>';
-                case "urgente": return '<i class="fa fa-flag me-1 text-danger"></i>';
-                default: return '<i class="fa fa-flag me-1 text-muted"></i>';
-            }
-        }
-
-        function reasociarEventosLista() {
-            // Aquí puedes volver a aplicar select2 u otros eventos en el futuro
-            $('.prioridad').select2({
-                width: '100%',
-                templateResult: function (data) {
-                    if (!data.id) return data.text;
-                    return $(`<span>${getPrioridadIcon(data.id)} ${data.text}</span>`);
-                },
-                templateSelection: function (data) {
-                    return $(`<span>${getPrioridadIcon(data.id)} ${data.text}</span>`);
-                }
-            });
-
-            $('.estado').select2({
-                width: '100%',
-                templateResult: function (data) {
-                    if (!data.id) return data.text;
-                    return $(`<span>${getEstadoIcon(data.id)} ${data.text}</span>`);
-                },
-                templateSelection: function (data) {
-                    return $(`<span>${getEstadoIcon(data.id)} ${data.text}</span>`);
-                }
-            });
-        }
-
-
-        // SCRIPT ORIGINAL + SELECT2 + ELIMINAR + IMPRIMIR
-        let guardadoAutomatico = false;
-
-        $(document).ready(function () {// Personalización de Prioridad
-            $(".prioridad-select").select2({
-                width: '100%',
-                templateResult: function (data) {
-                    if (!data.id) return data.text; // Retorna texto si no hay ID
-                    return $(`<span>${getPrioridadIcon(data.id)} ${data.text}</span>`);
-                },
-                templateSelection: function (data) {
-                    return $(`<span>${getPrioridadIcon(data.id)} ${data.text}</span>`);
-                }
-            });
-
-            // Personalización de Estado
-            $(".estado-select").select2({
-                width: '100%',
-                templateResult: function (data) {
-                    if (!data.id) return data.text;
-                    return $(`<span>${getEstadoIcon(data.id)} ${data.text}</span>`);
-                },
-                templateSelection: function (data) {
-                    return $(`<span>${getEstadoIcon(data.id)} ${data.text}</span>`);
-                }
-            });
-            // Guardar cambios manualmente
-            $(document).on('click', '.guardar-cambios', function () {
-                const taskId = $(this).data('id');
-                const row = $(this).closest('tr');
-                const fechaInicio = row.find('.fecha-inicio').val();
-                const fechaFin = row.find('.fecha-fin').val();
-                const prioridad = row.find('.prioridad').val();
-                const estado = row.find('.estado').val();
-                console.log("Datos a enviar:", {
-                    fecha_inicio: fechaInicio,
-                    fecha_limite: fechaFin,
-                    prioridad: prioridad,
-                    estado: estado
-                });
-                fetch(`/tareas/update/${taskId}`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                    },
-                    body: JSON.stringify({
-                        fecha_inicio: fechaInicio,
-                        fecha_limite: fechaFin,
-                        prioridad: prioridad,
-                        estado: estado
-                    })
-                }).then(response => {
-                    if (response.ok) {
-                        toastr.success("Cambios guardados exitosamente.");
-                        recargarSubtareas();
-                    } else {
-                        toastr.error("Error al guardar los cambios.");
-                    }
-                });
-            });
-
-            // Añadir atributos personalizados a las selecciones
-            $(".prioridad-select").on('change', function () {
-                $(this).next('.select2-container').find('.select2-selection__rendered')
-                    .attr('data-priority', $(this).val());
-            }).trigger('change');
-
-            $(".estado-select").on('change', function () {
-                $(this).next('.select2-container').find('.select2-selection__rendered')
-                    .attr('data-estado', $(this).val());
-            }).trigger('change');
-
-            // También para elementos dinámicos
-            $(document).on('change', '.prioridad', function () {
-                $(this).next('.select2-container').find('.select2-selection__rendered')
-                    .attr('data-priority', $(this).val());
-            });
-
-            $(document).on('change', '.estado', function () {
-                $(this).next('.select2-container').find('.select2-selection__rendered')
-                    .attr('data-estado', $(this).val());
-            });
-        });
-
-        // Eliminar tarea con confirmación
-        $(document).on('click', '.eliminar-tarea', function () {
-            const taskId = $(this).data('id');
-            const buttonElement = this;
-
-            Swal.fire({
-                title: '¿Está seguro?',
-                text: "Esta acción no se puede deshacer.",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#d33',
-                cancelButtonColor: '#3085d6',
-                confirmButtonText: 'Sí, eliminar',
-                cancelButtonText: 'Cancelar'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    fetch(`/tareas/${taskId}`, {
-                        method: 'DELETE',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                        }
-                    })
-                        .then(res => {
-                            console.log("Raw response:", res);
-                            return res.json();
-                        })
-                        .then(data => {
-                            console.log("Parsed JSON:", data);
-                            if (data.message === 'Subtarea eliminada exitosamente.') {
-                                Swal.fire('Eliminado!', 'La tarea ha sido eliminada.', 'success');
-                                $(buttonElement).closest('tr').remove();
-                            } else {
-                                Swal.fire('Error', 'No se pudo eliminar.', 'error');
-                            }
-                        })
-                        .catch(error => {
-                            console.error('Error al eliminar o al parsear JSON:', error);
-                            Swal.fire('Error', 'Hubo un problema al eliminar la tarea.', 'error');
-                        });
-                }
-            });
-        });
-
-    </script>
-
-
+    <script src="{{ asset('js/components/home-user/tasks/list.js') }}"></script>
 @endsection
