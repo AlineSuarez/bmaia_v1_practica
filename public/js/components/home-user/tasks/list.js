@@ -1,10 +1,3 @@
-/**
- * ================================================================
- * GESTOR PROFESIONAL DE LISTA DE TAREAS - VERSIÓN TARJETAS
- * Sistema completo con diseño de cards moderno
- * ================================================================
- */
-
 // === CONFIGURACIÓN GLOBAL ===
 const TaskConfig = {
     csrfToken: document
@@ -23,6 +16,7 @@ const TaskConfig = {
 
 // Variable para rastrear la vista actual
 let currentView = "cards";
+let filtroActivo = "all";
 
 /**
  * ================================================================
@@ -30,14 +24,13 @@ let currentView = "cards";
  * ================================================================ */
 
 function recargarSubtareas() {
+    mostrarGlobalLoader(true); // Mostrar loader global
     mostrarLoadingState(true);
 
     fetch(TaskConfig.endpoints.datosSubtareas)
         .then((response) => response.json())
         .then((data) => {
             actualizarLista(data);
-
-            // Funciones futuras preparadas
             if (typeof actualizarKanban === "function") actualizarKanban(data);
             if (typeof actualizarTimeline === "function")
                 actualizarTimeline(data);
@@ -48,6 +41,7 @@ function recargarSubtareas() {
         })
         .finally(() => {
             mostrarLoadingState(false);
+            // mostrarGlobalLoader(false); // <-- ELIMINA O COMENTA ESTA LÍNEA
         });
 }
 
@@ -91,7 +85,6 @@ function actualizarVistaTargetas(tareasGenerales) {
     reasociarEventosLista();
     aplicarAnimacionesEntrada();
     paginarTarjetas(); // <-- Agrega esto al final
-    console.log(`✅ Lista actualizada con ${totalTareas} tareas`);
 }
 
 function crearTarjetaTarea(task, index = 0) {
@@ -370,6 +363,7 @@ $(document).ready(function () {
 
     // Event Listeners para acciones
     configurarEventListeners();
+    mostrarGlobalLoader(false); // Oculta el loader si ya está todo listo
 });
 
 function configurarSelect2Inicial() {
@@ -443,8 +437,6 @@ function cambiarVista(vista) {
 
     // Actualizar contadores
     actualizarFooterContadores();
-
-    console.log(`✨ Vista cambiada a: ${vista}`);
 }
 
 function aplicarVista(vista) {
@@ -658,27 +650,23 @@ function configurarFiltros() {
         const filter = $(this).data("filter");
 
         // Actualizar estado visual de botones
-        $(".filter-btn").removeClass("active");
-        $(this).addClass("active");
+        $(".filter-btn").removeClass("active").prop("disabled", false);
+        $(this).addClass("active").prop("disabled", true);
 
         // Aplicar filtro
         aplicarFiltro(filter);
     });
+
+    // Al cargar, deshabilita el filtro activo por defecto
+    setTimeout(() => {
+        $(".filter-btn.active").prop("disabled", true);
+    }, 0);
 }
 
 function aplicarFiltro(filter) {
-    const cards = document.querySelectorAll(".task-card");
-
-    cards.forEach((card) => {
-        const status = card.getAttribute("data-status");
-
-        if (filter === "all" || status === filter) {
-            card.style.display = "flex";
-            card.style.animation = "fadeInUp 0.3s ease forwards";
-        } else {
-            card.style.display = "none";
-        }
-    });
+    filtroActivo = filter; // Guardar filtro activo
+    PAGINACION_TAREAS.paginaActual = 1; // Reiniciar a la primera página
+    paginarTarjetas(); // Repaginar según el filtro
 }
 
 /**
@@ -786,10 +774,31 @@ function actualizarBadgesTarjeta($card, taskData) {
 
 function aplicarAnimacionesEntrada() {
     const cards = document.querySelectorAll(".task-card");
+    if (cards.length === 0) {
+        mostrarGlobalLoader(false);
+        return;
+    }
+
+    let animacionAplicada = false;
+
+    cards.forEach((card) => card.classList.remove("fade-in-up"));
+
     cards.forEach((card, index) => {
         card.style.animationDelay = `${index * 0.1}s`;
         card.classList.add("fade-in-up");
+        animacionAplicada = true;
+        if (index === cards.length - 1) {
+            card.addEventListener("animationend", function handler() {
+                mostrarGlobalLoader(false);
+                card.removeEventListener("animationend", handler);
+            });
+        }
     });
+
+    // Si no hay animaciones CSS activas, oculta el loader igual después de un pequeño delay
+    if (!animacionAplicada) {
+        setTimeout(() => mostrarGlobalLoader(false), 300);
+    }
 }
 
 function actualizarFooterContadores() {
@@ -824,7 +833,13 @@ const PAGINACION_TAREAS = {
 };
 
 function paginarTarjetas() {
-    const cards = Array.from(document.querySelectorAll(".task-card"));
+    const allCards = Array.from(document.querySelectorAll(".task-card"));
+    // Filtrar según el filtro activo
+    const cards = allCards.filter((card) => {
+        const status = card.getAttribute("data-status");
+        return filtroActivo === "all" || status === filtroActivo;
+    });
+
     const pagContainer = document.getElementById("tasksPagination");
     const porPagina = PAGINACION_TAREAS.porPagina;
     const total = cards.length;
@@ -837,15 +852,16 @@ function paginarTarjetas() {
     PAGINACION_TAREAS.paginaActual = paginaActual;
     PAGINACION_TAREAS.totalPaginas = totalPaginas;
 
-    // Mostrar solo las tarjetas de la página actual
+    // Ocultar todas las tarjetas primero
+    allCards.forEach((card) => (card.style.display = "none"));
+
+    // Mostrar solo las tarjetas de la página actual y filtro
     cards.forEach((card, idx) => {
         if (
             idx >= (paginaActual - 1) * porPagina &&
             idx < paginaActual * porPagina
         ) {
             card.style.display = "";
-        } else {
-            card.style.display = "none";
         }
     });
 
@@ -860,17 +876,14 @@ function paginarTarjetas() {
         paginaActual === 1 ? "disabled" : ""
     } data-page="${paginaActual - 1}">&laquo;</button>`;
 
-    // Siempre mostrar la primera página
     html += `<button class="pagination-btn${
         paginaActual === 1 ? " active" : ""
     }" data-page="1">1</button>`;
 
-    // Mostrar ... si hay un salto entre la primera y la página actual - 2
     if (paginaActual > 4) {
         html += `<span style="padding:0 0.5rem;">...</span>`;
     }
 
-    // Mostrar páginas cercanas a la actual
     let start = Math.max(2, paginaActual - 1);
     let end = Math.min(totalPaginas - 1, paginaActual + 1);
 
@@ -882,12 +895,10 @@ function paginarTarjetas() {
         }
     }
 
-    // Mostrar ... si hay un salto entre la página actual + 2 y la última
     if (paginaActual < totalPaginas - 3) {
         html += `<span style="padding:0 0.5rem;">...</span>`;
     }
 
-    // Siempre mostrar la última página si hay más de una
     if (totalPaginas > 1) {
         html += `<button class="pagination-btn${
             paginaActual === totalPaginas ? " active" : ""
@@ -914,7 +925,6 @@ document.addEventListener("click", function (e) {
 
 // Llama a la paginación después de renderizar o actualizar la lista
 function actualizarLista(tareasGenerales) {
-    // ...tu código para renderizar tarjetas...
     aplicarAnimacionesEntrada();
     paginarTarjetas();
 
@@ -923,15 +933,26 @@ function actualizarLista(tareasGenerales) {
         (acc, tg) => acc + (tg.subtareas ? tg.subtareas.length : 0),
         0
     );
-    console.log(`✅ Lista actualizada con ${totalTareas} tareas`);
 }
 
-// Si usas Blade para renderizar tarjetas al cargar la página, llama a paginarTarjetas() en $(document).ready:
 $(document).ready(function () {
+    mostrarGlobalLoader(true); // Mostrar loader al cargar la página
     paginarTarjetas();
+    aplicarAnimacionesEntrada(); // <-- Agrega esto aquí
+    // ...otros inits...
 });
 
 // Exponer funciones globales
 window.recargarSubtareas = recargarSubtareas;
 window.actualizarLista = actualizarLista;
 window.aplicarFiltro = aplicarFiltro;
+
+function mostrarGlobalLoader(show = true) {
+    const loader = document.getElementById("globalLoader");
+    if (!loader) return;
+    if (show) {
+        loader.classList.remove("hidden");
+    } else {
+        loader.classList.add("hidden");
+    }
+}

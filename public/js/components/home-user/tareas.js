@@ -1,8 +1,71 @@
 document.addEventListener("DOMContentLoaded", function () {
-    // EventBus para comunicación entre componentes - implementación mejorada
+    // Variable para controlar si ya se hizo la carga inicial
+    let cargaInicialCompleta = false;
+
+    // Función para mostrar/ocultar el loader global - SIMPLIFICADA
+    function mostrarGlobalLoader(show = true) {
+        const loader = document.getElementById("globalLoader");
+        if (!loader) return;
+
+        if (show) {
+            loader.classList.remove("hidden");
+            loader.style.display = "flex";
+        } else {
+            loader.classList.add("hidden");
+            setTimeout(() => {
+                if (loader.classList.contains("hidden")) {
+                    loader.style.display = "none";
+                }
+            }, 600);
+        }
+    }
+
+    function mostrarContenidoSuave() {
+        const wrapper = document.querySelector(".apiario-wrapper");
+        if (wrapper) {
+            wrapper.classList.add("visible");
+        }
+    }
+
+    // Función para verificar si existen tareas en el DOM
+    function verificarTareasExistentes() {
+        const tareasLista = document.querySelectorAll(".task-card");
+        const tareasKanban = document.querySelectorAll(".kanban-task");
+        const tareasTimeline = document.querySelectorAll(".timeline-task");
+        const eventosCalendario = window.calendarEvents || [];
+
+        const totalTareas =
+            tareasLista.length +
+            tareasKanban.length +
+            tareasTimeline.length +
+            eventosCalendario.length;
+        return totalTareas > 0;
+    }
+
+    // Función de carga inicial - SOLO SE EJECUTA UNA VEZ
+    function inicializarModuloTareas() {
+        if (cargaInicialCompleta) return; // Evitar múltiples ejecuciones
+
+        const hayTareas = verificarTareasExistentes();
+
+        if (!hayTareas) {
+            cargaInicialCompleta = true;
+            return;
+        }
+        mostrarGlobalLoader(true);
+
+        // Ocultar loader después de la carga inicial
+        setTimeout(() => {
+            mostrarGlobalLoader(false);
+            cargaInicialCompleta = true;
+            mostrarContenidoSuave();
+        }, 1000);
+    }
+
+    // EventBus y otras configuraciones...
     window.eventBus = window.eventBus || new EventTarget();
 
-    // Inicializar variables con caché de selectores DOM
+    // Nuevas referencias DOM
     const DOM = {
         selectAllCheckbox: document.getElementById("select-all-subtasks"),
         subtasksCheckboxes: document.querySelectorAll(".subtask-checkbox"),
@@ -17,38 +80,87 @@ document.addEventListener("DOMContentLoaded", function () {
         views: document.querySelectorAll(".view"),
         form: document.querySelector("form"),
         calendar: document.getElementById("calendar"),
+        verTareasBtn: document.getElementById("ver-tareas-btn"),
+        agregarTareasBtn: document.getElementById("agregar-tareas-btn"),
+        tareasListModal: document.getElementById("tareasListModal"),
+        tareasListContainer: document.getElementById("tareas-list-container"),
+        searchTareas: document.getElementById("search-tareas"),
+        filterEstado: document.getElementById("filter-estado"),
+        filterPrioridad: document.getElementById("filter-prioridad"),
+        tareasCount: document.getElementById("tareas-count"),
+        tareasCompleted: document.getElementById("tareas-completed"),
+        emptyState: document.getElementById("empty-state"),
+
+        // Modal de tareas predefinidas
+        tareasPredefinidasModal: document.getElementById(
+            "tareasPredefinidasModal"
+        ),
+        selectAllPredefinidas: document.getElementById(
+            "select-all-predefinidas"
+        ),
+        subtasksCheckboxesPredefinidas: document.querySelectorAll(
+            ".subtask-checkbox-predefinidas"
+        ),
+        tareasSeleccionadasCount: document.getElementById(
+            "tareas-seleccionadas-count"
+        ),
+        btnAgregarSeleccionadas: document.getElementById(
+            "btn-agregar-seleccionadas"
+        ),
+        formTareasPredefinidasModal: document.getElementById(
+            "form-tareas-predefinidas"
+        ),
+
+        // Modal de crear tareas
+        crearTareasModal: document.getElementById("crearTareasModal"),
+        tareaGeneralIdModal: document.getElementById("tarea_general_id_modal"),
+        btnNuevaEtapaModal: document.getElementById("btn-nueva-etapa-modal"),
+        formNuevaEtapaModal: document.getElementById("form-nueva-etapa-modal"),
+        nombreNuevaEtapaModal: document.getElementById(
+            "nombre_nueva_etapa_modal"
+        ),
+        guardarNuevaEtapaModal: document.getElementById(
+            "guardar-nueva-etapa-modal"
+        ),
+        cancelarNuevaEtapaModal: document.getElementById(
+            "cancelar-nueva-etapa-modal"
+        ),
+        addSubtareaModal: document.getElementById("add-subtarea-modal"),
+        subtareasContainerModal: document.getElementById(
+            "subtareas-container-modal"
+        ),
+        tareasCreadasCount: document.getElementById("tareas-creadas-count"),
+        btnGuardarTareas: document.getElementById("btn-guardar-tareas"),
+        formCrearTareas: document.getElementById("form-crear-tareas"),
     };
 
-    // Contador para indexar subtareas dinámicas
     let subtareaIndex = 0;
     let currentButton;
 
-    // Función optimizada para actualizar el Kanban - esqueleto para futura implementación
+    // Variables para modales
+    let subtareaIndexModal = 0;
+    let tareasSeleccionadas = 0;
+    let tareasCreadasCount = 0;
+
+    // Funciones de actualización SIN LOADER
     const actualizarKanban = () => {
         console.debug("Actualizando Kanban...");
-
-        // Aquí puedes agregar código para recargar los datos del Kanban si es necesario
-        // Por ejemplo, hacer una petición AJAX para obtener el estado actual
-
-        // Después reinicializar la funcionalidad de arrastrar y soltar
         setTimeout(() => {
             initializeKanban();
-        }, 300); // Pequeño retraso para asegurar que el DOM esté actualizado
+        }, 300);
     };
 
-    // Función optimizada para actualizar la línea de tiempo - esqueleto para futura implementación
     const actualizarTimeline = () => {
-        // Implementación pendiente
         console.debug("Actualizando Timeline...");
     };
 
-    // Función optimizada para recargar subtareas - esqueleto para futura implementación
+    // Recargar subtareas SIN LOADER (solo para actualizaciones de datos)
     const recargarSubtareas = () => {
-        // Implementación pendiente
         console.debug("Recargando subtareas...");
+        // Sin loader - solo actualiza datos
     };
 
-    // API de EventBus mejorada con manejo de errores
+    // API de EventBus
     const emitirEvento = (nombre, detalle = {}) => {
         try {
             const evento = new CustomEvent(nombre, { detail: detalle });
@@ -61,9 +173,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const escucharEvento = (nombre, callback) => {
         if (typeof callback !== "function") {
-            console.warn(
-                "El callback proporcionado para el evento no es una función válida"
-            );
+            console.warn("El callback proporcionado no es una función válida");
             return;
         }
         window.eventBus.addEventListener(nombre, callback);
@@ -252,7 +362,7 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-    // Gestión de vistas mejorada con transiciones suaves
+    // Gestión de vistas SIN LOADER - NAVEGACIÓN FLUIDA
     const hideAllViews = () => {
         DOM.views.forEach((view) => {
             if (!view.classList.contains("active")) {
@@ -267,13 +377,19 @@ document.addEventListener("DOMContentLoaded", function () {
     if (defaultView) defaultView.classList.add("active");
     hideAllViews();
 
-    // Cambiar entre vistas con manejo mejorado
+    // Cambio entre vistas SIN LOADER - NAVEGACIÓN INSTANTÁNEA
     DOM.viewTogglers.forEach((button) => {
         button.addEventListener("click", function () {
             const viewName = this.getAttribute("data-view");
             if (!viewName) return;
 
+            // Guardar la pestaña activa en localStorage
+            localStorage.setItem("tareas_pestana_activa", viewName);
+
             // Actualizar clases activas
+            DOM.viewTogglers.forEach((btn) => btn.classList.remove("active"));
+            this.classList.add("active");
+
             DOM.views.forEach((v) => v.classList.remove("active"));
             const targetView = document.querySelector(`.view.${viewName}`);
             if (!targetView) return;
@@ -290,19 +406,40 @@ document.addEventListener("DOMContentLoaded", function () {
                 targetView.style.opacity = "1";
             }, 10);
 
-            // Inicializar calendario si se selecciona esa vista
+            // Inicializar vistas específicas SIN LOADER
             if (viewName === "calendar") {
-                initializeCalendar();
+                setTimeout(() => initializeCalendar(), 100);
             }
 
-            // Inicializar Kanban si se selecciona esa vista
             if (viewName === "kanban") {
-                initializeKanban();
+                setTimeout(() => initializeKanban(), 100);
             }
         });
     });
 
-    // Función para inicializar FullCalendar con manejo de errores
+    // Restaurar la pestaña activa desde localStorage
+    const pestanaGuardada = localStorage.getItem("tareas_pestana_activa");
+    let viewToActivate = pestanaGuardada || "list"; // "list" es la vista por defecto
+
+    // Activar la pestaña guardada
+    const togglerToActivate = document.querySelector(
+        `.view-toggler[data-view="${viewToActivate}"]`
+    );
+    if (togglerToActivate) {
+        togglerToActivate.classList.add("active");
+        togglerToActivate.click();
+    } else {
+        // Si no existe, activa la primera por defecto
+        const defaultViewToggler = document.querySelector(
+            '.view-toggler[data-view="list"]'
+        );
+        if (defaultViewToggler) {
+            defaultViewToggler.classList.add("active");
+            defaultViewToggler.click();
+        }
+    }
+
+    // Función para inicializar FullCalendar with error handling
     function initializeCalendar() {
         if (!DOM.calendar || DOM.calendar.classList.contains("initialized"))
             return;
@@ -649,22 +786,19 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-    // Escuchar eventos para actualizar vistas
+    // Escuchar eventos SIN LOADER para actualizaciones
     escucharEvento("subtareaActualizada", (event) => {
         console.debug("Evento subtareaActualizada recibido:", event.detail);
+
+        // Solo actualizar datos, sin loader
         recargarSubtareas();
         actualizarKanban();
         actualizarTimeline();
         initializeCalendar();
     });
 
-    // Iniciar con la primera vista
-    const defaultViewToggler = document.querySelector(
-        '.view-toggler[data-view="list"]'
-    );
-    if (defaultViewToggler) {
-        defaultViewToggler.click();
-    }
+    // INICIALIZACIÓN: Solo ejecutar la carga inicial UNA VEZ
+    inicializarModuloTareas();
 
     // Llamar a la inicialización durante la carga inicial
     if (document.querySelector(".view.kanban.active")) {
@@ -753,7 +887,6 @@ document.addEventListener("DOMContentLoaded", function () {
     // Llamar a la función para añadir estilos
     agregarEstilosKanban();
 
-
     // --- Agregar nueva etapa dinámicamente ---
     const btnNuevaEtapa = document.getElementById("btn-nueva-etapa");
     const formNuevaEtapa = document.getElementById("form-nueva-etapa");
@@ -771,7 +904,10 @@ document.addEventListener("DOMContentLoaded", function () {
             .addEventListener("click", () => {
                 const nombre = inputNombreEtapa.value.trim();
                 if (!nombre) {
-                    mostrarNotificacion("Debes ingresar un nombre para la etapa.", "warning");
+                    mostrarNotificacion(
+                        "Debes ingresar un nombre para la etapa.",
+                        "warning"
+                    );
                     return;
                 }
 
@@ -803,14 +939,707 @@ document.addEventListener("DOMContentLoaded", function () {
                         inputNombreEtapa.value = "";
                         formNuevaEtapa.style.display = "none";
 
-                        mostrarNotificacion("Etapa creada correctamente.", "success");
+                        mostrarNotificacion(
+                            "Etapa creada correctamente.",
+                            "success"
+                        );
                     })
                     .catch((err) => {
                         console.error(err);
-                        mostrarNotificacion("Error al crear la etapa.", "error");
+                        mostrarNotificacion(
+                            "Error al crear la etapa.",
+                            "error"
+                        );
                     });
             });
     }
 
+    // Variables para el modal de tareas
+    let tareasData = [];
+    let filteredTareas = [];
 
+    // Función para cargar tareas en el modal
+    async function cargarTareasModal() {
+        try {
+            const response = await fetch("/api/tareas", {
+                headers: {
+                    "X-Requested-With": "XMLHttpRequest",
+                    Accept: "application/json",
+                },
+            });
+
+            if (!response.ok) throw new Error("Error al cargar tareas");
+
+            const data = await response.json();
+            tareasData = data.tareas || [];
+            filteredTareas = [...tareasData];
+
+            mostrarTareasEnModal();
+            actualizarEstadisticas();
+        } catch (error) {
+            console.error("Error al cargar tareas:", error);
+            mostrarErrorEnModal();
+        }
+    }
+
+    // Función para mostrar tareas en el modal
+    function mostrarTareasEnModal() {
+        if (!DOM.tareasListContainer) return;
+
+        // Limpiar loading
+        DOM.tareasListContainer.innerHTML = "";
+
+        if (filteredTareas.length === 0) {
+            DOM.emptyState.style.display = "block";
+            return;
+        }
+
+        DOM.emptyState.style.display = "none";
+
+        const tareasHTML = filteredTareas
+            .map(
+                (tarea) => `
+            <div class="tarea-card-modal" data-id="${tarea.id}" tabindex="0">
+                <div class="tarea-header">
+                    <h4 class="tarea-titulo">${escapeHtml(tarea.nombre)}</h4>
+                    <span class="tarea-prioridad prioridad-${
+                        tarea.prioridad?.toLowerCase() || "media"
+                    }">
+                        ${tarea.prioridad || "Media"}
+                    </span>
+                </div>
+                
+                <div class="tarea-info">
+                    <div class="tarea-etapa">
+                        <i class="fa fa-folder me-1"></i>
+                        ${escapeHtml(tarea.etapa || "Sin etapa")}
+                    </div>
+                    
+                    <div class="tarea-fechas">
+                        <div class="fecha-item">
+                            <i class="fa fa-calendar-start fecha-icon"></i>
+                            <span>Inicio: ${formatearFecha(
+                                tarea.fecha_inicio
+                            )}</span>
+                        </div>
+                        <div class="fecha-item">
+                            <i class="fa fa-calendar-check fecha-icon"></i>
+                            <span>Fin: ${formatearFecha(
+                                tarea.fecha_limite
+                            )}</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="tarea-footer">
+                    <span class="tarea-estado estado-${
+                        tarea.estado?.toLowerCase().replace(" ", "-") ||
+                        "pendiente"
+                    }">
+                        ${tarea.estado || "Pendiente"}
+                    </span>
+                    
+                    <div class="tarea-acciones">
+                        <button class="btn-accion" onclick="editarTarea(${
+                            tarea.id
+                        })" title="Editar tarea">
+                            <i class="fa fa-edit"></i>
+                        </button>
+                        <button class="btn-accion" onclick="eliminarTarea(${
+                            tarea.id
+                        })" title="Eliminar tarea">
+                            <i class="fa fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `
+            )
+            .join("");
+
+        DOM.tareasListContainer.innerHTML = tareasHTML;
+
+        // Agregar animación de entrada
+        setTimeout(() => {
+            document
+                .querySelectorAll(".tarea-card-modal")
+                .forEach((card, index) => {
+                    card.style.opacity = "0";
+                    card.style.transform = "translateY(20px)";
+                    card.style.transition =
+                        "opacity 0.3s ease, transform 0.3s ease";
+
+                    setTimeout(() => {
+                        card.style.opacity = "1";
+                        card.style.transform = "translateY(0)";
+                    }, index * 100);
+                });
+        }, 50);
+    }
+
+    // Función para filtrar tareas
+    function filtrarTareas() {
+        const searchTerm = DOM.searchTareas?.value.toLowerCase() || "";
+        const estadoFilter = DOM.filterEstado?.value || "";
+        const prioridadFilter = DOM.filterPrioridad?.value || "";
+
+        filteredTareas = tareasData.filter((tarea) => {
+            const matchSearch =
+                !searchTerm ||
+                tarea.nombre?.toLowerCase().includes(searchTerm) ||
+                tarea.etapa?.toLowerCase().includes(searchTerm);
+
+            const matchEstado =
+                !estadoFilter ||
+                tarea.estado?.toLowerCase() === estadoFilter.toLowerCase();
+
+            const matchPrioridad =
+                !prioridadFilter ||
+                tarea.prioridad?.toLowerCase() ===
+                    prioridadFilter.toLowerCase();
+
+            return matchSearch && matchEstado && matchPrioridad;
+        });
+
+        mostrarTareasEnModal();
+        actualizarEstadisticas();
+    }
+
+    // Función para actualizar estadísticas
+    function actualizarEstadisticas() {
+        if (!DOM.tareasCount || !DOM.tareasCompleted) return;
+
+        const total = filteredTareas.length;
+        const completadas = filteredTareas.filter(
+            (t) => t.estado?.toLowerCase() === "completada"
+        ).length;
+
+        DOM.tareasCount.textContent = `${total} tarea${total !== 1 ? "s" : ""}`;
+        DOM.tareasCompleted.textContent = `${completadas} completada${
+            completadas !== 1 ? "s" : ""
+        }`;
+    }
+
+    // Utilidades
+    function escapeHtml(text) {
+        const div = document.createElement("div");
+        div.textContent = text;
+        return div.innerHTML;
+    }
+
+    function formatearFecha(fecha) {
+        if (!fecha) return "No definida";
+
+        try {
+            return new Date(fecha).toLocaleDateString("es-ES", {
+                day: "2-digit",
+                month: "2-digit",
+                year: "numeric",
+            });
+        } catch {
+            return fecha;
+        }
+    }
+
+    function mostrarErrorEnModal() {
+        if (!DOM.tareasListContainer) return;
+
+        DOM.tareasListContainer.innerHTML = `
+            <div class="error-state">
+                <div class="empty-icon">
+                    <i class="fa fa-exclamation-triangle"></i>
+                </div>
+                <h3>Error al cargar tareas</h3>
+                <p>No se pudieron cargar las tareas. Intenta recargar la página.</p>
+                <button type="button" class="btn-miel" onclick="window.location.reload()">
+                    <i class="fa fa-refresh"></i> Recargar
+                </button>
+            </div>
+        `;
+    }
+
+    // Event Listeners para los nuevos botones
+    if (DOM.agregarTareasBtn) {
+        DOM.agregarTareasBtn.addEventListener("click", function () {
+            const form = document.getElementById("new-task-form");
+            if (!form) return;
+
+            // Mostrar el formulario con animación (código existente)
+            if (form.style.display === "none" || form.style.display === "") {
+                form.style.display = "block";
+                form.style.maxHeight = "0px";
+                form.style.overflow = "hidden";
+                form.style.transition = "max-height 0.5s ease";
+
+                form.offsetHeight;
+
+                const height = form.scrollHeight;
+                form.style.maxHeight = height + "px";
+
+                setTimeout(() => {
+                    form.style.maxHeight = "";
+                    form.style.overflow = "";
+                }, 500);
+
+                // Scroll suave hasta el formulario
+                form.scrollIntoView({ behavior: "smooth", block: "start" });
+            } else {
+                // Ocultar formulario (código existente)
+                form.style.maxHeight = form.scrollHeight + "px";
+                form.style.overflow = "hidden";
+                form.style.transition = "max-height 0.5s ease";
+
+                form.offsetHeight;
+                form.style.maxHeight = "0px";
+
+                setTimeout(() => {
+                    form.style.display = "none";
+                    form.style.maxHeight = "";
+                    form.style.overflow = "";
+                }, 500);
+            }
+        });
+    }
+
+    // Event Listeners para filtros del modal
+    if (DOM.searchTareas) {
+        DOM.searchTareas.addEventListener(
+            "input",
+            debounce(filtrarTareas, 300)
+        );
+    }
+
+    if (DOM.filterEstado) {
+        DOM.filterEstado.addEventListener("change", filtrarTareas);
+    }
+
+    if (DOM.filterPrioridad) {
+        DOM.filterPrioridad.addEventListener("change", filtrarTareas);
+    }
+
+    // Cargar tareas cuando se abre el modal
+    if (DOM.tareasListModal) {
+        DOM.tareasListModal.addEventListener("show.bs.modal", function () {
+            cargarTareasModal();
+        });
+    }
+
+    // Funciones globales para acciones de tareas
+    window.editarTarea = function (id) {
+        // Aquí puedes abrir otro modal o redireccionar
+        Swal.fire({
+            title: "Editar Tarea",
+            text: "Funcionalidad de edición en desarrollo",
+            icon: "info",
+        });
+    };
+
+    window.eliminarTarea = function (id) {
+        Swal.fire({
+            title: "¿Estás seguro?",
+            text: "Esta acción no se puede deshacer",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#dc2626",
+            cancelButtonColor: "#6b7280",
+            confirmButtonText: "Sí, eliminar",
+            cancelButtonText: "Cancelar",
+        }).then((result) => {
+            if (result.isConfirmed) {
+                eliminarTareaConfirmado(id);
+            }
+        });
+    };
+
+    async function eliminarTareaConfirmado(id) {
+        try {
+            const csrfToken = document
+                .querySelector('meta[name="csrf-token"]')
+                ?.getAttribute("content");
+
+            const response = await fetch(`/tareas/${id}`, {
+                method: "DELETE",
+                headers: {
+                    "X-CSRF-TOKEN": csrfToken,
+                    Accept: "application/json",
+                },
+            });
+
+            if (!response.ok) throw new Error("Error al eliminar");
+
+            const data = await response.json();
+
+            if (data.success) {
+                Swal.fire(
+                    "Eliminada",
+                    "La tarea ha sido eliminada correctamente",
+                    "success"
+                );
+                cargarTareasModal(); // Recargar lista
+                // Emitir evento para actualizar otras vistas
+                emitirEvento("tareaEliminada", { id });
+            } else {
+                throw new Error(data.message || "Error desconocido");
+            }
+        } catch (error) {
+            console.error("Error:", error);
+            Swal.fire("Error", "No se pudo eliminar la tarea", "error");
+        }
+    }
+
+    // Utilidad debounce
+    function debounce(func, wait) {
+        let timeout;
+        return function executedFunction(...args) {
+            const later = () => {
+                clearTimeout(timeout);
+                func(...args);
+            };
+            clearTimeout(timeout);
+            timeout = setTimeout(later, wait);
+        };
+    }
+
+    // Nuevas funciones para el modal de tareas predefinidas
+
+    // ===== FUNCIONES PARA MODAL DE TAREAS PREDEFINIDAS =====
+
+    // Función para actualizar el checkbox "Seleccionar todos" en modal predefinidas
+    function updateSelectAllPredefinidasCheckbox() {
+        if (!DOM.selectAllPredefinidas) return;
+
+        const checkboxes = document.querySelectorAll(
+            ".subtask-checkbox-predefinidas"
+        );
+        const checkedBoxes = document.querySelectorAll(
+            ".subtask-checkbox-predefinidas:checked"
+        );
+
+        tareasSeleccionadas = checkedBoxes.length;
+
+        // Actualizar estado del checkbox principal
+        if (checkedBoxes.length === 0) {
+            DOM.selectAllPredefinidas.checked = false;
+            DOM.selectAllPredefinidas.indeterminate = false;
+        } else if (checkedBoxes.length === checkboxes.length) {
+            DOM.selectAllPredefinidas.checked = true;
+            DOM.selectAllPredefinidas.indeterminate = false;
+        } else {
+            DOM.selectAllPredefinidas.checked = false;
+            DOM.selectAllPredefinidas.indeterminate = true;
+        }
+
+        // Actualizar contador y botón
+        DOM.tareasSeleccionadasCount.textContent = `${tareasSeleccionadas} tareas seleccionadas`;
+        DOM.btnAgregarSeleccionadas.disabled = tareasSeleccionadas === 0;
+    }
+
+    // Event listener para "Seleccionar todos" en modal predefinidas
+    if (DOM.selectAllPredefinidas) {
+        DOM.selectAllPredefinidas.addEventListener("change", function () {
+            const checkboxes = document.querySelectorAll(
+                ".subtask-checkbox-predefinidas"
+            );
+            checkboxes.forEach((checkbox) => {
+                checkbox.checked = this.checked;
+            });
+            updateSelectAllPredefinidasCheckbox();
+        });
+    }
+
+    // Event listener para checkboxes individuales en modal predefinidas
+    document.addEventListener("change", function (e) {
+        if (e.target.classList.contains("subtask-checkbox-predefinidas")) {
+            updateSelectAllPredefinidasCheckbox();
+        }
+    });
+
+    // Inicializar estado al abrir modal predefinidas
+    if (DOM.tareasPredefinidasModal) {
+        DOM.tareasPredefinidasModal.addEventListener(
+            "show.bs.modal",
+            function () {
+                // Limpiar selecciones previas
+                const checkboxes = document.querySelectorAll(
+                    ".subtask-checkbox-predefinidas"
+                );
+                checkboxes.forEach((checkbox) => (checkbox.checked = false));
+                updateSelectAllPredefinidasCheckbox();
+            }
+        );
+    }
+
+    // ===== FUNCIONES PARA MODAL DE CREAR TAREAS =====
+
+    // Mostrar/ocultar formulario nueva etapa
+    if (DOM.btnNuevaEtapaModal) {
+        DOM.btnNuevaEtapaModal.addEventListener("click", function () {
+            DOM.formNuevaEtapaModal.style.display = "block";
+            DOM.nombreNuevaEtapaModal.focus();
+        });
+    }
+
+    if (DOM.cancelarNuevaEtapaModal) {
+        DOM.cancelarNuevaEtapaModal.addEventListener("click", function () {
+            DOM.formNuevaEtapaModal.style.display = "none";
+            DOM.nombreNuevaEtapaModal.value = "";
+        });
+    }
+
+    // Guardar nueva etapa
+    if (DOM.guardarNuevaEtapaModal) {
+        DOM.guardarNuevaEtapaModal.addEventListener("click", async function () {
+            const nombre = DOM.nombreNuevaEtapaModal.value.trim();
+
+            if (!nombre) {
+                mostrarNotificacion(
+                    "Por favor ingresa un nombre para la etapa",
+                    "warning"
+                );
+                return;
+            }
+
+            try {
+                const response = await fetch("/tareas-generales", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRF-TOKEN": document.querySelector(
+                            'meta[name="csrf-token"]'
+                        ).content,
+                        Accept: "application/json",
+                    },
+                    body: JSON.stringify({ nombre }),
+                });
+
+                if (!response.ok) throw new Error("Error al crear etapa");
+
+                const etapa = await response.json();
+
+                // Agregar nueva opción al select
+                const option = new Option(etapa.nombre, etapa.id);
+                DOM.tareaGeneralIdModal.appendChild(option);
+                DOM.tareaGeneralIdModal.value = etapa.id;
+
+                // Ocultar formulario
+                DOM.formNuevaEtapaModal.style.display = "none";
+                DOM.nombreNuevaEtapaModal.value = "";
+
+                mostrarNotificacion("Etapa creada correctamente", "success");
+            } catch (error) {
+                console.error("Error:", error);
+                mostrarNotificacion("Error al crear la etapa", "error");
+            }
+        });
+    }
+
+    // Agregar nueva subtarea en modal
+    if (DOM.addSubtareaModal) {
+        DOM.addSubtareaModal.addEventListener("click", function () {
+            agregarSubtareaModal();
+        });
+    }
+
+    function agregarSubtareaModal() {
+        const template = document.getElementById("subtarea-template-modal");
+        if (!template) return;
+
+        subtareaIndexModal++;
+        const clone = template.cloneNode(true);
+        clone.id = `subtarea-${subtareaIndexModal}`;
+        clone.style.display = "block";
+
+        // Actualizar número de tarea
+        const numeroTarea = clone.querySelector(".numero-tarea");
+        if (numeroTarea) {
+            numeroTarea.textContent = subtareaIndexModal;
+        }
+
+        // Actualizar nombres de campos para el formulario
+        const inputs = clone.querySelectorAll("[data-field]");
+        inputs.forEach((input) => {
+            const field = input.getAttribute("data-field");
+            input.name = `subtareas[${subtareaIndexModal - 1}][${field}]`;
+        });
+
+        // Ocultar estado vacío
+        const emptyState =
+            DOM.subtareasContainerModal.querySelector(".empty-subtareas");
+        if (emptyState) {
+            emptyState.style.display = "none";
+        }
+
+        // Agregar al contenedor
+        DOM.subtareasContainerModal.appendChild(clone);
+
+        // Actualizar contador
+        actualizarContadorTareasCreadas();
+
+        // Hacer scroll al nuevo elemento
+        clone.scrollIntoView({ behavior: "smooth", block: "nearest" });
+
+        // Focus en el primer input
+        const primerInput = clone.querySelector('input[data-field="nombre"]');
+        if (primerInput) {
+            setTimeout(() => primerInput.focus(), 100);
+        }
+    }
+
+    // Eliminar subtarea en modal
+    document.addEventListener("click", function (e) {
+        if (e.target.closest(".remove-subtarea-modal")) {
+            const subtareaCard = e.target.closest(".subtarea-template");
+            if (subtareaCard) {
+                subtareaCard.remove();
+                actualizarNumerosSubtareas();
+                actualizarContadorTareasCreadas();
+
+                // Mostrar estado vacío si no hay tareas
+                const subtareas = DOM.subtareasContainerModal.querySelectorAll(
+                    '.subtarea-template[style*="block"]'
+                );
+                if (subtareas.length === 0) {
+                    const emptyState =
+                        DOM.subtareasContainerModal.querySelector(
+                            ".empty-subtareas"
+                        );
+                    if (emptyState) {
+                        emptyState.style.display = "flex";
+                    }
+                }
+            }
+        }
+    });
+
+    function actualizarNumerosSubtareas() {
+        const subtareas = DOM.subtareasContainerModal.querySelectorAll(
+            '.subtarea-template[style*="block"]'
+        );
+        subtareas.forEach((subtarea, index) => {
+            const numeroTarea = subtarea.querySelector(".numero-tarea");
+            if (numeroTarea) {
+                numeroTarea.textContent = index + 1;
+            }
+
+            // Actualizar nombres de campos
+            const inputs = subtarea.querySelectorAll("[data-field]");
+            inputs.forEach((input) => {
+                const field = input.getAttribute("data-field");
+                input.name = `subtareas[${index}][${field}]`;
+            });
+        });
+    }
+
+    function actualizarContadorTareasCreadas() {
+        const subtareas = DOM.subtareasContainerModal.querySelectorAll(
+            '.subtarea-template[style*="block"]'
+        );
+        tareasCreadasCount = subtareas.length;
+
+        DOM.tareasCreadasCount.textContent = `${tareasCreadasCount} tareas definidas`;
+        DOM.btnGuardarTareas.disabled = tareasCreadasCount === 0;
+    }
+
+    // Inicializar modal de crear tareas
+    if (DOM.crearTareasModal) {
+        DOM.crearTareasModal.addEventListener("show.bs.modal", function () {
+            // Limpiar formulario
+            DOM.subtareasContainerModal.innerHTML = `
+                <div class="empty-subtareas">
+                    <div class="empty-icon">
+                        <i class="fa fa-tasks"></i>
+                    </div>
+                    <p>No hay tareas definidas aún</p>
+                    <small>Haz clic en "Agregar Tarea" para comenzar</small>
+                </div>
+            `;
+
+            // Reset contadores
+            subtareaIndexModal = 0;
+            tareasCreadasCount = 0;
+            actualizarContadorTareasCreadas();
+
+            // Ocultar formulario nueva etapa
+            if (DOM.formNuevaEtapaModal) {
+                DOM.formNuevaEtapaModal.style.display = "none";
+                DOM.nombreNuevaEtapaModal.value = "";
+            }
+        });
+    }
+
+    // Validación del formulario crear tareas
+    if (DOM.formCrearTareas) {
+        DOM.formCrearTareas.addEventListener("submit", function (e) {
+            const etapaSeleccionada = DOM.tareaGeneralIdModal.value;
+            const subtareas = DOM.subtareasContainerModal.querySelectorAll(
+                '.subtarea-template[style*="block"]'
+            );
+
+            if (!etapaSeleccionada) {
+                e.preventDefault();
+                mostrarNotificacion(
+                    "Por favor selecciona una etapa",
+                    "warning"
+                );
+                return;
+            }
+
+            if (subtareas.length === 0) {
+                e.preventDefault();
+                mostrarNotificacion(
+                    "Por favor agrega al menos una tarea",
+                    "warning"
+                );
+                return;
+            }
+
+            // Validar que todas las tareas tengan nombre
+            let hayErrores = false;
+            subtareas.forEach((subtarea) => {
+                const nombreInput = subtarea.querySelector(
+                    'input[data-field="nombre"]'
+                );
+                if (!nombreInput.value.trim()) {
+                    nombreInput.style.borderColor = "#dc2626";
+                    hayErrores = true;
+                } else {
+                    nombreInput.style.borderColor = "";
+                }
+            });
+
+            if (hayErrores) {
+                e.preventDefault();
+                mostrarNotificacion(
+                    "Por favor completa el nombre de todas las tareas",
+                    "warning"
+                );
+                return;
+            }
+        });
+    }
+
+    // Función para mostrar notificaciones (reutilizar la existente o crear una nueva)
+    function mostrarNotificacion(mensaje, tipo = "info") {
+        // Si ya tienes una función de notificaciones, úsala
+        // Si no, aquí hay una implementación básica con SweetAlert2 o alert
+        if (typeof Swal !== "undefined") {
+            const iconos = {
+                success: "success",
+                error: "error",
+                warning: "warning",
+                info: "info",
+            };
+
+            Swal.fire({
+                title: mensaje,
+                icon: iconos[tipo] || "info",
+                timer: 3000,
+                showConfirmButton: false,
+                toast: true,
+                position: "top-end",
+            });
+        } else {
+            alert(mensaje);
+        }
+    }
 });

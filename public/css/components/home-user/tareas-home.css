@@ -819,14 +819,18 @@ body {
 .apiario-container-full-width {
     width: 100%;
     min-height: 100vh;
-    background: #f8f9fa;
 }
 
 .apiario-wrapper {
-    max-width: none;
-    width: 100%;
-    padding: var(--spacing-xl, 2rem);
-    margin: 0;
+    opacity: 0;
+    filter: blur(4px);
+    transition: opacity 0.7s cubic-bezier(0.4, 0, 0.2, 1), filter 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+    will-change: opacity, filter;
+}
+
+.apiario-wrapper.visible {
+    opacity: 1;
+    filter: blur(0);
 }
 
 .panel-grid-container {
@@ -881,3 +885,150 @@ body {
         padding: var(--spacing-lg, 1.5rem);
     }
 }
+
+/* Loader global - TRANSICIONES MÁS SUAVES */
+.global-loader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 9999;
+    background: rgba(248, 249, 250, 0.98); /* Fondo más opaco */
+    backdrop-filter: blur(12px);
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding-top: 2rem;
+    transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1); /* Transición más lenta y suave */
+    min-height: 100vh;
+    opacity: 1;
+    visibility: visible;
+}
+
+.global-loader.hidden {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transform: translateY(-20px); /* Movimiento más sutil */
+    transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.global-loader-content {
+    text-align: center;
+    background: linear-gradient(135deg, #ffffff 0%, #fffbeb 100%);
+    padding: 2.5rem 3rem 3rem 3rem;
+    border-radius: 24px;
+    box-shadow: 
+        0 25px 70px rgba(0,0,0,0.08),
+        0 10px 40px rgba(245, 158, 11, 0.12);
+    border: 2px solid var(--color-amber-200, #fde68a);
+    max-width: 420px;
+    width: 90vw;
+    margin: 0 auto;
+    position: relative;
+    transform: translateY(0) scale(1);
+    animation: smoothSlideIn 0.7s cubic-bezier(0.34, 1.56, 0.64, 1); /* Animación más suave */
+}
+
+/* Animación de entrada más suave */
+@keyframes smoothSlideIn {
+    0% {
+        opacity: 0;
+        transform: translateY(-40px) scale(0.95);
+    }
+    60% {
+        opacity: 0.8;
+        transform: translateY(-5px) scale(1.02);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.global-loader-spinner {
+    width: 4.5rem;
+    height: 4.5rem;
+    border: 6px solid var(--color-amber-100, #fef3c7);
+    border-top: 6px solid var(--color-amber-500, #f59e0b);
+    border-right: 6px solid var(--color-amber-400, #fbbf24);
+    border-radius: 50%;
+    animation: smoothSpin 1.4s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite;
+    margin: 0 auto 2rem;
+    position: relative;
+    filter: drop-shadow(0 6px 12px rgba(245, 158, 11, 0.25));
+}
+
+/* Spinner más suave */
+@keyframes smoothSpin {
+    0% { 
+        transform: rotate(0deg) scale(1);
+        filter: drop-shadow(0 6px 12px rgba(245, 158, 11, 0.25));
+    }
+    25% {
+        transform: rotate(90deg) scale(1.03);
+        filter: drop-shadow(0 8px 16px rgba(245, 158, 11, 0.3));
+    }
+    50% {
+        transform: rotate(180deg) scale(1.05);
+        filter: drop-shadow(0 10px 20px rgba(245, 158, 11, 0.35));
+    }
+    75% {
+        transform: rotate(270deg) scale(1.03);
+        filter: drop-shadow(0 8px 16px rgba(245, 158, 11, 0.3));
+    }
+    100% { 
+        transform: rotate(360deg) scale(1);
+        filter: drop-shadow(0 6px 12px rgba(245, 158, 11, 0.25));
+    }
+}
+
+.global-loader-message {
+    color: var(--color-amber-800, #92400e);
+    font-weight: 700;
+    font-size: 1.5rem;
+    margin: 0 0 0.8rem 0;
+    letter-spacing: 0.8px;
+    text-shadow: 0 3px 6px rgba(245, 158, 11, 0.12);
+    opacity: 1;
+    animation: fadeInText 0.8s ease-out 0.3s both;
+}
+
+.global-loader-subtitle {
+    color: var(--color-amber-600, #d97706);
+    font-weight: 500;
+    font-size: 1rem;
+    margin: 0;
+    opacity: 0.9;
+    font-style: italic;
+    animation: fadeInText 0.8s ease-out 0.5s both;
+}
+
+/* Efecto de borde más sutil */
+.global-loader-content::before {
+    content: '';
+    position: absolute;
+    top: -3px;
+    left: -3px;
+    right: -3px;
+    bottom: -3px;
+    background: linear-gradient(45deg, 
+        var(--color-amber-300, #fcd34d), 
+        var(--color-amber-400, #fbbf24), 
+        var(--color-amber-300, #fcd34d));
+    border-radius: 27px;
+    z-index: -1;
+    animation: subtleBorderGlow 4s ease-in-out infinite;
+}
+
+@keyframes subtleBorderGlow {
+    0%, 100% {
+        opacity: 0.3;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 0.6;
+        transform: scale(1.01);
+    }
+}
+
