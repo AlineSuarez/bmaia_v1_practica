@@ -279,34 +279,62 @@ class ColmenaController extends Controller
     {
         $apiario = $colmena->apiario;
 
-        // Cargar PCCs del sistema experto
-        $pccs = $colmena->sistemaExpertos()
-            ->with(['desarrolloCria', 'calidadReina', 'presenciaVarroa', 'presenciaNosemosis', 'indiceCosecha', 'preparacionInvernada'])
-            ->orderByDesc('fecha')
-            ->get();
+        // 1) Cada tabla hija usando colmena_id
+        $pcc1 = DB::table('desarrollo_cria')
+            ->where('colmena_id', $colmena->id)
+            ->latest('id')
+            ->first();
 
-        $pccActual = $pccs->first();
+        $pcc2 = DB::table('calidad_reina')
+            ->where('colmena_id', $colmena->id)
+            ->latest('id')
+            ->first();
 
-        // Últimas visitas y registros relacionados
-        $lastAlimentacion = $colmena->alimentaciones()->latest('created_at')->first();
-        $lastVarroa = $colmena->varroas()->latest('created_at')->first();
-        $lastNosemosis = $colmena->nosemosis()->latest('created_at')->first();
-        $lastIndiceCosecha = $colmena->indiceCosecha()->latest('created_at')->first();
-        $lastPreparacionInvernada = $colmena->preparacionInvernada()->latest('created_at')->first();
+        $pcc3 = DB::table('estado_nutricional')
+            ->where('colmena_id', $colmena->id)
+            ->latest('id')
+            ->first();
 
-        $visitas = $colmena->visitas()->orderByDesc('created_at')->get();
+        $pcc4 = DB::table('presencia_varroa')
+            ->where('colmena_id', $colmena->id)
+            ->latest('id')
+            ->first();
+
+        $pcc5 = DB::table('presencia_nosemosis')
+            ->where('colmena_id', $colmena->id)
+            ->latest('id')
+            ->first();
+
+        $pcc6 = DB::table('indice_cosecha')
+            ->where('colmena_id', $colmena->id)
+            ->latest('id')
+            ->first();
+
+        $pcc7 = DB::table('preparacion_invernada')
+            ->where('colmena_id', $colmena->id)
+            ->latest('id')
+            ->first();
+
+        $pccCount = collect([$pcc1, $pcc2, $pcc3, $pcc4, $pcc5, $pcc6, $pcc7])
+            ->filter()
+            ->count();
+        
+        // La fecha más reciente entre todas las tablas
+        $lastFecha = collect([
+            optional($pcc1)->fecha      ?? optional($pcc1)->created_at,
+            optional($pcc2)->fecha      ?? optional($pcc2)->created_at,
+            optional($pcc3)->fecha      ?? optional($pcc3)->created_at,
+            optional($pcc4)->fecha      ?? optional($pcc4)->created_at,
+            optional($pcc5)->fecha      ?? optional($pcc5)->created_at,
+            optional($pcc6)->fecha      ?? optional($pcc6)->created_at,
+            optional($pcc7)->fecha      ?? optional($pcc7)->created_at,
+        ])->filter()->max();
 
         return view('colmenas.public', compact(
             'colmena',
             'apiario',
-            'visitas',
-            'pccs',
-            'pccActual',
-            'lastAlimentacion',
-            'lastVarroa',
-            'lastNosemosis',
-            'lastIndiceCosecha',
-            'lastPreparacionInvernada'
+            'pcc1', 'pcc2', 'pcc3', 'pcc4', 'pcc5', 'pcc6', 'pcc7',
+            'pccCount', 'lastFecha'
         ));
     }
 
