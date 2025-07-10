@@ -260,27 +260,6 @@ document.addEventListener("DOMContentLoaded", () => {
     // Inicializar estado de checkboxes
     updateSelectAllCheckbox();
 
-    // Usar delegación de eventos para mejorar rendimiento
-    document.body.addEventListener("click", (event) => {
-        // Manejar clics en los badges de estado
-        const estadoBadge = event.target.closest(".estado-badge");
-        if (estadoBadge) {
-            console.debug("Badge clickeado:", estadoBadge);
-            currentButton = estadoBadge;
-            const subtareaId = estadoBadge.dataset.id;
-            const currentState = estadoBadge.dataset.currentState;
-            document.getElementById("subtareaId").value = subtareaId;
-            document.getElementById("nuevoEstado").value = currentState;
-            DOM.estadoModal?.show();
-        }
-
-        // Manejar clics en botones de eliminación de subtareas
-        if (event.target.classList.contains("remove-subtarea")) {
-            const subtarea = event.target.closest(".subtarea");
-            if (subtarea) subtarea.remove();
-        }
-    });
-
     // Confirmar cambio de estado con validación mejorada
     if (DOM.confirmarEstadoBtn) {
         DOM.confirmarEstadoBtn.addEventListener("click", () => {

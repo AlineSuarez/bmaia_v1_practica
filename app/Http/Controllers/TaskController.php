@@ -192,7 +192,10 @@ class TaskController extends Controller
         $subtarea->update([
             'estado' => $request->estado,
         ]);
-        return response()->json(['message' => 'Estado actualizado correctamente']);
+        return response()->json([
+            'success' => true,
+            'message' => 'Estado actualizado correctamente'
+        ]);
         // return redirect()->route('tareas')->with('success', 'Estado de la subtarea actualizado.');
     }
 

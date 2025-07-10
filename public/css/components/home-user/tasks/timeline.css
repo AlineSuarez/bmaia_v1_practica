@@ -1,0 +1,699 @@
+.tareas-timeline-wrapper {
+    /* Variables CSS locales */
+    --primary-color: #f59e0b;
+    --primary-dark: #d97706;
+    --primary-light: #fbbf24;
+    --primary-subtle: #fef3c7;
+
+    /* Colores de estado */
+    --success-color: #10b981;
+    --warning-color: #f59e0b;
+    --error-color: #ef4444;
+    --info-color: #3b82f6;
+
+    /* Colores de texto */
+    --text-primary: #111827;
+    --text-secondary: #6b7280;
+    --text-muted: #9ca3af;
+    --text-light: #d1d5db;
+
+    /* Colores de fondo */
+    --bg-primary: #ffffff;
+    --bg-secondary: #f9fafb;
+    --bg-tertiary: #f3f4f6;
+    --bg-accent: #fefbf3;
+
+    /* Bordes */
+    --border-color: #e5e7eb;
+    --border-light: #f3f4f6;
+    --border-accent: #fed7aa;
+
+    /* Sombras */
+    --shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+        0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+        0 4px 6px -2px rgba(0, 0, 0, 0.05);
+
+    /* Espaciado */
+    --space-1: 0.25rem;
+    --space-2: 0.5rem;
+    --space-3: 0.75rem;
+    --space-4: 1rem;
+    --space-5: 1.25rem;
+    --space-6: 1.5rem;
+    --space-8: 2rem;
+    --space-10: 2.5rem;
+    --space-12: 3rem;
+
+    /* Tipografía */
+    --text-xs: 0.75rem;
+    --text-sm: 0.875rem;
+    --text-base: 1rem;
+    --text-lg: 1.125rem;
+    --text-xl: 1.25rem;
+    --text-2xl: 1.5rem;
+
+    /* Border radius */
+    --radius-sm: 0.375rem;
+    --radius-md: 0.5rem;
+    --radius-lg: 0.75rem;
+    --radius-xl: 1rem;
+    --radius-full: 9999px;
+
+    /* Transiciones */
+    --transition: 0.2s ease-in-out;
+    --transition-slow: 0.3s ease-in-out;
+}
+
+/* ===== CONTENEDOR PRINCIPAL ===== */
+.tareas-timeline-wrapper .timeline-container {
+    background: var(--bg-accent);
+    border: 1px solid var(--border-accent);
+    border-radius: var(--radius-xl);
+    padding: var(--space-6);
+    margin: var(--space-4) 0;
+    box-shadow: var(--shadow-sm);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+        sans-serif;
+}
+
+/* ===== GRID DE ETAPAS ===== */
+.tareas-timeline-wrapper .etapas-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(460px, 1fr));
+    gap: var(--space-6);
+    align-items: stretch;
+}
+
+/* ===== TARJETA DE ETAPA ===== */
+.tareas-timeline-wrapper .etapa-card {
+    background: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+    overflow: hidden;
+    transition: all var(--transition);
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    min-height: 500px;
+}
+
+.tareas-timeline-wrapper .etapa-card:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+    border-color: var(--primary-light);
+}
+
+/* ===== HEADER DE ETAPA ===== */
+.tareas-timeline-wrapper .etapa-header {
+    background: linear-gradient(
+        135deg,
+        var(--bg-primary) 0%,
+        var(--primary-subtle) 100%
+    );
+    padding: var(--space-5);
+    border-bottom: 1px solid var(--border-light);
+}
+
+.tareas-timeline-wrapper .etapa-title {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    margin-bottom: var(--space-3);
+}
+
+.tareas-timeline-wrapper .etapa-icon {
+    width: 48px;
+    height: 48px;
+    background: linear-gradient(
+        135deg,
+        var(--primary-color),
+        var(--primary-dark)
+    );
+    border-radius: var(--radius-lg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: var(--text-lg);
+    font-weight: 700;
+    box-shadow: var(--shadow-sm);
+    flex-shrink: 0;
+}
+
+.tareas-timeline-wrapper .etapa-info h3 {
+    color: var(--text-primary);
+    font-weight: 600;
+    font-size: var(--text-lg);
+    margin: 0;
+    line-height: 1.3;
+}
+
+.tareas-timeline-wrapper .etapa-stats {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-4);
+}
+
+.tareas-timeline-wrapper .etapa-subtitle {
+    color: var(--text-secondary);
+    font-size: var(--text-sm);
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    margin: 0;
+}
+
+.tareas-timeline-wrapper .progress-container {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: var(--space-1);
+}
+
+.tareas-timeline-wrapper .progress-text {
+    font-size: var(--text-sm);
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.tareas-timeline-wrapper .progress-bar-custom {
+    width: 100px;
+    height: 8px;
+    background: var(--bg-tertiary);
+    border-radius: var(--radius-full);
+    overflow: hidden;
+}
+
+.tareas-timeline-wrapper .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--success-color), #34d399);
+    border-radius: var(--radius-full);
+    transition: width 0.6s ease-out;
+}
+
+/* ===== CONTENIDO DE TAREAS MEJORADO ===== */
+.tareas-timeline-wrapper .etapa-content {
+    flex: 1;
+    padding: var(--space-4);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    max-height: 350px;
+    overflow-y: auto;
+    min-height: 0;
+}
+
+/* ===== TARJETAS DE TAREA ===== */
+.tareas-timeline-wrapper .task-mini-card {
+    background: var(--bg-primary);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-md);
+    padding: var(--space-4);
+    transition: all var(--transition);
+    border-left: 3px solid transparent;
+}
+
+.tareas-timeline-wrapper .task-mini-card:hover {
+    border-left-color: var(--primary-color);
+    box-shadow: var(--shadow-sm);
+    transform: translateX(2px);
+}
+
+.tareas-timeline-wrapper .task-mini-card.completed {
+    border-left-color: var(--success-color);
+    background: linear-gradient(
+        135deg,
+        var(--bg-primary) 0%,
+        rgba(16, 185, 129, 0.05) 100%
+    );
+}
+
+.tareas-timeline-wrapper .task-header {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-3);
+    margin-bottom: var(--space-2);
+}
+
+.tareas-timeline-wrapper .task-checkbox {
+    width: 16px;
+    height: 16px;
+    accent-color: var(--primary-color);
+    cursor: pointer;
+    margin-top: 2px;
+    flex-shrink: 0;
+}
+
+.tareas-timeline-wrapper .task-name {
+    font-weight: 500;
+    font-size: var(--text-sm);
+    color: var(--text-primary);
+    margin: 0;
+    line-height: 1.4;
+    flex: 1;
+}
+
+.tareas-timeline-wrapper .task-name.completed {
+    text-decoration: line-through;
+    color: var(--text-muted);
+}
+
+.tareas-timeline-wrapper .task-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-2);
+    flex-wrap: wrap;
+}
+
+.tareas-timeline-wrapper .task-badges {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+}
+
+.tareas-timeline-wrapper .task-dates {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+    font-size: var(--text-xs);
+    color: var(--text-secondary);
+}
+
+.tareas-timeline-wrapper .date-item {
+    display: flex;
+    align-items: center;
+    gap: var(--space-1);
+}
+
+/* ===== BADGES ===== */
+.tareas-timeline-wrapper .prioridad-badge {
+    padding: var(--space-1) var(--space-2);
+    border-radius: var(--radius-sm);
+    font-size: var(--text-xs);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.025em;
+}
+
+.tareas-timeline-wrapper .prioridad-badge[data-prioridad="alta"] {
+    background: #fef2f2;
+    color: #dc2626;
+    border: 1px solid #fecaca;
+}
+
+.tareas-timeline-wrapper .prioridad-badge[data-prioridad="media"] {
+    background: #fffbeb;
+    color: #d97706;
+    border: 1px solid #fed7aa;
+}
+
+.tareas-timeline-wrapper .prioridad-badge[data-prioridad="baja"] {
+    background: #f0fdf4;
+    color: #16a34a;
+    border: 1px solid #bbf7d0;
+}
+
+.tareas-timeline-wrapper .prioridad-badge[data-prioridad="urgente"] {
+    background: #7f1d1d;
+    color: white;
+    border: 1px solid #991b1b;
+}
+
+.tareas-timeline-wrapper .estado-badge {
+    padding: var(--space-1) var(--space-2);
+    border-radius: var(--radius-sm);
+    font-size: var(--text-xs);
+    font-weight: 500;
+    transition: all var(--transition);
+    border: 1px solid transparent;
+}
+
+.tareas-timeline-wrapper .estado-pendiente {
+    background: #fffbeb;
+    color: #d97706;
+    border-color: #fed7aa;
+}
+
+.tareas-timeline-wrapper .estado-enprogreso {
+    background: #eff6ff;
+    color: #2563eb;
+    border-color: #bfdbfe;
+}
+
+.tareas-timeline-wrapper .estado-completada {
+    background: #f0fdf4;
+    color: #16a34a;
+    border-color: #bbf7d0;
+}
+
+.tareas-timeline-wrapper .estado-vencida {
+    background: #fef2f2;
+    color: #dc2626;
+    border-color: #fecaca;
+}
+
+/* ===== FOOTER DE ETAPA ===== */
+.tareas-timeline-wrapper .etapa-footer {
+    padding: var(--space-4);
+    background: var(--bg-secondary);
+    border-top: 1px solid var(--border-light);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+    margin-top: auto;
+    flex-shrink: 0;
+    position: relative;
+}
+
+.tareas-timeline-wrapper .etapa-summary {
+    font-size: var(--text-xs);
+    color: var(--text-secondary);
+}
+
+.tareas-timeline-wrapper .etapa-actions {
+    display: flex;
+    gap: var(--space-2);
+}
+
+.tareas-timeline-wrapper .btn-etapa {
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    padding: var(--space-2) var(--space-3);
+    border-radius: var(--radius-sm);
+    font-size: var(--text-xs);
+    font-weight: 500;
+    cursor: pointer;
+    transition: all var(--transition);
+    text-transform: uppercase;
+    letter-spacing: 0.025em;
+}
+
+.tareas-timeline-wrapper .btn-etapa:hover {
+    background: var(--primary-dark);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-sm);
+}
+
+.tareas-timeline-wrapper .btn-etapa.btn-secondary {
+    background: var(--bg-primary);
+    color: var(--text-secondary);
+    border: 1px solid var(--border-color);
+}
+
+.tareas-timeline-wrapper .btn-etapa.btn-secondary:hover {
+    background: var(--bg-tertiary);
+    color: var(--text-primary);
+}
+
+/* ===== ESTADOS DE CARGA Y ERROR ===== */
+.tareas-timeline-wrapper .task-mini-card.updating {
+    opacity: 0.6;
+    pointer-events: none;
+    position: relative;
+}
+
+.tareas-timeline-wrapper .task-mini-card.updating::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 16px;
+    height: 16px;
+    border: 2px solid var(--border-light);
+    border-top-color: var(--primary-color);
+    border-radius: 50%;
+    animation: tareas-spin 1s linear infinite;
+}
+
+@keyframes tareas-spin {
+    to {
+        transform: translate(-50%, -50%) rotate(360deg);
+    }
+}
+
+.tareas-timeline-wrapper .task-mini-card.error {
+    border-left-color: var(--error-color);
+    background: linear-gradient(
+        135deg,
+        var(--bg-primary) 0%,
+        rgba(239, 68, 68, 0.05) 100%
+    );
+    animation: tareas-shake 0.3s ease-in-out;
+}
+
+@keyframes tareas-shake {
+    0%,
+    100% {
+        transform: translateX(0);
+    }
+    25% {
+        transform: translateX(-2px);
+    }
+    75% {
+        transform: translateX(2px);
+    }
+}
+
+/* ===== RESPONSIVE ===== */
+
+/* Tablets grandes */
+@media (max-width: 1024px) {
+    .tareas-timeline-wrapper .etapas-grid {
+        grid-template-columns: repeat(auto-fit, minmax(440px, 1fr));
+        gap: var(--space-5);
+        align-items: stretch;
+    }
+
+    .tareas-timeline-wrapper .etapa-card {
+        min-height: 480px;
+        height: 100%;
+    }
+
+    .tareas-timeline-wrapper .etapa-content {
+        max-height: 320px;
+    }
+}
+
+/* Tablets */
+@media (max-width: 768px) {
+    .tareas-timeline-wrapper .timeline-container {
+        padding: var(--space-4);
+        margin: var(--space-3) 0;
+    }
+
+    .tareas-timeline-wrapper .etapas-grid {
+        grid-template-columns: 1fr;
+        gap: var(--space-4);
+        align-items: stretch;
+    }
+
+    .tareas-timeline-wrapper .etapa-card {
+        min-height: 450px;
+        height: auto;
+    }
+
+    .tareas-timeline-wrapper .etapa-content {
+        max-height: 280px;
+        min-height: 200px;
+    }
+
+    .tareas-timeline-wrapper .etapa-footer {
+        margin-top: auto;
+        flex-direction: column;
+        gap: var(--space-2);
+    }
+}
+
+/* Móviles */
+@media (max-width: 480px) {
+    .tareas-timeline-wrapper .etapa-card {
+        min-height: 400px;
+        height: auto;
+    }
+
+    .tareas-timeline-wrapper .etapa-content {
+        max-height: 240px;
+        min-height: 180px;
+        padding: var(--space-3);
+    }
+
+    .tareas-timeline-wrapper .etapa-footer {
+        padding: var(--space-3);
+        margin-top: auto;
+        flex-direction: column;
+        gap: var(--space-2);
+    }
+}
+
+@media (max-width: 360px) {
+    .tareas-timeline-wrapper .etapa-card {
+        min-height: 380px;
+        height: auto;
+    }
+
+    .tareas-timeline-wrapper .etapa-content {
+        max-height: 220px;
+        min-height: 160px;
+        padding: var(--space-2);
+    }
+
+    .tareas-timeline-wrapper .etapa-footer {
+        padding: var(--space-2);
+        margin-top: auto;
+    }
+}
+
+/* ===== MEJORAS PARA PANTALLAS GRANDES ===== */
+@media (min-width: 1200px) {
+    .tareas-timeline-wrapper .etapas-grid {
+        grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+        align-items: stretch;
+    }
+
+    .tareas-timeline-wrapper .etapa-card {
+        min-height: 550px;
+        height: 100%;
+    }
+
+    .tareas-timeline-wrapper .etapa-content {
+        max-height: 400px;
+    }
+}
+
+/* ===== MEJORAS DE ACCESIBILIDAD ===== */
+@media (prefers-reduced-motion: reduce) {
+    .tareas-timeline-wrapper *,
+    .tareas-timeline-wrapper *::before,
+    .tareas-timeline-wrapper *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+.tareas-timeline-wrapper .task-checkbox:focus-visible,
+.tareas-timeline-wrapper .estado-badge:focus-visible,
+.tareas-timeline-wrapper .btn-etapa:focus-visible {
+    outline: 2px solid var(--primary-color);
+    outline-offset: 2px;
+}
+
+/* ===== UTILIDADES ===== */
+.tareas-timeline-wrapper .fade-in {
+    animation: tareas-fadeIn 0.3s ease-out;
+}
+
+@keyframes tareas-fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ===== ESTILOS PARA CONFIRMAR TAREA COMPLETADA ===== */
+
+.etapa-actions {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    position: relative;
+}
+
+.btn-etapa {
+    transition: all 0.25s cubic-bezier(0.4, 2, 0.6, 1);
+    min-width: 160px;
+    padding: 0.5rem 1.2rem;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    font-size: 1rem;
+    border: none;
+    cursor: pointer;
+    background: var(--primary-color, #fbbf24);
+    color: #22223b;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.btn-etapa.confirmar {
+    background: #10b981;
+    color: #fff;
+    min-width: 140px;
+}
+
+.btn-etapa:disabled {
+    background: #e5e7eb;
+    color: #b0b0b0;
+    cursor: not-allowed;
+    opacity: 0.7;
+    box-shadow: none;
+}
+
+.btn-etapa:disabled:hover {
+    background: #e5e7eb;
+    box-shadow: none;
+}
+
+.btn-etapa.confirmar:hover {
+    background: #059669;
+    box-shadow: 0 2px 8px rgba(16, 185, 129, 0.2);
+}
+
+.btn-etapa.completado {
+    background: #4caf50 !important;
+    color: #fff !important;
+    cursor: default;
+    min-width: 180px;
+    transition: background 0.3s, color 0.3s;
+}
+
+.btn-etapa.cancelar {
+    background: #f3f4f6;
+    color: #374151;
+    min-width: 110px;
+    margin-left: 0.5rem;
+}
+
+.btn-etapa.cancelar:hover {
+    background: #e5e7eb;
+    box-shadow: 0 2px 8px rgba(209, 213, 219, 0.2);
+}
+
+.btn-etapa.deshacer-seleccionadas-btn:disabled {
+    background: #e5e7eb;
+    color: #b0b0b0;
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+.btn-etapa.fade-out {
+    opacity: 0;
+    transform: scale(0.95);
+    pointer-events: none;
+}
+
+.btn-etapa.fade-in {
+    opacity: 1;
+    transform: scale(1);
+    pointer-events: auto;
+}
+
+.titulo-linea-tiempo {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #22223b;
+    margin-bottom: 1.5rem;
+    margin-top: 1rem;
+    text-align: left;
+}

@@ -582,7 +582,6 @@
     border-radius: var(--border-radius-sm);
     font-size: var(--font-size-xs);
     font-weight: 500;
-    cursor: pointer;
     transition: all var(--transition-fast);
 }
 
