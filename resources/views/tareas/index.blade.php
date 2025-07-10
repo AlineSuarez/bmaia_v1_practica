@@ -9,7 +9,7 @@
     </head>
 
     <!-- Container principal con ancho completo -->
-    <div class="apiario-container-full-width" style="position: relative;">
+    <div class="apiario-container-full-width">
         <!-- Loader global para todas las vistas de tareas -->
         <div id="globalLoader" class="global-loader">
             <div class="global-loader-content">
@@ -38,179 +38,16 @@
                         title="Ver en calendario">Calendario</button>
                 </div>
 
-                <button id="toggle-form" class="btn-miel" title="Mostrar/ocultar panel de gestión">
-                    <i class="fa fa-tasks"></i> Administrar tareas
-                </button>
-            </section>
-
-            <!-- Panel de gestión de tareas -->
-            <section id="new-task-form" style="display:none;" class="apiario-panel">
-                <!-- Grid container para las dos secciones -->
-                <div class="panel-grid-container">
-
-                    <!-- Columna izquierda: Tareas predefinidas -->
-                    <div class="panel-column tareas-predefinidas">
-                        <form method="POST" action="{{ route('tareas.default') }}">
-                            @csrf
-                            <h3 class="panel-titulo">Agregar Tareas Predefinidas</h3>
-                            <p class="section-description">Selecciona tareas ya establecidas para añadirlas a tu proyecto.
-                            </p>
-                            <small class="consejo-sutil">Consejo: Utiliza tareas predefinidas para ahorrar tiempo en la
-                                planificación</small>
-
-                            <div class="tabla-wrapper">
-                                <table class="tabla-panal">
-                                    <thead>
-                                        <tr>
-                                            <th class="celda-check">
-                                                <label for="select-all-subtasks" class="check-label">
-                                                    <input type="checkbox" id="select-all-subtasks" class="check-miel" />
-                                                    <span>Seleccionar</span>
-                                                </label>
-                                            </th>
-                                            <th>Etapa</th>
-                                            <th><i class="fa-solid fa-thumbtack"></i> Nombre</th>
-                                            <th><i class="fa-solid fa-calendar-day"></i> Inicio</th>
-                                            <th><i class="fa-solid fa-calendar-check"></i> Fin</th>
-                                            <th><i class="fa-solid fa-bolt"></i> Prioridad</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach ($listaEtapa as $tareaGeneral)
-                                            <!-- Fila de etapa -->
-                                            <tr class="fila-etapa">
-                                                <td></td>
-                                                <td class="celda-etapa">
-                                                    <strong>{{ $tareaGeneral->nombre }}</strong>
-                                                </td>
-                                                <td colspan="4"></td>
-                                            </tr>
-
-                                            <!-- Filas de subtareas -->
-                                            @foreach ($tareaGeneral->predefinidas as $subtarea)
-                                                <tr class="fila-tarea">
-                                                    <td class="celda-check">
-                                                        <input type="checkbox" name="subtareas[]" value="{{ $subtarea->id }}"
-                                                            class="check-miel subtask-checkbox">
-                                                    </td>
-                                                    <td></td>
-                                                    <td>{{ $subtarea->nombre }}</td>
-                                                    <td>{{ $subtarea->fecha_inicio }}</td>
-                                                    <td>{{ $subtarea->fecha_limite }}</td>
-                                                    <td>{{ $subtarea->prioridad }}</td>
-                                                </tr>
-                                            @endforeach
-                                        @endforeach
-                                    </tbody>
-                                </table>
-                            </div>
-
-                            <div class="nota-sutil">Nota: Las tareas seleccionadas se añadirán con sus fechas y prioridades
-                                originales</div>
-                            <button type="submit" class="btn-miel-submit">Agregar Tareas Seleccionadas</button>
-                        </form>
-                    </div>
-
-                    <!-- Separador visual -->
-                    <div class="separador-sutil"></div>
-
-                    <!-- Columna derecha: Tareas personalizadas -->
-                    <div class="panel-column tareas-personalizadas">
-                        <form action="{{ route('tareas.store') }}" method="POST">
-                            @csrf
-                            <h3 class="panel-titulo">Crear Tareas Personalizadas</h3>
-                            <p class="section-description">Diseña tus propias tareas adaptadas a las necesidades de tu
-                                proyecto.</p>
-                            <small class="consejo-sutil">Consejo: Divide los grandes objetivos en tareas más pequeñas y
-                                manejables</small>
-
-                            <!-- Selector de etapa -->
-                            <div class="grupo-form">
-                                <label for="tarea_general_id" class="etiqueta-miel">Etapa del proyecto</label>
-                                <div style="display: flex; gap: 10px; align-items: center;">
-                                    <select name="tarea_general_id" id="tarea_general_id" class="select-miel" required>
-                                        <option value="" disabled selected>Seleccione una etapa</option>
-                                        @foreach($listaEtapa as $tarea)
-                                            <option value="{{ $tarea->id }}">{{ $tarea->nombre }}</option>
-                                        @endforeach
-                                    </select>
-                                    <!-- Botón para abrir formulario modal -->
-                                    <button type="button" class="btn-agregar btn-nueva-etapa" id="btn-nueva-etapa">
-                                        + Nueva Etapa
-                                    </button>
-                                </div>
-                            </div>
-
-                            <!-- Formulario oculto para nueva etapa -->
-                            <div id="form-nueva-etapa" style="display: none; margin-top: 15px;">
-                                <label for="nombre_nueva_etapa" class="etiqueta-miel">Nombre de nueva etapa</label>
-                                <input type="text" id="nombre_nueva_etapa" class="input-miel"
-                                    placeholder="Ej: Inspección de apiarios">
-                                <button type="button" class="btn-miel-submit" id="guardar-nueva-etapa">Guardar
-                                    Etapa</button>
-                            </div>
-
-                            <!-- Contenedor de subtareas -->
-                            <div id="subtareas-container" class="contenedor-subtareas">
-                                <h4 class="subtitulo-panel">Definir Tareas</h4>
-                                <div class="mini-guia">
-                                    <span class="guia-item"><strong>Prioridad alta:</strong> Tareas críticas para el
-                                        avance</span>
-                                    <span class="guia-item"><strong>Fechas realistas:</strong> Considera imprevistos</span>
-                                    <span class="guia-item"><strong>Títulos claros:</strong> Específicos y concisos</span>
-                                </div>
-
-                                <!-- Plantilla de subtarea (oculta) -->
-                                <div class="subtarea" id="subtarea-template" style="display: none;">
-                                    <div class="fila-form">
-                                        <div class="columna-form">
-                                            <label class="etiqueta-miel">Prioridad</label>
-                                            <select data-field="prioridad" class="select-miel">
-                                                <option value="no-prioritaria">No Prioritaria</option>
-                                                <option value="baja">Baja</option>
-                                                <option value="media">Media</option>
-                                                <option value="alta">Alta</option>
-                                                <option value="urgente">Urgente</option>
-                                            </select>
-                                        </div>
-                                        <div class="columna-form">
-                                            <label class="etiqueta-miel">Título de la tarea</label>
-                                            <input type="text" data-field="nombre" class="input-miel"
-                                                placeholder="Ej: Preparar documentación">
-                                        </div>
-                                        <div class="columna-form">
-                                            <label class="etiqueta-miel">Fecha Inicio</label>
-                                            <input type="date" data-field="fecha_inicio" class="input-miel">
-                                        </div>
-                                        <div class="columna-form">
-                                            <label class="etiqueta-miel">Fecha Fin</label>
-                                            <input type="date" data-field="fecha_fin" class="input-miel">
-                                        </div>
-                                        <div class="columna-form">
-                                            <label class="etiqueta-miel">Estado</label>
-                                            <select data-field="estado" class="select-miel">
-                                                <option value="Pendiente">Pendiente</option>
-                                                <option value="En progreso">En Progreso</option>
-                                                <option value="completada">Completada</option>
-                                                <option value="Vencida">Vencida</option>
-                                            </select>
-                                        </div>
-                                        <button type="button" class="btn-eliminar remove-subtarea">Eliminar</button>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Botones de acción -->
-                            <div class="acciones-form">
-                                <button type="button" id="add-subtarea" class="btn-agregar">
-                                    Agregar Nueva Tarea
-                                </button>
-                                <button type="submit" class="btn-miel-submit">Guardar Todas las Tareas</button>
-                            </div>
-                            <div class="nota-sutil">Nota: Puedes editar las tareas más tarde si necesitas hacer cambios
-                            </div>
-                        </form>
-                    </div>
+                <!-- Nuevos botones separados -->
+                <div class="admin-controls">
+                    <button id="btn-tareas-predefinidas" class="btn-miel" data-bs-toggle="modal"
+                        data-bs-target="#tareasPredefinidasModal" title="Agregar tareas predefinidas">
+                        <i class="fa fa-list-check"></i> Tareas Predefinidas
+                    </button>
+                    <button id="btn-crear-tareas" class="btn-miel" data-bs-toggle="modal" data-bs-target="#crearTareasModal"
+                        title="Crear tareas personalizadas">
+                        <i class="fa fa-plus-circle"></i> Crear Tareas
+                    </button>
                 </div>
             </section>
 
@@ -246,6 +83,283 @@
                     <p>Revisa regularmente tus tareas para mantener el progreso de tu proyecto</p>
                 </div>
             </main>
+        </div>
+    </div>
+
+    <!-- Modal de Tareas Predefinidas -->
+    <div class="modal fade" id="tareasPredefinidasModal" tabindex="-1" aria-labelledby="tareasPredefinidasModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="tareasPredefinidasModalLabel">
+                        <i class="fa fa-list-check"></i>
+                        <span>Tareas Predefinidas del Sistema</span>
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar modal">
+                        <i class="fa fa-times"></i>
+                    </button>
+                </div>
+
+                <div class="modal-body">
+                    <div class="modal-description-section">
+                        <p class="section-description">
+                            <i class="fa fa-info-circle me-2"></i>
+                            Selecciona de nuestra biblioteca de tareas predefinidas para acelerar la configuración de tu
+                            proyecto.
+                        </p>
+                    </div>
+
+                    <form method="POST" action="{{ route('tareas.default') }}" id="form-tareas-predefinidas">
+                        @csrf
+
+                        <!-- Contenedor de etapas con tablas separadas -->
+                        <div class="etapas-container">
+                            @foreach ($listaEtapa as $tareaGeneral)
+                                <div class="etapa-section">
+                                    <!-- Título de la etapa -->
+                                    <div class="etapa-header">
+                                        <h4 class="etapa-titulo">
+                                            <i class="fa fa-folder-open me-2"></i>
+                                            {{ $tareaGeneral->nombre }}
+                                        </h4>
+                                        <div class="etapa-info">
+                                            <span class="badge badge-info">
+                                                {{ count($tareaGeneral->predefinidas) }} tareas disponibles
+                                            </span>
+                                        </div>
+                                    </div>
+
+                                    <!-- Tabla específica para esta etapa -->
+                                    @if(count($tareaGeneral->predefinidas) > 0)
+                                        <div class="tabla-wrapper etapa-tabla">
+                                            <table class="tabla-panal">
+                                                <thead>
+                                                    <tr>
+                                                        <th class="celda-check">
+                                                            <label for="select-all-etapa-{{ $tareaGeneral->id }}"
+                                                                class="check-label">
+                                                                <input type="checkbox" id="select-all-etapa-{{ $tareaGeneral->id }}"
+                                                                    class="check-miel select-all-etapa"
+                                                                    data-etapa="{{ $tareaGeneral->id }}" />
+                                                                <span>Todo</span>
+                                                            </label>
+                                                        </th>
+                                                        <th><i class="fa fa-tasks me-1"></i>Nombre de la Tarea</th>
+                                                        <th><i class="fa fa-calendar-day me-1"></i>Fecha Inicio</th>
+                                                        <th><i class="fa fa-calendar-check me-1"></i>Fecha Límite</th>
+                                                        <th><i class="fa fa-flag me-1"></i>Prioridad</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @foreach ($tareaGeneral->predefinidas as $subtarea)
+                                                        <tr class="fila-tarea" data-etapa="{{ $tareaGeneral->id }}">
+                                                            <td class="celda-check">
+                                                                <input type="checkbox" name="subtareas[]" value="{{ $subtarea->id }}"
+                                                                    class="check-miel subtask-checkbox-predefinidas etapa-{{ $tareaGeneral->id }}-checkbox">
+                                                            </td>
+                                                            <td>
+                                                                <div class="task-name">
+                                                                    <i class="fa fa-task"></i>
+                                                                    {{ $subtarea->nombre }}
+                                                                </div>
+                                                            </td>
+                                                            <td>
+                                                                <span class="badge bg-light text-dark">
+                                                                    {{ \Carbon\Carbon::parse($subtarea->fecha_inicio)->format('d/m/Y') }}
+                                                                </span>
+                                                            </td>
+                                                            <td>
+                                                                <span class="badge bg-light text-dark">
+                                                                    {{ \Carbon\Carbon::parse($subtarea->fecha_limite)->format('d/m/Y') }}
+                                                                </span>
+                                                            </td>
+                                                            <td>
+                                                                <span class="badge priority-{{ strtolower($subtarea->prioridad) }}">
+                                                                    {{ ucfirst($subtarea->prioridad) }}
+                                                                </span>
+                                                            </td>
+                                                        </tr>
+                                                    @endforeach
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    @else
+                                        <div class="empty-etapa">
+                                            <i class="fa fa-inbox"></i>
+                                            <p>No hay tareas predefinidas para esta etapa</p>
+                                        </div>
+                                    @endif
+                                </div>
+                            @endforeach
+                        </div>
+
+                        <!-- Selector global -->
+                        <div class="global-selector">
+                            <label for="select-all-global" class="check-label-global">
+                                <input type="checkbox" id="select-all-global" class="check-miel" />
+                                <span>Seleccionar todas las tareas de todas las etapas</span>
+                            </label>
+                        </div>
+
+                        <div class="nota-sutil">
+                            <i class="fa fa-info-circle"></i>
+                            <div>
+                                <strong>Importante:</strong> Las tareas seleccionadas se añadirán a tu proyecto con sus
+                                fechas y prioridades originales. Podrás editarlas individualmente después de agregarlas.
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="modal-footer">
+                    <div class="modal-footer-content">
+                        <div id="tareas-seleccionadas-count">0 tareas seleccionadas</div>
+                        <div class="modal-footer-buttons">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                <i class="fa fa-times me-1"></i>Cancelar
+                            </button>
+                            <button type="submit" form="form-tareas-predefinidas" id="btn-agregar-seleccionadas"
+                                class="btn-miel-submit" disabled>
+                                <i class="fa fa-plus me-1"></i>Agregar Tareas Seleccionadas
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Crear Tareas -->
+    <div class="modal fade" id="crearTareasModal" tabindex="-1" aria-labelledby="crearTareasModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="crearTareasModalLabel">
+                        <i class="fa fa-plus-circle"></i>Crear Tareas Personalizadas
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar modal">
+                        <i class="fa fa-times"></i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form action="{{ route('tareas.store') }}" method="POST" id="form-crear-tareas">
+                        @csrf
+
+                        <!-- Selector de etapa -->
+                        <div class="grupo-form">
+                            <label for="tarea_general_id_modal" class="etiqueta-miel">Etapa del proyecto</label>
+                            <div class="etapa-selector-container">
+                                <select name="tarea_general_id" id="tarea_general_id_modal" class="select-miel" required>
+                                    <option value="" disabled selected>Seleccione una etapa</option>
+                                    @foreach($listaEtapa as $tarea)
+                                        <option value="{{ $tarea->id }}">{{ $tarea->nombre }}</option>
+                                    @endforeach
+                                </select>
+                                <!-- Botón para abrir formulario modal -->
+                                <button type="button" class="btn-nueva-etapa" id="btn-nueva-etapa-modal">
+                                    + Nueva Etapa
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Formulario oculto para nueva etapa -->
+                        <div id="form-nueva-etapa-modal" class="form-nueva-etapa-container" style="display: none;">
+                            <label for="nombre_nueva_etapa_modal" class="etiqueta-miel">Nombre de nueva etapa</label>
+                            <input type="text" id="nombre_nueva_etapa_modal" class="input-miel"
+                                placeholder="Ej: Inspección de apiarios">
+                            <div class="nueva-etapa-buttons">
+                                <button type="button" class="btn-miel-submit" id="guardar-nueva-etapa-modal">Guardar
+                                    Etapa</button>
+                                <button type="button" class="btn btn-secondary"
+                                    id="cancelar-nueva-etapa-modal">Cancelar</button>
+                            </div>
+                        </div>
+
+                        <!-- Contenedor de subtareas -->
+                        <div id="subtareas-container-modal" class="contenedor-subtareas">
+                            <!-- Header con botón - FIJO EN EL BLADE -->
+                            <div class="subtareas-header">
+                                <h4 class="subtitulo-panel">Definir Tareas</h4>
+                                <button type="button" id="add-subtarea-modal" class="btn-agregar">
+                                    <i class="fa fa-plus"></i>Agregar Tarea
+                                </button>
+                            </div>
+
+                            <!-- Contenedor dinámico para las tareas -->
+                            <div id="tareas-dinamicas-container">
+                                <!-- Estado vacío inicial -->
+                                <div class="empty-subtareas" id="empty-subtareas-state">
+                                    <div class="empty-icon">
+                                        <i class="fa fa-tasks"></i>
+                                    </div>
+                                    <p class="empty-title">No hay tareas definidas aún</p>
+                                    <small class="empty-subtitle">Haz clic en "Agregar Tarea" para comenzar</small>
+                                </div>
+                            </div>
+
+                            <!-- Plantilla de subtarea (oculta) -->
+                            <div class="subtarea subtarea-template" id="subtarea-template-modal" style="display: none;">
+                                <div class="subtarea-header">
+                                    <h6 class="subtarea-title">
+                                        <i class="fa fa-task"></i>
+                                        Tarea <span class="numero-tarea">1</span>
+                                    </h6>
+                                    <button type="button" class="remove-subtarea-modal">
+                                        <i class="fa fa-trash"></i>
+                                    </button>
+                                </div>
+
+                                <div class="fila-form">
+                                    <div class="columna-form">
+                                        <label class="etiqueta-miel">Título de la tarea</label>
+                                        <input type="text" data-field="nombre" class="input-miel"
+                                            placeholder="Ej: Preparar documentación" required disabled>
+                                    </div>
+                                    <div class="columna-form">
+                                        <label class="etiqueta-miel">Prioridad</label>
+                                        <select data-field="prioridad" class="select-miel" disabled>
+                                            <option value="no-prioritaria">No Prioritaria</option>
+                                            <option value="baja">Baja</option>
+                                            <option value="media" selected>Media</option>
+                                            <option value="alta">Alta</option>
+                                            <option value="urgente">Urgente</option>
+                                        </select>
+                                    </div>
+                                    <div class="columna-form">
+                                        <label class="etiqueta-miel">Fecha Inicio</label>
+                                        <input type="date" data-field="fecha_inicio" class="input-miel" disabled>
+                                    </div>
+                                    <div class="columna-form">
+                                        <label class="etiqueta-miel">Fecha Fin</label>
+                                        <input type="date" data-field="fecha_fin" class="input-miel" disabled>
+                                    </div>
+                                    <div class="columna-form">
+                                        <label class="etiqueta-miel">Estado</label>
+                                        <select data-field="estado" class="select-miel" disabled>
+                                            <option value="Pendiente" selected>Pendiente</option>
+                                            <option value="En progreso">En Progreso</option>
+                                            <option value="completada">Completada</option>
+                                            <option value="Vencida">Vencida</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <div class="modal-footer-content">
+                        <div class="modal-footer-buttons">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                            <button type="submit" form="form-crear-tareas" id="btn-guardar-tareas" class="btn-miel-submit"
+                                disabled>
+                                <i class="fa fa-save"></i>Guardar Todas las Tareas
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 

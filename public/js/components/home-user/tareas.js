@@ -1,4 +1,4 @@
-document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener("DOMContentLoaded", () => {
     // Variable para controlar si ya se hizo la carga inicial
     let cargaInicialCompleta = false;
 
@@ -42,30 +42,33 @@ document.addEventListener("DOMContentLoaded", function () {
         return totalTareas > 0;
     }
 
-    // Función de carga inicial - SOLO SE EJECUTA UNA VEZ
+    // Función de carga inicial - MODIFICADA para mostrar siempre la estructura
+    // ...existing code...
     function inicializarModuloTareas() {
         if (cargaInicialCompleta) return; // Evitar múltiples ejecuciones
 
-        const hayTareas = verificarTareasExistentes();
-
-        if (!hayTareas) {
-            cargaInicialCompleta = true;
-            return;
-        }
         mostrarGlobalLoader(true);
 
-        // Ocultar loader después de la carga inicial
-        setTimeout(() => {
-            mostrarGlobalLoader(false);
-            cargaInicialCompleta = true;
-            mostrarContenidoSuave();
-        }, 1000);
+        // Verifica si hay tareas
+        if (!verificarTareasExistentes()) {
+            setTimeout(() => {
+                mostrarGlobalLoader(false);
+                cargaInicialCompleta = true;
+                mostrarContenidoSuave();
+            }, 50);
+        } else {
+            setTimeout(() => {
+                mostrarGlobalLoader(false);
+                cargaInicialCompleta = true;
+                mostrarContenidoSuave();
+            }, 1000);
+        }
     }
 
     // EventBus y otras configuraciones...
     window.eventBus = window.eventBus || new EventTarget();
 
-    // Nuevas referencias DOM
+    // Referencias DOM actualizadas para la nueva estructura
     const DOM = {
         selectAllCheckbox: document.getElementById("select-all-subtasks"),
         subtasksCheckboxes: document.querySelectorAll(".subtask-checkbox"),
@@ -91,13 +94,13 @@ document.addEventListener("DOMContentLoaded", function () {
         tareasCompleted: document.getElementById("tareas-completed"),
         emptyState: document.getElementById("empty-state"),
 
-        // Modal de tareas predefinidas
+        // Modal de tareas predefinidas - ACTUALIZADO para nueva estructura
         tareasPredefinidasModal: document.getElementById(
             "tareasPredefinidasModal"
         ),
-        selectAllPredefinidas: document.getElementById(
-            "select-all-predefinidas"
-        ),
+        selectAllGlobal: document.getElementById("select-all-global"),
+        selectAllEtapaCheckboxes:
+            document.querySelectorAll(".select-all-etapa"),
         subtasksCheckboxesPredefinidas: document.querySelectorAll(
             ".subtask-checkbox-predefinidas"
         ),
@@ -142,6 +145,54 @@ document.addEventListener("DOMContentLoaded", function () {
     let tareasSeleccionadas = 0;
     let tareasCreadasCount = 0;
 
+    // Variables para formulario directo
+    let formularioDirectoVisible = false;
+
+    // Referencias DOM para formulario directo
+    const formularioDirectoDOM = {
+        btnAgregarTareaDirecta: document.getElementById(
+            "btn-agregar-tarea-directa"
+        ),
+        formularioTareaDirecta: document.getElementById(
+            "formulario-tarea-directa"
+        ),
+        btnCerrarFormulario: document.getElementById("btn-cerrar-formulario"),
+        btnCancelarTareaDirecta: document.getElementById(
+            "btn-cancelar-tarea-directa"
+        ),
+        formTareaDirecta: document.getElementById("form-tarea-directa"),
+        btnGuardarTareaDirecta: document.getElementById(
+            "btn-guardar-tarea-directa"
+        ),
+
+        // Campos del formulario
+        nombreTareaDirecta: document.getElementById("nombre_tarea_directa"),
+        etapaTareaDirecta: document.getElementById("etapa_tarea_directa"),
+        prioridadTareaDirecta: document.getElementById(
+            "prioridad_tarea_directa"
+        ),
+        estadoTareaDirecta: document.getElementById("estado_tarea_directa"),
+        fechaInicioDirecta: document.getElementById("fecha_inicio_directa"),
+        fechaFinDirecta: document.getElementById("fecha_fin_directa"),
+
+        // Nueva etapa
+        btnNuevaEtapaDirecta: document.getElementById(
+            "btn-nueva-etapa-directa"
+        ),
+        formNuevaEtapaDirecta: document.getElementById(
+            "form-nueva-etapa-directa"
+        ),
+        nombreNuevaEtapaDirecta: document.getElementById(
+            "nombre_nueva_etapa_directa"
+        ),
+        guardarNuevaEtapaDirecta: document.getElementById(
+            "guardar-nueva-etapa-directa"
+        ),
+        cancelarNuevaEtapaDirecta: document.getElementById(
+            "cancelar-nueva-etapa-directa"
+        ),
+    };
+
     // Funciones de actualización SIN LOADER
     const actualizarKanban = () => {
         console.debug("Actualizando Kanban...");
@@ -182,7 +233,6 @@ document.addEventListener("DOMContentLoaded", function () {
     // Gestión mejorada de checkboxes
     const updateSelectAllCheckbox = () => {
         if (!DOM.selectAllCheckbox) return;
-
         const checkboxes = Array.from(DOM.subtasksCheckboxes);
         if (checkboxes.length === 0) return;
 
@@ -217,13 +267,10 @@ document.addEventListener("DOMContentLoaded", function () {
         if (estadoBadge) {
             console.debug("Badge clickeado:", estadoBadge);
             currentButton = estadoBadge;
-
             const subtareaId = estadoBadge.dataset.id;
             const currentState = estadoBadge.dataset.currentState;
-
             document.getElementById("subtareaId").value = subtareaId;
             document.getElementById("nuevoEstado").value = currentState;
-
             DOM.estadoModal?.show();
         }
 
@@ -280,7 +327,6 @@ document.addEventListener("DOMContentLoaded", function () {
                     if (data.success) {
                         currentButton.textContent = nuevoEstado;
                         currentButton.dataset.currentState = nuevoEstado;
-
                         Swal.fire({
                             title: "¡Actualizado!",
                             text: "El estado de la subtarea ha sido actualizado.",
@@ -288,7 +334,6 @@ document.addEventListener("DOMContentLoaded", function () {
                             showConfirmButton: false,
                             timer: 1500,
                         });
-
                         // Emitir evento para actualizar vistas
                         emitirEvento("subtareaActualizada", {
                             id: subtareaId,
@@ -318,7 +363,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Agregar subtareas dinámicamente con mejor manejo de errores
     if (DOM.addSubtareaBtn) {
-        DOM.addSubtareaBtn.addEventListener("click", function () {
+        DOM.addSubtareaBtn.addEventListener("click", () => {
             const template = document.getElementById("subtarea-template");
             if (!template || !DOM.subtareasContainer) {
                 console.error(
@@ -410,7 +455,6 @@ document.addEventListener("DOMContentLoaded", function () {
             if (viewName === "calendar") {
                 setTimeout(() => initializeCalendar(), 100);
             }
-
             if (viewName === "kanban") {
                 setTimeout(() => initializeKanban(), 100);
             }
@@ -419,7 +463,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Restaurar la pestaña activa desde localStorage
     const pestanaGuardada = localStorage.getItem("tareas_pestana_activa");
-    let viewToActivate = pestanaGuardada || "list"; // "list" es la vista por defecto
+    const viewToActivate = pestanaGuardada || "list"; // "list" es la vista por defecto
 
     // Activar la pestaña guardada
     const togglerToActivate = document.querySelector(
@@ -447,7 +491,6 @@ document.addEventListener("DOMContentLoaded", function () {
         console.debug("Inicializando calendario...");
         try {
             DOM.calendar.classList.add("initialized");
-
             const calendarConfig = {
                 initialView: "dayGridMonth",
                 events: window.calendarEvents || [],
@@ -463,9 +506,8 @@ document.addEventListener("DOMContentLoaded", function () {
                     week: "Semana",
                     day: "Día",
                 },
-                eventClick: function (info) {
+                eventClick: (info) => {
                     const evento = info.event;
-
                     // Actualizar contenido del modal
                     document.getElementById("task-title").textContent =
                         evento.title;
@@ -533,22 +575,23 @@ document.addEventListener("DOMContentLoaded", function () {
 
         // Función para añadir listeners a un área de drop (columna o contenedor interno)
         function addDropListeners(area, columna) {
-            area.addEventListener("dragover", function (e) {
+            area.addEventListener("dragover", (e) => {
                 e.preventDefault();
                 e.dataTransfer.dropEffect = "move";
                 columna.classList.add("column-highlight");
             });
 
-            area.addEventListener("dragleave", function () {
+            area.addEventListener("dragleave", () => {
                 columna.classList.remove("column-highlight");
             });
 
-            area.addEventListener("drop", function (e) {
+            area.addEventListener("drop", (e) => {
                 e.preventDefault();
                 columna.classList.remove("column-highlight");
 
                 const tareaId = e.dataTransfer.getData("text/plain");
                 const nuevoEstado = columna.getAttribute("data-estado");
+
                 if (!tareaId || !nuevoEstado) return;
 
                 const tareaElement = document.querySelector(
@@ -675,54 +718,401 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Función para mostrar notificaciones toast
     function mostrarNotificacion(mensaje, tipo = "info") {
-        // Verificar si existe un contenedor para toasts, si no, crearlo
+        if (typeof Swal !== "undefined") {
+            const iconos = {
+                success: "success",
+                error: "error",
+                warning: "warning",
+                info: "info",
+            };
+
+            Swal.fire({
+                title: mensaje,
+                icon: iconos[tipo] || "info",
+                timer: 3000,
+                showConfirmButton: false,
+                toast: true,
+                position: "top-end",
+            });
+        } else {
+            // Fallback a toast nativo si SweetAlert2 no está disponible
+            mostrarToastNativo(mensaje, tipo);
+        }
+    }
+
+    function mostrarToastNativo(mensaje, tipo) {
+        // Crear contenedor si no existe
         let toastContainer = document.querySelector(".toast-container");
         if (!toastContainer) {
             toastContainer = document.createElement("div");
             toastContainer.className =
-                "toast-container position-fixed bottom-0 end-0 p-3";
+                "toast-container position-fixed top-0 end-0 p-3";
+            toastContainer.style.zIndex = "9999";
             document.body.appendChild(toastContainer);
         }
 
-        // Crear el toast
-        const toastId = "toast-" + Date.now();
+        // Crear toast
         const toast = document.createElement("div");
-        toast.className = `toast toast-${tipo} align-items-center text-white bg-${
-            tipo === "info" ? "primary" : tipo
-        }`;
-        toast.id = toastId;
-        toast.setAttribute("role", "alert");
-        toast.setAttribute("aria-live", "assertive");
-        toast.setAttribute("aria-atomic", "true");
-
+        toast.className = `alert alert-${
+            tipo === "error" ? "danger" : tipo
+        } alert-dismissible fade show`;
+        toast.style.minWidth = "300px";
         toast.innerHTML = `
-            <div class="d-flex">
-                <div class="toast-body">
-                    ${mensaje}
-                </div>
-                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
-            </div>
+            ${mensaje}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         `;
 
         toastContainer.appendChild(toast);
 
-        // Inicializar y mostrar el toast
-        const bsToast = new bootstrap.Toast(toast, {
-            animation: true,
-            autohide: true,
-            delay: 3000,
-        });
-        bsToast.show();
+        // Auto-remover después de 3 segundos
+        setTimeout(() => {
+            if (toast.parentNode) {
+                toast.remove();
+            }
+        }, 3000);
+    }
 
-        // Eliminar el toast después de ocultarse
-        toast.addEventListener("hidden.bs.toast", function () {
-            this.remove();
+    // ===== FUNCIONES PARA FORMULARIO DIRECTO =====
+
+    // Mostrar formulario directo
+    function mostrarFormularioDirecto() {
+        if (!formularioDirectoDOM.formularioTareaDirecta) return;
+
+        formularioDirectoVisible = true;
+        formularioDirectoDOM.formularioTareaDirecta.style.display = "flex";
+        formularioDirectoDOM.formularioTareaDirecta.setAttribute(
+            "aria-hidden",
+            "false"
+        );
+
+        // Agregar clase show con delay para animación
+        setTimeout(() => {
+            formularioDirectoDOM.formularioTareaDirecta.classList.add("show");
+        }, 10);
+
+        // Focus en el primer campo
+        if (formularioDirectoDOM.nombreTareaDirecta) {
+            setTimeout(
+                () => formularioDirectoDOM.nombreTareaDirecta.focus(),
+                300
+            );
+        }
+
+        // Prevenir scroll del body
+        document.body.style.overflow = "hidden";
+    }
+
+    // Ocultar formulario directo
+    function ocultarFormularioDirecto() {
+        if (!formularioDirectoDOM.formularioTareaDirecta) return;
+
+        formularioDirectoVisible = false;
+        formularioDirectoDOM.formularioTareaDirecta.classList.remove("show");
+        formularioDirectoDOM.formularioTareaDirecta.setAttribute(
+            "aria-hidden",
+            "true"
+        );
+
+        setTimeout(() => {
+            formularioDirectoDOM.formularioTareaDirecta.style.display = "none";
+            limpiarFormularioDirecto();
+        }, 300);
+
+        // Restaurar scroll del body
+        document.body.style.overflow = "";
+    }
+
+    // Limpiar formulario directo
+    function limpiarFormularioDirecto() {
+        if (formularioDirectoDOM.formTareaDirecta) {
+            formularioDirectoDOM.formTareaDirecta.reset();
+        }
+
+        // Ocultar formulario nueva etapa si está visible
+        if (formularioDirectoDOM.formNuevaEtapaDirecta) {
+            formularioDirectoDOM.formNuevaEtapaDirecta.style.display = "none";
+            if (formularioDirectoDOM.nombreNuevaEtapaDirecta) {
+                formularioDirectoDOM.nombreNuevaEtapaDirecta.value = "";
+            }
+        }
+
+        // Limpiar errores de validación
+        const campos = formularioDirectoDOM.formTareaDirecta?.querySelectorAll(
+            ".input-miel, .select-miel"
+        );
+        campos?.forEach((campo) => {
+            campo.classList.remove("error");
+            const errorMsg = campo.parentNode.querySelector(".error-message");
+            if (errorMsg) errorMsg.remove();
         });
+    }
+
+    // Validar formulario directo
+    function validarFormularioDirecto() {
+        let esValido = true;
+        const errores = [];
+
+        // Limpiar errores previos
+        const campos = formularioDirectoDOM.formTareaDirecta.querySelectorAll(
+            ".input-miel, .select-miel"
+        );
+        campos.forEach((campo) => {
+            campo.classList.remove("error");
+            const errorMsg = campo.parentNode.querySelector(".error-message");
+            if (errorMsg) errorMsg.remove();
+        });
+
+        // Validar nombre
+        if (!formularioDirectoDOM.nombreTareaDirecta.value.trim()) {
+            mostrarErrorCampo(
+                formularioDirectoDOM.nombreTareaDirecta,
+                "El nombre de la tarea es obligatorio"
+            );
+            esValido = false;
+        }
+
+        // Validar etapa
+        if (!formularioDirectoDOM.etapaTareaDirecta.value) {
+            mostrarErrorCampo(
+                formularioDirectoDOM.etapaTareaDirecta,
+                "Debes seleccionar una etapa"
+            );
+            esValido = false;
+        }
+
+        // Validar fechas
+        const fechaInicio = formularioDirectoDOM.fechaInicioDirecta.value;
+        const fechaFin = formularioDirectoDOM.fechaFinDirecta.value;
+
+        if (
+            fechaInicio &&
+            fechaFin &&
+            new Date(fechaInicio) > new Date(fechaFin)
+        ) {
+            mostrarErrorCampo(
+                formularioDirectoDOM.fechaFinDirecta,
+                "La fecha fin debe ser posterior a la fecha inicio"
+            );
+            esValido = false;
+        }
+
+        return esValido;
+    }
+
+    // Mostrar error en campo específico
+    function mostrarErrorCampo(campo, mensaje) {
+        campo.classList.add("error");
+
+        const errorDiv = document.createElement("div");
+        errorDiv.className = "error-message";
+        errorDiv.innerHTML = `<i class="fa fa-exclamation-circle"></i> ${mensaje}`;
+
+        campo.parentNode.appendChild(errorDiv);
+    }
+
+    // Enviar formulario directo
+    async function enviarFormularioDirecto(e) {
+        e.preventDefault();
+
+        if (!validarFormularioDirecto()) {
+            mostrarNotificacion(
+                "Por favor corrige los errores en el formulario",
+                "warning"
+            );
+            return;
+        }
+
+        // Mostrar estado de carga
+        const wrapper =
+            formularioDirectoDOM.formularioTareaDirecta.querySelector(
+                ".formulario-wrapper"
+            );
+        wrapper.classList.add("formulario-loading");
+        formularioDirectoDOM.btnGuardarTareaDirecta.disabled = true;
+
+        try {
+            const formData = new FormData(
+                formularioDirectoDOM.formTareaDirecta
+            );
+            const csrfToken = document
+                .querySelector('meta[name="csrf-token"]')
+                ?.getAttribute("content");
+
+            const response = await fetch(
+                formularioDirectoDOM.formTareaDirecta.action,
+                {
+                    method: "POST",
+                    headers: {
+                        "X-CSRF-TOKEN": csrfToken,
+                        Accept: "application/json",
+                    },
+                    body: formData,
+                }
+            );
+
+            if (!response.ok) {
+                throw new Error(`Error HTTP: ${response.status}`);
+            }
+
+            const data = await response.json();
+
+            if (data.success) {
+                mostrarNotificacion("Tarea creada correctamente", "success");
+                ocultarFormularioDirecto();
+
+                // Emitir evento para actualizar vistas
+                emitirEvento("tareaCreada", { tarea: data.tarea });
+
+                // Recargar página después de un breve delay para mostrar la notificación
+                setTimeout(() => {
+                    window.location.reload();
+                }, 1500);
+            } else {
+                throw new Error(data.message || "Error al crear la tarea");
+            }
+        } catch (error) {
+            console.error("Error al enviar formulario:", error);
+            mostrarNotificacion(
+                "Error al crear la tarea. Intenta de nuevo.",
+                "error"
+            );
+        } finally {
+            // Quitar estado de carga
+            wrapper.classList.remove("formulario-loading");
+            formularioDirectoDOM.btnGuardarTareaDirecta.disabled = false;
+        }
+    }
+
+    // Crear nueva etapa desde formulario directo
+    async function crearNuevaEtapaDirecta() {
+        const nombre =
+            formularioDirectoDOM.nombreNuevaEtapaDirecta.value.trim();
+
+        if (!nombre) {
+            mostrarNotificacion(
+                "Por favor ingresa un nombre para la etapa",
+                "warning"
+            );
+            formularioDirectoDOM.nombreNuevaEtapaDirecta.focus();
+            return;
+        }
+
+        try {
+            const csrfToken = document
+                .querySelector('meta[name="csrf-token"]')
+                ?.getAttribute("content");
+
+            const response = await fetch("/tareas-generales", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRF-TOKEN": csrfToken,
+                    Accept: "application/json",
+                },
+                body: JSON.stringify({ nombre }),
+            });
+
+            if (!response.ok) throw new Error("Error al crear etapa");
+
+            const etapa = await response.json();
+
+            // Agregar nueva opción al select
+            const option = new Option(etapa.nombre, etapa.id);
+            formularioDirectoDOM.etapaTareaDirecta.appendChild(option);
+            formularioDirectoDOM.etapaTareaDirecta.value = etapa.id;
+
+            // Ocultar formulario nueva etapa
+            formularioDirectoDOM.formNuevaEtapaDirecta.style.display = "none";
+            formularioDirectoDOM.nombreNuevaEtapaDirecta.value = "";
+
+            mostrarNotificacion("Etapa creada correctamente", "success");
+        } catch (error) {
+            console.error("Error:", error);
+            mostrarNotificacion("Error al crear la etapa", "error");
+        }
+    }
+
+    // Event Listeners para formulario directo
+    if (formularioDirectoDOM.btnAgregarTareaDirecta) {
+        formularioDirectoDOM.btnAgregarTareaDirecta.addEventListener(
+            "click",
+            mostrarFormularioDirecto
+        );
+    }
+
+    if (formularioDirectoDOM.btnCerrarFormulario) {
+        formularioDirectoDOM.btnCerrarFormulario.addEventListener(
+            "click",
+            ocultarFormularioDirecto
+        );
+    }
+
+    if (formularioDirectoDOM.btnCancelarTareaDirecta) {
+        formularioDirectoDOM.btnCancelarTareaDirecta.addEventListener(
+            "click",
+            ocultarFormularioDirecto
+        );
+    }
+
+    if (formularioDirectoDOM.formTareaDirecta) {
+        formularioDirectoDOM.formTareaDirecta.addEventListener(
+            "submit",
+            enviarFormularioDirecto
+        );
+    }
+
+    // Nueva etapa en formulario directo
+    if (formularioDirectoDOM.btnNuevaEtapaDirecta) {
+        formularioDirectoDOM.btnNuevaEtapaDirecta.addEventListener(
+            "click",
+            () => {
+                formularioDirectoDOM.formNuevaEtapaDirecta.style.display =
+                    "block";
+                formularioDirectoDOM.nombreNuevaEtapaDirecta.focus();
+            }
+        );
+    }
+
+    if (formularioDirectoDOM.cancelarNuevaEtapaDirecta) {
+        formularioDirectoDOM.cancelarNuevaEtapaDirecta.addEventListener(
+            "click",
+            () => {
+                formularioDirectoDOM.formNuevaEtapaDirecta.style.display =
+                    "none";
+                formularioDirectoDOM.nombreNuevaEtapaDirecta.value = "";
+            }
+        );
+    }
+
+    if (formularioDirectoDOM.guardarNuevaEtapaDirecta) {
+        formularioDirectoDOM.guardarNuevaEtapaDirecta.addEventListener(
+            "click",
+            crearNuevaEtapaDirecta
+        );
+    }
+
+    // Cerrar formulario con ESC
+    document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape" && formularioDirectoVisible) {
+            ocultarFormularioDirecto();
+        }
+    });
+
+    // Cerrar formulario al hacer clic fuera
+    if (formularioDirectoDOM.formularioTareaDirecta) {
+        formularioDirectoDOM.formularioTareaDirecta.addEventListener(
+            "click",
+            (e) => {
+                if (e.target === formularioDirectoDOM.formularioTareaDirecta) {
+                    ocultarFormularioDirecto();
+                }
+            }
+        );
     }
 
     // Toggle del formulario con animación mejorada
     if (DOM.toggleFormBtn) {
-        DOM.toggleFormBtn.addEventListener("click", function () {
+        DOM.toggleFormBtn.addEventListener("click", () => {
             const form = document.getElementById("new-task-form");
             if (!form) return;
 
@@ -770,7 +1160,7 @@ document.addEventListener("DOMContentLoaded", function () {
     // Sincronizar el editor Quill si existe
     let quill;
     if (DOM.form) {
-        DOM.form.addEventListener("submit", function (e) {
+        DOM.form.addEventListener("submit", (e) => {
             if (quill) {
                 try {
                     const descriptionField =
@@ -789,7 +1179,6 @@ document.addEventListener("DOMContentLoaded", function () {
     // Escuchar eventos SIN LOADER para actualizaciones
     escucharEvento("subtareaActualizada", (event) => {
         console.debug("Evento subtareaActualizada recibido:", event.detail);
-
         // Solo actualizar datos, sin loader
         recargarSubtareas();
         actualizarKanban();
@@ -880,7 +1269,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 }
             }
         `;
-
         document.head.appendChild(estilos);
     };
 
@@ -973,7 +1361,6 @@ document.addEventListener("DOMContentLoaded", function () {
             const data = await response.json();
             tareasData = data.tareas || [];
             filteredTareas = [...tareasData];
-
             mostrarTareasEnModal();
             actualizarEstadisticas();
         } catch (error) {
@@ -1129,7 +1516,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function formatearFecha(fecha) {
         if (!fecha) return "No definida";
-
         try {
             return new Date(fecha).toLocaleDateString("es-ES", {
                 day: "2-digit",
@@ -1160,7 +1546,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Event Listeners para los nuevos botones
     if (DOM.agregarTareasBtn) {
-        DOM.agregarTareasBtn.addEventListener("click", function () {
+        DOM.agregarTareasBtn.addEventListener("click", () => {
             const form = document.getElementById("new-task-form");
             if (!form) return;
 
@@ -1170,9 +1556,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 form.style.maxHeight = "0px";
                 form.style.overflow = "hidden";
                 form.style.transition = "max-height 0.5s ease";
-
                 form.offsetHeight;
-
                 const height = form.scrollHeight;
                 form.style.maxHeight = height + "px";
 
@@ -1188,7 +1572,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 form.style.maxHeight = form.scrollHeight + "px";
                 form.style.overflow = "hidden";
                 form.style.transition = "max-height 0.5s ease";
-
                 form.offsetHeight;
                 form.style.maxHeight = "0px";
 
@@ -1208,24 +1591,22 @@ document.addEventListener("DOMContentLoaded", function () {
             debounce(filtrarTareas, 300)
         );
     }
-
     if (DOM.filterEstado) {
         DOM.filterEstado.addEventListener("change", filtrarTareas);
     }
-
     if (DOM.filterPrioridad) {
         DOM.filterPrioridad.addEventListener("change", filtrarTareas);
     }
 
     // Cargar tareas cuando se abre el modal
     if (DOM.tareasListModal) {
-        DOM.tareasListModal.addEventListener("show.bs.modal", function () {
+        DOM.tareasListModal.addEventListener("show.bs.modal", () => {
             cargarTareasModal();
         });
     }
 
     // Funciones globales para acciones de tareas
-    window.editarTarea = function (id) {
+    window.editarTarea = (id) => {
         // Aquí puedes abrir otro modal o redireccionar
         Swal.fire({
             title: "Editar Tarea",
@@ -1234,7 +1615,7 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     };
 
-    window.eliminarTarea = function (id) {
+    window.eliminarTarea = (id) => {
         Swal.fire({
             title: "¿Estás seguro?",
             text: "Esta acción no se puede deshacer",
@@ -1268,7 +1649,6 @@ document.addEventListener("DOMContentLoaded", function () {
             if (!response.ok) throw new Error("Error al eliminar");
 
             const data = await response.json();
-
             if (data.success) {
                 Swal.fire(
                     "Eliminada",
@@ -1300,33 +1680,59 @@ document.addEventListener("DOMContentLoaded", function () {
         };
     }
 
-    // Nuevas funciones para el modal de tareas predefinidas
+    // ===== FUNCIONES PARA MODAL DE TAREAS PREDEFINIDAS - ACTUALIZADAS =====
 
-    // ===== FUNCIONES PARA MODAL DE TAREAS PREDEFINIDAS =====
+    // Función para actualizar contadores y estados de checkboxes por etapa
+    function updateSelectAllEtapaCheckbox(etapaId) {
+        const selectAllEtapa = document.getElementById(
+            `select-all-etapa-${etapaId}`
+        );
+        const checkboxesEtapa = document.querySelectorAll(
+            `.etapa-${etapaId}-checkbox`
+        );
 
-    // Función para actualizar el checkbox "Seleccionar todos" en modal predefinidas
-    function updateSelectAllPredefinidasCheckbox() {
-        if (!DOM.selectAllPredefinidas) return;
+        if (!selectAllEtapa || checkboxesEtapa.length === 0) return;
 
-        const checkboxes = document.querySelectorAll(
+        const checkedBoxes = document.querySelectorAll(
+            `.etapa-${etapaId}-checkbox:checked`
+        );
+
+        // Actualizar estado del checkbox de la etapa
+        if (checkedBoxes.length === 0) {
+            selectAllEtapa.checked = false;
+            selectAllEtapa.indeterminate = false;
+        } else if (checkedBoxes.length === checkboxesEtapa.length) {
+            selectAllEtapa.checked = true;
+            selectAllEtapa.indeterminate = false;
+        } else {
+            selectAllEtapa.checked = false;
+            selectAllEtapa.indeterminate = true;
+        }
+    }
+
+    // Función para actualizar el selector global
+    function updateSelectAllGlobalCheckbox() {
+        if (!DOM.selectAllGlobal) return;
+
+        const todosLosCheckboxes = document.querySelectorAll(
             ".subtask-checkbox-predefinidas"
         );
-        const checkedBoxes = document.querySelectorAll(
+        const checkboxesMarcados = document.querySelectorAll(
             ".subtask-checkbox-predefinidas:checked"
         );
 
-        tareasSeleccionadas = checkedBoxes.length;
+        tareasSeleccionadas = checkboxesMarcados.length;
 
-        // Actualizar estado del checkbox principal
-        if (checkedBoxes.length === 0) {
-            DOM.selectAllPredefinidas.checked = false;
-            DOM.selectAllPredefinidas.indeterminate = false;
-        } else if (checkedBoxes.length === checkboxes.length) {
-            DOM.selectAllPredefinidas.checked = true;
-            DOM.selectAllPredefinidas.indeterminate = false;
+        // Actualizar estado del checkbox global
+        if (checkboxesMarcados.length === 0) {
+            DOM.selectAllGlobal.checked = false;
+            DOM.selectAllGlobal.indeterminate = false;
+        } else if (checkboxesMarcados.length === todosLosCheckboxes.length) {
+            DOM.selectAllGlobal.checked = true;
+            DOM.selectAllGlobal.indeterminate = false;
         } else {
-            DOM.selectAllPredefinidas.checked = false;
-            DOM.selectAllPredefinidas.indeterminate = true;
+            DOM.selectAllGlobal.checked = false;
+            DOM.selectAllGlobal.indeterminate = true;
         }
 
         // Actualizar contador y botón
@@ -1334,53 +1740,98 @@ document.addEventListener("DOMContentLoaded", function () {
         DOM.btnAgregarSeleccionadas.disabled = tareasSeleccionadas === 0;
     }
 
-    // Event listener para "Seleccionar todos" en modal predefinidas
-    if (DOM.selectAllPredefinidas) {
-        DOM.selectAllPredefinidas.addEventListener("change", function () {
-            const checkboxes = document.querySelectorAll(
-                ".subtask-checkbox-predefinidas"
+    // Event listener para selectores "Todo" por etapa
+    document.addEventListener("change", (e) => {
+        if (e.target.classList.contains("select-all-etapa")) {
+            const etapaId = e.target.getAttribute("data-etapa");
+            const checkboxesEtapa = document.querySelectorAll(
+                `.etapa-${etapaId}-checkbox`
             );
-            checkboxes.forEach((checkbox) => {
-                checkbox.checked = this.checked;
-            });
-            updateSelectAllPredefinidasCheckbox();
-        });
-    }
 
-    // Event listener para checkboxes individuales en modal predefinidas
-    document.addEventListener("change", function (e) {
-        if (e.target.classList.contains("subtask-checkbox-predefinidas")) {
-            updateSelectAllPredefinidasCheckbox();
+            checkboxesEtapa.forEach((checkbox) => {
+                checkbox.checked = e.target.checked;
+            });
+
+            updateSelectAllGlobalCheckbox();
         }
     });
 
-    // Inicializar estado al abrir modal predefinidas
-    if (DOM.tareasPredefinidasModal) {
-        DOM.tareasPredefinidasModal.addEventListener(
-            "show.bs.modal",
-            function () {
-                // Limpiar selecciones previas
-                const checkboxes = document.querySelectorAll(
-                    ".subtask-checkbox-predefinidas"
-                );
-                checkboxes.forEach((checkbox) => (checkbox.checked = false));
-                updateSelectAllPredefinidasCheckbox();
+    // Event listener para selector global
+    if (DOM.selectAllGlobal) {
+        DOM.selectAllGlobal.addEventListener("change", function () {
+            const todosLosCheckboxes = document.querySelectorAll(
+                ".subtask-checkbox-predefinidas"
+            );
+            const todosLosSelectoresEtapa =
+                document.querySelectorAll(".select-all-etapa");
+
+            todosLosCheckboxes.forEach((checkbox) => {
+                checkbox.checked = this.checked;
+            });
+
+            todosLosSelectoresEtapa.forEach((selector) => {
+                selector.checked = this.checked;
+                selector.indeterminate = false;
+            });
+
+            updateSelectAllGlobalCheckbox();
+        });
+    }
+
+    // Event listener para checkboxes individuales
+    document.addEventListener("change", (e) => {
+        if (e.target.classList.contains("subtask-checkbox-predefinidas")) {
+            // Obtener la etapa del checkbox
+            const etapaId =
+                e.target.className.match(/etapa-(\d+)-checkbox/)?.[1];
+
+            if (etapaId) {
+                updateSelectAllEtapaCheckbox(etapaId);
             }
-        );
+
+            updateSelectAllGlobalCheckbox();
+        }
+    });
+
+    // Inicializar modal de tareas predefinidas
+    if (DOM.tareasPredefinidasModal) {
+        DOM.tareasPredefinidasModal.addEventListener("show.bs.modal", () => {
+            // Limpiar todas las selecciones
+            const todosLosCheckboxes = document.querySelectorAll(
+                ".subtask-checkbox-predefinidas"
+            );
+            const todosLosSelectoresEtapa =
+                document.querySelectorAll(".select-all-etapa");
+
+            todosLosCheckboxes.forEach(
+                (checkbox) => (checkbox.checked = false)
+            );
+            todosLosSelectoresEtapa.forEach((selector) => {
+                selector.checked = false;
+                selector.indeterminate = false;
+            });
+
+            if (DOM.selectAllGlobal) {
+                DOM.selectAllGlobal.checked = false;
+                DOM.selectAllGlobal.indeterminate = false;
+            }
+
+            updateSelectAllGlobalCheckbox();
+        });
     }
 
     // ===== FUNCIONES PARA MODAL DE CREAR TAREAS =====
 
     // Mostrar/ocultar formulario nueva etapa
     if (DOM.btnNuevaEtapaModal) {
-        DOM.btnNuevaEtapaModal.addEventListener("click", function () {
+        DOM.btnNuevaEtapaModal.addEventListener("click", () => {
             DOM.formNuevaEtapaModal.style.display = "block";
             DOM.nombreNuevaEtapaModal.focus();
         });
     }
 
     if (DOM.cancelarNuevaEtapaModal) {
-        DOM.cancelarNuevaEtapaModal.addEventListener("click", function () {
+        DOM.cancelarNuevaEtapaModal.addEventListener("click", () => {
             DOM.formNuevaEtapaModal.style.display = "none";
             DOM.nombreNuevaEtapaModal.value = "";
         });
@@ -1388,9 +1839,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Guardar nueva etapa
     if (DOM.guardarNuevaEtapaModal) {
-        DOM.guardarNuevaEtapaModal.addEventListener("click", async function () {
+        DOM.guardarNuevaEtapaModal.addEventListener("click", async () => {
             const nombre = DOM.nombreNuevaEtapaModal.value.trim();
-
             if (!nombre) {
                 mostrarNotificacion(
                     "Por favor ingresa un nombre para la etapa",
@@ -1433,44 +1883,48 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-    // Agregar nueva subtarea en modal
+    // ===== FUNCIONES PARA AGREGAR SUBTAREAS EN MODAL - CORREGIDAS =====
+
+    // Agregar nueva subtarea en modal - FUNCIONA CORRECTAMENTE
     if (DOM.addSubtareaModal) {
-        DOM.addSubtareaModal.addEventListener("click", function () {
+        DOM.addSubtareaModal.addEventListener("click", () => {
+            console.log("Botón Agregar Tarea clickeado"); // Debug
             agregarSubtareaModal();
         });
     }
 
     function agregarSubtareaModal() {
+        console.log("Ejecutando agregarSubtareaModal"); // Debug
+
         const template = document.getElementById("subtarea-template-modal");
-        if (!template) return;
+        const container = DOM.subtareasContainerModal;
+
+        if (!template || !container) {
+            console.error("No se encontró la plantilla o el contenedor");
+            return;
+        }
 
         subtareaIndexModal++;
         const clone = template.cloneNode(true);
         clone.id = `subtarea-${subtareaIndexModal}`;
         clone.style.display = "block";
 
-        // Actualizar número de tarea
-        const numeroTarea = clone.querySelector(".numero-tarea");
-        if (numeroTarea) {
-            numeroTarea.textContent = subtareaIndexModal;
-        }
-
-        // Actualizar nombres de campos para el formulario
+        // Habilitar los campos del clon
         const inputs = clone.querySelectorAll("[data-field]");
         inputs.forEach((input) => {
             const field = input.getAttribute("data-field");
             input.name = `subtareas[${subtareaIndexModal - 1}][${field}]`;
+            input.disabled = false; // <-- Habilita el campo
         });
 
-        // Ocultar estado vacío
-        const emptyState =
-            DOM.subtareasContainerModal.querySelector(".empty-subtareas");
+        // Ocultar estado vacío si existe
+        const emptyState = container.querySelector(".empty-subtareas");
         if (emptyState) {
             emptyState.style.display = "none";
         }
 
         // Agregar al contenedor
-        DOM.subtareasContainerModal.appendChild(clone);
+        container.appendChild(clone);
 
         // Actualizar contador
         actualizarContadorTareasCreadas();
@@ -1483,10 +1937,12 @@ document.addEventListener("DOMContentLoaded", function () {
         if (primerInput) {
             setTimeout(() => primerInput.focus(), 100);
         }
+
+        console.log("Subtarea agregada correctamente"); // Debug
     }
 
     // Eliminar subtarea en modal
-    document.addEventListener("click", function (e) {
+    document.addEventListener("click", (e) => {
         if (e.target.closest(".remove-subtarea-modal")) {
             const subtareaCard = e.target.closest(".subtarea-template");
             if (subtareaCard) {
@@ -1535,24 +1991,27 @@ document.addEventListener("DOMContentLoaded", function () {
             '.subtarea-template[style*="block"]'
         );
         tareasCreadasCount = subtareas.length;
-
-        DOM.tareasCreadasCount.textContent = `${tareasCreadasCount} tareas definidas`;
         DOM.btnGuardarTareas.disabled = tareasCreadasCount === 0;
     }
 
-    // Inicializar modal de crear tareas
+    // Inicializar modal de crear tareas - CORREGIDO PARA MANTENER EL BOTÓN
     if (DOM.crearTareasModal) {
-        DOM.crearTareasModal.addEventListener("show.bs.modal", function () {
-            // Limpiar formulario
-            DOM.subtareasContainerModal.innerHTML = `
-                <div class="empty-subtareas">
-                    <div class="empty-icon">
-                        <i class="fa fa-tasks"></i>
-                    </div>
-                    <p>No hay tareas definidas aún</p>
-                    <small>Haz clic en "Agregar Tarea" para comenzar</small>
-                </div>
-            `;
+        DOM.crearTareasModal.addEventListener("show.bs.modal", () => {
+            console.log("Modal de crear tareas abierto"); // Debug
+
+            // Solo limpiar las tareas dinámicas, NO todo el contenedor
+            const tareasExistentes =
+                DOM.subtareasContainerModal.querySelectorAll(
+                    '.subtarea-template[style*="block"]'
+                );
+            tareasExistentes.forEach((tarea) => tarea.remove());
+
+            // Mostrar estado vacío
+            const emptyState =
+                DOM.subtareasContainerModal.querySelector(".empty-subtareas");
+            if (emptyState) {
+                emptyState.style.display = "flex";
+            }
 
             // Reset contadores
             subtareaIndexModal = 0;
@@ -1569,7 +2028,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Validación del formulario crear tareas
     if (DOM.formCrearTareas) {
-        DOM.formCrearTareas.addEventListener("submit", function (e) {
+        DOM.formCrearTareas.addEventListener("submit", (e) => {
             const etapaSeleccionada = DOM.tareaGeneralIdModal.value;
             const subtareas = DOM.subtareasContainerModal.querySelectorAll(
                 '.subtarea-template[style*="block"]'
@@ -1616,30 +2075,5 @@ document.addEventListener("DOMContentLoaded", function () {
                 return;
             }
         });
-    }
-
-    // Función para mostrar notificaciones (reutilizar la existente o crear una nueva)
-    function mostrarNotificacion(mensaje, tipo = "info") {
-        // Si ya tienes una función de notificaciones, úsala
-        // Si no, aquí hay una implementación básica con SweetAlert2 o alert
-        if (typeof Swal !== "undefined") {
-            const iconos = {
-                success: "success",
-                error: "error",
-                warning: "warning",
-                info: "info",
-            };
-
-            Swal.fire({
-                title: mensaje,
-                icon: iconos[tipo] || "info",
-                timer: 3000,
-                showConfirmButton: false,
-                toast: true,
-                position: "top-end",
-            });
-        } else {
-            alert(mensaje);
-        }
     }
 });

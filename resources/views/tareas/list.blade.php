@@ -225,7 +225,7 @@
                 </div>
                 <div class="footer-info">
                     <i class="fa-solid fa-clock"></i>
-                    <span>Actualizado {{ now()->format('d/m/Y H:i') }}</span>
+                    <span>Actualizado {{ now()->format('d/m/Y') }}</span>
                 </div>
             </div>
         </div>
