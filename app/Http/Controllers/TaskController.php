@@ -22,7 +22,9 @@ class TaskController extends Controller
 
         // Obtener los ids de las TareasGenerales asociadas a las subtareas
         $tareasGeneralesIds = $subtareas->pluck('tarea_general_id')->unique();
-        $listaEtapa = TareaGeneral::with('predefinidas')->get();
+        $listaEtapa = TareaGeneral::with('predefinidas')
+        ->has('predefinidas') // Solo etapas con tareas predefinidas asociadas
+        ->get();
         // Obtener las TareasGenerales correspondientes a las subtareas
         $tareasGenerales = TareaGeneral::whereIn('id', $tareasGeneralesIds)
             ->with([
