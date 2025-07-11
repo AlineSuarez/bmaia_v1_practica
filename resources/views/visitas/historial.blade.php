@@ -172,6 +172,7 @@
                                                         <th><i class="fas fa-phone me-1"></i> Teléfono</th>
                                                         <th><i class="fas fa-signature me-1"></i> Firma</th>
                                                         <th><i class="fas fa-clock me-1"></i> Duración</th>
+                                                        <th><i class="fas fa-clipboard me-1"></i> Acciones</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
@@ -195,6 +196,16 @@
                                                                 <span class="duration-badge">
                                                                     {{ $visita->duracion_visita ?? 'No especificado' }}
                                                                 </span>
+                                                            </td>
+                                                            <td class="actions-cell">
+                                                                <a href="{{ route('generate.document.visitas', $apiario->id) }}"
+                                                                    class="btn btn-outline-secondary btn-sm" title="Generar PDF" target="_blank">
+                                                                        <i class="fas fa-file-pdf"></i>
+                                                                </a>
+                                                                <a href="{{ route('visitas.visitas-general', $apiario->id) }}?visita_id={{ $visita->id }}"
+                                                                    class="btn btn-outline-primary btn-sm">
+                                                                    <i class="fas fa-edit"></i>
+                                                                </a>
                                                             </td>
                                                         </tr>
                                                     @endforeach
@@ -233,6 +244,7 @@
                                                         <th>Sospecha</th>
                                                         <th>Observaciones</th>
                                                         <th>Estado</th>
+                                                        <th>Acciones</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
@@ -281,6 +293,16 @@
                                                                 @endphp
                                                                 <span class="status-badge status-{{ $statusClass }}">{{ $status }}</span>
                                                             </td>
+                                                            <td class="actions-cell">
+                                                                <a href="{{ route('generate.document.inspeccion', $apiario->id) }}"
+                                                                    class="btn btn-outline-secondary btn-sm" title="Generar PDF" target="_blank">
+                                                                    <i class="fas fa-file-pdf"></i>
+                                                                </a>
+                                                                <a href="{{ route('visitas.create', $apiario->id) }}?visita_id={{ $visita->id }}"
+                                                                    class="btn btn-outline-primary btn-sm">
+                                                                    <i class="fas fa-edit"></i>
+                                                                </a>
+                                                            </td>
                                                         </tr>
                                                     @endforeach
                                                 </tbody>
@@ -315,6 +337,7 @@
                                                         <th>Responsable</th>
                                                         <th>Observaciones</th>
                                                         <th>Estado</th>
+                                                        <th>Acciones</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
@@ -360,6 +383,16 @@
                                                                 @endphp
                                                                 <span class="status-badge status-{{ $statusClass }}">{{ $status }}</span>
                                                             </td>
+                                                            <td class="actions-cell">
+                                                                <a href="{{ route('generate.document.medicamentos', $apiario->id) }}"
+                                                                    class="btn btn-outline-secondary btn-sm" title="Generar PDF" target="_blank">
+                                                                    <i class="fas fa-file-pdf"></i>
+                                                                </a>
+                                                                <a href="{{ route('apiarios.medicamentos-registro.edit', [$apiario->id, $visita->id]) }}"
+                                                                    class="btn btn-outline-primary btn-sm">
+                                                                    <i class="fas fa-edit"></i>
+                                                                </a>
+                                                            </td>
                                                         </tr>
                                                     @endforeach
                                                 </tbody>
@@ -391,6 +424,7 @@
                                                         <th>Objetivo</th>
                                                         <th>Dosificación</th>
                                                         <th>Método Utilizado</th>
+                                                        <th>Acciones</th>
                                                     </tr>
                                                 </thead>
                                                 @php
@@ -409,6 +443,16 @@
                                                         <td>{{ $estado->objetivo ?? 'N/A' }}</td>
                                                         <td>{{ $estado->dosifiacion ?? 'N/A' }}</td>
                                                         <td>{{ $estado->metodo_utilizado ?? 'N/A' }}</td>
+                                                        <td class="actions-cell">
+                                                            <a href="{{ route('generate.document.alimentacion', $apiario->id) }}"
+                                                                class="btn btn-outline-secondary btn-sm" title="Generar PDF" target="_blank">
+                                                                <i class="fas fa-file-pdf"></i>
+                                                            </a>
+                                                            <a href="{{ route('visitas.alimentacion.edit', [$apiario->id, $estado->visita_id]) }}"
+                                                                class="btn btn-outline-primary btn-sm">
+                                                                <i class="fas fa-edit"></i>
+                                                            </a>
+                                                        </td>
                                                     </tr>
                                                 @else
                                                     <tr>

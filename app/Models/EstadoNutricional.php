@@ -24,6 +24,10 @@ class EstadoNutricional extends Model
         
     ];
     
+    protected $casts = [
+    'fecha_aplicacion' => 'date',
+    ];
+
     public function visita()
     {
         return $this->belongsTo(\App\Models\Visita::class);

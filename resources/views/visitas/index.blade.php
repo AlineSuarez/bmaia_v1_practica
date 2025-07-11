@@ -294,7 +294,7 @@
                                                 </div>
                                                 <div class="stat-content">
                                                     <span class="stat-label">Registros</span>
-                                                    <span class="stat-value">{{-- Número de registros --}}</span>
+                                                    <span class="stat-value registros-horizontal" >{{ $apiario->visitas->count() }}</span>
                                                 </div>
                                             </div>
                                             <a href="{{ route('visitas.historial', $apiario->id) }}" class="stat stat-link">
@@ -469,7 +469,7 @@
                                                 </div>
                                                 <div class="stat-content">
                                                     <span class="stat-label">Registros</span>
-                                                    <span class="stat-value">{{-- Número de registros --}}</span>
+                                                    <span class="stat-value registros-horizontal">{{ $apiario->visitas->count() }}</span>
                                                 </div>
                                             </div>
                                             <a href="{{ route('visitas.historial', $apiario->id) }}" class="stat stat-link">

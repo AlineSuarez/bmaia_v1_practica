@@ -5,11 +5,18 @@
   <div class="container-fluid">
 
     <div class="row g-4">
+      @php
+          $visita = $visita ?? null;
+          $estado = $estado ?? null;
+      @endphp
 
       {{-- Contenido de PCC3 --}}
       <div class="col-lg-9 col-md-8">
         <form action="{{ route('visitas.store3', $apiario) }}" method="POST">
           @csrf
+          @if(isset($visita))
+                <input type="hidden" name="visita_id" value="{{ $visita->id }}">
+          @endif
 
           @if($errors->any())
             <div class="alert alert-danger">
@@ -37,10 +44,10 @@
                 <label class="form-label">Objetivo</label>
                 <select name="objetivo" class="form-select" required>
                   <option value="">Seleccionar…</option>
-                  <option value="estimulacion" {{ old('objetivo')=='estimulacion'?'selected':'' }}>
+                  <option value="estimulacion" {{ old('objetivo', $estado->objetivo ?? '') == 'estimulacion' ? 'selected' : '' }}>
                     Estimulación
                   </option>
-                  <option value="mantencion" {{ old('objetivo')=='mantencion'?'selected':'' }}>
+                  <option value="mantencion" {{ old('objetivo', $estado->objetivo ?? '') == 'mantencion' ? 'selected' : '' }}>
                     Mantención
                   </option>
                 </select>
@@ -50,7 +57,7 @@
                 <input
                   type="text"
                   name="tipo_alimentacion"
-                  value="{{ old('tipo_alimentacion') }}"
+                  value="{{ old('tipo_alimentacion', $estado->tipo_alimentacion ?? '') }}"
                   class="form-control"
                   placeholder="Ej: Jarabe, Polen…"
                   required
@@ -61,7 +68,7 @@
                 <input
                   type="date"
                   name="fecha_aplicacion_insumo_utilizado"
-                  value="{{ old('fecha_aplicacion_insumo_utilizado') }}"
+                  value="{{ old('fecha_aplicacion_insumo_utilizado', optional($estado)->fecha_aplicacion?->format('Y-m-d')) }}""
                   class="form-control"
                   required
                 />
@@ -71,7 +78,7 @@
                 <input
                   type="text"
                   name="insumo_utilizado"
-                  value="{{ old('insumo_utilizado') }}"
+                  value="{{ old('insumo_utilizado', $estado->insumo_utilizado ?? '') }}"
                   class="form-control"
                   placeholder="Nombre del insumo…"
                 />
@@ -81,7 +88,7 @@
                 <input
                   type="text"
                   name="dosificacion"
-                  value="{{ old('dosificacion') }}"
+                  value="{{ old('dosificacion', $estado->dosifiacion ?? '') }}"
                   class="form-control"
                   placeholder="Cantidad y frecuencia…"
                 />
@@ -91,7 +98,7 @@
                 <input
                   type="text"
                   name="metodo_utilizado"
-                  value="{{ old('metodo_utilizado') }}"
+                  value="{{ old('metodo_utilizado', $estado->metodo_utilizado ?? '') }}"
                   class="form-control"
                   placeholder="Método de aplicación…"
                 />

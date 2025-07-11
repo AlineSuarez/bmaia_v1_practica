@@ -54,6 +54,9 @@
 
         <form action="{{ route('apiarios.visitas-general.store', $apiario) }}" method="POST" class="visit-form">
             @csrf
+            @if(isset($visita))
+                <input type="hidden" name="visita_id" value="{{ $visita->id }}">
+            @endif
 
             <!-- Información de la Visita -->
             <section class="form-section visit-info">
@@ -81,7 +84,12 @@
                             Fecha de la Visita
                         </label>
                         <input type="date" id="fecha" name="fecha" class="form-control" required
-                            value="{{ old('fecha') }}">
+                            value="{{ old(
+                                'fecha',
+                                isset($visita)
+                                ? \Carbon\Carbon::parse($visita->fecha_visita)->format('Y-m-d')
+                                : ''
+                            ) }}">
                         <span class="field-helper">Seleccione la fecha de su visita al apiario</span>
                         @error('fecha')
                             <small class="text-danger">{{ $message }}</small>
@@ -99,7 +107,7 @@
                             Motivo de la Visita
                         </label>
                         <input type="text" id="motivo" name="motivo" class="field-input text-input"
-                            placeholder="Ej: Inspección rutinaria, mantenimiento, cosecha, etc." value="{{ old('motivo') }}"
+                            placeholder="Ej: Inspección rutinaria, mantenimiento, cosecha, etc." value="{{ old('motivo', $visita->motivo ?? '') }}"
                             required>
                         <span class="field-helper">Describa brevemente el propósito de su visita</span>
                     </div>

@@ -13,21 +13,30 @@
         <div class="form-field full-width">
             <label for="nosemosis_signos_clinicos" class="field-label">Signos Clínicos (Diagnóstico Visual)</label>
             <textarea id="nosemosis_signos_clinicos" name="nosemosis_signos_clinicos" class="field-textarea" rows="3"
-                placeholder="Describa los signos clínicos observados de Nosemosis.">{{ old('nosemosis_signos_clinicos') }}</textarea>
+                placeholder="Describa los signos clínicos observados de Nosemosis.">{{ old(
+         'nosemosis_signos_clinicos',
+         $pcc5['signos_clinicos'] ?? ''
+    ) }}</textarea>
             <span class="field-helper">Observaciones visuales sobre la presencia de Nosemosis.</span>
         </div>
 
         <div class="form-field full-width">
             <label for="nosemosis_muestreo_laboratorio" class="field-label">Muestreo Laboratorio</label>
             <textarea id="nosemosis_muestreo_laboratorio" name="nosemosis_muestreo_laboratorio" class="field-textarea" rows="3"
-                placeholder="Resultados del muestreo de laboratorio (ej. recuento de esporas).">{{ old('nosemosis_muestreo_laboratorio') }}</textarea>
+                placeholder="Resultados del muestreo de laboratorio (ej. recuento de esporas).">{{ old(
+         'nosemosis_muestreo_laboratorio',
+         $pcc5['muestreo_laboratorio'] ?? ''
+    ) }}</textarea>
             <span class="field-helper">Información sobre el análisis de laboratorio.</span>
         </div>
 
         <div class="form-field">
             <label for="nosemosis_metodo_diagnostico_laboratorio" class="field-label">Método Diagnóstico Laboratorio</label>
             <input type="text" id="nosemosis_metodo_diagnostico_laboratorio" name="nosemosis_metodo_diagnostico_laboratorio" class="field-input text-input"
-                placeholder="Ej: Microscopía, PCR" value="{{ old('nosemosis_metodo_diagnostico_laboratorio') }}">
+                placeholder="Ej: Microscopía, PCR" value="{{ old(
+         'nosemosis_metodo_diagnostico_laboratorio',
+         $pcc5['metodo_diagnostico_laboratorio'] ?? ''
+      ) }}">
             <span class="field-helper">Método de diagnóstico utilizado en laboratorio.</span>
         </div>
 
@@ -41,7 +50,10 @@
         <div class="form-field">
             <label for="nosemosis_tratamiento" class="field-label">Tratamiento</label>
             <input type="text" id="nosemosis_tratamiento" name="nosemosis_tratamiento" class="field-input text-input"
-                placeholder="Ej: Fumagilina, Tratamiento natural" value="{{ old('nosemosis_tratamiento') }}">
+                placeholder="Ej: Fumagilina, Tratamiento natural" value="{{ old(
+         'nosemosis_tratamiento',
+         $pcc5['tratamiento'] ?? ''
+      ) }}">
             <span class="field-helper">Tratamiento aplicado para Nosemosis.</span>
         </div>
 
@@ -55,28 +67,40 @@
         <div class="form-field">
             <label for="nosemosis_dosificacion" class="field-label">Dosificación</label>
             <input type="text" id="nosemosis_dosificacion" name="nosemosis_dosificacion" class="field-input text-input"
-                placeholder="Ej: 200mg por litro, 10ml por colmena" value="{{ old('nosemosis_dosificacion') }}">
+                placeholder="Ej: 200mg por litro, 10ml por colmena" value="{{ old(
+         'nosemosis_dosificacion',
+         $pcc5['dosificacion'] ?? ''
+      ) }}">
             <span class="field-helper">Cantidad o dosis del tratamiento.</span>
         </div>
 
         <div class="form-field">
             <label for="nosemosis_metodo_aplicacion" class="field-label">Método de Aplicación</label>
             <input type="text" id="nosemosis_metodo_aplicacion" name="nosemosis_metodo_aplicacion" class="field-input text-input"
-                placeholder="Ej: Jarabe, Drench" value="{{ old('nosemosis_metodo_aplicacion') }}">
+                placeholder="Ej: Jarabe, Drench" value="{{ old(
+         'nosemosis_metodo_aplicacion',
+         $pcc5['metodo_aplicacion'] ?? ''
+      ) }}">
             <span class="field-helper">Forma en que se aplicó el tratamiento.</span>
         </div>
 
         <div class="form-field">
             <label for="nosemosis_producto_comercial" class="field-label">Producto Comercial</label>
             <input type="text" id="nosemosis_producto_comercial" name="nosemosis_producto_comercial" class="field-input text-input"
-                placeholder="Ej: Nosevit, Apiherb" value="{{ old('nosemosis_producto_comercial') }}">
+                placeholder="Ej: Nosevit, Apiherb" value="{{ old(
+         'nosemosis_producto_comercial',
+         $pcc5['producto_comercial'] ?? ''
+      ) }}">
             <span class="field-helper">Nombre comercial del producto.</span>
         </div>
 
         <div class="form-field">
             <label for="nosemosis_ingrediente_activo" class="field-label">Ingrediente Activo</label>
             <input type="text" id="nosemosis_ingrediente_activo" name="nosemosis_ingrediente_activo" class="field-input text-input"
-                placeholder="Ej: Fumagilina-B" value="{{ old('nosemosis_ingrediente_activo') }}">
+                placeholder="Ej: Fumagilina-B" value="{{ old(
+         'nosemosis_ingrediente_activo',
+         $pcc5['ingrediente_activo'] ?? ''
+      ) }}">
             <span class="field-helper">Principio activo del producto.</span>
         </div>
     </div>

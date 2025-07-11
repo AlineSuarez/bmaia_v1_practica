@@ -95,12 +95,15 @@ Route::middleware(['auth'])->group(function () {
     Route::get('visitas/create2/{id}', [VisitaController::class, 'createMedicamentos'])->name('visitas.medicamentos-registro');
     Route::post('apiarios/{apiario}/medicamentos-registro', [VisitaController::class, 'storeMedicamentos'])->name('apiarios.medicamentos-registro.store');
     Route::get('/generate-document/medicamentos/{apiarioId}', [DocumentController::class, 'generateMedicamentsDocument'])->name('generate.document.medicamentos');
+    Route::get('apiarios/{apiario}/medicamentos-registro/{visita}/edit', [VisitaController::class, 'editMedicamentos'])->name('apiarios.medicamentos-registro.edit');
     Route::post('/apiarios/massDelete', [ApiarioController::class, 'massDelete'])->name('apiarios.massDelete');
     // Rutas para registro de Alimentación
-    Route::get('visitas/create3/{id_apiario}', [VisitaController::class, 'createAlimentacion'])->name('visitas.create3');
-    Route::post('visitas/store3/{apiario}', [VisitaController::class, 'storeAlimentacion'])->name('visitas.store3');
+    //Route::get('visitas/create3/{id_apiario}', [VisitaController::class, 'createAlimentacion'])->name('visitas.create3');
+    Route::get('visitas/create3/{apiario}', [VisitaController::class, 'createAlimentacion'])->name('visitas.create3');
+    //Route::post('visitas/store3/{apiario}', [VisitaController::class, 'storeAlimentacion'])->name('visitas.store3');
+    Route::post('visitas/create3/{apiario}', [VisitaController::class, 'storeAlimentacion'])->name('visitas.store3');
     Route::get('/generate-document/alimentacion-record/{apiarioId}', [DocumentController::class, 'generateAlimentacionDocument'])->name('generate.document.alimentacion');
-
+    Route::get('visitas/create3/{apiario}/{visita}/edit', [VisitaController::class, 'editAlimentacion'])->name('visitas.alimentacion.edit');
 });
 
 

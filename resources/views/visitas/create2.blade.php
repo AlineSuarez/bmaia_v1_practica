@@ -1,6 +1,11 @@
 @extends('layouts.app')
 
 @section('content')
+    @php
+        $visita = $visita ?? null;
+        $pcc4   = $pcc4   ?? [];
+        $pcc5   = $pcc5   ?? [];
+    @endphp
     <div class="medication-container">
         <header class="medication-header">
             <div class="header-decoration"></div>
@@ -20,6 +25,9 @@
             class="medication-form"
         >
             @csrf
+            @if(isset($visita))
+                <input type="hidden" name="visita_id" value="{{ $visita->id }}">
+            @endif
 
             @if ($errors->any())
                 <div class="alert alert-danger">
@@ -66,9 +74,9 @@
 
                         <select id="motivo_tratamiento" name="motivo_tratamiento" class="field-input text-input" required>
                             <option value="">Seleccione...</option>
-                            <option value="varroa" {{ old('motivo_tratamiento')=='varroa'  ? 'selected':'' }}>Varroa</option>
-                            <option value="nosema" {{ old('motivo_tratamiento')=='nosema' ? 'selected':'' }}>Nosema</option>
-                            <option value="otro" {{ old('motivo_tratamiento')=='otro'   ? 'selected':'' }}>Otro</option>
+                            <option value="varroa" {{ old('motivo_tratamiento',$visita->motivo_tratamiento??'')=='varroa'   ? 'selected':'' }}>Varroa</option>
+                            <option value="nosema" {{ old('motivo_tratamiento',$visita->motivo_tratamiento??'')=='nosema'   ? 'selected':'' }}>Nosema</option>
+                            <option value="otro" {{ old('motivo_tratamiento',$visita->motivo_tratamiento??'')=='otro'     ? 'selected':'' }}>Otro</option>
                         </select>
 
                         <input
@@ -77,7 +85,7 @@
                             type="text"
                             class="field-input text-input mt-2"
                             placeholder="Especifique otro motivo"
-                            value="{{ old('motivo_otro') }}"
+                            value="{{ old('motivo_otro', (isset($visita) && $visita->motivo_tratamiento === 'otro' ? $visita->motivo : '')) }}"
                             style="display:none;"
                         >
                         @error('motivo_otro')
@@ -108,7 +116,7 @@
                             Responsable
                         </label>
                         <input type="text" id="responsable" name="responsable" class="field-input text-input"
-                            placeholder="Nombre del responsable del tratamiento" value="{{ old('responsable') }}" required>
+                            placeholder="Nombre del responsable del tratamiento" value="{{ old('responsable',$visita->responsable??'') }}">
                         <span class="field-helper">Persona que aplicó o supervisó el tratamiento</span>
                     </div>
                 </div>
@@ -147,7 +155,7 @@
                             <label for="nombre_comercial_medicamento" class="field-label">Nombre Comercial</label>
                             <input type="text" id="nombre_comercial_medicamento" name="nombre_comercial_medicamento"
                                 class="field-input text-input" placeholder="Ej: Apistan, CheckMite+, etc."
-                                value="{{ old('nombre_comercial_medicamento') }}" required>
+                                value="{{ old('nombre_comercial_medicamento',$visita->nombre_comercial_medicamento??'') }}">
                         </div>
                     </div>
 
@@ -166,7 +174,7 @@
                             <label for="principio_activo_medicamento" class="field-label">Principio Activo</label>
                             <input type="text" id="principio_activo_medicamento" name="principio_activo_medicamento"
                                 class="field-input text-input" placeholder="Ej: Fluvalinato, Coumafos, etc."
-                                value="{{ old('principio_activo_medicamento') }}" required>
+                                value="{{ old('principio_activo_medicamento',$visita->principio_activo_medicamento??'') }}">
                         </div>
                     </div>
 
@@ -184,7 +192,7 @@
                             <label for="periodo_resguardo" class="field-label">Período de Resguardo</label>
                             <input type="text" id="periodo_resguardo" name="periodo_resguardo"
                                 class="field-input text-input" placeholder="Ej: 30, 45, etc."
-                                value="{{ old('periodo_resguardo') }}" required>
+                                value="{{ old('periodo_resguardo',$visita->periodo_resguardo??'') }}">
                             <span class="field-helper">Tiempo de espera en días antes de cosechar miel</span>
                         </div>
                     </div>
@@ -217,7 +225,7 @@
                             Observaciones
                         </label>
                         <textarea id="observaciones" name="observaciones" class="field-textarea" rows="4"
-                            placeholder="Anote cualquier observación relevante sobre la aplicación del medicamento, condiciones climáticas, reacciones observadas, etc.">{{ old('observaciones') }}</textarea>
+                            placeholder="Anote cualquier observación relevante sobre la aplicación del medicamento, condiciones climáticas, reacciones observadas, etc.">{{ old('observaciones',$visita->observaciones??'') }}</textarea>
                         <span class="field-helper">Información adicional que considere relevante para el registro</span>
                     </div>
                 </div>
