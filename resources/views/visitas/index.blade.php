@@ -285,7 +285,13 @@
                                                 </div>
                                                 <div class="stat-content">
                                                     <span class="stat-label">Última visita</span>
-                                                    <span class="stat-value">{{-- Fecha última visita --}}</span>
+                                                    <span class="stat-value fecha-horizontal">
+                                                        @if($apiario->ultimaVisita)
+                                                            {{ \Carbon\Carbon::parse($apiario->ultimaVisita->created_at)->format('d/m/Y') }}
+                                                        @else
+                                                            Sin registros
+                                                        @endif
+                                                    </span>
                                                 </div>
                                             </div>
                                             <div class="stat">
@@ -460,7 +466,11 @@
                                                 </div>
                                                 <div class="stat-content">
                                                     <span class="stat-label">Última visita</span>
-                                                    <span class="stat-value">{{-- Fecha última visita --}}</span>
+                                                    <span class="stat-value fecha-horizontal">@if($apiario->ultimaVisita)
+                                                            {{ \Carbon\Carbon::parse($apiario->ultimaVisita->created_at)->format('d/m/Y') }}
+                                                        @else
+                                                            Sin registros
+                                                        @endif</span>
                                                 </div>
                                             </div>
                                             <div class="stat">
