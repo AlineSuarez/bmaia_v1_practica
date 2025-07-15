@@ -182,6 +182,14 @@
                                                                 <span class="option-desc">Alimentos, metodos e insumos a utilizar</span>
                                                             </div>
                                                         </a>
+                                                        <a href="{{ route('generate.document.reina', $apiario->id) }}"
+                                                            class="dropdown-option">
+                                                            <div class="option-icon"><i class="fas fa-crown"></i></div>
+                                                            <div class="option-content">
+                                                                <span class="option-title">Registro de Reina</span>
+                                                                <span class="option-desc">Calidad y reemplazos de reina</span>
+                                                            </div>
+                                                        </a>
                                                     </div>
                                                 </div>
                                             </div>
@@ -247,6 +255,14 @@
                                                             <span class="option-title">Alimentacion</span>
                                                             <p class="option-description">Estado nutricional e insumos utilizados
                                                             </p>
+                                                        </div>
+                                                        <div class="option-indicator"><i class="fas fa-chevron-right"></i></div>
+                                                    </a>
+                                                    <a href="{{ route('visitas.create4', $apiario) }}" class="registration-option">
+                                                        <div class="option-icon"><i class="fas fa-crown"></i></div>
+                                                        <div class="option-content">
+                                                            <span class="option-title">Reina</span>
+                                                            <p class="option-description">Calidad y reemplazos de reina</p>
                                                         </div>
                                                         <div class="option-indicator"><i class="fas fa-chevron-right"></i></div>
                                                     </a>
@@ -363,6 +379,14 @@
                                                                 <span class="option-desc">Alimentos, metodos e insumos a utilizar</span>
                                                             </div>
                                                         </a>
+                                                        <a href="{{ route('generate.document.reina', $apiario->id) }}"
+                                                            class="dropdown-option">
+                                                            <div class="option-icon"><i class="fas fa-crown"></i></div>
+                                                            <div class="option-content">
+                                                                <span class="option-title">Registro de Reina</span>
+                                                                <span class="option-desc">Calidad y reemplazos de reina</span>
+                                                            </div>
+                                                        </a>
                                                     </div>
                                                 </div>
                                             </div>
@@ -428,6 +452,14 @@
                                                             <span class="option-title">Alimentacion</span>
                                                             <p class="option-description">Estado nutricional e insumos utilizados
                                                             </p>
+                                                        </div>
+                                                        <div class="option-indicator"><i class="fas fa-chevron-right"></i></div>
+                                                    </a>
+                                                    <a href="{{ route('visitas.create4', $apiario) }}" class="registration-option">
+                                                        <div class="option-icon"><i class="fas fa-crown"></i></div>
+                                                        <div class="option-content">
+                                                            <span class="option-title">Reina</span>
+                                                            <p class="option-description">Calidad y reemplazos de reina</p>
                                                         </div>
                                                         <div class="option-indicator"><i class="fas fa-chevron-right"></i></div>
                                                     </a>
@@ -542,6 +574,14 @@
                                                                 <span class="option-desc">Alimentos, metodos e insumos a utilizar</span>
                                                             </div>
                                                         </a>
+                                                        <a href="{{ route('generate.document.reina', $apiario->id) }}"
+                                                            class="dropdown-option">
+                                                            <div class="option-icon"><i class="fas fa-crown"></i></div>
+                                                            <div class="option-content">
+                                                                <span class="option-title">Registro de Reina</span>
+                                                                <span class="option-desc">Calidad y reemplazos de reina</span>
+                                                            </div>
+                                                        </a>
                                                     </div>
                                                 </div>
                                             </div>
@@ -607,6 +647,14 @@
                                                             <span class="option-title">Alimentacion</span>
                                                             <p class="option-description">Estado nutricional e insumos utilizados
                                                             </p>
+                                                        </div>
+                                                        <div class="option-indicator"><i class="fas fa-chevron-right"></i></div>
+                                                    </a>
+                                                    <a href="{{ route('visitas.create4', $apiario) }}" class="registration-option">
+                                                        <div class="option-icon"><i class="fas fa-crown"></i></div>
+                                                        <div class="option-content">
+                                                            <span class="option-title">Reina</span>
+                                                            <p class="option-description">Calidad y reemplazos de reina</p>
                                                         </div>
                                                         <div class="option-indicator"><i class="fas fa-chevron-right"></i></div>
                                                     </a>

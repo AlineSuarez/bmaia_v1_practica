@@ -105,6 +105,11 @@ Route::middleware(['auth'])->group(function () {
     Route::post('visitas/create3/{apiario}', [VisitaController::class, 'storeAlimentacion'])->name('visitas.store3');
     Route::get('/generate-document/alimentacion-record/{apiarioId}', [DocumentController::class, 'generateAlimentacionDocument'])->name('generate.document.alimentacion');
     Route::get('visitas/create3/{apiario}/{visita}/edit', [VisitaController::class, 'editAlimentacion'])->name('visitas.alimentacion.edit');
+    // Rutas para registro de Reina
+    Route::get('visitas/create4/{apiario}', [VisitaController::class, 'createReina'])->name('visitas.create4');
+    Route::post('visitas/create4/{apiario}', [VisitaController::class, 'storeReina'])->name('visitas.store4');
+    Route::get('/generate-document/reina-record/{apiarioId}', [DocumentController::class, 'generateReinaDocument'])->name('generate.document.reina');
+    Route::get('visitas/create4/{apiario}/{visita}/edit', [VisitaController::class, 'editReina'])->name('visitas.reina.edit');
 });
 
 

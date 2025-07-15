@@ -206,6 +206,22 @@ class VisitaController extends Controller
             ->with('success', 'Inspección registrada correctamente.');
     }
 
+    public function createReina($id_apiario)
+    {
+        $apiario = Apiario::where('user_id', auth()->id())->findOrFail($id_apiario);
+
+        $visita = null;
+        if ($id = request('visita_id')) {
+            $visita = Visita::where('id', $id)
+                            ->where('apiario_id', $id_apiario)
+                            ->where('tipo_visita', 'Inspección de Reina')
+                            ->firstOrFail();
+        }
+
+        return view('visitas.create4', compact('apiario', 'visita'));
+    }
+
+
     public function storeMedicamentos(Request $request, Apiario $apiario)
     {
         // 1) validación común
@@ -459,6 +475,99 @@ class VisitaController extends Controller
 
         // 3) llama a la vista de create3.blade (reutilizada para edit)
         return view('visitas.create3', compact('apiario', 'visita', 'estado'));
+    }
+
+    public function storeReina(Request $request, Apiario $apiario)
+    {
+        // Validar los datos del formulario
+        $data = $request->validate([
+            'calidad_reina.postura_reina'          => 'nullable|string|max:255',
+            'calidad_reina.estado_cria'            => 'nullable|string|max:255',
+            'calidad_reina.postura_zanganos'       => 'nullable|string|max:255',
+            'calidad_reina.origen_reina'           => 'nullable|in:natural,comprada,fecundada,virgen',
+            'calidad_reina.raza'                   => 'nullable|string|max:255',
+            'calidad_reina.linea_genetica'         => 'nullable|string|max:255',
+            'calidad_reina.fecha_introduccion'     => 'nullable|date',
+            'calidad_reina.estado_actual'          => 'nullable|in:activa,fallida,reemplazada',
+            'calidad_reina.reemplazos_realizados'  => 'nullable|array',
+            'visita_id'                            => 'nullable|exists:visitas,id',
+        ]);
+
+        // Extraer los datos de calidad_reina
+        $calidadReinaData = $data['calidad_reina'] ?? [];
+
+        // Procesar reemplazos realizados si existen
+        $reemplazosRealizados = null;
+        if (isset($calidadReinaData['reemplazos_realizados'])) {
+            // Filtrar reemplazos que tengan al menos fecha o motivo
+            $reemplazos = array_filter($calidadReinaData['reemplazos_realizados'], function($reemplazo) {
+                return !empty($reemplazo['fecha']) || !empty($reemplazo['motivo']);
+            });
+            $reemplazosRealizados = !empty($reemplazos) ? $reemplazos : null;
+        }
+
+        DB::transaction(function () use ($request, $apiario, $calidadReinaData, $reemplazosRealizados) {
+            // Si viene visita_id, actualizamos la visita existente
+            if ($request->filled('visita_id')) {
+                $visita = Visita::findOrFail($request->visita_id);
+                $visita->update([
+                    'fecha_visita' => now(),
+                    'tipo_visita'  => 'Inspección de Reina',
+                ]);
+            } else {
+                // Crear una nueva visita
+                $visita = Visita::create([
+                    'apiario_id'   => $apiario->id,
+                    'user_id'      => auth()->id(),
+                    'fecha_visita' => now(),
+                    'tipo_visita'  => 'Inspección de Reina',
+                ]);
+            }
+
+            // Guardar un registro de calidad_reina para cada colmena del apiario
+            $calidadReinaIds = [];
+            foreach ($apiario->colmenas as $colmena) {
+                $calidadReina = CalidadReina::updateOrCreate(
+                    [
+                        'colmena_id' => $colmena->id,
+                        'visita_id'  => $visita->id,
+                    ],
+                    [
+                        'postura_reina'         => $calidadReinaData['postura_reina'] ?? null,
+                        'estado_cria'           => $calidadReinaData['estado_cria'] ?? null,
+                        'postura_zanganos'      => $calidadReinaData['postura_zanganos'] ?? null,
+                        'origen_reina'          => $calidadReinaData['origen_reina'] ?? null,
+                        'raza'                  => $calidadReinaData['raza'] ?? null,
+                        'linea_genetica'        => $calidadReinaData['linea_genetica'] ?? null,
+                        'fecha_introduccion'    => $calidadReinaData['fecha_introduccion'] ?? null,
+                        'estado_actual'         => $calidadReinaData['estado_actual'] ?? null,
+                        'reemplazos_realizados' => $reemplazosRealizados,
+                    ]
+                );
+
+                // Almacenar los IDs de las reinas creadas
+                $calidadReinaIds[] = $calidadReina->id;
+            }
+
+            // Relacionar el primer registro de calidad_reina con la visita
+            if (!empty($calidadReinaIds)) {
+                $visita->calidad_reina_id = $calidadReinaIds[0];
+                $visita->save();
+            }
+        });
+
+        return redirect()->route('visitas.historial', $apiario)
+            ->with('success', 'Registro de Calidad de Reina guardado correctamente.');
+    }
+
+    public function editReina($id_apiario, $visita_id)
+    {
+        $apiario = Apiario::where('user_id', auth()->id())->findOrFail($id_apiario);
+        $visita = Visita::where('id', $visita_id)->where('apiario_id', $id_apiario)->firstOrFail();
+
+        $calidadReina = CalidadReina::where('visita_id', $visita_id)->first();
+
+        return view('visitas.create4', compact('apiario', 'visita', 'calidadReina'));
     }
 
 

@@ -37,6 +37,10 @@
                                     <div class="stat-number">{{ $apiario->visitas->where('tipo_visita', 'Alimentación')->count() }}</div>
                                     <div class="stat-label">Alimentación</div>
                                 </div>
+                                <div class="stat-card">
+                                    <div class="stat-number">{{ $apiario->visitas->where('tipo_visita', 'Inspección de Reina')->count() }}</div>
+                                    <div class="stat-label">Reina</div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -109,6 +113,12 @@
                                         <div class="mobile-stat-label">Alim.</div>
                                     </div>
                                 </div>
+                                <div class="col-3">
+                                    <div class="mobile-stat-card">
+                                        <div class="mobile-stat-number">{{ $apiario->visitas->where('tipo_visita', 'Inspección de Reina')->count() }}</div>
+                                        <div class="mobile-stat-label">Reina</div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
@@ -141,6 +151,13 @@
                                         <i class="fas fa-pills me-2"></i>
                                         <span class="tab-text">Alimentación</span>
                                         <span class="tab-badge">{{ $apiario->visitas->where('tipo_visita', 'Alimentación')->count() }}</span>
+                                    </button>
+                                </li>
+                                <li class="custom-nav-item" role="presentation">
+                                    <button class="custom-nav-link" id="alimentacion-tab" data-bs-toggle="tab" data-bs-target="#reina" type="button" role="tab">
+                                        <i class="fas fa-pills me-2"></i>
+                                        <span class="tab-text">Reina</span>
+                                        <span class="tab-badge">{{ $apiario->visitas->where('tipo_visita', 'Inspección de Reina')->count() }}</span>
                                     </button>
                                 </li>
                             </ul>
@@ -465,7 +482,77 @@
                                     </div>
                                 @endif
                             </div>
-                                
+                            
+                            <!-- Reina Tab -->
+                            <div class="tab-pane fade" id="reina" role="tabpanel"> 
+                                @if($apiario->visitas->where('tipo_visita', 'Inspección de Reina')->isEmpty())
+                                    <div class="no-data-message">
+                                        <i class="fas fa-info-circle me-2"></i>
+                                        No hay registros de alimentación.
+                                    </div>
+                                @else
+                                    <div class="table-container">
+                                        <div class="table-header">
+                                            <h5><i class="fas fa-utensils me-2"></i>Reina ({{ $apiario->visitas->where('tipo_visita', 'Inspección de Reina')->count() }} registros)</h5>
+                                            <small class="text-muted">Historial de reina y reemplazos realizados.</small>
+                                        </div>
+                                        <div class="table-responsive">
+                                            <table class="custom-table" id="reinaTable">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Postura Reina</th>
+                                                        <th>Estado Cria</th>
+                                                        <th>Postura Zánganos</th>
+                                                        <th>Origen Reina</th>
+                                                        <th>Raza</th>
+                                                        <th>Linea Genetica</th>
+                                                        <th>Fecha Introducción</th>
+                                                        <th>Estado Actual</th>
+                                                        <th>Fecha Reemplazo</th>
+                                                        <th>Acciones</th>
+                                                    </tr>
+                                                </thead>
+                                                @php
+                                                    $colmenasIds = $apiario->colmenas->pluck('id'); // ← IDs de las colmenas del apiario
+                                                    $reina = \App\Models\CalidadReina::whereIn('colmena_id', $colmenasIds)
+                                                                ->latest('fecha_introduccion')
+                                                                ->first();
+                                                @endphp
+
+                                                <tbody>
+                                                @if ($reina)
+                                                    <tr>
+                                                        <td>{{ $reina->postura_reina }}</td>
+                                                        <td>{{ $reina->estado_cria }}</td>
+                                                        <td>{{ $reina->postura_zanganos }}</td>
+                                                        <td>{{ $reina->origen_reina }}</td>
+                                                        <td>{{ $reina->raza }}</td>
+                                                        <td>{{ $reina->linea_genetica }}</td>
+                                                        <td>{{ $reina->fecha_introduccion ? \Carbon\Carbon::parse($reina->fecha_introduccion)->format('d/m/Y') : '-' }}</td>
+                                                        <td>{{ $reina->estado_actual }}</td>
+                                                        <td>{{ $reina->fecha_reemplazo ? \Carbon\Carbon::parse($reina->fecha_reemplazo)->format('d/m/Y') : '-' }}</td>
+                                                        <td class="actions-cell">
+                                                            <a href="{{ route('generate.document.reina', $apiario->id) }}"
+                                                                class="btn btn-outline-secondary btn-sm" title="Generar PDF" target="_blank">
+                                                                <i class="fas fa-file-pdf"></i>
+                                                            </a>
+                                                            <a href="{{ route('visitas.reina.edit', [$apiario->id, $reina->visita_id]) }}"
+                                                                class="btn btn-outline-primary btn-sm">
+                                                                <i class="fas fa-edit"></i>
+                                                            </a>
+                                                        </td>
+                                                    </tr>
+                                                @else
+                                                    <tr>
+                                                        <td colspan="6" class="text-center text-muted">No hay datos de reina registrados.</td>
+                                                    </tr>
+                                                @endif
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                @endif
+                            </div>
                         </div>
                     @endif
 
