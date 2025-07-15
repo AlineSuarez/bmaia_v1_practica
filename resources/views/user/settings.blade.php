@@ -206,7 +206,7 @@
             </section>
 
             <!-- SECCIÓN: DATOS DE FACTURACIÓN -->
-            <section class="tab-pane fade" id="billing" role="tabpanel" aria-labelledby="billing-tab" disabled>
+            <section class="tab-pane fade" id="billing" role="tabpanel" aria-labelledby="billing-tab">
                 <div class="card settings-card mb-4">
                     <div class="card-header">
                         <h3>Datos de Facturación</h3>
@@ -215,24 +215,24 @@
                             todas sus ventas brutas.</p>
                     </div>
                     <div class="card-body">
-                        <form id="billing-form" class="billing-form">
+                        <form id="billing-form" method="POST" action="{{ route('datos-facturacion.store') }}">
+                            @csrf
+
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="billing_razon_social">Razón Social</label>
-                                        <input type="text" class="form-control" id="billing_razon_social"
-                                            name="billing_razon_social" value="{{ $user->billing_razon_social ?? '' }}">
-                                        <small class="form-text text-muted">Nombre legal de la empresa o persona
-                                            natural</small>
+                                        <label for="razon_social">Razón Social</label>
+                                        <input type="text" class="form-control" id="razon_social" name="razon_social"
+                                            value="{{ old('razon_social', $datosFacturacion->razon_social ?? '') }}">
+                                        <small class="form-text text-muted">Nombre legal de la empresa o persona natural</small>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="billing_rut">RUT</label>
-                                        <input type="text" class="form-control" id="billing_rut" name="billing_rut"
-                                            pattern="\d{1,2}\.\d{3}\.\d{3}-[0-9Kk]{1}"
-                                            title="Ingrese un RUT válido (Ej: 12.345.678-9)"
-                                            value="{{ $user->billing_rut ?? '' }}">
+                                        <label for="rut">RUT</label>
+                                        <input type="text" class="form-control" id="rut" name="rut"
+                                            pattern="\d{1,2}\.\d{3}\.\d{3}-[0-9Kk]{1}" title="Ej: 12.345.678-9"
+                                            value="{{ old('rut', $datosFacturacion->rut ?? '') }}">
                                         <small class="form-text text-muted">RUT de la empresa o persona natural</small>
                                     </div>
                                 </div>
@@ -241,17 +241,17 @@
                             <div class="row mt-3">
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="billing_giro">Giro o Actividad</label>
-                                        <input type="text" class="form-control" id="billing_giro" name="billing_giro"
-                                            value="{{ $user->billing_giro ?? '' }}">
+                                        <label for="giro">Giro o Actividad</label>
+                                        <input type="text" class="form-control" id="giro" name="giro"
+                                            value="{{ old('giro', $datosFacturacion->giro ?? '') }}">
                                         <small class="form-text text-muted">Actividad económica registrada en el SII</small>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="billing_direccion">Dirección Comercial</label>
-                                        <input type="text" class="form-control" id="billing_direccion"
-                                            name="billing_direccion" value="{{ $user->billing_direccion ?? '' }}">
+                                        <label for="direccion_comercial">Dirección Comercial</label>
+                                        <input type="text" class="form-control" id="direccion_comercial" name="direccion_comercial"
+                                            value="{{ old('direccion_comercial', $datosFacturacion->direccion_comercial ?? '') }}">
                                     </div>
                                 </div>
                             </div>
@@ -263,7 +263,7 @@
                                         <select id="billing_region" class="form-select" name="billing_region">
                                             <option value="">Seleccione una región</option>
                                             @foreach($regiones as $region)
-                                                <option value="{{ $region->id }}" {{ ($user->billing_region ?? '') == $region->id ? 'selected' : '' }}>
+                                                <option value="{{ $region->id }}" {{ (old('billing_region', $datosFacturacion->region_id ?? '') == $region->id) ? 'selected' : '' }}>
                                                     {{ $region->nombre }}
                                                 </option>
                                             @endforeach
@@ -273,16 +273,17 @@
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label for="billing_comuna">Comuna</label>
-                                        <select id="billing_comuna" class="form-select" name="billing_comuna" disabled>
+                                        <select id="billing_comuna" class="form-select" name="billing_comuna" {{ old('billing_comuna', $datosFacturacion->comuna_id ?? '') ? '' : 'disabled' }}>
                                             <option value="">Seleccione una comuna</option>
+                                            <!-- Las opciones de las comunas se agregarán aquí dinámicamente -->
                                         </select>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group">
-                                        <label for="billing_ciudad">Ciudad</label>
-                                        <input type="text" class="form-control" id="billing_ciudad" name="billing_ciudad"
-                                            value="{{ $user->billing_ciudad ?? '' }}">
+                                        <label for="ciudad">Ciudad</label>
+                                        <input type="text" class="form-control" id="ciudad" name="ciudad"
+                                            value="{{ old('ciudad', $datosFacturacion->ciudad ?? '') }}">
                                     </div>
                                 </div>
                             </div>
@@ -290,38 +291,36 @@
                             <div class="row mt-3">
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="billing_telefono">Teléfono</label>
+                                        <label for="telefono">Teléfono</label>
                                         <div class="input-group">
                                             <span class="input-group-text">+56</span>
-                                            <input type="tel" class="form-control" id="billing_telefono"
-                                                name="billing_telefono" value="{{ $user->billing_telefono ?? '' }}">
+                                            <input type="tel" class="form-control" id="telefono" name="telefono"
+                                                value="{{ old('telefono', $datosFacturacion->telefono ?? '') }}">
                                         </div>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="billing_email">Correo electrónico</label>
-                                        <input type="email" class="form-control" id="billing_email" name="billing_email"
-                                            value="{{ $user->billing_email ?? '' }}">
+                                        <label for="correo">Correo electrónico</label>
+                                        <input type="email" class="form-control" id="correo" name="correo"
+                                            value="{{ old('correo', $datosFacturacion->correo ?? '') }}">
                                     </div>
                                 </div>
                             </div>
 
                             <div class="dte-authorization mt-4">
                                 <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" id="billing_authorize_email"
-                                        name="billing_authorize_email" {{ ($user->billing_authorize_email ?? false) ? 'checked' : '' }}>
-                                    <label class="form-check-label" for="billing_authorize_email">
-                                        <strong>Autorización voluntaria de envío del Documento Tributario Electrónico por
-                                            Email</strong>
+                                    <input class="form-check-input" type="checkbox" id="autorizacion_envio_dte" name="autorizacion_envio_dte"
+                                        {{ old('autorizacion_envio_dte', $datosFacturacion->autorizacion_envio_dte ?? false) ? 'checked' : '' }}>
+                                    <label class="form-check-label" for="autorizacion_envio_dte">
+                                        <strong>Autorizo el envío del Documento Tributario Electrónico por Email</strong>
                                     </label>
                                 </div>
                                 <div class="mt-2 ps-4">
                                     <div class="form-group">
-                                        <label for="billing_email_dte">Acepto el envío electrónico de factura o boleta por
-                                            mail a:</label>
-                                        <input type="email" class="form-control" id="billing_email_dte"
-                                            name="billing_email_dte" value="{{ $user->billing_email_dte ?? '' }}">
+                                        <label for="correo_envio_dte">Enviar documentos al correo:</label>
+                                        <input type="email" class="form-control" id="correo_envio_dte" name="correo_envio_dte"
+                                            value="{{ old('correo_envio_dte', $datosFacturacion->correo_envio_dte ?? '') }}">
                                         <small class="form-text text-muted">
                                             <a href="#" data-bs-toggle="modal" data-bs-target="#dteInfoModal">
                                                 Más información sobre DTE
@@ -332,11 +331,11 @@
                             </div>
 
                             <div class="form-actions mt-4">
-                                <button type="button" class="btn btn-primary" id="saveBillingBtn">Guardar Datos de
-                                    Facturación</button>
+                                <button type="submit" class="btn btn-primary">Guardar Datos de Facturación</button>
                                 <button type="reset" class="btn btn-outline-secondary ms-2">Restablecer</button>
                             </div>
                         </form>
+
                     </div>
                 </div>
 

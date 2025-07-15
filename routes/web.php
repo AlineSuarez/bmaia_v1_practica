@@ -25,6 +25,7 @@ use App\Http\Controllers\ReminderController;
 use App\Http\Controllers\ImportantDateController;
 use App\Http\Controllers\EmergencyContactController;
 use App\Http\Controllers\SistemaExpertoController;
+use App\Http\Controllers\DatoFacturacionController;
 
 //Rutas de las policies 
 Route::view('/politicas-de-privacidad', 'legal.privacidad')->name('privacidad');
@@ -246,7 +247,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/user/update-settings', [UserController::class, 'updateSettings'])->name('user.updateSettings');
     Route::post('/user/update-plan', [UserController::class, 'updatePlan'])->name('user.updatePlan');
     // FACTURACION
-    Route::patch('/user/settings/invoice-settings', [UserController::class, 'updateInvoiceSettings'])->name('user.update.invoiceSettings');
+    Route::post('user/datos-facturacion', [DatoFacturacionController::class, 'store'])->name('datos-facturacion.store');
     // permisos
     Route::get('/user/settings/permissions', [PermissionsController::class, 'index'])->name('permissions.index');
     Route::post('/user/settings/permissions', [PermissionsController::class, 'update'])->name('permissions.update');
@@ -256,7 +257,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/user/settings/preferences', [PreferencesController::class, 'update'])->name('preferences.update');
     Route::post('/user/settings/preferences/reset', [PreferencesController::class, 'reset'])->name('preferences.reset');
 
-    // formato flobal de fechas test
+    // formato global de fechas test
     Route::get('/user/settings/preferences/demo', [PreferencesController::class, 'dateFormatDemo'])
         ->name('preferences.demo')
         ->middleware('auth');

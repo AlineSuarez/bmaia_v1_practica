@@ -8,6 +8,7 @@ use Auth;
 use App\Models\User;
 use App\Models\Region;
 use App\Models\Comuna;
+use App\Models\DatoFacturacion;
 
 class UserController extends Controller
 {
@@ -28,8 +29,9 @@ class UserController extends Controller
     public function settings()
     {
         $user = Auth::user();
+        $datosFacturacion = DatoFacturacion::where('user_id', $user->id)->first();
         $regiones = Region::with('comunas')->get();
-        return view('user.settings', compact('user', 'regiones'));
+        return view('user.settings', compact('user', 'regiones','datosFacturacion'));
     }
 
     public function updateProfile()
@@ -97,30 +99,6 @@ class UserController extends Controller
         return back()->with('success', 'Avatar actualizado correctamente.');
     }
 
-    public function updateInvoiceSettings(Request $request)
-    {
-        $data = $request->validate([
-            'invoice_company_name' => 'nullable|string|max:100',
-            'invoice_rut' => ['nullable', 'regex:/^\d{1,2}\.\d{3}\.\d{3}-[0-9Kk]{1}$/'],
-            'invoice_activity' => 'nullable|string|max:100',
-            'invoice_address' => 'nullable|string|max:150',
-            'invoice_region' => 'nullable|exists:regions,id',
-            'invoice_comuna' => 'nullable|exists:comunas,id',
-            'invoice_city' => 'nullable|string|max:50',
-            'invoice_phone' => 'nullable|digits:9',
-            'invoice_email' => 'nullable|email|max:100',
-            'invoice_email_opt_in' => 'nullable|boolean',
-            'invoice_email_dte' => 'nullable|email|max:100',
-        ]);
-
-        Auth::user()->update($data);
-
-        if ($request->wantsJson()) {
-            return response()->json(['message' => 'Invoice settings guardados']);
-        }
-        return back()->with('success_settings', 'Invoice settings actualizados');
-    }
-
     // Restablecer contraseña del usuario
     public function updatePassword(Request $request)
     {
@@ -135,26 +113,6 @@ class UserController extends Controller
         $user->password = Hash::make($request->new_password);
         $user->save();
         return redirect()->back()->with('success_password', 'Contraseña actualizada correctamente.');
-    }
-
-    // Datos de facturacion
-    public function updateBilling(Request $request)
-    {
-        $data = $request->validate([
-            'billing_razon_social' => ['nullable', 'string', 'max:100'],
-            'billing_rut' => ['nullable', 'regex:/^\d{1,2}\.\d{3}\.\d{3}-[0-9Kk]{1}$/'],
-            'billing_giro' => ['nullable', 'string', 'max:100'],
-            'billing_direccion' => ['nullable', 'string', 'max:150'],
-            'billing_region' => ['nullable', 'exists:regions,id'],
-            'billing_comuna' => ['nullable', 'exists:comunas,id'],
-            'billing_ciudad' => ['nullable', 'string', 'max:50'],
-            'billing_telefono' => ['nullable', 'digits:9'],
-            'billing_email' => ['nullable', 'email', 'max:100'],
-            'billing_authorize_email' => ['sometimes', 'accepted'],
-            'billing_email_dte' => ['nullable', 'email', 'max:100'],
-        ]);
-        auth()->user()->update($data);
-        return back()->with('success_settings', 'Datos de facturación actualizados.');
     }
 
     // Actualizar permisos
