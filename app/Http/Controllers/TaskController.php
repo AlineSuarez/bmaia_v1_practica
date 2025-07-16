@@ -12,19 +12,27 @@ use Barryvdh\DomPDF\Facade\Pdf;
 
 class TaskController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
     public function index()
     {
         // Obtener el usuario autenticado
         $user = Auth::user();
 
         // Obtener solo las subtareas que pertenecen al usuario autenticado
-        $subtareas = Subtarea::where('user_id', $user->id)->get();
+        $subtareas = SubTarea::where('user_id', $user->id)->get();
+
+        // FILTRA LOS NULOS AQUÍ
+        $subtareas = $subtareas->filter();
 
         // Obtener los ids de las TareasGenerales asociadas a las subtareas
         $tareasGeneralesIds = $subtareas->pluck('tarea_general_id')->unique();
         $listaEtapa = TareaGeneral::with('predefinidas')
-        ->has('predefinidas') // Solo etapas con tareas predefinidas asociadas
-        ->get();
+            ->has('predefinidas') // Solo etapas con tareas predefinidas asociadas
+            ->get();
         // Obtener las TareasGenerales correspondientes a las subtareas
         $tareasGenerales = TareaGeneral::whereIn('id', $tareasGeneralesIds)
             ->with([

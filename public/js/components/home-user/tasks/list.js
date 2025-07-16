@@ -1,4 +1,8 @@
-// === CONFIGURACIÓN GLOBAL ===
+/**
+ * ================================================================
+ * CONFIGURACIÓN Y VARIABLES GLOBALES
+ * ================================================================ */
+
 const TaskConfig = {
     csrfToken: document
         .querySelector('meta[name="csrf-token"]')
@@ -9,541 +13,492 @@ const TaskConfig = {
         deleteTarea: "/tareas/",
     },
     selectors: {
-        tasksGrid: "#tasksGrid",
+        tasksTable: "#tasksTable",
+        tasksTableBody: "#tasksTableBody",
+        tasksContainer: "#tasksTableContainer",
+        paginationContainer: "#tasksPagination",
         loadingState: "#taskListLoading",
     },
 };
 
-// Variable para rastrear la vista actual
-let currentView = "cards";
-let filtroActivo = "all";
+// Estado global de la aplicación
+const AppState = {
+    filtroActivo: "all",
+    paginacion: {
+        porPagina: 8,
+        paginaActual: 1,
+        totalPaginas: 1,
+    },
+    tareas: [],
+    isLoading: false,
+};
 
 /**
  * ================================================================
- * FUNCIONES PRINCIPALES DE GESTIÓN
+ * INICIALIZACIÓN
  * ================================================================ */
 
-function recargarSubtareas() {
-    mostrarGlobalLoader(true); // Mostrar loader global
-    mostrarLoadingState(true);
+$(document).ready(function () {
+    inicializarApp();
+});
 
-    fetch(TaskConfig.endpoints.datosSubtareas)
-        .then((response) => response.json())
-        .then((data) => {
-            actualizarLista(data);
-            if (typeof actualizarKanban === "function") actualizarKanban(data);
-            if (typeof actualizarTimeline === "function")
-                actualizarTimeline(data);
-        })
-        .catch((error) => {
-            console.error("❌ Error al recargar las subtareas:", error);
-            mostrarNotificacion("error", "Error al cargar los datos");
-        })
-        .finally(() => {
-            mostrarLoadingState(false);
-            // mostrarGlobalLoader(false); // <-- ELIMINA O COMENTA ESTA LÍNEA
-        });
+function guardarPaginaActual(pagina) {
+    localStorage.setItem("tareas_pagina_actual", pagina);
 }
 
-function actualizarLista(tareasGenerales) {
-    if (currentView === "cards") {
-        actualizarVistaTargetas(tareasGenerales);
-    } else {
-        actualizarVistaTabla(tareasGenerales);
+function obtenerPaginaActual() {
+    const pagina = localStorage.getItem("tareas_pagina_actual");
+    return pagina ? parseInt(pagina) : 1;
+}
+
+// Al inicializar la app, recupera la página guardada
+function inicializarApp() {
+    AppState.paginacion.paginaActual = obtenerPaginaActual();
+
+    // Recuperar filtro guardado
+    const filtroGuardado = localStorage.getItem("tareas_filtro_activo");
+    if (filtroGuardado) {
+        AppState.filtroActivo = filtroGuardado;
+        // Marcar el botón activo en la UI si aplica
+        $(".filter-btn").removeClass("active");
+        $(`.filter-btn[data-filter="${filtroGuardado}"]`).addClass("active");
     }
 
-    actualizarFooterContadores();
+    configurarEventListeners();
+    configurarFiltros();
+    configurarSelect2();
+    cargarTareasIniciales();
 }
 
-function actualizarVistaTargetas(tareasGenerales) {
-    const tasksGrid = document.querySelector("#tasksGrid");
-    if (!tasksGrid) return;
+/**
+ * ================================================================
+ * GESTIÓN DE DATOS Y ESTADO
+ * ================================================================ */
 
-    // Limpiar grid
-    tasksGrid.innerHTML = "";
+async function cargarTareasIniciales() {
+    // Solo cargar si no hay tareas ya renderizadas
+    const existingRows = document.querySelectorAll(".task-row");
+    if (existingRows.length > 0) {
+        AppState.tareas = Array.from(existingRows).map((row) => ({
+            id: row.getAttribute("data-task-id"),
+            estado: row.getAttribute("data-status"),
+            prioridad: row.getAttribute("data-priority"),
+        }));
+        paginarTabla();
+        configurarSelect2();
+    } else {
+        await recargarTareas();
+    }
+}
 
-    // Verificar si hay tareas
-    const totalTareas = tareasGenerales.reduce(
-        (acc, tg) => acc + tg.subtareas.length,
-        0
-    );
+async function recargarTareas() {
+    if (AppState.isLoading) return;
 
-    if (totalTareas === 0) {
-        mostrarEstadoVacio(tasksGrid);
+    AppState.isLoading = true;
+    mostrarLoadingState(true);
+
+    try {
+        const response = await fetch(TaskConfig.endpoints.datosSubtareas);
+        const data = await response.json();
+
+        if (response.ok) {
+            AppState.tareas = data;
+            renderizarTabla(data);
+            actualizarContadores();
+        } else {
+            throw new Error("Error al cargar los datos");
+        }
+    } catch (error) {
+        console.error("❌ Error al recargar tareas:", error);
+        mostrarNotificacion("error", "Error al cargar los datos");
+    } finally {
+        AppState.isLoading = false;
+        mostrarLoadingState(false);
+    }
+}
+
+/**
+ * ================================================================
+ * RENDERIZADO DE LA TABLA
+ * ================================================================ */
+
+function renderizarTabla(tareasData) {
+    const tbody = document.querySelector(TaskConfig.selectors.tasksTableBody);
+    if (!tbody) return;
+
+    // Extraer todas las subtareas
+    const todasLasTareas = [];
+    tareasData.forEach((tg) => {
+        if (tg.subtareas && Array.isArray(tg.subtareas)) {
+            todasLasTareas.push(...tg.subtareas);
+        }
+    });
+
+    // Limpiar tabla
+    tbody.innerHTML = "";
+
+    if (todasLasTareas.length === 0) {
+        mostrarEstadoVacio();
         return;
     }
 
-    // Generar tarjetas
-    tareasGenerales.forEach((tg) => {
-        tg.subtareas.forEach((task, index) => {
-            const card = crearTarjetaTarea(task, index);
-            tasksGrid.appendChild(card);
-        });
+    // Renderizar filas
+    todasLasTareas.forEach((tarea) => {
+        const row = crearFilaTarea(tarea);
+        tbody.appendChild(row);
     });
 
-    // Reasociar eventos y plugins
-    reasociarEventosLista();
-    aplicarAnimacionesEntrada();
-    paginarTarjetas(); // <-- Agrega esto al final
+    // Configurar funcionalidades
+    configurarSelect2();
+    paginarTabla();
+    aplicarFiltros();
 }
 
-function crearTarjetaTarea(task, index = 0) {
-    const card = document.createElement("div");
-    card.className = "task-card";
-    card.setAttribute("data-task-id", task.id);
-    card.setAttribute("data-status", task.estado);
-    card.setAttribute("data-priority", task.prioridad);
+function crearFilaTarea(task) {
+    const row = document.createElement("tr");
+    row.className = "task-row";
+    row.setAttribute("data-task-id", task.id);
+    row.setAttribute("data-status", task.estado);
+    row.setAttribute("data-priority", task.prioridad);
 
-    // Añadir delay de animación
-    card.style.animationDelay = `${index * 0.1}s`;
-
-    card.innerHTML = `
-        <!-- Header de la tarjeta -->
-        <div class="task-card-header">
-            <div class="task-title-section">
-                <h3 class="task-title">${escapeHtml(task.nombre)}</h3>
-                <div class="task-meta">
-                    <span class="priority-badge priority-${task.prioridad}">
-                        <i class="fa-solid fa-flag"></i>
-                        ${capitalizeFirst(task.prioridad)}
-                    </span>
-                    <span class="status-badge status-${task.estado
-                        .toLowerCase()
-                        .replace(" ", "-")}">
-                        ${getEstadoIconHTML(task.estado)}
-                        ${task.estado}
-                    </span>
-                </div>
+    row.innerHTML = `
+        <td class="task-name-cell">
+            <div class="task-name-content">
+                <span class="task-name" title="${escapeHtml(
+                    task.nombre
+                )}">${escapeHtml(task.nombre)}</span>
             </div>
-        </div>
+        </td>
 
-        <!-- Contenido de la tarjeta -->
-        <div class="task-card-content">
-            
-            <!-- Fechas -->
-            <div class="task-dates">
-                <div class="date-group">
-                    <label class="date-label">
-                        <i class="fa-solid fa-calendar-day"></i>
-                        Inicio
-                    </label>
-                    <input type="date" 
-                           class="date-input fecha-inicio"
-                           value="${formatDateForInput(task.fecha_inicio)}"
-                           data-id="${task.id}"
-                           aria-label="Fecha de inicio para ${escapeHtml(
-                               task.nombre
-                           )}" />
-                </div>
-                
-                <div class="date-group">
-                    <label class="date-label">
-                        <i class="fa-solid fa-calendar-check"></i>
-                        Fin
-                    </label>
-                    <input type="date" 
-                           class="date-input fecha-fin"
-                           value="${formatDateForInput(task.fecha_limite)}"
-                           data-id="${task.id}"
-                           aria-label="Fecha límite para ${escapeHtml(
-                               task.nombre
-                           )}" />
-                </div>
-            </div>
+        <td class="priority-cell">
+            <select class="priority-select prioridad" data-id="${task.id}">
+                ${generarOpcionesPrioridad(task.prioridad)}
+            </select>
+        </td>
 
-            <!-- Controles -->
-            <div class="task-controls">
-                <div class="control-group">
-                    <label class="control-label">
-                        <i class="fa-solid fa-bolt"></i>
-                        Prioridad
-                    </label>
-                    <select class="priority-select prioridad-select prioridad" 
-                            data-id="${task.id}"
-                            aria-label="Prioridad para ${escapeHtml(
-                                task.nombre
-                            )}">
-                        ${generarOpcionesPrioridad(task.prioridad)}
-                    </select>
-                </div>
+        <td class="status-cell">
+            <select class="status-select estado" data-id="${task.id}">
+                ${generarOpcionesEstado(task.estado)}
+            </select>
+        </td>
 
-                <div class="control-group">
-                    <label class="control-label">
-                        <i class="fa-solid fa-tasks"></i>
-                        Estado
-                    </label>
-                    <select class="status-select estado-select estado" 
-                            data-id="${task.id}"
-                            aria-label="Estado para ${escapeHtml(task.nombre)}">
-                        ${generarOpcionesEstado(task.estado)}
-                    </select>
-                </div>
-            </div>
-        </div>
+        <td class="date-cell">
+            <input type="date" 
+                   class="date-input fecha-inicio"
+                   value="${formatDateForInput(task.fecha_inicio)}"
+                   data-id="${task.id}" />
+        </td>
 
-        <!-- Footer de la tarjeta -->
-        <div class="task-card-footer">
-            <div class="task-actions">
-                <button type="button"
-                        class="action-button save-button guardar-cambios" 
-                        data-id="${task.id}"
-                        title="Guardar cambios">
+        <td class="date-cell">
+            <input type="date" 
+                   class="date-input fecha-fin"
+                   value="${formatDateForInput(task.fecha_limite)}"
+                   data-id="${task.id}" />
+        </td>
+
+        <td class="actions-cell">
+            <div class="table-actions">
+                <button type="button" class="action-button save-button guardar-cambios" 
+                        data-id="${task.id}" title="Guardar cambios">
                     <i class="fa-solid fa-save"></i>
-                    <span>Guardar</span>
                 </button>
-
-                <button type="button"
-                        class="action-button delete-button eliminar-tarea" 
-                        data-id="${task.id}"
-                        title="Eliminar tarea">
+                <button type="button" class="action-button delete-button eliminar-tarea" 
+                        data-id="${task.id}" title="Eliminar tarea">
                     <i class="fa-solid fa-trash"></i>
-                    <span>Eliminar</span>
                 </button>
             </div>
-        </div>
+        </td>
     `;
 
-    return card;
+    return row;
 }
 
 /**
  * ================================================================
- * FUNCIONES DE UTILIDAD PARA GENERAR OPCIONES
+ * PAGINACIÓN OPTIMIZADA
  * ================================================================ */
 
-function generarOpcionesPrioridad(prioridadSeleccionada) {
-    const prioridades = {
-        baja: "Baja",
-        media: "Media",
-        alta: "Alta",
-        urgente: "Urgente",
-    };
+function paginarTabla() {
+    const allRows = Array.from(document.querySelectorAll(".task-row"));
 
-    return Object.entries(prioridades)
-        .map(
-            ([value, label]) =>
-                `<option value="${value}" ${
-                    prioridadSeleccionada === value ? "selected" : ""
-                }>
-            ${label}
-        </option>`
-        )
-        .join("");
-}
+    // Aplicar filtros
+    const rowsFiltradas = filtrarFilas(allRows);
 
-function generarOpcionesEstado(estadoSeleccionado) {
-    const estados = ["Pendiente", "En progreso", "Completada", "Vencida"];
+    const { porPagina, paginaActual } = AppState.paginacion;
+    const totalPaginas = Math.ceil(rowsFiltradas.length / porPagina) || 1;
 
-    return estados
-        .map(
-            (estado) =>
-                `<option value="${estado}" ${
-                    estadoSeleccionado === estado ? "selected" : ""
-                }>
-            ${estado}
-        </option>`
-        )
-        .join("");
-}
-
-function getEstadoIconHTML(estado) {
-    const iconMap = {
-        Pendiente: '<i class="fa-solid fa-hourglass-start"></i>',
-        "En progreso": '<i class="fa-solid fa-spinner"></i>',
-        Completada: '<i class="fa-solid fa-check-circle"></i>',
-        Vencida: '<i class="fa-solid fa-exclamation-triangle"></i>',
-    };
-    return iconMap[estado] || '<i class="fa-solid fa-question-circle"></i>';
-}
-
-function getPrioridadIcon(prioridad) {
-    const iconMap = {
-        alta: '<i class="fa fa-flag me-1 text-warning"></i>',
-        media: '<i class="fa fa-flag me-1 text-info"></i>',
-        baja: '<i class="fa fa-flag me-1 text-success"></i>',
-        urgente: '<i class="fa fa-flag me-1 text-danger"></i>',
-    };
-    return iconMap[prioridad] || '<i class="fa fa-flag me-1 text-muted"></i>';
-}
-
-function getEstadoIcon(estado) {
-    const iconMap = {
-        Pendiente: '<i class="fa fa-hourglass-start me-1 text-secondary"></i>',
-        "En progreso": '<i class="fa fa-spinner me-1 text-primary"></i>',
-        Completada: '<i class="fa fa-check-circle me-1 text-success"></i>',
-        Vencida: '<i class="fa fa-exclamation-circle me-1 text-danger"></i>',
-    };
-    return (
-        iconMap[estado] ||
-        '<i class="fa fa-question-circle me-1 text-muted"></i>'
-    );
-}
-
-/**
- * ================================================================
- * GESTIÓN DE EVENTOS Y SELECT2
- * ================================================================ */
-
-function reasociarEventosLista() {
-    // Solo destruir si existen y están inicializados
-    $(".prioridad, .estado, .prioridad-select, .estado-select").each(
-        function () {
-            if ($(this).data("select2")) {
-                $(this).select2("destroy");
-            }
-        }
-    );
-
-    // Configurar Select2 para Prioridad
-    $(".prioridad, .prioridad-select").select2({
-        width: "100%",
-        minimumResultsForSearch: Infinity,
-        templateResult: function (data) {
-            if (!data.id) return data.text;
-            return $(`<span>${getPrioridadIcon(data.id)} ${data.text}</span>`);
-        },
-        templateSelection: function (data) {
-            return $(`<span>${getPrioridadIcon(data.id)} ${data.text}</span>`);
-        },
-    });
-
-    // Configurar Select2 para Estado
-    $(".estado, .estado-select").select2({
-        width: "100%",
-        minimumResultsForSearch: Infinity,
-        templateResult: function (data) {
-            if (!data.id) return data.text;
-            return $(`<span>${getEstadoIcon(data.id)} ${data.text}</span>`);
-        },
-        templateSelection: function (data) {
-            return $(`<span>${getEstadoIcon(data.id)} ${data.text}</span>`);
-        },
-    });
-
-    aplicarAtributosDatos();
-}
-
-function aplicarAtributosDatos() {
-    // Para prioridad
-    $(".prioridad, .prioridad-select")
-        .on("change", function () {
-            $(this)
-                .next(".select2-container")
-                .find(".select2-selection__rendered")
-                .attr("data-priority", $(this).val());
-        })
-        .trigger("change");
-
-    // Para estado
-    $(".estado, .estado-select")
-        .on("change", function () {
-            $(this)
-                .next(".select2-container")
-                .find(".select2-selection__rendered")
-                .attr("data-estado", $(this).val());
-        })
-        .trigger("change");
-}
-
-/**
- * ================================================================
- * EVENTOS DE INTERACCIÓN CON TAREAS
- * ================================================================ */
-
-// Configurar todos los eventos cuando el DOM esté listo
-$(document).ready(function () {
-    // Configurar Select2 inicial
-    configurarSelect2Inicial();
-
-    // Configurar filtros
-    configurarFiltros();
-
-    // Configurar cambio de vista
-    configurarSelectorVista();
-
-    // Event Listeners para acciones
-    configurarEventListeners();
-    mostrarGlobalLoader(false); // Oculta el loader si ya está todo listo
-});
-
-function configurarSelect2Inicial() {
-    // Select2 para elementos que ya existen
-    $(".prioridad-select").select2({
-        width: "100%",
-        minimumResultsForSearch: Infinity,
-        templateResult: function (data) {
-            if (!data.id) return data.text;
-            return $(`<span>${getPrioridadIcon(data.id)} ${data.text}</span>`);
-        },
-        templateSelection: function (data) {
-            return $(`<span>${getPrioridadIcon(data.id)} ${data.text}</span>`);
-        },
-    });
-
-    $(".estado-select").select2({
-        width: "100%",
-        minimumResultsForSearch: Infinity,
-        templateResult: function (data) {
-            if (!data.id) return data.text;
-            return $(`<span>${getEstadoIcon(data.id)} ${data.text}</span>`);
-        },
-        templateSelection: function (data) {
-            return $(`<span>${getEstadoIcon(data.id)} ${data.text}</span>`);
-        },
-    });
-
-    aplicarAtributosDatos();
-}
-
-function configurarSelectorVista() {
-    $(".view-btn").on("click", function () {
-        const newView = $(this).data("view");
-
-        // Actualizar botones activos
-        $(".view-btn").removeClass("active");
-        $(this).addClass("active");
-
-        // Cambiar vista
-        cambiarVista(newView);
-    });
-}
-
-function cambiarVista(vista) {
-    currentView = vista;
-
-    // Ocultar todas las vistas
-    $(".view-container").addClass("hidden");
-
-    if (vista === "cards") {
-        // Mostrar vista de tarjetas
-        $("#cardsView").removeClass("hidden");
-        $("#filtersContainer").removeClass("hidden");
-
-        // Reconfigurar Select2 para tarjetas
-        setTimeout(() => {
-            reasociarEventosLista();
-            paginarTarjetas();
-        }, 100);
-    } else if (vista === "table") {
-        // Mostrar vista de tabla
-        $("#tableView").removeClass("hidden");
-        $("#filtersContainer").addClass("hidden");
-
-        // Reconfigurar Select2 para tabla
-        setTimeout(() => {
-            configurarSelect2Tabla();
-        }, 100);
+    // Actualizar estado
+    AppState.paginacion.totalPaginas = totalPaginas;
+    if (AppState.paginacion.paginaActual > totalPaginas) {
+        AppState.paginacion.paginaActual = totalPaginas;
     }
 
-    // Actualizar contadores
-    actualizarFooterContadores();
+    // Ocultar todas las filas
+    allRows.forEach((row) => (row.style.display = "none"));
+
+    // Mostrar solo las filas de la página actual
+    const inicio = (AppState.paginacion.paginaActual - 1) * porPagina;
+    const fin = inicio + porPagina;
+
+    rowsFiltradas.slice(inicio, fin).forEach((row) => {
+        row.style.display = "";
+    });
+
+    // Renderizar controles de paginación
+    renderizarPaginacion();
 }
 
-function aplicarVista(vista) {
-    cambiarVista(vista);
+function filtrarFilas(filas) {
+    if (AppState.filtroActivo === "all") {
+        return filas;
+    }
+
+    return filas.filter((row) => {
+        const estado = row.getAttribute("data-status");
+        return estado === AppState.filtroActivo;
+    });
 }
 
-function configurarSelect2Tabla() {
-    // Destruir Select2 existentes en tabla
-    $("#tableView .prioridad-select, #tableView .estado-select").each(
-        function () {
-            if ($(this).data("select2")) {
-                $(this).select2("destroy");
-            }
-        }
+function renderizarPaginacion() {
+    const container = document.querySelector(
+        TaskConfig.selectors.paginationContainer
     );
+    if (!container) return;
 
-    // Configurar Select2 para tabla
-    $("#tableView .prioridad-select").select2({
-        width: "100%",
-        minimumResultsForSearch: Infinity,
-        templateResult: function (data) {
-            if (!data.id) return data.text;
-            return $(`<span>${getPrioridadIcon(data.id)} ${data.text}</span>`);
-        },
-        templateSelection: function (data) {
-            return $(`<span>${getPrioridadIcon(data.id)} ${data.text}</span>`);
-        },
-    });
+    const { totalPaginas, paginaActual } = AppState.paginacion;
 
-    $("#tableView .estado-select").select2({
-        width: "100%",
-        minimumResultsForSearch: Infinity,
-        templateResult: function (data) {
-            if (!data.id) return data.text;
-            return $(`<span>${getEstadoIcon(data.id)} ${data.text}</span>`);
-        },
-        templateSelection: function (data) {
-            return $(`<span>${getEstadoIcon(data.id)} ${data.text}</span>`);
-        },
+    if (totalPaginas <= 1) {
+        container.innerHTML = "";
+        return;
+    }
+
+    let html = `
+        <button class="pagination-btn ${paginaActual === 1 ? "disabled" : ""}" 
+                data-page="${paginaActual - 1}" ${
+        paginaActual === 1 ? "disabled" : ""
+    }>
+            &laquo;
+        </button>
+    `;
+
+    // Generar botones de páginas
+    for (let i = 1; i <= totalPaginas; i++) {
+        if (
+            totalPaginas <= 7 ||
+            i === 1 ||
+            i === totalPaginas ||
+            (i >= paginaActual - 1 && i <= paginaActual + 1)
+        ) {
+            html += `
+                <button class="pagination-btn ${
+                    i === paginaActual ? "active" : ""
+                }" 
+                        data-page="${i}">
+                    ${i}
+                </button>
+            `;
+        } else if (i === paginaActual - 2 || i === paginaActual + 2) {
+            html += `<span class="pagination-dots">...</span>`;
+        }
+    }
+
+    html += `
+        <button class="pagination-btn ${
+            paginaActual === totalPaginas ? "disabled" : ""
+        }" 
+                data-page="${paginaActual + 1}" ${
+        paginaActual === totalPaginas ? "disabled" : ""
+    }>
+            &raquo;
+        </button>
+    `;
+
+    container.innerHTML = html;
+}
+
+/**
+ * ================================================================
+ * SISTEMA DE FILTROS
+ * ================================================================ */
+
+function configurarFiltros() {
+    $(document).on("click", ".filter-btn", function () {
+        const filtro = $(this).data("filter");
+        aplicarFiltro(filtro);
+
+        // Actualizar UI
+        $(".filter-btn").removeClass("active");
+        $(this).addClass("active");
     });
 }
+
+function aplicarFiltro(filtro) {
+    AppState.filtroActivo = filtro;
+    AppState.paginacion.paginaActual = 1; // Reiniciar a primera página
+    paginarTabla();
+    // Guardar filtro en localStorage
+    localStorage.setItem("tareas_filtro_activo", filtro);
+}
+
+function aplicarFiltros() {
+    paginarTabla();
+}
+
+/**
+ * ================================================================
+ * CONFIGURACIÓN DE SELECT2
+ * ================================================================ */
+
+function configurarSelect2() {
+    // Destruir Select2 existentes
+    $(".prioridad, .estado").each(function () {
+        if ($(this).data("select2")) {
+            $(this).select2("destroy");
+        }
+    });
+
+    // Configurar Select2 para prioridad
+    $(".prioridad").select2({
+        width: "100%",
+        minimumResultsForSearch: Infinity,
+        templateResult: formatPriorityOption,
+        templateSelection: formatPriorityOption,
+    });
+
+    // Configurar Select2 para estado
+    $(".estado").select2({
+        width: "100%",
+        minimumResultsForSearch: Infinity,
+        templateResult: formatStatusOption,
+        templateSelection: formatStatusOption,
+    });
+}
+
+function formatPriorityOption(option) {
+    if (!option.id) return option.text;
+
+    const icons = {
+        baja: '<i class="fa fa-flag text-success"></i>',
+        media: '<i class="fa fa-flag text-info"></i>',
+        alta: '<i class="fa fa-flag text-warning"></i>',
+        urgente: '<i class="fa fa-flag text-danger"></i>',
+    };
+
+    return $(`<span>${icons[option.id] || ""} ${option.text}</span>`);
+}
+
+function formatStatusOption(option) {
+    if (!option.id) return option.text;
+
+    const icons = {
+        Pendiente: '<i class="fa fa-hourglass-start text-secondary"></i>',
+        "En progreso": '<i class="fa fa-spinner text-primary"></i>',
+        Completada: '<i class="fa fa-check-circle text-success"></i>',
+        Vencida: '<i class="fa fa-exclamation-circle text-danger"></i>',
+    };
+
+    return $(`<span>${icons[option.id] || ""} ${option.text}</span>`);
+}
+
+/**
+ * ================================================================
+ * EVENTOS DE INTERACCIÓN
+ * ================================================================ */
 
 function configurarEventListeners() {
-    // Guardar cambios
-    $(document).on("click", ".guardar-cambios", manejarGuardarCambios);
+    // Paginación
+    $(document).on("click", ".pagination-btn:not(.disabled)", function () {
+        const page = parseInt($(this).data("page"));
+        if (!isNaN(page) && page !== AppState.paginacion.paginaActual) {
+            AppState.paginacion.paginaActual = page;
+            guardarPaginaActual(page);
+            paginarTabla();
+        }
+    });
 
     // Eliminar tarea
     $(document).on("click", ".eliminar-tarea", manejarEliminarTarea);
 
-    // Cambios en selects dinámicos
-    $(document).on("change", ".prioridad", function () {
-        const $select = $(this);
-        const $card = $select.closest(".task-card");
-        const nuevaPrioridad = $select.val();
-        const $priorityBadge = $card.find(".priority-badge");
-        $priorityBadge
-            .removeClass(
-                "priority-baja priority-media priority-alta priority-urgente"
-            )
-            .addClass(`priority-${nuevaPrioridad}`)
-            .html(
-                `<i class="fa-solid fa-flag"></i> ${capitalizeFirst(
-                    nuevaPrioridad
-                )}`
-            );
+    // Cambios en selects
+    $(document).on("change", ".prioridad, .estado", function () {
+        const $row = $(this).closest(".task-row");
+        $row.attr("data-priority", $row.find(".prioridad").val());
+        $row.attr("data-status", $row.find(".estado").val());
     });
 
-    $(document).on("change", ".estado", function () {
-        $(this)
-            .next(".select2-container")
-            .find(".select2-selection__rendered")
-            .attr("data-estado", $(this).val());
+    // Mostrar recordatorio cuando se cambie prioridad o estado
+    $(document).on("change", ".priority-select, .status-select", function () {
+        $("#cambiosRecordatorio").fadeIn(200);
     });
 
-    $(document).on("change", ".estado", function () {
-        const $select = $(this);
-        const $card = $select.closest(".task-card");
-        const nuevoEstado = $select.val();
-        const $statusBadge = $card.find(".status-badge");
-        $statusBadge
-            .removeClass(
-                "status-pendiente status-en-progreso status-completada status-vencida"
-            )
-            .addClass(`status-${nuevoEstado.toLowerCase().replace(" ", "-")}`)
-            .html(`${getEstadoIconHTML(nuevoEstado)} ${nuevoEstado}`);
+    // Contador global de cambios pendientes
+    let cambiosPendientes = new Set();
+
+    function actualizarContadorCambios() {
+        const num = cambiosPendientes.size;
+        const $contador = $("#contadorCambiosPendientes");
+        $("#numCambiosPendientes").text(num);
+        if (num > 0) {
+            $contador.show();
+        } else {
+            $contador.hide();
+        }
+    }
+
+    // Detectar cambios en prioridad o estado
+    $(document).on("change", ".priority-select, .status-select", function () {
+        const $row = $(this).closest(".task-row");
+        const taskId = $row.data("task-id");
+        cambiosPendientes.add(taskId);
+
+        // Cambia el color del botón de guardar de esa fila
+        $row.find(".guardar-cambios").addClass("pendiente-guardar");
+        actualizarContadorCambios();
+    });
+
+    // Guardar cambios de una fila
+    $(document).on("click", ".guardar-cambios", async function (e) {
+        const $button = $(this);
+        const $row = $button.closest(".task-row");
+        const taskId = $row.data("task-id");
+
+        await manejarGuardarCambios(e);
+
+        // Quita el color de pendiente SOLO de esta fila
+        $button.removeClass("pendiente-guardar");
+
+        cambiosPendientes.delete(taskId);
+        actualizarContadorCambios();
+
+        if (cambiosPendientes.size === 0) {
+            setTimeout(() => location.reload(), 1000);
+        }
     });
 }
+
+/**
+ * ================================================================
+ * ACCIONES DE TAREAS
+ * ================================================================ */
 
 async function manejarGuardarCambios(event) {
     const $button = $(event.currentTarget);
     const taskId = $button.data("id");
-    const $card = $button.closest(".task-card");
+    const $row = $button.closest(".task-row");
 
-    // Extraer datos de la tarjeta
+    // Extraer datos
     const taskData = {
-        fecha_inicio: $card.find(".fecha-inicio").val(),
-        fecha_limite: $card.find(".fecha-fin").val(),
-        prioridad: $card.find(".prioridad").val(),
-        estado: $card.find(".estado").val(),
+        fecha_inicio: $row.find(".fecha-inicio").val(),
+        fecha_limite: $row.find(".fecha-fin").val(),
+        prioridad: $row.find(".prioridad").val(),
+        estado: $row.find(".estado").val(),
     };
 
     // UI Loading
     const originalHtml = $button.html();
     $button
         .prop("disabled", true)
-        .html('<i class="fas fa-spinner fa-spin"></i>')
-        .addClass("loading");
+        .html('<i class="fas fa-spinner fa-spin"></i>');
 
     try {
         const response = await fetch(
@@ -561,15 +516,17 @@ async function manejarGuardarCambios(event) {
         if (response.ok) {
             mostrarNotificacion("success", "Cambios guardados exitosamente");
 
-            // Actualizar atributos de la tarjeta
-            $card.attr("data-status", taskData.estado);
-            $card.attr("data-priority", taskData.prioridad);
+            // Actualizar atributos de la fila
+            $row.attr("data-status", taskData.estado);
+            $row.attr("data-priority", taskData.prioridad);
 
-            // Actualizar badges visuales
-            actualizarBadgesTarjeta($card, taskData);
+            // Actualizar contadores
+            actualizarContadores();
 
-            // Recargar lista completa
-            await recargarSubtareas();
+            // Reaplicar filtros por si cambió el estado
+            if (AppState.filtroActivo !== "all") {
+                paginarTabla();
+            }
         } else {
             throw new Error(`Error HTTP: ${response.status}`);
         }
@@ -577,22 +534,18 @@ async function manejarGuardarCambios(event) {
         console.error("❌ Error al guardar:", error);
         mostrarNotificacion("error", "Error al guardar los cambios");
     } finally {
-        $button
-            .prop("disabled", false)
-            .html(originalHtml)
-            .removeClass("loading");
+        $button.prop("disabled", false).html(originalHtml);
     }
 }
 
 async function manejarEliminarTarea(event) {
     const $button = $(event.currentTarget);
     const taskId = $button.data("id");
-    const $card = $button.closest(".task-card");
+    const $row = $button.closest(".task-row");
 
     const confirmed = await mostrarConfirmacion({
         title: "¿Está seguro?",
         text: "Esta acción no se puede deshacer.",
-        icon: "warning",
         confirmText: "Sí, eliminar",
         cancelText: "Cancelar",
     });
@@ -614,65 +567,73 @@ async function manejarEliminarTarea(event) {
         const data = await response.json();
 
         if (data.message === "Subtarea eliminada exitosamente.") {
-            mostrarNotificacion("success", "La tarea ha sido eliminada");
+            mostrarNotificacion("success", "Tarea eliminada exitosamente");
 
-            // Animación de salida antes de eliminar
-            $card.addClass("removing");
-            setTimeout(() => {
-                $card.remove();
-                actualizarFooterContadores(); // <--- Agrega esto
+            // Remover fila con animación
+            $row.fadeOut(300, function () {
+                $(this).remove();
 
-                // Verificar si queda alguna tarjeta
-                const remainingCards =
-                    document.querySelectorAll(".task-card").length;
-                if (remainingCards === 0) {
-                    mostrarEstadoVacio(
-                        document.querySelector(TaskConfig.selectors.tasksGrid)
-                    );
+                // Verificar si quedan tareas
+                const remainingRows =
+                    document.querySelectorAll(".task-row").length;
+                if (remainingRows === 0) {
+                    mostrarEstadoVacio();
+                } else {
+                    paginarTabla();
+                    actualizarContadores();
                 }
-            }, 300);
+            });
         } else {
             throw new Error(data.message || "Error desconocido");
         }
     } catch (error) {
         console.error("❌ Error al eliminar:", error);
-        mostrarNotificacion("error", "Hubo un problema al eliminar la tarea");
+        mostrarNotificacion("error", "Error al eliminar la tarea");
     }
 }
 
 /**
  * ================================================================
- * SISTEMA DE FILTROS
+ * UTILIDADES Y HELPERS
  * ================================================================ */
 
-function configurarFiltros() {
-    $(document).on("click", ".filter-btn", function () {
-        const filter = $(this).data("filter");
-
-        // Actualizar estado visual de botones
-        $(".filter-btn").removeClass("active").prop("disabled", false);
-        $(this).addClass("active").prop("disabled", true);
-
-        // Aplicar filtro
-        aplicarFiltro(filter);
-    });
-
-    // Al cargar, deshabilita el filtro activo por defecto
-    setTimeout(() => {
-        $(".filter-btn.active").prop("disabled", true);
-    }, 0);
+function generarOpcionesPrioridad(prioridadSeleccionada) {
+    const prioridades = {
+        baja: "Baja",
+        media: "Media",
+        alta: "Alta",
+        urgente: "Urgente",
+    };
+    return Object.entries(prioridades)
+        .map(
+            ([value, label]) =>
+                `<option value="${value}" ${
+                    prioridadSeleccionada === value ? "selected" : ""
+                }>${label}</option>`
+        )
+        .join("");
 }
 
-function aplicarFiltro(filter) {
-    filtroActivo = filter; // Guardar filtro activo
-    PAGINACION_TAREAS.paginaActual = 1; // Reiniciar a la primera página
-    paginarTarjetas(); // Repaginar según el filtro
+function generarOpcionesEstado(estadoSeleccionado) {
+    const estados = ["Pendiente", "En progreso", "Completada", "Vencida"];
+    return estados
+        .map(
+            (estado) =>
+                `<option value="${estado}" ${
+                    estadoSeleccionado === estado ? "selected" : ""
+                }>${estado}</option>`
+        )
+        .join("");
 }
 
-/**
- * ================================================================
- * FUNCIONES DE UTILIDAD Y HELPERS
- * ================================================================ */
+function formatDateForInput(dateString) {
+    if (!dateString) return "";
+    try {
+        return new Date(dateString).toISOString().split("T")[0];
+    } catch (e) {
+        return dateString;
+    }
+}
 
 function escapeHtml(text) {
     const div = document.createElement("div");
@@ -680,21 +641,36 @@ function escapeHtml(text) {
     return div.innerHTML;
 }
 
-function capitalizeFirst(str) {
-    return str.charAt(0).toUpperCase() + str.slice(1);
+function actualizarContadores() {
+    const rows = document.querySelectorAll(".task-row");
+    const contadores = { Completada: 0, "En progreso": 0, Pendiente: 0 };
+
+    rows.forEach((row) => {
+        const estado = row.getAttribute("data-status");
+        if (contadores.hasOwnProperty(estado)) {
+            contadores[estado]++;
+        }
+    });
+
+    // Actualizar UI
+    const elementos = {
+        "count-completadas": `${contadores.Completada} Completadas`,
+        "count-enprogreso": `${contadores["En progreso"]} En Progreso`,
+        "count-pendientes": `${contadores.Pendiente} Pendientes`,
+    };
+
+    Object.entries(elementos).forEach(([id, texto]) => {
+        const elemento = document.getElementById(id);
+        if (elemento) elemento.textContent = texto;
+    });
 }
 
-function formatDateForInput(dateString) {
-    if (!dateString) return "";
-    try {
-        const date = new Date(dateString);
-        return date.toISOString().split("T")[0];
-    } catch (e) {
-        return dateString;
-    }
-}
+function mostrarEstadoVacio() {
+    const container = document.querySelector(
+        TaskConfig.selectors.tasksContainer
+    );
+    if (!container) return;
 
-function mostrarEstadoVacio(container) {
     container.innerHTML = `
         <div class="empty-state">
             <div class="empty-state-content">
@@ -709,11 +685,9 @@ function mostrarEstadoVacio(container) {
 }
 
 function mostrarLoadingState(show) {
-    const $loading = $(TaskConfig.selectors.loadingState);
-    if (show) {
-        $loading.removeClass("hidden").addClass("loading-visible");
-    } else {
-        $loading.addClass("hidden").removeClass("loading-visible");
+    const loading = document.querySelector(TaskConfig.selectors.loadingState);
+    if (loading) {
+        loading.classList.toggle("hidden", !show);
     }
 }
 
@@ -722,6 +696,7 @@ function mostrarNotificacion(type, message) {
         toastr[type](message);
     } else {
         const emoji = type === "success" ? "✅" : "❌";
+        console.log(`${emoji} ${message}`);
     }
 }
 
@@ -736,223 +711,9 @@ async function mostrarConfirmacion({ title, text, confirmText, cancelText }) {
             cancelButtonColor: "#6b7280",
             confirmButtonText: confirmText,
             cancelButtonText: cancelText,
-            customClass: {
-                popup: "custom-swal-popup",
-                confirmButton: "custom-swal-confirm",
-                cancelButton: "custom-swal-cancel",
-            },
         });
         return result.isConfirmed;
     } else {
         return confirm(`${title}\n${text}`);
-    }
-}
-
-function actualizarBadgesTarjeta($card, taskData) {
-    // Actualizar badge de prioridad
-    const $priorityBadge = $card.find(".priority-badge");
-    $priorityBadge
-        .removeClass(
-            "priority-baja priority-media priority-alta priority-urgente"
-        )
-        .addClass(`priority-${taskData.prioridad}`)
-        .html(
-            `<i class="fa-solid fa-flag"></i> ${capitalizeFirst(
-                taskData.prioridad
-            )}`
-        );
-
-    // Actualizar badge de estado
-    const $statusBadge = $card.find(".status-badge");
-    $statusBadge
-        .removeClass(
-            "status-pendiente status-en-progreso status-completada status-vencida"
-        )
-        .addClass(`status-${taskData.estado.toLowerCase().replace(" ", "-")}`)
-        .html(`${getEstadoIconHTML(taskData.estado)} ${taskData.estado}`);
-}
-
-function aplicarAnimacionesEntrada() {
-    const cards = document.querySelectorAll(".task-card");
-    if (cards.length === 0) {
-        mostrarGlobalLoader(false);
-        return;
-    }
-
-    let animacionAplicada = false;
-
-    cards.forEach((card) => card.classList.remove("fade-in-up"));
-
-    cards.forEach((card, index) => {
-        card.style.animationDelay = `${index * 0.1}s`;
-        card.classList.add("fade-in-up");
-        animacionAplicada = true;
-        if (index === cards.length - 1) {
-            card.addEventListener("animationend", function handler() {
-                mostrarGlobalLoader(false);
-                card.removeEventListener("animationend", handler);
-            });
-        }
-    });
-
-    // Si no hay animaciones CSS activas, oculta el loader igual después de un pequeño delay
-    if (!animacionAplicada) {
-        setTimeout(() => mostrarGlobalLoader(false), 300);
-    }
-}
-
-function actualizarFooterContadores() {
-    // Contar tareas por estado en el DOM
-    const cards = document.querySelectorAll(".task-card");
-    let completadas = 0,
-        enprogreso = 0,
-        pendientes = 0;
-
-    cards.forEach((card) => {
-        const estado = card.getAttribute("data-status");
-        if (estado === "Completada") completadas++;
-        else if (estado === "En progreso") enprogreso++;
-        else if (estado === "Pendiente") pendientes++;
-    });
-
-    // Actualizar los contadores en el footer
-    const $completadas = document.getElementById("count-completadas");
-    const $enprogreso = document.getElementById("count-enprogreso");
-    const $pendientes = document.getElementById("count-pendientes");
-
-    if ($completadas) $completadas.textContent = `${completadas} Completadas`;
-    if ($enprogreso) $enprogreso.textContent = `${enprogreso} En Progreso`;
-    if ($pendientes) $pendientes.textContent = `${pendientes} Pendientes`;
-}
-
-// Configuración de paginación
-const PAGINACION_TAREAS = {
-    porPagina: 8, // Cambia este número para mostrar más/menos tarjetas por página
-    paginaActual: 1,
-    totalPaginas: 1,
-};
-
-function paginarTarjetas() {
-    const allCards = Array.from(document.querySelectorAll(".task-card"));
-    // Filtrar según el filtro activo
-    const cards = allCards.filter((card) => {
-        const status = card.getAttribute("data-status");
-        return filtroActivo === "all" || status === filtroActivo;
-    });
-
-    const pagContainer = document.getElementById("tasksPagination");
-    const porPagina = PAGINACION_TAREAS.porPagina;
-    const total = cards.length;
-    const totalPaginas = Math.ceil(total / porPagina) || 1;
-    let paginaActual = PAGINACION_TAREAS.paginaActual;
-
-    // Ajustar página si está fuera de rango
-    if (paginaActual > totalPaginas) paginaActual = totalPaginas;
-    if (paginaActual < 1) paginaActual = 1;
-    PAGINACION_TAREAS.paginaActual = paginaActual;
-    PAGINACION_TAREAS.totalPaginas = totalPaginas;
-
-    // Ocultar todas las tarjetas primero
-    allCards.forEach((card) => (card.style.display = "none"));
-
-    // Mostrar solo las tarjetas de la página actual y filtro
-    cards.forEach((card, idx) => {
-        if (
-            idx >= (paginaActual - 1) * porPagina &&
-            idx < paginaActual * porPagina
-        ) {
-            card.style.display = "";
-        }
-    });
-
-    // Renderizar controles de paginación
-    if (totalPaginas <= 1) {
-        pagContainer.innerHTML = "";
-        return;
-    }
-
-    let html = "";
-    html += `<button class="pagination-btn" ${
-        paginaActual === 1 ? "disabled" : ""
-    } data-page="${paginaActual - 1}">&laquo;</button>`;
-
-    html += `<button class="pagination-btn${
-        paginaActual === 1 ? " active" : ""
-    }" data-page="1">1</button>`;
-
-    if (paginaActual > 4) {
-        html += `<span style="padding:0 0.5rem;">...</span>`;
-    }
-
-    let start = Math.max(2, paginaActual - 1);
-    let end = Math.min(totalPaginas - 1, paginaActual + 1);
-
-    for (let i = start; i <= end; i++) {
-        if (i !== 1 && i !== totalPaginas) {
-            html += `<button class="pagination-btn${
-                i === paginaActual ? " active" : ""
-            }" data-page="${i}">${i}</button>`;
-        }
-    }
-
-    if (paginaActual < totalPaginas - 3) {
-        html += `<span style="padding:0 0.5rem;">...</span>`;
-    }
-
-    if (totalPaginas > 1) {
-        html += `<button class="pagination-btn${
-            paginaActual === totalPaginas ? " active" : ""
-        }" data-page="${totalPaginas}">${totalPaginas}</button>`;
-    }
-
-    html += `<button class="pagination-btn" ${
-        paginaActual === totalPaginas ? "disabled" : ""
-    } data-page="${paginaActual + 1}">&raquo;</button>`;
-
-    pagContainer.innerHTML = html;
-}
-
-// Evento para cambiar de página
-document.addEventListener("click", function (e) {
-    if (e.target.classList.contains("pagination-btn") && !e.target.disabled) {
-        const page = parseInt(e.target.getAttribute("data-page"));
-        if (!isNaN(page)) {
-            PAGINACION_TAREAS.paginaActual = page;
-            paginarTarjetas();
-        }
-    }
-});
-
-// Llama a la paginación después de renderizar o actualizar la lista
-function actualizarLista(tareasGenerales) {
-    aplicarAnimacionesEntrada();
-    paginarTarjetas();
-
-    // Calcula el total de tareas antes del log
-    const totalTareas = tareasGenerales.reduce(
-        (acc, tg) => acc + (tg.subtareas ? tg.subtareas.length : 0),
-        0
-    );
-}
-
-$(document).ready(function () {
-    mostrarGlobalLoader(true); // Mostrar loader al cargar la página
-    paginarTarjetas();
-    aplicarAnimacionesEntrada(); // <-- Agrega esto aquí
-    // ...otros inits...
-});
-
-// Exponer funciones globales
-window.recargarSubtareas = recargarSubtareas;
-window.actualizarLista = actualizarLista;
-window.aplicarFiltro = aplicarFiltro;
-
-function mostrarGlobalLoader(show = true) {
-    const loader = document.getElementById("globalLoader");
-    if (!loader) return;
-    if (show) {
-        loader.classList.remove("hidden");
-    } else {
-        loader.classList.add("hidden");
     }
 }

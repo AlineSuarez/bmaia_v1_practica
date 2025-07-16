@@ -1,285 +1,162 @@
-<div class="KANBAN">
-    <style>
-        .task-list {
-            min-height: 80px;
-            position: relative;
-            background: transparent;
-        }
+{{-- Meta tags requeridos --}}
 
-        .task-list:empty::after {
-            content: "Arrastra aquí";
-            color: #c2a13a;
-            opacity: 0.5;
-            font-size: 1em;
-            position: absolute;
-            left: 50%;
-            top: 30%;
-            transform: translate(-50%, 0);
-            pointer-events: none;
-        }
+<head>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <link href="{{ asset('./css/components/home-user/tasks/kanban.css') }}" rel="stylesheet">
+</head>
 
-        .kanban-card {
-            background-color: #fff;
-            border-left: 4px solid #ccc;
-            border-radius: 6px;
-            transition: box-shadow 0.2s ease;
-            padding: 0.75rem;
-            margin-bottom: 0.75rem;
-            height: 120px;
-            overflow: hidden;
-            position: relative;
-            cursor: pointer;
-        }
+{{-- Contenedor principal del Kanban --}}
+<div class="task-list-container">
+    <div class="kanban-container" id="kanbanBoard">
 
-        .kanban-card:hover {
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        .kanban-card .title-truncate {
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            display: block;
-            max-width: 100%;
-        }
-
-        .flag-icon {
-            font-size: 0.9rem;
-        }
-
-        .text-danger i {
-            color: #dc3545;
-        }
-
-        .text-warning i {
-            color: #ffc107;
-        }
-
-        .text-info i {
-            color: #0dcaf0;
-        }
-
-        .text-success i {
-            color: #198754;
-        }
-
-        .kanban-title {
-            font-weight: 600;
-            font-size: 1rem;
-            text-transform: uppercase;
-            color: #ff7a00;
-        }
-
-        .kanban-header {
-            background-color: #f5f5f5;
-            padding: 0.5rem 1rem;
-            border-bottom: 1px solid #ddd;
-            border-radius: 6px 6px 0 0;
-        }
-
-        .ui-state-highlight {
-            background-color: #ffeeba !important;
-            height: 100px;
-            border: 2px dashed #ffc107;
-        }
-    </style>
-
-    <div class="row" id="kanban-board">
-        @foreach (['Pendiente' => 'Pendientes', 'En progreso' => 'En Progreso', 'Completada' => 'Completadas', 'Vencida' => 'Vencidas'] as $status => $title)
-            <div class="col-md-4">
-                <div class="card shadow-sm border-0 mb-4">
-                    <div class="kanban-header">
-                        <h6 class="kanban-title mb-0"><i class="fa fa-layer-group me-2"></i> {{ $title }}</h6>
-                    </div>
-                    <div class="card-body p-2" style="min-height: 400px; background-color: #f9f9f9;">
-                        <ul class="list-unstyled task-list" data-status="{{ $status }}">
-                            @foreach ($subtareas->where('estado', $status) as $subtarea)
-                                @php
-                                    $priorityColor = match ($subtarea->prioridad) {
-                                        'urgente' => 'text-danger',
-                                        'alta' => 'text-warning',
-                                        'media' => 'text-info',
-                                        'baja' => 'text-success',
-                                        default => 'text-secondary',
-                                    };
-                                    $iconoPrioridad = '<i class="fa fa-flag"></i>';
-                                @endphp
-                                <li class="kanban-card task-item shadow-sm border" data-id="{{ $subtarea->id }}"
-                                    data-nombre="{{ $subtarea->nombre }}" data-inicio="{{ $subtarea->fecha_inicio }}"
-                                    data-fin="{{ $subtarea->fecha_limite }}" data-prioridad="{{ $subtarea->prioridad }}"
-                                    data-estado="{{ $subtarea->estado }}" data-etapa="{{ $subtarea->tareaGeneral->nombre }}">
-                                    <div class="d-flex justify-content-between align-items-center mb-1">
-                                        <span class="fw-bold title-truncate"
-                                            title="{{ $subtarea->nombre }}">{{ $subtarea->nombre }}</span>
-                                        <span class="flag-icon {{ $priorityColor }}"
-                                            title="Prioridad">{!! $iconoPrioridad !!}</span>
-                                    </div>
-                                    <div class="d-flex justify-content-start align-items-center gap-2 small text-muted">
-                                        <span><i class="fa fa-cogs me-1"></i>{{ $subtarea->tareaGeneral->nombre }}</span>
-                                        <span><i
-                                                class="fa fa-calendar me-1"></i>{{ \Carbon\Carbon::parse($subtarea->fecha_inicio)->format('d/m') }}
-                                            - {{ \Carbon\Carbon::parse($subtarea->fecha_limite)->format('d/m') }}</span>
-                                    </div>
-                                </li>
-                            @endforeach
-                        </ul>
-                    </div>
+        {{-- Header del Kanban (nuevo, igual al listado) --}}
+        <div class="task-list-header">
+            <div class="header-content">
+                <div class="header-left">
+                    <h1 class="header-title">
+                        <i class="fa-solid fa-table-columns"></i>
+                        Tablero Kanban
+                    </h1>
+                    <p class="header-subtitle">Visualiza y organiza tus tareas de forma dinámica por columnas
+                    </p>
                 </div>
             </div>
-        @endforeach
-    </div>
-
-    <div class="modal fade" id="editarTareaModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog">
-            <form method="POST" id="editarTareaForm">
-                @csrf
-                @method('PATCH')
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">Editar Tarea</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                    </div>
-                    <div class="modal-body">
-                        <input type="hidden" id="modal-tarea-id">
-                        <div class="mb-2">
-                            <label class="form-label">Nombre</label>
-                            <input type="text" class="form-control" id="modal-nombre" name="nombre" readonly>
-                        </div>
-                        <div class="mb-2">
-                            <label class="form-label">Etapa</label>
-                            <input type="text" class="form-control" id="modal-etapa" readonly>
-                        </div>
-                        <div class="mb-2">
-                            <label class="form-label">Inicio</label>
-                            <input type="date" class="form-control" id="modal-inicio" name="fecha_inicio">
-                        </div>
-                        <div class="mb-2">
-                            <label class="form-label">Fin</label>
-                            <input type="date" class="form-control" id="modal-fin" name="fecha_limite">
-                        </div>
-                        <div class="mb-2">
-                            <label class="form-label">Prioridad</label>
-                            <select class="form-select" id="modal-prioridad" name="prioridad">
-                                <option value="baja">Baja</option>
-                                <option value="media">Media</option>
-                                <option value="alta">Alta</option>
-                                <option value="urgente">Urgente</option>
-                            </select>
-                        </div>
-                        <div class="mb-2">
-                            <label class="form-label">Estado</label>
-                            <select class="form-select" id="modal-estado" name="estado">
-                                <option value="Pendiente">Pendiente</option>
-                                <option value="En progreso">En Progreso</option>
-                                <option value="Completada">Completada</option>
-                                <option value="Vencida">Vencida</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                        <button type="submit" class="btn btn-primary">Guardar cambios</button>
-                    </div>
-                </div>
-            </form>
         </div>
+
+        {{-- Tablero con las 4 columnas --}}
+        <div class="kanban-board">
+            @foreach (['Pendiente', 'En progreso', 'Completada', 'Vencida'] as $estado)
+                <div class="kanban-column" data-status="{{ $estado }}">
+
+                    {{-- Header de la columna --}}
+                    <div class="column-header">
+                        <h3 class="column-title">{{ $estado }}</h3>
+                        <span class="task-count">{{ $subtareas->where('estado', $estado)->count() }}</span>
+                    </div>
+
+                    {{-- Lista de tareas de la columna --}}
+                    <div class="task-list" data-status="{{ $estado }}">
+                        @foreach ($subtareas->where('estado', $estado) as $task)
+                            <div class="task-card" data-task-id="{{ $task->id }}" data-priority="{{ $task->prioridad }}">
+
+                                {{-- Header de la tarjeta --}}
+                                <div class="card-header">
+                                    <span class="task-name">{{ $task->nombre }}</span>
+                                    <span class="priority-indicator priority-{{ $task->prioridad }}"></span>
+                                </div>
+
+                                {{-- Contenido de la tarjeta --}}
+                                <div class="card-content">
+                                    <div class="task-stage">{{ $task->tareaGeneral->nombre }}</div>
+                                    <div class="task-dates">
+                                        <span
+                                            class="date-start">{{ \Carbon\Carbon::parse($task->fecha_inicio)->format('d/m') }}</span>
+                                        <span class="date-separator">-</span>
+                                        <span
+                                            class="date-end">{{ \Carbon\Carbon::parse($task->fecha_limite)->format('d/m') }}</span>
+                                    </div>
+                                </div>
+
+                                {{-- Footer de la tarjeta --}}
+                                <div class="card-footer">
+                                    <div class="task-actions">
+                                        <button class="action-btn edit-btn" data-task-id="{{ $task->id }}" title="Editar tarea">
+                                            <i class="fa-solid fa-edit"></i>
+                                        </button>
+                                        <button class="action-btn delete-btn" data-task-id="{{ $task->id }}"
+                                            title="Eliminar tarea">
+                                            <i class="fa-solid fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </div>
+
+                            </div>
+                        @endforeach
+
+                        {{-- Mensaje cuando no hay tareas --}}
+                        @if($subtareas->where('estado', $estado)->count() === 0)
+                            <div class="empty-column">
+                                <p class="empty-message">No hay tareas en {{ strtolower($estado) }}</p>
+                            </div>
+                        @endif
+                    </div>
+
+                </div>
+            @endforeach
+        </div>
+
     </div>
 </div>
 
+{{-- Modal para editar tareas --}}
+<div class="modal-overlay" id="editTaskModal" style="display: none;">
+    <div class="modal-container">
+        <div class="modal-header">
+            <h3 class="modal-title">Editar Tarea</h3>
+            <button class="modal-close" id="closeModal">&times;</button>
+        </div>
+
+        <form id="editTaskForm">
+            <div class="modal-body">
+                <input type="hidden" id="taskId">
+
+                <div class="form-group">
+                    <label for="taskName">Nombre de la tarea</label>
+                    <input type="text" id="taskName" name="nombre" readonly>
+                </div>
+
+                <div class="form-group">
+                    <label for="taskStage">Etapa</label>
+                    <input type="text" id="taskStage" readonly>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="taskStartDate">Fecha de inicio</label>
+                        <input type="date" id="taskStartDate" name="fecha_inicio">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="taskEndDate">Fecha límite</label>
+                        <input type="date" id="taskEndDate" name="fecha_limite">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="taskPriority">Prioridad</label>
+                        <select id="taskPriority" name="prioridad">
+                            <option value="baja">Baja</option>
+                            <option value="media">Media</option>
+                            <option value="alta">Alta</option>
+                            <option value="urgente">Urgente</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="taskStatus">Estado</label>
+                        <select id="taskStatus" name="estado">
+                            <option value="Pendiente">Pendiente</option>
+                            <option value="En progreso">En progreso</option>
+                            <option value="Completada">Completada</option>
+                            <option value="Vencida">Vencida</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" id="cancelEdit">Cancelar</button>
+                <button type="submit" class="btn btn-primary">Guardar cambios</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+{{-- Scripts --}}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
-<script>
-    function activarSortableKanban() {
-        $(".task-list").sortable({
-            connectWith: ".task-list", // Permite mover las tarjetas entre columnas
-            placeholder: "ui-state-highlight", // Efecto visual al mover la tarjeta
-            receive: function (event, ui) {
-                const card = ui.item; // La tarjeta que se movió
-                const id = card.data("id"); // ID de la subtarea
-                const newEstado = $(this).data("status"); // Nuevo estado basado en la columna
-
-                // Enviar nuevo estado al servidor cuando se mueve una tarjeta
-                fetch(`/tareas/${id}/update-status`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-                    },
-                    body: `_method=PATCH&estado=${encodeURIComponent(newEstado)}`
-                })
-                    .then(res => {
-                        if (res.ok) {
-                            toastr.success("Estado actualizado.");
-                            recargarSubtareas(); // Actualizar la lista y el kanban con los nuevos datos
-                        } else {
-                            toastr.error("No se pudo actualizar el estado.");
-                        }
-                    });
-            }
-        }).disableSelection(); // Deshabilita la selección de los elementos al moverlos
-    }
-
-    $(document).ready(function () {
-        activarSortableKanban();
-    });
-
-
-    // Actualizar la vista de la lista con los datos más recientes
-    function actualizarLista(tareasGenerales) {
-        const tbody = document.querySelector('#subtareasTable tbody');
-        if (!tbody) return;
-        tbody.innerHTML = ''; // Limpia la tabla actual
-
-        tareasGenerales.forEach(tg => {
-            tg.subtareas.forEach(task => {
-                const row = document.createElement("tr");
-                row.innerHTML = `
-                    <td>${task.nombre}</td>
-                    <td><input type="date" class="form-control fecha-inicio" value="${task.fecha_inicio}" data-id="${task.id}" /></td>
-                    <td><input type="date" class="form-control fecha-fin" value="${task.fecha_limite}" data-id="${task.id}" /></td>
-                    <td>
-                        <select class="form-select prioridad" data-id="${task.id}">
-                            <option value="baja" ${task.prioridad === 'baja' ? 'selected' : ''}>Baja</option>
-                            <option value="media" ${task.prioridad === 'media' ? 'selected' : ''}>Media</option>
-                            <option value="alta" ${task.prioridad === 'alta' ? 'selected' : ''}>Alta</option>
-                            <option value="urgente" ${task.prioridad === 'urgente' ? 'selected' : ''}>Urgente</option>
-                        </select>
-                    </td>
-                    <td>
-                        <select class="form-select estado" data-id="${task.id}">
-                            <option value="Pendiente" ${task.estado === 'Pendiente' ? 'selected' : ''}>Pendiente</option>
-                            <option value="En progreso" ${task.estado === 'En progreso' ? 'selected' : ''}>En progreso</option>
-                            <option value="Completada" ${task.estado === 'Completada' ? 'selected' : ''}>Completada</option>
-                            <option value="Vencida" ${task.estado === 'Vencida' ? 'selected' : ''}>Vencida</option>
-                        </select>
-                    </td>
-                    <td>
-                        <div class="btn-group" role="group">
-                            <button class="btn btn-success btn-sm guardar-cambios" data-id="${task.id}">
-                                <i class="fa-solid fa-save"></i>
-                            </button>
-                            <button class="btn btn-danger btn-sm eliminar-tarea" data-id="${task.id}">
-                                <i class="fa-solid fa-trash"></i>
-                            </button>
-                        </div>
-                    </td>
-                `;
-                tbody.appendChild(row);
-            });
-        });
-        reasociarEventosLista();  // Reasociar los eventos de la lista
-    }
-
-    // Reasociar los eventos de la lista (como select2)
-    function reasociarEventosLista() {
-        $('.estado').select2({
-            width: '100%',
-            templateResult: function (data) {
-                return $(`<span>${getEstadoIcon(data.id)} ${data.text}</span>`);
-            },
-            templateSelection: function (data) {
-                return $(`<span>${getEstadoIcon(data.id)} ${data.text}</span>`);
-            }
-        });
-    }
-
-</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui-touch-punch/0.2.3/jquery.ui.touch-punch.min.js"></script>
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script src="{{ asset('js/components/home-user/tasks/kanban.js') }}"></script>
