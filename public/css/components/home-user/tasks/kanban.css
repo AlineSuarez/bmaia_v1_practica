@@ -232,8 +232,7 @@
 .kanban-container .card-header {
     padding: var(--kanban-space-2);
     display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
+    align-items: center;
     gap: var(--kanban-space-2);
     position: relative;
 }
@@ -595,7 +594,6 @@
 /* Phablet (481px - 600px) */
 @media (min-width: 481px) and (max-width: 600px) {
     .kanban-container .kanban-board {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
         gap: var(--kanban-space-2);
     }
 
@@ -654,7 +652,7 @@
 /* Tablet (769px - 1024px) */
 @media (min-width: 769px) and (max-width: 1024px) {
     .kanban-container .kanban-board {
-        grid-template-columns: repeat(4, minmax(0, 1fr));
+        grid-template-columns: repeat(2, minmax(0, 1fr));
         gap: var(--kanban-space-2);
     }
 
@@ -691,7 +689,7 @@
     }
 
     .kanban-container .kanban-board {
-        grid-template-columns: repeat(4, minmax(0, 1fr));
+        grid-template-columns: repeat(2, minmax(0, 1fr));
         gap: var(--kanban-space-3);
         min-height: 75vh;
     }
@@ -766,10 +764,6 @@
     .kanban-container .card-content {
         padding: 0 var(--kanban-space-4) var(--kanban-space-3);
     }
-
-    .kanban-container .card-footer {
-        padding: var(--kanban-space-3) var(--kanban-space-4);
-    }
 }
 
 /* ================================================================
@@ -839,3 +833,69 @@
     transition: none !important;
     animation: none !important;
 }
+.kanban-container .drag-handle {
+    cursor: grab;
+    font-size: 1.4em;
+    color: var(--kanban-gray-400);
+    margin-left: 0;
+    margin-right: var(--kanban-space-2);
+    user-select: none;
+    touch-action: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 32px;
+    min-height: 32px;
+    border-radius: 50%;
+    transition: background 0.2s;
+}
+.kanban-container .drag-handle:active {
+    cursor: grabbing;
+    color: var(--kanban-amber-600);
+    background: var(--kanban-amber-100);
+}
+
+/* En móvil, el handle va a la izquierda y el nombre ocupa el resto */
+@media (max-width: 600px) {
+    .kanban-container .card-header {
+        flex-direction: row;
+        align-items: center;
+        gap: var(--kanban-space-2);
+    }
+    .kanban-container .drag-handle {
+        order: 0;
+        margin-right: var(--kanban-space-2);
+        margin-left: 0;
+    }
+    .kanban-container .task-name {
+        order: 1;
+        flex: 1;
+        min-width: 0;
+    }
+    .kanban-container .priority-indicator {
+        order: 2;
+        margin-left: var(--kanban-space-1);
+    }
+}
+
+/* En desktop, el handle puede ir a la derecha si prefieres */
+@media (min-width: 601px) {
+    .kanban-container .card-header {
+        flex-direction: row;
+        align-items: center;
+        gap: var(--kanban-space-2);
+    }
+    .kanban-container .task-name {
+        flex: 1;
+        min-width: 0;
+    }
+    .kanban-container .priority-indicator {
+        margin-left: var(--kanban-space-1);
+    }
+    .kanban-container .drag-handle {
+        margin-left: var(--kanban-space-2);
+        margin-right: 0;
+        order: 2;
+    }
+}
+

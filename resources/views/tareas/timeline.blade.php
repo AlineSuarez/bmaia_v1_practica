@@ -28,9 +28,9 @@
                     $progreso = $total > 0 ? round(($completadas / $total) * 100) : 0;
                                                     @endphp
 
-                    <div class="etapa-card fade-in">
+                    <div class="etapa-card fade-in collapsed">
                         <!-- Header de la etapa -->
-                        <div class="etapa-header">
+                        <div class="etapa-header" style="cursor:pointer;">
                             <div class="etapa-title">
                                 <div class="etapa-info">
                                     <h3>{{ $tareaGeneral->nombre }}</h3>
@@ -49,7 +49,7 @@
                         </div>
 
                         <!-- Contenido de tareas -->
-                        <div class="etapa-content">
+                        <div class="etapa-content" style="display:none;">
                             @forelse ($subtareas as $subtarea)
                                 <div class="task-mini-card {{ $subtarea->estado === 'Completada' ? 'completed' : '' }}"
                                     data-task-id="{{ $subtarea->id }}">
@@ -103,7 +103,7 @@
                         </div>
 
                         <!-- Footer de la etapa -->
-                        <div class="etapa-footer">
+                        <div class="etapa-footer" style="display:none;">
                             <div class="etapa-summary">
                                 @if ($total > 0)
                                     {{ $completadas }} de {{ $total }} completadas
@@ -383,6 +383,20 @@
                 btnDeshacer.disabled = true;
                 setTimeout(() => location.reload(), 1200);
             });
+        });
+
+        document.querySelectorAll('.etapa-card').forEach(card => {
+            const header = card.querySelector('.etapa-header');
+            const content = card.querySelector('.etapa-content');
+            const footer = card.querySelector('.etapa-footer');
+
+            header.addEventListener('click', function () {
+                card.classList.toggle('collapsed');
+                const isCollapsed = card.classList.contains('collapsed');
+                content.style.display = isCollapsed ? 'none' : '';
+                footer.style.display = isCollapsed ? 'none' : '';
+            });
+
         });
     });
 

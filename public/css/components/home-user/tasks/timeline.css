@@ -69,20 +69,16 @@
 
 /* ===== CONTENEDOR PRINCIPAL ===== */
 .tareas-timeline-wrapper .timeline-container {
-    background: var(--bg-accent);
-    border: 1px solid var(--border-accent);
-    border-radius: var(--radius-xl);
     padding: var(--space-6);
     margin: var(--space-4) 0;
-    box-shadow: var(--shadow-sm);
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
         sans-serif;
 }
 
 /* ===== GRID DE ETAPAS ===== */
 .tareas-timeline-wrapper .etapas-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(460px, 1fr));
+    display: flex;
+    flex-direction: column;
     gap: var(--space-6);
     align-items: stretch;
 }
@@ -107,15 +103,37 @@
     border-color: var(--primary-light);
 }
 
+.tareas-timeline-wrapper .etapa-card.collapsed {
+    background: transparent;
+    border-color: transparent;
+    box-shadow: none;
+    min-height: unset;
+    transition: background 0.3s, border-color 0.3s, box-shadow 0.3s;
+}
+
+.tareas-timeline-wrapper .etapa-card.collapsed .etapa-content,
+.tareas-timeline-wrapper .etapa-card.collapsed .etapa-footer {
+    display: none !important;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s;
+}
+
+.tareas-timeline-wrapper .etapa-card:not(.collapsed) .etapa-content,
+.tareas-timeline-wrapper .etapa-card:not(.collapsed) .etapa-footer {
+    display: flex;
+    opacity: 1;
+    pointer-events: auto;
+    transition: opacity 0.2s;
+}
+
 /* ===== HEADER DE ETAPA ===== */
 .tareas-timeline-wrapper .etapa-header {
-    background: linear-gradient(
-        135deg,
-        var(--bg-primary) 0%,
-        var(--primary-subtle) 100%
-    );
+    background: rgba(214, 214, 214, 0.267);
     padding: var(--space-5);
     border-bottom: 1px solid var(--border-light);
+    cursor: pointer;
+    position: relative;
 }
 
 .tareas-timeline-wrapper .etapa-title {

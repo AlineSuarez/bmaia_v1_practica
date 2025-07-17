@@ -1,12 +1,16 @@
 function activarSortableKanban() {
-    $(".task-list")
+    // Solo inicializa sortable en el kanban activo
+    $(".kanban-container .task-list")
         .sortable({
             connectWith: ".task-list",
             placeholder: "ui-state-highlight",
             items: ".task-card",
             tolerance: "pointer",
             revert: 0,
-            scroll: true,
+            scroll: true, // Ya lo tienes
+            scrollSensitivity: 100, // Distancia del borde para activar scroll
+            scrollSpeed: 20, // Velocidad del scroll automático
+            handle: ".drag-handle",
             helper: function (e, item) {
                 var originalWidth = item.outerWidth();
                 var clone = item.clone();
@@ -23,6 +27,34 @@ function activarSortableKanban() {
                 ui.placeholder.width(ui.item.outerWidth());
                 ui.placeholder.css("box-sizing", "border-box");
                 ui.item.css("transition", "none");
+
+                // Mejorar scroll en móvil
+                if (window.innerWidth <= 768) {
+                    // Habilitar scroll automático más agresivo en móvil
+                    ui.helper.data("scrollSpeed", 40);
+                    ui.helper.data("scrollSensitivity", 50);
+                }
+            },
+            drag: function (event, ui) {
+                // Auto-scroll vertical de la página (no de la columna)
+                if (window.innerWidth <= 768) {
+                    var scrollContainer =
+                        document.scrollingElement || document.documentElement;
+                    var scrollTop = scrollContainer.scrollTop;
+                    var windowHeight = window.innerHeight;
+                    var mouseY = event.originalEvent.touches
+                        ? event.originalEvent.touches[0].clientY
+                        : event.pageY;
+
+                    // Si el dedo/mouse está cerca del borde superior, sube la página
+                    if (mouseY < 80) {
+                        scrollContainer.scrollTop = scrollTop - 20;
+                    }
+                    // Si está cerca del borde inferior, baja la página
+                    else if (mouseY > windowHeight - 80) {
+                        scrollContainer.scrollTop = scrollTop + 20;
+                    }
+                }
             },
             stop: function (event, ui) {
                 ui.item.css("transition", "");
@@ -172,6 +204,7 @@ $(function () {
             tolerance: "pointer",
             revert: 0, // Sin animación al soltar
             scroll: true,
+            handle: ".drag-handle", // <-- SOLO se puede arrastrar desde el handle
             helper: function (e, item) {
                 // Clona la tarjeta y le fuerza el ancho exacto del original
                 var originalWidth = item.outerWidth();

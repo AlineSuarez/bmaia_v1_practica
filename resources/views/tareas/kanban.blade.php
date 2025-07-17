@@ -43,6 +43,7 @@
                                 <div class="card-header">
                                     <span class="task-name">{{ $task->nombre }}</span>
                                     <span class="priority-indicator priority-{{ $task->prioridad }}"></span>
+                                    <span class="drag-handle" title="Mover">&#x2630;</span> {{-- Icono de barras (☰) --}}
                                 </div>
 
                                 {{-- Contenido de la tarjeta --}}
