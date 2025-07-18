@@ -93,7 +93,9 @@
             <span class="field-helper">Forma en que se aplicó el tratamiento.</span>
         </div>
 
-        <div class="form-field">
+                <!--
+        
+                <div class="form-field">
             <label for="varroa_producto_comercial" class="field-label">Producto Comercial</label>
             <input type="text" id="varroa_producto_comercial" name="varroa_producto_comercial" class="field-input text-input"
                 placeholder="Ej: ApiGuard, Apivar" value="{{ old(
@@ -122,5 +124,7 @@
       ) }}">
             <span class="field-helper">Ingrese numero de días que debe transcurrir entre la aplicación y la cosecha.</span>
         </div>
+
+                -->
     </div>
 </div>
