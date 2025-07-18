@@ -55,7 +55,6 @@
         display: flex;
         gap: 1.5rem;
         justify-content: center;
-        font-weight: 500;
     }
 
     .leyenda-color {
@@ -65,6 +64,9 @@
         display: inline-block;
         margin-right: 6px;
         vertical-align: middle;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        transition: background 0.3s ease;
+        cursor: default;
     }
 
     .leyenda-color.pendiente {
