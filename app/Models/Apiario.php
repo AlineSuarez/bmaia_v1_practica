@@ -30,7 +30,7 @@ class Apiario extends Model
         'es_temporal',
         'foto'
     ];
- 
+
     /**
      * Relación: Un apiario pertenece a un usuario.
      */
@@ -43,7 +43,7 @@ class Apiario extends Model
     {
         return $this->hasMany(Visita::class);
     }
-    
+
     public function comuna()
     {
         return $this->belongsTo(Comuna::class);
@@ -67,8 +67,8 @@ class Apiario extends Model
     public function ultimoMovimientoDestino()
     {
         return $this->hasOne(MovimientoColmena::class, 'apiario_destino_id')
-                    ->where('tipo_movimiento', 'traslado')
-                    ->latest('fecha_movimiento');
+            ->where('tipo_movimiento', 'traslado')
+            ->latest('fecha_movimiento');
     }
 
 
@@ -80,7 +80,7 @@ class Apiario extends Model
             ->count();
     }
 
- //metodos para archivar apiario temporal
+    //metodos para archivar apiario temporal
     public function debeArchivarse()
     {
         if ($this->tipo_apiario !== 'trashumante' || !$this->activo) {
@@ -88,8 +88,8 @@ class Apiario extends Model
         }
         foreach ($this->colmenas as $colmena) {
             $ultimo = $colmena->movimientos()
-                              ->latest('fecha_movimiento')
-                              ->first();
+                ->latest('fecha_movimiento')
+                ->first();
             if (!$ultimo || $ultimo->tipo_movimiento !== 'retorno') {
                 return false;
             }
@@ -102,4 +102,15 @@ class Apiario extends Model
         return $this->hasOne(Visita::class)->latestOfMany('fecha_visita');
     }
 
+    public function calidadesReina()
+    {
+        return $this->hasManyThrough(
+            \App\Models\CalidadReina::class,
+            \App\Models\Visita::class,
+            'apiario_id',
+            'visita_id',
+            'id',
+            'id'
+        );
+    }
 }
