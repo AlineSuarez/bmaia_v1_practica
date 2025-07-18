@@ -18,8 +18,8 @@ class PresenciaNosemosis extends Model
         // nuevos
         'metodo_diagnostico_laboratorio',
         'fecha_monitoreo_nosema',
-        'producto_comercial',
-        'ingrediente_activo',
+        //'producto_comercial',
+        //'ingrediente_activo',
         'fecha_aplicacion',
         'dosificacion',
         'metodo_aplicacion',
