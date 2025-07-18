@@ -8,6 +8,9 @@ use App\Models\Colmena;
 use Auth;
 use Barryvdh\DomPDF\Facade\Pdf;
 use App\Models\SistemaExperto;
+use App\Models\CalidadReina;
+use App\Models\Comuna;
+use App\Models\Region;
 
 class DocumentController extends Controller
 {
@@ -467,6 +470,49 @@ class DocumentController extends Controller
             ]);
 
         return $pdf->download("Alimentacion_{$apiario->nombre}.pdf");
+    }
+
+    public function generateReinaDocument($calidadReinaId)
+    {
+        // 1. Carga el registro de reina con sus relaciones:
+        $calidadReina = CalidadReina::with([
+            'visita.apiario.user',
+            'visita.apiario.comuna.region'
+        ])->findOrFail($calidadReinaId);
+
+        // 2. Extrae apiario y apicultor:
+        $visita     = $calidadReina->visita;
+        $apiario    = $visita->apiario;
+        $apicultor  = $apiario->user;
+
+        // 3. Valida que existan:
+        if (!$visita) {
+            return back()->with('error', 'No se encontró la visita asociada.');
+        }
+        if (!$apiario) {
+            return back()->with('error', 'No se encontró el apiario asociado.');
+        }
+        if (!$apicultor) {
+            return back()->with('error', 'No se encontró el apicultor asociado.');
+        }
+
+        // 4. Genera el PDF usando la misma vista Blade que ya tienes:
+        $pdf = Pdf::loadView(
+            'documents.reina-record',
+            compact('calidadReina', 'apiario', 'apicultor')
+        )
+        ->setPaper('A4','portrait')
+        ->setOptions([
+            'isHtml5ParserEnabled' => true,
+            'isPhpEnabled'         => true,
+            'defaultFont'          => 'DejaVu Sans',
+            'enable_remote'        => true,
+            'chroot'               => public_path(),
+        ]);
+
+        // 5. Descarga con nombre claro:
+        $filename = "Reina_{$apiario->nombre}.pdf";
+        return $pdf->download($filename);
     }
 
     public function qrPdf(Apiario $apiario, Colmena $colmena)

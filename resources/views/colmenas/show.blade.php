@@ -4,9 +4,6 @@
 
 @section('content')
         @php
-            // PCC1–2: sistema experto (vienen como $pcc1, $pcc2)
-            // PCC3–5: cuaderno de campo (vienen como $pcc3, $pcc4, $pcc5)
-            // PCC6–7: sistema experto (vienen como $pcc6, $pcc7)
             $hasAny = $pcc1 || $pcc2 || $pcc3 || $pcc4 || $pcc5 || $pcc6 || $pcc7;
         @endphp
 
@@ -499,8 +496,8 @@
                         <div class="card-footer">
                             <div class="flex items-center gap-3">
                                 @php
-                                    // Sacamos la visita asociada (cualquiera de PCC3–5)
-                                    $visitaId = optional($pcc3)->visita_id
+                                    $visitaId = optional($pcc2)->visita_id
+                                            ?? optional($pcc3)->visita_id
                                             ?? optional($pcc4)->visita_id
                                             ?? optional($pcc5)->visita_id;
                                 @endphp
@@ -513,7 +510,7 @@
                                 @else
                                     <span class="text-amber-600 font-bold flex items-center">
                                         <i class="fas fa-exclamation-triangle mr-2"></i>
-                                        Primero ingresa PCC 3, 4 o 5 en el Cuaderno de Campo
+                                        Primero ingresa PCC 2 3, 4 o 5 en el Cuaderno de Campo
                                     </span>
                                 @endif
                             </div>
