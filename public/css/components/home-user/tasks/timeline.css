@@ -202,7 +202,7 @@
 .tareas-timeline-wrapper .progress-bar-custom {
     width: 100px;
     height: 8px;
-    background: var(--bg-tertiary);
+    background: rgba(216, 216, 216, 0.603);
     border-radius: var(--radius-full);
     overflow: hidden;
 }
@@ -214,7 +214,7 @@
     transition: width 0.6s ease-out;
 }
 
-/* ===== CONTENIDO DE TAREAS MEJORADO ===== */
+/* ===== CONTENIDO DE TAREAS ===== */
 .tareas-timeline-wrapper .etapa-content {
     flex: 1;
     padding: var(--space-4);
@@ -501,7 +501,7 @@
     }
 }
 
-/* Tablets */
+/* Tablets pequeñas */
 @media (max-width: 768px) {
     .tareas-timeline-wrapper .timeline-container {
         padding: var(--space-4);
@@ -529,6 +529,11 @@
         flex-direction: column;
         gap: var(--space-2);
     }
+
+    .tareas-timeline-wrapper .progress-bar-custom{
+        width: 80px;
+        height: 6px;
+    }
 }
 
 /* Móviles */
@@ -550,6 +555,38 @@
         flex-direction: column;
         gap: var(--space-2);
     }
+
+    .tareas-timeline-wrapper .progress-bar-custom{
+        width: 60px;
+        height: 6px;
+    }
+
+    .btn-etapa {
+        min-width: 140px;
+    }
+
+    .btn-etapa.cancelar {
+        min-width: 100px;
+    }
+    .btn-etapa.confirmar {
+        min-width: 120px;
+    }
+    .btn-etapa.completado {
+        min-width: 160px;
+    }
+    .btn-etapa.deshacer-seleccionadas-btn {
+        min-width: 120px;
+    }
+    .tareas-timeline-wrapper .etapa-actions {
+        flex-direction: column;
+        align-items: stretch;
+        gap: var(--space-2);
+    }
+    .tareas-timeline-wrapper .etapa-actions .btn-etapa {
+        width: 100%;
+        min-width: unset;
+    }
+
 }
 
 @media (max-width: 360px) {
@@ -570,7 +607,7 @@
     }
 }
 
-/* ===== MEJORAS PARA PANTALLAS GRANDES ===== */
+
 @media (min-width: 1200px) {
     .tareas-timeline-wrapper .etapas-grid {
         grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));

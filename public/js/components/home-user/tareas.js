@@ -430,10 +430,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 targetView.style.opacity = "1";
             }, 10);
 
-            // Inicializar vistas específicas SIN LOADER
-            if (viewName === "calendar") {
-                setTimeout(() => initializeCalendar(), 100);
-            }
+            // Inicializar vistas específicas
             if (viewName === "kanban") {
                 setTimeout(() => initializeKanban(), 100);
             }
@@ -459,64 +456,6 @@ document.addEventListener("DOMContentLoaded", () => {
         if (defaultViewToggler) {
             defaultViewToggler.classList.add("active");
             defaultViewToggler.click();
-        }
-    }
-
-    // Función para inicializar FullCalendar with error handling
-    function initializeCalendar() {
-        if (!DOM.calendar || DOM.calendar.classList.contains("initialized"))
-            return;
-
-        console.debug("Inicializando calendario...");
-        try {
-            DOM.calendar.classList.add("initialized");
-            const calendarConfig = {
-                initialView: "dayGridMonth",
-                events: window.calendarEvents || [],
-                locale: "es",
-                headerToolbar: {
-                    left: "prev,next today",
-                    center: "title",
-                    right: "dayGridMonth,timeGridWeek,timeGridDay",
-                },
-                buttonText: {
-                    today: "Hoy",
-                    month: "Mes",
-                    week: "Semana",
-                    day: "Día",
-                },
-                eventClick: (info) => {
-                    const evento = info.event;
-                    // Actualizar contenido del modal
-                    document.getElementById("task-title").textContent =
-                        evento.title;
-                    document.getElementById("task-general").textContent =
-                        evento.extendedProps.tareaGeneral || "No especificado";
-                    document.getElementById("task-description").textContent =
-                        evento.extendedProps.descripcion || "Sin descripción";
-                    document.getElementById("task-status").textContent =
-                        evento.extendedProps.estado || "Pendiente";
-                    document.getElementById("task-priority").textContent =
-                        evento.extendedProps.prioridad || "Normal";
-
-                    // Mostrar modal
-                    const taskModal = new bootstrap.Modal(
-                        document.getElementById("taskModal")
-                    );
-                    taskModal.show();
-                },
-                eventTimeFormat: {
-                    hour: "2-digit",
-                    minute: "2-digit",
-                    meridiem: false,
-                    hour12: false,
-                },
-            };
-
-            new FullCalendar.Calendar(DOM.calendar, calendarConfig).render();
-            console.debug("Calendario inicializado correctamente");
-        } catch (error) {
-            console.error("Error al inicializar el calendario:", error);
         }
     }
 
@@ -1162,7 +1101,6 @@ document.addEventListener("DOMContentLoaded", () => {
         recargarSubtareas();
         actualizarKanban();
         actualizarTimeline();
-        initializeCalendar();
     });
 
     // INICIALIZACIÓN: Solo ejecutar la carga inicial UNA VEZ

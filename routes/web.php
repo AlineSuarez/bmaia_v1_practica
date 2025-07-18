@@ -116,24 +116,24 @@ Route::middleware(['auth'])->group(function () {
 // pccs para colmenas
 
 Route::middleware('auth')
-     ->prefix('visitas')
-     ->name('visitas.')
-     ->group(function(){
-       
+    ->prefix('visitas')
+    ->name('visitas.')
+    ->group(function () {
+
         // listado, etc
         Route::get('/', [VisitaController::class, 'index'])->name('index');
         // ...
-
+    
         // Crear PCC
         Route::get('{visita}/pcc/create', [VisitaController::class, 'createPcc'])->name('pcc.create');
         // Guardar PCC 
         Route::post('{visita}/pcc', [VisitaController::class, 'storePcc'])->name('pcc.store');
         // Editar PCC si ya existe
-        Route::get('{visita}/pcc/edit',   [VisitaController::class, 'editPcc'])->name('pcc.edit');
+        Route::get('{visita}/pcc/edit', [VisitaController::class, 'editPcc'])->name('pcc.edit');
 
         // Guardar (tanto de create como de edit)
-        Route::put('{visita}/pcc',        [VisitaController::class, 'updatePcc'])->name('pcc.update');
-     });
+        Route::put('{visita}/pcc', [VisitaController::class, 'updatePcc'])->name('pcc.update');
+    });
 
 // Redirigir a Google para autenticación
 Route::get('login/google', function () {
@@ -157,7 +157,7 @@ Route::get('login/google/callback', function () {
         $user = User::create([
             'name' => $googleUser->getName(),
             'email' => $googleUser->getEmail(),
-            'password' => bcrypt(str_random(16)),
+            'password' => bcrypt(\Illuminate\Support\Str::random(16)),
         ]);
     }
     // Autentica al usuario
@@ -199,7 +199,7 @@ Route::prefix('apiarios/{apiario}/colmenas')->name('colmenas.')->group(function 
     Route::delete('/{colmena}', [ColmenaController::class, 'destroy'])->name('destroy');
     Route::get('/{colmena}/historial', [ColmenaController::class, 'historial'])->name('historial');
     Route::get('/{colmena}/historial/export', [ColmenaController::class, 'exportHistorial'])->name('historial.export');
-    Route::get('/{colmena}/qr-pdf',[\App\Http\Controllers\DocumentController::class, 'qrPdf'])->name('qr-pdf');
+    Route::get('/{colmena}/qr-pdf', [DocumentController::class, 'qrPdf'])->name('qr-pdf');
 });
 
 Route::get('/colmena-publica/{colmena}', [ColmenaController::class, 'publicView'])->name('colmenas.public');
@@ -209,7 +209,10 @@ Route::get('/colmena-publica/{colmena}', [ColmenaController::class, 'publicView'
 // Historial de visitas de un apiario
 Route::get('apiarios/{apiario}/visitas', [VisitaController::class, 'showHistorial'])->name('visitas.historial');
 
-//Task
+//Ruta para obtener tareas en formato JSON
+Route::get('/tareas/json', [TaskController::class, 'obtenerEventosJson'])->name('tareas.json');
+
+// Rutas para tareas
 Route::delete('/tareas/{id}', [TaskController::class, 'destroy'])->name('tareas.destroy');
 Route::get('/tareas', [TaskController::class, 'index'])->name('tareas');
 Route::post('/tareas', [TaskController::class, 'store'])->name('tareas.store');
@@ -224,13 +227,8 @@ Route::get('/datos-subtareas', [TaskController::class, 'obtenerSubtareasJson'])-
 
 // 1) Pantalla del calendario
 Route::get('/tareas/calendario', [TaskController::class, 'calendario'])->name('tareas.calendario');
-// 2) JSON de eventos para FullCalendar
-Route::get('/tareas/json', [TaskController::class, 'obtenerEventosJson'])->name('tareas.json');
-
 // Crear etapa en módulo de Tareas
 Route::post('/tareas-generales', [TaskController::class, 'storeAjax']);
-
-
 
 // Visitas
 Route::get('/visitas', [VisitaController::class, 'index'])->name('visitas');

@@ -75,7 +75,7 @@
 
                 <!-- Vista Calendario -->
                 <div class="view calendar">
-                    <div id="calendar"></div>
+                    @include('tareas.calendario')
                 </div>
 
                 <!-- Consejo final -->
@@ -365,4 +365,5 @@
 
     <!-- Script específico para tareas -->
     <script src="{{ asset('js/components/home-user/tareas.js') }}"></script>
+    <script src="{{ asset('js/components/home-user/tasks/calendario.js') }}"></script>
 @endsection
