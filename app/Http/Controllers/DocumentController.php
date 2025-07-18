@@ -474,43 +474,31 @@ class DocumentController extends Controller
 
     public function generateReinaDocument($calidadReinaId)
     {
-        // 1. Carga el registro de reina con sus relaciones:
+        // 1. Carga sólo si tiene visita
         $calidadReina = CalidadReina::with([
             'visita.apiario.user',
-            'visita.apiario.comuna.region'
-        ])->findOrFail($calidadReinaId);
+            'visita.apiario.comuna.region',
+        ])->whereHas('visita')
+        ->findOrFail($calidadReinaId);
 
-        // 2. Extrae apiario y apicultor:
-        $visita     = $calidadReina->visita;
-        $apiario    = $visita->apiario;
-        $apicultor  = $apiario->user;
+        // 2. Extrae y valida en orden
+        $visita = $calidadReina->visita;
+        $apiario = $visita->apiario;
+        $apicultor = $apiario->user;
 
-        // 3. Valida que existan:
-        if (!$visita) {
-            return back()->with('error', 'No se encontró la visita asociada.');
-        }
-        if (!$apiario) {
-            return back()->with('error', 'No se encontró el apiario asociado.');
-        }
-        if (!$apicultor) {
-            return back()->with('error', 'No se encontró el apicultor asociado.');
-        }
+        // (si queréis más mensajes de error personalizados podríais usar back()->with...)
 
-        // 4. Genera el PDF usando la misma vista Blade que ya tienes:
-        $pdf = Pdf::loadView(
-            'documents.reina-record',
-            compact('calidadReina', 'apiario', 'apicultor')
-        )
-        ->setPaper('A4','portrait')
-        ->setOptions([
-            'isHtml5ParserEnabled' => true,
-            'isPhpEnabled'         => true,
-            'defaultFont'          => 'DejaVu Sans',
-            'enable_remote'        => true,
-            'chroot'               => public_path(),
-        ]);
+        // 3. Genera el PDF
+        $pdf = Pdf::loadView('documents.reina-record', compact('calidadReina','apiario','apicultor'))
+                ->setPaper('A4','portrait')
+                ->setOptions([
+                    'isHtml5ParserEnabled' => true,
+                    'isPhpEnabled'         => true,
+                    'defaultFont'          => 'DejaVu Sans',
+                    'enable_remote'        => true,
+                    'chroot'               => public_path(),
+                ]);
 
-        // 5. Descarga con nombre claro:
         $filename = "Reina_{$apiario->nombre}.pdf";
         return $pdf->download($filename);
     }
