@@ -488,7 +488,7 @@
                                 @if($apiario->visitas->where('tipo_visita', 'Inspección de Reina')->isEmpty())
                                     <div class="no-data-message">
                                         <i class="fas fa-info-circle me-2"></i>
-                                        No hay registros de alimentación.
+                                        No hay registros de reina.
                                     </div>
                                 @else
                                     <div class="table-container">
