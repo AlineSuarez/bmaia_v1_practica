@@ -1,5 +1,5 @@
 /* ================================================================
-   VARIABLES CSS (Solo para el contexto Kanban)
+   VARIABLES CSS
    ================================================================ */
 .kanban-container {
     --kanban-amber-50: #fffbeb;
@@ -58,6 +58,7 @@
     padding: var(--kanban-space-2);
     box-sizing: border-box;
     overflow-x: hidden;
+    position: relative;
 }
 
 .kanban-container * {
@@ -65,7 +66,7 @@
 }
 
 /* ================================================================
-   HEADER DEL KANBAN - RESPONSIVE
+   HEADER DEL KANBAN
    ================================================================ */
 .kanban-container .kanban-header {
     margin-bottom: var(--kanban-space-3);
@@ -82,7 +83,60 @@
 }
 
 /* ================================================================
-   TABLERO KANBAN - MOBILE FIRST
+   INDICADOR DE SCROLL HORIZONTAL (SOLO MÓVIL)
+   ================================================================ */
+.kanban-scroll-hint {
+    display: none;
+    position: relative;
+    margin-bottom: var(--kanban-space-2);
+    padding: var(--kanban-space-2);
+    background: linear-gradient(
+        135deg,
+        var(--kanban-amber-50),
+        var(--kanban-amber-100)
+    );
+    border: 1px solid var(--kanban-amber-200);
+    border-radius: var(--kanban-radius-md);
+    text-align: center;
+}
+
+.kanban-scroll-hint .hint-text {
+    font-size: 0.75rem;
+    color: var(--kanban-amber-700);
+    margin: 0 0 var(--kanban-space-1) 0;
+    font-weight: 500;
+}
+
+.kanban-scroll-hint .hint-arrows {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: var(--kanban-space-1);
+    color: var(--kanban-amber-600);
+    font-size: 0.8rem;
+}
+
+.kanban-scroll-hint .arrow-left,
+.kanban-scroll-hint .arrow-right {
+    animation: bounceHorizontal 2s infinite;
+}
+
+.kanban-scroll-hint .arrow-right {
+    animation-delay: 0.5s;
+}
+
+@keyframes bounceHorizontal {
+    0%,
+    100% {
+        transform: translateX(0);
+    }
+    50% {
+        transform: translateX(3px);
+    }
+}
+
+/* ================================================================
+   TABLERO KANBAN - MOBILE FIRST CON SCROLL HORIZONTAL
    ================================================================ */
 .kanban-container .kanban-board {
     display: grid;
@@ -91,10 +145,54 @@
     width: 100%;
     min-height: 70vh;
     overflow: hidden;
+    position: relative;
 }
 
 /* ================================================================
-   COLUMNAS - MOBILE OPTIMIZED
+   SCROLL INDICATORS (GRADIENTES EN LOS BORDES)
+   ================================================================ */
+.kanban-board-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+.kanban-board-wrapper::before,
+.kanban-board-wrapper::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 20px;
+    z-index: 10;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.kanban-board-wrapper::before {
+    left: 0;
+    background: linear-gradient(
+        to right,
+        rgba(255, 255, 255, 0.9),
+        transparent
+    );
+}
+
+.kanban-board-wrapper::after {
+    right: 0;
+    background: linear-gradient(to left, rgba(255, 255, 255, 0.9), transparent);
+}
+
+.kanban-board-wrapper.show-left-gradient::before {
+    opacity: 1;
+}
+
+.kanban-board-wrapper.show-right-gradient::after {
+    opacity: 1;
+}
+
+/* ================================================================
+   COLUMNAS
    ================================================================ */
 .kanban-container .kanban-column {
     background: white;
@@ -145,7 +243,7 @@
 }
 
 /* ================================================================
-   LISTA DE TAREAS - MOBILE OPTIMIZED
+   LISTA DE TAREAS
    ================================================================ */
 .kanban-container .task-list {
     flex: 1;
@@ -175,7 +273,7 @@
 }
 
 /* ================================================================
-   TARJETAS DE TAREAS - MOBILE OPTIMIZED
+   TARJETAS DE TAREAS
    ================================================================ */
 .kanban-container .task-card {
     background: white;
@@ -361,7 +459,7 @@
 }
 
 /* ================================================================
-   MODAL - MOBILE OPTIMIZED
+   MODAL
    ================================================================ */
 #editTaskModal {
     position: fixed;
@@ -510,8 +608,59 @@
 }
 
 /* ================================================================
-   RESPONSIVE BREAKPOINTS - OPTIMIZACIÓN PERFECTA
+   RESPONSIVE BREAKPOINTS CON SCROLL HORIZONTAL
    ================================================================ */
+
+/* Móvil muy pequeño hasta tablet (hasta 768px) - SCROLL HORIZONTAL */
+@media (max-width: 768px) {
+    .kanban-scroll-hint {
+        display: block;
+    }
+
+    /* Wrapper para gradientes */
+    .kanban-container .kanban-board {
+        display: flex;
+        flex-direction: row;
+        gap: var(--kanban-space-3);
+        overflow-x: auto !important;
+        overflow-y: hidden !important;
+        scroll-behavior: smooth;
+        padding-bottom: var(--kanban-space-2);
+        -webkit-overflow-scrolling: touch;
+    }
+
+    /* Scroll customizado en móvil */
+    .kanban-container .kanban-board::-webkit-scrollbar {
+        height: 4px;
+    }
+
+    .kanban-container .kanban-board::-webkit-scrollbar-track {
+        background: var(--kanban-gray-100);
+        border-radius: var(--kanban-radius-sm);
+    }
+
+    .kanban-container .kanban-board::-webkit-scrollbar-thumb {
+        background: var(--kanban-amber-400);
+        border-radius: var(--kanban-radius-sm);
+    }
+
+    /* Columnas con ancho fijo */
+    .kanban-container .kanban-column {
+        min-width: 280px;
+        max-width: 280px;
+        flex: 0 0 280px;
+        height: auto;
+        max-height: 60vh;
+    }
+
+    .kanban-container .kanban-column:last-child {
+        margin-right: var(--kanban-space-3);
+    }
+
+    .kanban-container {
+        overflow-x: visible;
+    }
+}
 
 /* Móvil muy pequeño (hasta 320px) */
 @media (max-width: 320px) {
@@ -519,17 +668,16 @@
         padding: var(--kanban-space-1);
     }
 
-    .kanban-container .kanban-header {
-        margin-bottom: var(--kanban-space-2);
+    .kanban-container .kanban-column {
+        min-width: 260px;
+        max-width: 260px;
+        flex: 0 0 260px;
+        min-height: 250px;
+        max-height: 50vh;
     }
 
     .kanban-container .kanban-main-title {
         font-size: 1.1rem;
-    }
-
-    .kanban-container .kanban-column {
-        min-height: 250px;
-        max-height: 300px;
     }
 
     .kanban-container .task-name {
@@ -549,8 +697,11 @@
 /* Móvil pequeño (321px - 375px) */
 @media (min-width: 321px) and (max-width: 375px) {
     .kanban-container .kanban-column {
+        min-width: 270px;
+        max-width: 270px;
+        flex: 0 0 270px;
         min-height: 280px;
-        max-height: 320px;
+        max-height: 55vh;
     }
 
     .kanban-container .kanban-main-title {
@@ -561,8 +712,11 @@
 /* Móvil mediano (376px - 414px) */
 @media (min-width: 376px) and (max-width: 414px) {
     .kanban-container .kanban-column {
+        min-width: 290px;
+        max-width: 290px;
+        flex: 0 0 290px;
         min-height: 300px;
-        max-height: 350px;
+        max-height: 60vh;
     }
 
     .kanban-container .task-name {
@@ -582,8 +736,11 @@
     }
 
     .kanban-container .kanban-column {
+        min-width: 300px;
+        max-width: 300px;
+        flex: 0 0 300px;
         min-height: 320px;
-        max-height: 380px;
+        max-height: 65vh;
     }
 
     .kanban-container .column-title {
@@ -593,13 +750,12 @@
 
 /* Phablet (481px - 600px) */
 @media (min-width: 481px) and (max-width: 600px) {
-    .kanban-container .kanban-board {
-        gap: var(--kanban-space-2);
-    }
-
     .kanban-container .kanban-column {
+        min-width: 320px;
+        max-width: 320px;
+        flex: 0 0 320px;
         min-height: 350px;
-        max-height: 400px;
+        max-height: 70vh;
     }
 
     .kanban-container .kanban-main-title {
@@ -617,14 +773,12 @@
         padding: var(--kanban-space-3);
     }
 
-    .kanban-container .kanban-board {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: var(--kanban-space-3);
-    }
-
     .kanban-container .kanban-column {
+        min-width: 340px;
+        max-width: 340px;
+        flex: 0 0 340px;
         min-height: 400px;
-        max-height: 500px;
+        max-height: 75vh;
         border-radius: var(--kanban-radius-lg);
     }
 
@@ -649,16 +803,31 @@
     }
 }
 
-/* Tablet (769px - 1024px) */
+/* Tablet (769px - 1024px) - GRID 2x2 */
 @media (min-width: 769px) and (max-width: 1024px) {
+    /* Ocultar indicador de scroll horizontal */
+    .kanban-scroll-hint {
+        display: none !important;
+    }
+
     .kanban-container .kanban-board {
+        display: grid;
         grid-template-columns: repeat(2, minmax(0, 1fr));
         gap: var(--kanban-space-2);
+        overflow: visible;
+        padding-bottom: 0;
     }
 
     .kanban-container .kanban-column {
+        min-width: 0;
+        max-width: none;
+        flex: none;
         min-height: 500px;
         max-height: 70vh;
+    }
+
+    .kanban-container .kanban-column:last-child {
+        margin-right: 0;
     }
 
     .kanban-container .column-title {
@@ -674,8 +843,12 @@
     }
 }
 
-/* Desktop pequeño (1025px - 1280px) */
+/* Desktop pequeño (1025px - 1280px) - GRID 2x2 */
 @media (min-width: 1025px) and (max-width: 1280px) {
+    .kanban-scroll-hint {
+        display: none !important;
+    }
+
     .kanban-container {
         padding: var(--kanban-space-3);
     }
@@ -689,14 +862,24 @@
     }
 
     .kanban-container .kanban-board {
+        display: grid;
         grid-template-columns: repeat(2, minmax(0, 1fr));
         gap: var(--kanban-space-3);
         min-height: 75vh;
+        overflow: visible;
+        padding-bottom: 0;
     }
 
     .kanban-container .kanban-column {
+        min-width: 0;
+        max-width: none;
+        flex: none;
         min-height: 500px;
         max-height: 75vh;
+    }
+
+    .kanban-container .kanban-column:last-child {
+        margin-right: 0;
     }
 
     .kanban-container .column-header {
@@ -725,8 +908,12 @@
     }
 }
 
-/* Desktop grande (1281px+) */
+/* Desktop grande (1281px+) - GRID 1x4 */
 @media (min-width: 1281px) {
+    .kanban-scroll-hint {
+        display: none !important;
+    }
+
     .kanban-container {
         padding: var(--kanban-space-4);
     }
@@ -736,12 +923,22 @@
     }
 
     .kanban-container .kanban-board {
+        display: grid;
         grid-template-columns: repeat(4, minmax(0, 1fr));
         gap: var(--kanban-space-4);
+        overflow: visible;
+        padding-bottom: 0;
     }
 
     .kanban-container .kanban-column {
+        min-width: 0;
+        max-width: none;
+        flex: none;
         max-height: 80vh;
+    }
+
+    .kanban-container .kanban-column:last-child {
+        margin-right: 0;
     }
 
     .kanban-container .column-title {
@@ -788,10 +985,9 @@
 }
 
 /* =========================
-   DRAG & DROP EXPERIENCE
+   DRAG & DROP
    ========================= */
 
-/* Evita seleccionar texto al arrastrar tarjetas o listas */
 .kanban-container .task-list,
 .kanban-container .task-card {
     user-select: none;
@@ -799,7 +995,6 @@
     -ms-user-select: none;
 }
 
-/* Cursor visual de arrastre */
 .kanban-container .task-card {
     cursor: grab;
 }
@@ -807,7 +1002,6 @@
     cursor: grabbing;
 }
 
-/* Tarjeta mientras se arrastra */
 .dragging-card {
     opacity: 0.92;
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
@@ -819,7 +1013,6 @@
     pointer-events: none;
 }
 
-/* Placeholder visual al arrastrar (jQuery UI) */
 .ui-state-highlight {
     min-height: 60px;
     height: auto !important;
@@ -855,7 +1048,6 @@
     background: var(--kanban-amber-100);
 }
 
-/* En móvil, el handle va a la izquierda y el nombre ocupa el resto */
 @media (max-width: 600px) {
     .kanban-container .card-header {
         flex-direction: row;
@@ -878,7 +1070,6 @@
     }
 }
 
-/* En desktop, el handle puede ir a la derecha si prefieres */
 @media (min-width: 601px) {
     .kanban-container .card-header {
         flex-direction: row;
@@ -898,4 +1089,3 @@
         order: 2;
     }
 }
-

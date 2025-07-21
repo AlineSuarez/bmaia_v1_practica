@@ -492,7 +492,7 @@
     const dias = ['Hoy', 'Mañana', 'Pasado mañana', 'En 3 días', 'En 4 días', 'En 5 días'];
 
     function reverseGeocode(lat, lon, callback) {
-      fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&zoom=10&addressdetails=1`)
+      fetch(`/reverse-geocode?lat=${lat}&lon=${lon}`)
       .then(res => res.json())
       .then(data => {
         if (data && data.address) {
@@ -518,15 +518,15 @@
         // Si no hay datos para este día, muestra tarjeta vacía
         html += `<div class="weather-card${i === 0 ? ' today' : ''}">
       <div class="weather-header">
-        <div class="weather-day">${dias[i]}</div>
-        <div class="weather-date">${dayKeys[i] || ''}</div>
+      <div class="weather-day">${dias[i]}</div>
+      <div class="weather-date">${dayKeys[i] || ''}</div>
       </div>
       <div class="weather-icon">
-        <i class="fas fa-question" style="color:#ccc;font-size:2.2em"></i>
+      <i class="fas fa-question" style="color:#ccc;font-size:2.2em"></i>
       </div>
       <div class="weather-temp">---</div>
       <div class="weather-details" style="margin-top:8px">
-        <div class="weather-detail">No hay datos para este día.</div>
+      <div class="weather-detail">No hay datos para este día.</div>
       </div>
       </div>`;
         continue;
@@ -545,12 +545,12 @@
       <div class="weather-temp" style="font-weight:bold;font-size:1.4em">${Math.round(day.main.temp)}°C</div>
       <div class="weather-details" style="margin-top:8px">
       <div class="weather-detail" style="text-transform:capitalize">
-        <i class="fas fa-info-circle"></i>
-        ${day.weather[0].description}
+      <i class="fas fa-info-circle"></i>
+      ${day.weather[0].description}
       </div>
       <div class="weather-detail">
-        <i class="fas fa-tint"></i>
-        Humedad: ${day.main.humidity}%
+      <i class="fas fa-tint"></i>
+      Humedad: ${day.main.humidity}%
       </div>
       </div>
     </div>`;

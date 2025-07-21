@@ -23,67 +23,83 @@
             </div>
         </div>
 
+        {{-- Indicador para deslizar --}}
+        <div class="kanban-scroll-hint">
+            <p class="hint-text">
+                <i class="fa-solid fa-hand-pointer"></i>
+                Desliza horizontalmente para ver más columnas
+            </p>
+            <div class="hint-arrows">
+                <i class="fa-solid fa-chevron-left arrow-left"></i>
+                <span>·····</span>
+                <i class="fa-solid fa-chevron-right arrow-right"></i>
+            </div>
+        </div>
+
         {{-- Tablero con las 4 columnas --}}
-        <div class="kanban-board">
-            @foreach (['Pendiente', 'En progreso', 'Completada', 'Vencida'] as $estado)
-                <div class="kanban-column" data-status="{{ $estado }}">
+        <div class="kanban-board-wrapper">
+            <div class="kanban-board">
+                @foreach (['Pendiente', 'En progreso', 'Completada', 'Vencida'] as $estado)
+                    <div class="kanban-column" data-status="{{ $estado }}">
 
-                    {{-- Header de la columna --}}
-                    <div class="column-header">
-                        <h3 class="column-title">{{ $estado }}</h3>
-                        <span class="task-count">{{ $subtareas->where('estado', $estado)->count() }}</span>
-                    </div>
+                        {{-- Header de la columna --}}
+                        <div class="column-header">
+                            <h3 class="column-title">{{ $estado }}</h3>
+                            <span class="task-count">{{ $subtareas->where('estado', $estado)->count() }}</span>
+                        </div>
 
-                    {{-- Lista de tareas de la columna --}}
-                    <div class="task-list" data-status="{{ $estado }}">
-                        @foreach ($subtareas->where('estado', $estado) as $task)
-                            <div class="task-card" data-task-id="{{ $task->id }}" data-priority="{{ $task->prioridad }}">
+                        {{-- Lista de tareas de la columna --}}
+                        <div class="task-list" data-status="{{ $estado }}">
+                            @foreach ($subtareas->where('estado', $estado) as $task)
+                                <div class="task-card" data-task-id="{{ $task->id }}" data-priority="{{ $task->prioridad }}">
 
-                                {{-- Header de la tarjeta --}}
-                                <div class="card-header">
-                                    <span class="task-name">{{ $task->nombre }}</span>
-                                    <span class="priority-indicator priority-{{ $task->prioridad }}"></span>
-                                    <span class="drag-handle" title="Mover">&#x2630;</span> {{-- Icono de barras (☰) --}}
-                                </div>
-
-                                {{-- Contenido de la tarjeta --}}
-                                <div class="card-content">
-                                    <div class="task-stage">{{ $task->tareaGeneral->nombre }}</div>
-                                    <div class="task-dates">
-                                        <span
-                                            class="date-start">{{ \Carbon\Carbon::parse($task->fecha_inicio)->format('d/m') }}</span>
-                                        <span class="date-separator">-</span>
-                                        <span
-                                            class="date-end">{{ \Carbon\Carbon::parse($task->fecha_limite)->format('d/m') }}</span>
+                                    {{-- Header de la tarjeta --}}
+                                    <div class="card-header">
+                                        <span class="task-name">{{ $task->nombre }}</span>
+                                        <span class="priority-indicator priority-{{ $task->prioridad }}"></span>
+                                        <span class="drag-handle" title="Mover">&#x2630;</span> {{-- Icono de barras (☰) --}}
                                     </div>
-                                </div>
 
-                                {{-- Footer de la tarjeta --}}
-                                <div class="card-footer">
-                                    <div class="task-actions">
-                                        <button class="action-btn edit-btn" data-task-id="{{ $task->id }}" title="Editar tarea">
-                                            <i class="fa-solid fa-edit"></i>
-                                        </button>
-                                        <button class="action-btn delete-btn" data-task-id="{{ $task->id }}"
-                                            title="Eliminar tarea">
-                                            <i class="fa-solid fa-trash"></i>
-                                        </button>
+                                    {{-- Contenido de la tarjeta --}}
+                                    <div class="card-content">
+                                        <div class="task-stage">{{ $task->tareaGeneral->nombre }}</div>
+                                        <div class="task-dates">
+                                            <span
+                                                class="date-start">{{ \Carbon\Carbon::parse($task->fecha_inicio)->format('d/m') }}</span>
+                                            <span class="date-separator">-</span>
+                                            <span
+                                                class="date-end">{{ \Carbon\Carbon::parse($task->fecha_limite)->format('d/m') }}</span>
+                                        </div>
                                     </div>
+
+                                    {{-- Footer de la tarjeta --}}
+                                    <div class="card-footer">
+                                        <div class="task-actions">
+                                            <button class="action-btn edit-btn" data-task-id="{{ $task->id }}"
+                                                title="Editar tarea">
+                                                <i class="fa-solid fa-edit"></i>
+                                            </button>
+                                            <button class="action-btn delete-btn" data-task-id="{{ $task->id }}"
+                                                title="Eliminar tarea">
+                                                <i class="fa-solid fa-trash"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+
                                 </div>
+                            @endforeach
 
-                            </div>
-                        @endforeach
+                            {{-- Mensaje cuando no hay tareas --}}
+                            @if($subtareas->where('estado', $estado)->count() === 0)
+                                <div class="empty-column">
+                                    <p class="empty-message">No hay tareas en {{ strtolower($estado) }}</p>
+                                </div>
+                            @endif
+                        </div>
 
-                        {{-- Mensaje cuando no hay tareas --}}
-                        @if($subtareas->where('estado', $estado)->count() === 0)
-                            <div class="empty-column">
-                                <p class="empty-message">No hay tareas en {{ strtolower($estado) }}</p>
-                            </div>
-                        @endif
                     </div>
-
-                </div>
-            @endforeach
+                @endforeach
+            </div>
         </div>
 
     </div>

@@ -1,5 +1,7 @@
+let kanbanAutoScrollInterval = null;
+let lastDragEvent = null;
+
 function activarSortableKanban() {
-    // Solo inicializa sortable en el kanban activo
     $(".kanban-container .task-list")
         .sortable({
             connectWith: ".task-list",
@@ -7,9 +9,7 @@ function activarSortableKanban() {
             items: ".task-card",
             tolerance: "pointer",
             revert: 0,
-            scroll: true, // Ya lo tienes
-            scrollSensitivity: 100, // Distancia del borde para activar scroll
-            scrollSpeed: 20, // Velocidad del scroll automático
+            scroll: false,
             handle: ".drag-handle",
             helper: function (e, item) {
                 var originalWidth = item.outerWidth();
@@ -27,16 +27,9 @@ function activarSortableKanban() {
                 ui.placeholder.width(ui.item.outerWidth());
                 ui.placeholder.css("box-sizing", "border-box");
                 ui.item.css("transition", "none");
-
-                // Mejorar scroll en móvil
-                if (window.innerWidth <= 768) {
-                    // Habilitar scroll automático más agresivo en móvil
-                    ui.helper.data("scrollSpeed", 40);
-                    ui.helper.data("scrollSensitivity", 50);
-                }
             },
             drag: function (event, ui) {
-                // Auto-scroll vertical de la página (no de la columna)
+                // Scroll vertical (opcional)
                 if (window.innerWidth <= 768) {
                     var scrollContainer =
                         document.scrollingElement || document.documentElement;
@@ -46,14 +39,38 @@ function activarSortableKanban() {
                         ? event.originalEvent.touches[0].clientY
                         : event.pageY;
 
-                    // Si el dedo/mouse está cerca del borde superior, sube la página
                     if (mouseY < 80) {
                         scrollContainer.scrollTop = scrollTop - 20;
-                    }
-                    // Si está cerca del borde inferior, baja la página
-                    else if (mouseY > windowHeight - 80) {
+                    } else if (mouseY > windowHeight - 80) {
                         scrollContainer.scrollTop = scrollTop + 20;
                     }
+                }
+
+                // --- Scroll horizontal anticipado ---
+                const kanbanBoard = document.querySelector(".kanban-board");
+                if (!kanbanBoard) return;
+                const rect = kanbanBoard.getBoundingClientRect();
+                const mouseX = event.originalEvent.touches
+                    ? event.originalEvent.touches[0].clientX
+                    : event.pageX;
+
+                const scrollZone = 120;
+                const scrollSpeed = 36;
+
+                if (mouseX - rect.left < scrollZone) {
+                    // Cerca del borde izquierdo
+                    kanbanBoard.scrollLeft = Math.max(
+                        kanbanBoard.scrollLeft - scrollSpeed,
+                        0
+                    );
+                } else if (rect.right - mouseX < scrollZone) {
+                    // Cerca del borde derecho
+                    const maxScroll =
+                        kanbanBoard.scrollWidth - kanbanBoard.clientWidth;
+                    kanbanBoard.scrollLeft = Math.min(
+                        kanbanBoard.scrollLeft + scrollSpeed,
+                        maxScroll
+                    );
                 }
             },
             stop: function (event, ui) {
@@ -82,6 +99,28 @@ function activarSortableKanban() {
                         toastr.error("No se pudo actualizar el estado.");
                     }
                 });
+            },
+            over: function (event, ui) {
+                // Scroll horizontal SOLO cuando la tarjeta pasa sobre una columna
+                const column = $(this).closest(".kanban-column")[0];
+                const kanbanBoard = document.querySelector(".kanban-board");
+                if (!column || !kanbanBoard) return;
+
+                const scrollLeft = kanbanBoard.scrollLeft;
+                const columnLeft = column.offsetLeft;
+                const columnRight = columnLeft + column.offsetWidth;
+
+                if (columnLeft < scrollLeft) {
+                    kanbanBoard.scrollTo({
+                        left: columnLeft,
+                        behavior: "smooth",
+                    });
+                } else if (columnRight > scrollLeft + kanbanBoard.clientWidth) {
+                    kanbanBoard.scrollTo({
+                        left: columnRight - kanbanBoard.clientWidth,
+                        behavior: "smooth",
+                    });
+                }
             },
         })
         .disableSelection();
@@ -178,7 +217,7 @@ function actualizarLista(tareasGenerales) {
             tbody.appendChild(row);
         });
     });
-    reasociarEventosLista(); // Reasociar los eventos de la lista
+    reasociarEventosLista();
 }
 
 // Reasociar los eventos de la lista (como select2)
@@ -193,66 +232,3 @@ function reasociarEventosLista() {
         },
     });
 }
-
-// Prueba mínima de drag and drop
-$(function () {
-    $(".task-list")
-        .sortable({
-            connectWith: ".task-list",
-            placeholder: "ui-state-highlight",
-            items: ".task-card",
-            tolerance: "pointer",
-            revert: 0, // Sin animación al soltar
-            scroll: true,
-            handle: ".drag-handle", // <-- SOLO se puede arrastrar desde el handle
-            helper: function (e, item) {
-                // Clona la tarjeta y le fuerza el ancho exacto del original
-                var originalWidth = item.outerWidth();
-                var clone = item.clone();
-                clone.css({
-                    width: originalWidth,
-                    "box-sizing": "border-box",
-                    transition: "none",
-                });
-                clone.addClass("dragging-card");
-                return clone;
-            },
-            start: function (event, ui) {
-                // Placeholder igual al tamaño de la tarjeta
-                ui.placeholder.height(ui.item.outerHeight());
-                ui.placeholder.width(ui.item.outerWidth());
-                ui.placeholder.css("box-sizing", "border-box");
-                // Elimina transiciones del original mientras se arrastra
-                ui.item.css("transition", "none");
-            },
-            stop: function (event, ui) {
-                // Restaura la transición al soltar
-                ui.item.css("transition", "");
-            },
-            receive: function (event, ui) {
-                const card = ui.item;
-                const id = card.data("task-id");
-                const newEstado = $(this).data("status");
-                fetch(`/tareas/${id}/update-status`, {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/x-www-form-urlencoded",
-                        "X-CSRF-TOKEN": document
-                            .querySelector('meta[name="csrf-token"]')
-                            .getAttribute("content"),
-                    },
-                    body: `_method=PATCH&estado=${encodeURIComponent(
-                        newEstado
-                    )}`,
-                }).then((res) => {
-                    if (res.ok) {
-                        toastr.success("Estado actualizado.");
-                        actualizarContadoresKanban();
-                    } else {
-                        toastr.error("No se pudo actualizar el estado.");
-                    }
-                });
-            },
-        })
-        .disableSelection();
-});

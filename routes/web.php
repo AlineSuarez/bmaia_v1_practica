@@ -27,6 +27,15 @@ use App\Http\Controllers\EmergencyContactController;
 use App\Http\Controllers\SistemaExpertoController;
 use App\Http\Controllers\DatoFacturacionController;
 
+// Proxy para reverse geocoding (Nominatim)
+Route::get('/reverse-geocode', function (Illuminate\Http\Request $request) {
+    $lat = $request->query('lat');
+    $lon = $request->query('lon');
+    $url = "https://nominatim.openstreetmap.org/reverse?format=json&lat={$lat}&lon={$lon}&zoom=10&addressdetails=1";
+    $response = Http::get($url);
+    return $response->json();
+});
+
 //Rutas de las policies 
 Route::view('/politicas-de-privacidad', 'legal.privacidad')->name('privacidad');
 Route::view('/terminos-de-uso', 'legal.terminos')->name('terminos');

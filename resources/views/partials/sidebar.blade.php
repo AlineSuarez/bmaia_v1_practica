@@ -18,8 +18,8 @@
             <div class="apicola-logo-container">
                 <div class="apicola-logo-icon">
                     @if(Auth::check() && Auth::user()->profile_picture)
-                        <img src="{{ asset('storage/' . Auth::user()->profile_picture) }}" alt="Foto de perfil"
-                            style="width: 40px; height: 40px; border-radius: 8px; object-fit: cover;">
+                        <img src="{{ asset('storage/' . (Auth::user()->profile_picture ?? 'default-profile.png')) }}"
+                            alt="Foto de perfil" style="width: 40px; height: 40px; border-radius: 8px; object-fit: cover;">
                     @else
                         <i class="fas fa-user"></i>
                     @endif

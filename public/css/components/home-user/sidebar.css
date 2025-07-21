@@ -1,16 +1,14 @@
 @import url("https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap");
 
 /*--------------------------------------------------------------
-# Variables específicas del sidebar - Aisladas del resto de la aplicación
+# Variables específicas del sidebar
 --------------------------------------------------------------*/
 .apicola-sidebar-container {
-    /* Dimensiones */
     --apicola-sidebar-width: 300px;
     --apicola-sidebar-collapsed-width: 0;
     --apicola-header-height: 70px;
     --apicola-footer-height: 120px;
 
-    /* Paleta de azules extendida */
     --apicola-blue-50: #eef5ff;
     --apicola-blue-100: #d9e7ff;
     --apicola-blue-200: #b8d4ff;
@@ -23,7 +21,6 @@
     --apicola-blue-900: #1e3a8a;
     --apicola-blue-950: #0f2261;
 
-    /* Azules especiales */
     --apicola-electric-blue: #00c3ff;
     --apicola-deep-blue: #0a1e3c;
     --apicola-navy-blue: #0f172a;
@@ -35,25 +32,21 @@
     --apicola-midnight-blue: #0f1729;
     --apicola-steel-blue: #64748b;
 
-    /* Colores de fondo */
     --apicola-sidebar-bg-from: var(--apicola-deep-blue);
     --apicola-sidebar-bg-to: var(--apicola-navy-blue);
     --apicola-sidebar-header-bg: rgba(10, 30, 60, 0.8);
     --apicola-sidebar-footer-bg: rgba(10, 30, 60, 0.8);
 
-    /* Colores de texto */
     --apicola-sidebar-text: #f8fafc;
     --apicola-sidebar-text-muted: #94a3b8;
     --apicola-sidebar-text-hover: #ffffff;
 
-    /* Colores de elementos */
     --apicola-sidebar-item-hover: rgba(37, 99, 235, 0.15);
     --apicola-sidebar-item-active: rgba(37, 99, 235, 0.2);
     --apicola-sidebar-divider: rgba(148, 163, 184, 0.15);
     --apicola-sidebar-icon-bg: rgba(37, 99, 235, 0.15);
     --apicola-sidebar-icon-active-bg: var(--apicola-royal-blue);
 
-    /* Efectos y transiciones */
     --apicola-transition-fast: 0.2s;
     --apicola-transition-normal: 0.3s;
     --apicola-transition-slow: 0.5s;
@@ -67,14 +60,12 @@
     --apicola-box-shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
         0 10px 10px -5px rgba(0, 0, 0, 0.04);
 
-    /* Bordes y radios */
     --apicola-border-radius-sm: 6px;
     --apicola-border-radius-md: 8px;
     --apicola-border-radius-lg: 12px;
     --apicola-border-radius-xl: 16px;
     --apicola-border-radius-full: 9999px;
 
-    /* Aseguramos que el contenedor tenga posición relativa para el posicionamiento interno */
     position: relative;
     display: flex;
     min-height: 100vh;
@@ -84,7 +75,7 @@
 }
 
 /*--------------------------------------------------------------
-# Botón Flotante - Diseño Ultra Premium
+# Botón Flotante
 --------------------------------------------------------------*/
 .apicola-floating-toggle {
     position: fixed;
@@ -115,8 +106,6 @@
     visibility: hidden;
     transform: scale(0.8) translateY(20px);
     overflow: hidden;
-    backdrop-filter: blur(5px);
-    -webkit-backdrop-filter: blur(5px);
 }
 
 .apicola-floating-icon {
@@ -186,37 +175,6 @@
     filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.8));
 }
 
-.apicola-floating-pulse {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: radial-gradient(
-        circle,
-        transparent 30%,
-        rgba(255, 255, 255, 0.15) 30%
-    );
-    transform: scale(0);
-    animation: apicola-pulse-ring 2s cubic-bezier(0.455, 0.03, 0.515, 0.955)
-        infinite;
-}
-
-@keyframes apicola-pulse-ring {
-    0% {
-        transform: scale(0.7);
-        opacity: 0.5;
-    }
-    50% {
-        transform: scale(1.2);
-        opacity: 0;
-    }
-    100% {
-        transform: scale(0.7);
-        opacity: 0;
-    }
-}
-
 body.sidebar-collapsed .apicola-floating-toggle {
     opacity: 1;
     visibility: visible;
@@ -224,30 +182,7 @@ body.sidebar-collapsed .apicola-floating-toggle {
 }
 
 /*--------------------------------------------------------------
-# Overlay - Efecto de Cristal Ultra Premium
---------------------------------------------------------------*/
-.apicola-sidebar-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(10, 30, 60, 0.7);
-    z-index: 998;
-    opacity: 0;
-    visibility: hidden;
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    transition: all var(--apicola-transition-normal) var(--apicola-cubic-bezier);
-}
-
-body.sidebar-active .apicola-sidebar-overlay {
-    opacity: 1;
-    visibility: visible;
-}
-
-/*--------------------------------------------------------------
-# Sidebar Principal - Diseño Ultra Premium
+# Sidebar Principal
 --------------------------------------------------------------*/
 .apicola-sidebar {
     background: linear-gradient(
@@ -293,7 +228,6 @@ body.sidebar-active .apicola-sidebar-overlay {
     opacity: 0.8;
 }
 
-/* Scrollbar personalizado */
 .apicola-sidebar-content::-webkit-scrollbar {
     width: 5px;
 }
@@ -308,7 +242,7 @@ body.sidebar-active .apicola-sidebar-overlay {
 }
 
 /*--------------------------------------------------------------
-# Header del Sidebar - Diseño Ultra Premium
+# Header del Sidebar
 --------------------------------------------------------------*/
 .apicola-sidebar-header {
     height: var(--apicola-header-height);
@@ -318,8 +252,6 @@ body.sidebar-active .apicola-sidebar-overlay {
     align-items: center;
     border-bottom: 1px solid rgba(255, 255, 255, 0.06);
     background: var(--apicola-sidebar-header-bg);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
     position: relative;
     z-index: 10;
 }
@@ -496,7 +428,7 @@ body.sidebar-active .apicola-sidebar-overlay {
 }
 
 /*--------------------------------------------------------------
-# Perfil de Usuario - Nuevo Componente
+# Perfil de Usuario
 --------------------------------------------------------------*/
 .apicola-user-profile {
     display: flex;
@@ -595,7 +527,7 @@ body.sidebar-active .apicola-sidebar-overlay {
 }
 
 /*--------------------------------------------------------------
-# Buscador - Nuevo Componente
+# Buscador
 --------------------------------------------------------------*/
 .apicola-search-container {
     padding: 0 15px 15px;
@@ -645,7 +577,7 @@ body.sidebar-active .apicola-sidebar-overlay {
 }
 
 /*--------------------------------------------------------------
-# Secciones de Navegación - Nuevo Componente
+# Secciones de Navegación
 --------------------------------------------------------------*/
 .apicola-nav-section {
     margin-bottom: 15px;
@@ -679,7 +611,7 @@ body.sidebar-active .apicola-sidebar-overlay {
 }
 
 /*--------------------------------------------------------------
-# Contenido del Sidebar - Diseño Ultra Premium
+# Contenido del Sidebar 
 --------------------------------------------------------------*/
 .apicola-sidebar-content {
     flex: 1;
@@ -723,7 +655,7 @@ body.sidebar-active .apicola-sidebar-overlay {
 }
 
 /*--------------------------------------------------------------
-# Enlaces del Sidebar - Diseño Ultra Premium
+# Enlaces del Sidebar
 --------------------------------------------------------------*/
 .apicola-sidebar-link {
     display: flex;
@@ -905,7 +837,7 @@ body.sidebar-active .apicola-sidebar-overlay {
 }
 
 /*--------------------------------------------------------------
-# Badges y Notificaciones - Nuevo Componente
+# Badges y Notificaciones
 --------------------------------------------------------------*/
 .apicola-menu-badge {
     position: absolute;
@@ -969,7 +901,7 @@ body.sidebar-active .apicola-sidebar-overlay {
 }
 
 /*--------------------------------------------------------------
-# Footer del Sidebar - Diseño Ultra Premium
+# Footer del Sidebar
 --------------------------------------------------------------*/
 .apicola-sidebar-footer {
     padding: 15px 20px;
@@ -978,8 +910,6 @@ body.sidebar-active .apicola-sidebar-overlay {
     gap: 15px;
     border-top: 1px solid rgba(255, 255, 255, 0.06);
     background: var(--apicola-sidebar-footer-bg);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
     position: relative;
 }
 
@@ -1083,7 +1013,7 @@ body.sidebar-active .apicola-sidebar-overlay {
 }
 
 /*--------------------------------------------------------------
-# Contenido Principal - Diseño Ultra Premium
+# Contenido Principal
 --------------------------------------------------------------*/
 .apicola-main-content {
     flex: 1;
@@ -1104,9 +1034,8 @@ body.sidebar-active .apicola-sidebar-overlay {
 }
 
 /*--------------------------------------------------------------
-# Estados del Sidebar - Diseño Ultra Premium
+# Estados del Sidebar
 --------------------------------------------------------------*/
-/* Sidebar Colapsado */
 body.sidebar-collapsed .apicola-sidebar {
     width: var(--apicola-sidebar-collapsed-width);
     transform: translateX(-100%);
@@ -1126,193 +1055,19 @@ body.sidebar-collapsed .apicola-main-content {
 }
 
 /*--------------------------------------------------------------
-# Animaciones - Diseño Ultra Premium
+# Animaciones
 --------------------------------------------------------------*/
-@keyframes apicola-subtle-pulse {
-    0% {
-        box-shadow: 0 0 0 0 rgba(37, 99, 235, 0.6);
-    }
-    70% {
-        box-shadow: 0 0 0 10px rgba(37, 99, 235, 0);
-    }
-    100% {
-        box-shadow: 0 0 0 0 rgba(37, 99, 235, 0);
-    }
-}
-
 .apicola-sidebar-link.active .apicola-icon-container {
-    animation: apicola-subtle-pulse 2.5s infinite;
-}
-
-@keyframes apicola-shimmer {
-    0% {
-        background-position: 100% 0;
-    }
-    100% {
-        background-position: -100% 0;
-    }
+    animation: none;
 }
 
 .apicola-sidebar-link.active::before {
-    background: linear-gradient(
-        90deg,
-        rgba(37, 99, 235, 0.1) 0%,
-        rgba(37, 99, 235, 0.2) 50%,
-        rgba(37, 99, 235, 0.1) 100%
-    );
-    background-size: 200% 100%;
-    animation: apicola-shimmer 2s infinite;
     width: 100%;
-}
-
-.apicola-sidebar-link.active .apicola-icon-container::after {
-    content: "";
-    position: absolute;
-    top: -5px;
-    left: -5px;
-    right: -5px;
-    bottom: -5px;
-    border-radius: 15px;
-    background: radial-gradient(
-        circle at center,
-        rgba(37, 99, 235, 0.4) 0%,
-        rgba(37, 99, 235, 0) 70%
-    );
-    z-index: -1;
-    opacity: 0.7;
-}
-
-/* Efecto de partículas para el ítem activo */
-.apicola-sidebar-link.active::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-image: radial-gradient(
-            circle at 10% 20%,
-            rgba(37, 99, 235, 0.1) 0%,
-            transparent 20%
-        ),
-        radial-gradient(
-            circle at 90% 80%,
-            rgba(37, 99, 235, 0.1) 0%,
-            transparent 20%
-        ),
-        radial-gradient(
-            circle at 50% 50%,
-            rgba(37, 99, 235, 0.05) 0%,
-            transparent 30%
-        ),
-        radial-gradient(
-            circle at 80% 10%,
-            rgba(37, 99, 235, 0.05) 0%,
-            transparent 30%
-        );
-    opacity: 0.8;
-    z-index: 0;
-}
-
-/* Efecto de destello para los elementos activos - MEJORADO */
-.apicola-sidebar-link.active .apicola-icon-container::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: radial-gradient(
-        circle at center,
-        rgba(255, 255, 255, 0.3) 0%,
-        rgba(255, 255, 255, 0) 70%
-    );
-    opacity: 0;
-    animation: apicola-icon-pulse 3s ease-in-out infinite;
-    border-radius: var(--apicola-border-radius-md);
-}
-
-@keyframes apicola-icon-pulse {
-    0% {
-        opacity: 0;
-        transform: scale(0.5);
-    }
-    50% {
-        opacity: 0.8;
-        transform: scale(1.2);
-    }
-    100% {
-        opacity: 0;
-        transform: scale(0.5);
-    }
-}
-
-/* Efecto de neón para el elemento activo */
-.apicola-sidebar-link.active {
-    box-shadow: 0 0 5px rgba(37, 99, 235, 0.2);
-}
-
-.apicola-sidebar-link.active .apicola-icon-container {
-    box-shadow: 0 0 5px rgba(37, 99, 235, 0.5), 0 0 10px rgba(37, 99, 235, 0.3),
-        inset 0 0 2px rgba(255, 255, 255, 0.5);
-}
-
-/* Efecto de borde brillante para el elemento activo */
-.apicola-sidebar-link.active {
-    border: 1px solid transparent;
-    background-clip: padding-box;
-    position: relative;
-}
-
-.apicola-sidebar-link.active::before {
-    content: "";
-    position: absolute;
-    top: -1px;
-    left: -1px;
-    right: -1px;
-    bottom: -1px;
-    background: linear-gradient(
-        135deg,
-        rgba(0, 195, 255, 0.5),
-        rgba(37, 99, 235, 0.1) 50%,
-        rgba(37, 99, 235, 0)
-    );
-    border-radius: calc(var(--apicola-border-radius-md) + 1px);
-    z-index: -1;
-    animation: apicola-border-glow 2s infinite;
-}
-
-@keyframes apicola-border-glow {
-    0% {
-        opacity: 0.5;
-    }
-    50% {
-        opacity: 0.8;
-    }
-    100% {
-        opacity: 0.5;
-    }
-}
-
-/* Efecto de ondas de energía */
-.apicola-sidebar-link.active::after {
-    animation: apicola-energy-wave 2s infinite;
-}
-
-@keyframes apicola-energy-wave {
-    0% {
-        box-shadow: 0 0 5px rgba(0, 195, 255, 0.5);
-    }
-    50% {
-        box-shadow: 0 0 15px rgba(0, 195, 255, 0.8);
-    }
-    100% {
-        box-shadow: 0 0 5px rgba(0, 195, 255, 0.5);
-    }
+    background-color: var(--apicola-sidebar-item-active);
 }
 
 /*--------------------------------------------------------------
-# Responsive - Diseño Ultra Premium
+# Responsive
 --------------------------------------------------------------*/
 @media (max-width: 992px) {
     .apicola-sidebar {
@@ -1363,7 +1118,29 @@ body.sidebar-collapsed .apicola-main-content {
     }
 }
 
+@media (max-width: 768px) {
+    .apicola-sidebar {
+        width: 280px;
+    }
+    
+    .apicola-sidebar-header {
+        padding: 0 15px;
+    }
+    
+    .apicola-sidebar-link {
+        padding: 10px 15px;
+    }
+    
+    .apicola-menu-text {
+        font-size: 0.9rem;
+    }
+}
+
 @media (max-width: 576px) {
+    .apicola-sidebar {
+        width: 260px;
+    }
+    
     .apicola-content-area {
         padding: 15px;
     }
@@ -1377,6 +1154,7 @@ body.sidebar-collapsed .apicola-main-content {
 
     .apicola-sidebar-header {
         height: 60px;
+        padding: 0 15px;
     }
 
     .apicola-sidebar-footer {
@@ -1389,7 +1167,7 @@ body.sidebar-collapsed .apicola-main-content {
     }
 
     .apicola-sidebar-link {
-        padding: 10px 15px;
+        padding: 8px 15px;
     }
 
     .apicola-user-profile {
@@ -1400,9 +1178,28 @@ body.sidebar-collapsed .apicola-main-content {
     .apicola-search-container {
         padding: 0 10px 10px;
     }
+    
+    .apicola-logo-text {
+        font-size: 0.85rem;
+    }
+    
+    .apicola-menu-text {
+        font-size: 0.85rem;
+    }
 }
 
-/* Estilos para el efecto ripple */
+.apicola-sidebar * {
+    will-change: auto;
+}
+
+.apicola-sidebar-link:hover {
+    will-change: transform;
+}
+
+.apicola-sidebar-link {
+    will-change: auto;
+}
+
 .apicola-ripple-effect {
     position: absolute;
     border-radius: 50%;
@@ -1422,7 +1219,6 @@ body.sidebar-collapsed .apicola-main-content {
     }
 }
 
-/* Efectos de iluminación avanzados */
 .apicola-sidebar::after {
     content: "";
     position: absolute;
@@ -1439,7 +1235,6 @@ body.sidebar-collapsed .apicola-main-content {
     pointer-events: none;
 }
 
-/* Efecto de partículas flotantes */
 .apicola-sidebar-content::before {
     content: "";
     position: absolute;
