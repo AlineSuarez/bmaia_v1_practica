@@ -358,6 +358,7 @@ class ColmenaController extends Controller
         return view('colmenas.historicas', compact('apiario', 'colmenasPorOrigen'));
     }
 
+    /*
     public function exportHistoricas(Apiario $apiario)
     {
         $movimientos = MovimientoColmena::where('apiario_destino_id', $apiario->id)
@@ -387,4 +388,53 @@ class ColmenaController extends Controller
         $filename = "historial_apiario_{$apiario->nombre}_" . now()->format('Y-m-d') . ".pdf";
         return $pdf->download($filename);
     }
+    */
+
+    public function exportHistoricas(Apiario $apiario)
+    {
+        $movimientos = MovimientoColmena::where('apiario_destino_id', $apiario->id)
+            ->orWhere('apiario_origen_id', $apiario->id)
+            ->with(['apiarioOrigen', 'apiarioDestino', 'colmena'])
+            ->orderByDesc('fecha_movimiento')
+            ->get();
+
+        $colmenas = $movimientos
+            ->groupBy(fn($mov) => $mov->colmena->id)
+            ->map(function($movs){
+                $col = $movs->first()->colmena;
+                $col->movimientos = $movs;
+                return $col;
+            })
+            ->sortBy('numero')
+            ->values();
+
+        // 🧩 Tomamos datos del primer movimiento
+        $mov = $movimientos->first();
+
+        $pdf = Pdf::loadView('documents.historial-apiario', [
+            'apiario' => $apiario,
+            'colmenas' => $colmenas,
+            'fechaGeneracion' => now()->format('d/m/Y H:i'),
+            // NUEVOS CAMPOS:
+            'tipo_movimiento' => $mov->tipo_movimiento ?? 'traslado',
+            'fecha_inicio_mov' => $mov->fecha_inicio_mov ?? $mov->fecha_movimiento,
+            'fecha_termino_mov' => $mov->fecha_termino_mov ?? $mov->fecha_movimiento,
+            'motivo_movimiento' => $mov->motivo_movimiento ?? null,
+            'transportista' => $mov->transportista ?? '—',
+            'vehiculo' => $mov->vehiculo ?? '—',
+            'cultivo' => $mov->cultivo ?? null,
+            'periodo_floracion' => $mov->periodo_floracion ?? null,
+            'hectareas' => $mov->hectareas ?? null,
+            'region_destino' => optional($apiario->comuna->region)->nombre ?? '—',
+            'comuna_destino' => optional($apiario->comuna)->nombre ?? '—',
+            'coordenadas_destino' => $apiario->latitud . ', ' . $apiario->longitud,
+            'apicultor_nombre' => auth()->user()->name,
+            'apicultor_rut' => auth()->user()->rut ?? '—',
+            'registro_nacional' => auth()->user()->numero_registro ?? '—',
+        ]);
+
+        $filename = "historial_apiario_{$apiario->nombre}_" . now()->format('Y-m-d') . ".pdf";
+        return $pdf->download($filename);
+    }
+
 }
