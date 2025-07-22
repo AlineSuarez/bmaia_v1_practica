@@ -331,120 +331,108 @@
 
                             <!-- Medicamentos Tab -->
                             <div class="tab-pane fade" id="medicamentos" role="tabpanel">
-                                @if($apiario->visitas->where('tipo_visita', 'Uso de Medicamentos')->isEmpty())
-                                    <table class="table">
+                                @php
+                                    // obtienes las visitas de medicamentos
+                                    $meds = $apiario->visitas->where('tipo_visita','Uso de Medicamentos');
+                                    // las de Varroa o Nosemosis
+                                    $tiposConDetalle = ['varroa','nosema'];
+                                    $conDetalle = $meds->filter(fn($v) => in_array(strtolower($v->motivo), $tiposConDetalle));
+                                    // el resto
+                                    $otros     = $meds->diff($conDetalle);
+                                @endphp
+
+                                {{-- sección Varroa/Nosemosis --}}
+                                @if($conDetalle->isNotEmpty())
+                                <h5>Uso de Medicamentos ({{ $conDetalle->count() }} con detalle)</h5>
+                                <table class="custom-table">
+                                    <thead>
+                                    <tr>
+                                        <th>Fecha</th>
+                                        <th>Motivo</th>
+                                        <th>Nombre Comercial</th>
+                                        <th>Principio Activo</th>
+                                        <th>Presencia</th>
+                                        <th>Periodo Resguardo</th>
+                                        <th>Responsable</th>
+                                        <th>Observaciones</th>
+                                        <th>Acciones</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    @foreach($conDetalle->sortByDesc('fecha_visita') as $v)
+                                        @php
+                                        $mot   = strtolower($v->motivo);
+                                        $med   = $mot==='varroa' ? $v->presenciaVarroa : $v->presenciaNosemosis;
+                                        @endphp
                                         <tr>
-                                            <td colspan="10" class="text-center text-muted">
-                                                <i class="fas fa-info-circle me-2"></i>
-                                                No hay registros de uso de medicamentos.
+                                        <td>{{ \Carbon\Carbon::parse($v->fecha_visita)->format('d/m/Y') }}</td>
+                                        <td>{{ ucfirst($mot) }}</td>
+                                        <td>{{ $med->producto_comercial ?? '-' }}</td>
+                                        <td>{{ $med->ingrediente_activo   ?? '-' }}</td>
+                                        <td>{{ $med
+                                                ? ($mot==='varroa'
+                                                        ? $med->diagnostico_visual
+                                                        : $med->signos_clinicos)
+                                                : '-' }}</td>
+                                        <td>{{ $v->periodo_resguardo ?: 'No especificado' }}</td>
+                                        <td>{{ $v->responsable }}</td>
+                                        <td>{{ $v->observaciones }}</td>
+                                        <td class="actions-cell">
+                                                <a href="{{ route('generate.document.medicamentos', $apiario->id) }}"
+                                                class="btn btn-outline-secondary btn-sm" title="Generar PDF" target="_blank">
+                                                    <i class="fas fa-file-pdf"></i>
+                                                </a>
+                                                <a href="{{ route('apiarios.medicamentos-registro.edit', [$apiario->id, $v->id]) }}"
+                                                class="btn btn-outline-primary btn-sm">
+                                                    <i class="fas fa-edit"></i>
+                                                </a>
                                             </td>
                                         </tr>
-                                    </table>
-                                @else
-                                    <div class="table-container">
-                                        <div class="table-header">
-                                            <h5><i class="fas fa-pills me-2"></i>Uso de Medicamentos ({{ $apiario->visitas->where('tipo_visita', 'Uso de Medicamentos')->count() }} registros)</h5>
-                                            <small class="text-muted">Historial de tratamientos y medicamentos aplicados</small>
-                                        </div>
-                                        <div class="table-responsive">
-                                            <table class="custom-table medication-table" id="medicationTable">
-                                                <thead>
-                                                    <tr>
-                                                        <th>Fecha</th>
-                                                        <th>Motivo</th>
-                                                        <th>Nombre Comercial</th>
-                                                        <th>Principio Activo</th>
-                                                        <th>Presencia</th>
-                                                        <th>Período Resguardo</th>
-                                                        <th>Responsable</th>
-                                                        <th>Observaciones</th>
-                                                        <th>Estado</th>
-                                                        <th>Acciones</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    @foreach($apiario->visitas->where('tipo_visita', 'Uso de Medicamentos')->sortByDesc('fecha_visita') as $visita)
-                                                        @php
-                                                        $motivo = strtolower($visita->motivo_tratamiento ?? $visita->motivo);
+                                    @endforeach
+                                    </tbody>
+                                </table>
+                                @endif
 
-                                                        $nombreComercial  = null;
-                                                        $principioActivo  = null;
-                                                        $valorPresencia   = null;
-
-                                                        if ($motivo === 'varroa' && $visita->presenciaVarroa) {
-                                                            $nombreComercial = $visita->presenciaVarroa->producto_comercial;
-                                                            $principioActivo = $visita->presenciaVarroa->ingrediente_activo;
-                                                            // si quieres el diagnóstico visual:
-                                                            $valorPresencia  = $visita->presenciaVarroa->diagnostico_visual;
-                                                        }
-                                                        elseif ($motivo === 'nosema' && $visita->presenciaNosemosis) {
-                                                            $nombreComercial = $visita->presenciaNosemosis->producto_comercial;
-                                                            $principioActivo = $visita->presenciaNosemosis->ingrediente_activo;
-                                                            // si quieres los signos clínicos:
-                                                            $valorPresencia  = $visita->presenciaNosemosis->signos_clinicos;
-                                                        }
-                                                    @endphp
-                                                        <tr class="table-row" data-date="{{ $visita->fecha_visita }}">
-                                                            <td class="date-cell">
-                                                                <div class="date-container">
-                                                                    <span class="date-main">{{ \Carbon\Carbon::parse($visita->fecha_visita)->format('d/m/Y') }}</span>
-                                                                </div>
-                                                            </td>
-                                                            <td class="motivo-treatment">{{ ucfirst($motivo) }}</td>
-                                                            <td class="medication-name">{{ $nombreComercial  ?? 'N/A' }}</td>
-                                                            <td class="active-ingredient">{{ $principioActivo  ?? 'N/A' }}</td>
-
-                                                            {{-- Celda condicional de Presencia --}}
-                                                            <td class="presence-cell">
-                                                                {{ $valorPresencia ?? '–' }}
-                                                            </td>
-
-                                                            <td class="period-cell">
-                                                                @if($visita->periodo_resguardo && $visita->periodo_resguardo !== 'N/A')
-                                                                    <span class="period-badge">{{ $visita->periodo_resguardo }}</span>
-                                                                @else
-                                                                    <span class="period-badge period-na">No especificado</span>
-                                                                @endif
-                                                            </td>
-                                                            <td class="responsible-cell">{{ $visita->responsable ?? 'N/A' }}</td>
-                                                            <td class="observations-cell">{{ $visita->observaciones ?? 'N/A' }}</td>
-                                                            <td class="status-cell">
-                                                                @php
-                                                                    $fechaTrat = \Carbon\Carbon::parse($visita->fecha_visita);
-                                                                    $periodo  = $visita->periodo_resguardo ?? '';
-                                                                    if (preg_match('/(\d+)/', $periodo, $m)) {
-                                                                        $dias    = (int)$m[1];
-                                                                        $fin     = $fechaTrat->copy()->addDays($dias);
-                                                                        $status  = now() < $fin ? 'En Resguardo' : 'Finalizado';
-                                                                        $cls     = now() < $fin ? 'danger' : 'success';
-                                                                    } else {
-                                                                        $status = 'Sin Periodo';
-                                                                        $cls    = 'secondary';
-                                                                    }
-                                                                @endphp
-                                                                <span class="status-badge status-{{ $cls }}">{{ $status }}</span>
-                                                            </td>
-                                                            <td class="actions-cell">
-                                                                <a href="{{ route('generate.document.medicamentos', $apiario->id) }}"
-                                                                class="btn btn-outline-secondary btn-sm" title="Generar PDF" target="_blank">
-                                                                    <i class="fas fa-file-pdf"></i>
-                                                                </a>
-                                                                <a href="{{ route('apiarios.medicamentos-registro.edit', [$apiario->id, $visita->id]) }}"
-                                                                class="btn btn-outline-primary btn-sm">
-                                                                    <i class="fas fa-edit"></i>
-                                                                </a>
-                                                            </td>
-                                                        </tr>
-                                                    @endforeach
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
+                                {{-- sección Otros motivos --}}
+                                @if($otros->isNotEmpty())
+                                <h5>Uso de Medicamentos – Otros Motivos ({{ $otros->count() }})</h5>
+                                <table class="custom-table">
+                                    <thead>
+                                    <tr>
+                                        <th>Fecha</th>
+                                        <th>Motivo</th>
+                                        <th>Responsable</th>
+                                        <th>Observaciones</th>
+                                        <th>Acciones</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    @foreach($otros->sortByDesc('fecha_visita') as $v)
+                                        <tr>
+                                        <td>{{ \Carbon\Carbon::parse($v->fecha_visita)->format('d/m/Y') }}</td>
+                                        <td>{{ ucfirst($v->motivo) }}</td>
+                                        <td>{{ $v->responsable }}</td>
+                                        <td>{{ $v->observaciones }}</td>
+                                        <td class="actions-cell">
+                                                <a href="{{ route('generate.document.medicamentos', $apiario->id) }}"
+                                                class="btn btn-outline-secondary btn-sm" title="Generar PDF" target="_blank">
+                                                    <i class="fas fa-file-pdf"></i>
+                                                </a>
+                                                <a href="{{ route('apiarios.medicamentos-registro.edit', [$apiario->id, $v->id]) }}"
+                                                class="btn btn-outline-primary btn-sm">
+                                                    <i class="fas fa-edit"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                        </tr>
+                                    @endforeach
+                                    </tbody>
+                                </table>
                                 @endif
                             </div>
 
                             <!-- Alimentaciones Tab -->
-                            <div class="tab-pane fade" id="alimentacion" role="tabpanel">  {{-- <- AQUÍ CAMBIAMOS EL ID --}}
+                            <div class="tab-pane fade" id="alimentacion" role="tabpanel">
                                 @if($apiario->visitas->where('tipo_visita', 'Alimentación')->isEmpty())
                                     <div class="no-data-message">
                                         <i class="fas fa-info-circle me-2"></i>
@@ -480,7 +468,7 @@
                                                 @if ($estado)
                                                     <tr>
                                                         <td>{{ $estado->tipo_alimentacion ?? 'N/A' }}</td>
-                                                        <td>{{ $estado->fecha_aplicacion ?? 'N/A' }}</td>
+                                                        <td>{{ date('Y-m-d', strtotime($estado->fecha_aplicacion)) ?? 'N/A' }}</td>
                                                         <td>{{ $estado->insumo_utilizado ?? 'N/A' }}</td>
                                                         <td>{{ $estado->objetivo ?? 'N/A' }}</td>
                                                         <td>{{ $estado->dosifiacion ?? 'N/A' }}</td>
@@ -538,10 +526,26 @@
                                                     </tr>
                                                 </thead>
                                                 @php
-                                                    $colmenasIds = $apiario->colmenas->pluck('id'); // ← IDs de las colmenas del apiario
+                                                    $colmenasIds = $apiario->colmenas->pluck('id');
                                                     $reina = \App\Models\CalidadReina::whereIn('colmena_id', $colmenasIds)
                                                                 ->latest('fecha_introduccion')
                                                                 ->first();
+
+                                                    $reemplazos = [];
+                                                    $ultimo     = null;
+
+                                                    if ($reina) {
+                                                        $raw = $reina->reemplazos_realizados;
+                                                        if (is_string($raw)) {
+                                                            // si viene como string, lo decodificamos
+                                                            $reemplazos = json_decode($raw, true) ?: [];
+                                                        } elseif (is_array($raw)) {
+                                                            // si ya es array (cast de Eloquent), lo usamos directamente
+                                                            $reemplazos = $raw;
+                                                        }
+                                                        // tomamos el último reemplazo (si existe)
+                                                        $ultimo = $reemplazos ? end($reemplazos) : null;
+                                                    }
                                                 @endphp
 
                                                 <tbody>
@@ -555,7 +559,13 @@
                                                         <td>{{ $reina->linea_genetica }}</td>
                                                         <td>{{ $reina->fecha_introduccion ? \Carbon\Carbon::parse($reina->fecha_introduccion)->format('d/m/Y') : '-' }}</td>
                                                         <td>{{ $reina->estado_actual }}</td>
-                                                        <td>{{ $reina->fecha_reemplazo ? \Carbon\Carbon::parse($reina->fecha_reemplazo)->format('d/m/Y') : '-' }}</td>
+                                                        <td>
+                                                            @if($ultimo && ! empty($ultimo['fecha']))
+                                                                {{ \Carbon\Carbon::parse($ultimo['fecha'])->format('d/m/Y') }}
+                                                            @else
+                                                                -
+                                                            @endif
+                                                        </td>
                                                         <td class="actions-cell">
                                                             @if($apiario->calidadesReina->count())
                                                                 <a href="{{ route('generate.document.reina', $apiario->id) }}"

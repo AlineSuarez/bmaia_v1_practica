@@ -470,63 +470,45 @@ class DocumentController extends Controller
 
     public function generateReinaDocument(int $calidadReinaId)
     {
-        try {
-            // 1) Cargo la calidad de reina y su visita/apiario anidados
-            $calidadReina = CalidadReina::with('visita.apiario')
-                ->findOrFail($calidadReinaId);
+        // 1) Carga la calidad de reina con visita → apiario → user y comuna→región
+        $calidadReina = CalidadReina::with([
+            'visita.apiario.user',
+            'visita.apiario.comuna.region'
+        ])->findOrFail($calidadReinaId);
 
-            // 2) Valido que exista visita
-            if (! $calidadReina->visita) {
-                return back()->with('error', 'No se encontró la visita asociada a esta calidad de reina.');
-            }
-            $visita = $calidadReina->visita;
+        $visita   = $calidadReina->visita;
+        $apiario  = $visita->apiario;
+        $apicultor= $apiario->user;
 
-            // 3) Cargo el apiario con región/comuna
-            $apiario = Apiario::with('comuna.region')
-                ->findOrFail($visita->apiario_id);
-
-            // 4) Preparo los datos del apicultor y del apiario
-            $beekeeperData = $this->getBeekeeperData();      // tu helper existente
-            $apiaryData    = $this->getApiaryData($apiario); // tu helper existente
-
-            // 5) Decodifico los reemplazos
-            $reemplazos = $calidadReina->reemplazos_realizados;
-            if (is_string($reemplazos)) {
-                $decoded = json_decode($reemplazos, true);
-                $reemplazos = json_last_error()===JSON_ERROR_NONE
-                    ? $decoded
-                    : [];
-            }
-
-            // 6) Armo el array final para la vista
-            $data = array_merge(
-                $beekeeperData,
-                $apiaryData,
-                [
-                    'calidadReina' => $calidadReina,
-                    'reemplazos'   => $reemplazos,
-                ]
-            );
-
-            // 7) Genero el PDF
-            $pdf = Pdf::loadView('documents.reina-record', compact('data'))
-                ->setPaper('A4','portrait')
-                ->setOptions([
-                    'isHtml5ParserEnabled' => true,
-                    'isPhpEnabled'         => false,
-                    'defaultFont'          => 'DejaVu Sans',
-                    'enable_remote'        => false,
-                ]);
-
-            return $pdf->download("Reina_{$apiario->nombre}.pdf");
-
-        } catch (\Exception $e) {
-            \Log::error("Error generando registro de reina: {$e->getMessage()}");
-            return back()->with(
-                'error',
-                'Error al generar el documento de calidad de reina: '.$e->getMessage()
-            );
+        // 2) Decodifica reemplazos
+        $reemplazos = $calidadReina->reemplazos_realizados;
+        if (is_string($reemplazos)) {
+            $reemplazos = json_decode($reemplazos, true) ?: [];
         }
+        if (! is_array($reemplazos)) {
+            $reemplazos = [];
+        }
+        // Último reemplazo
+        $ultimoReemplazo = ! empty($reemplazos) ? end($reemplazos) : null;
+
+        // 3) Genera el PDF pasando sólo lo que realmente usa la vista
+        $pdf = Pdf::loadView('documents.reina-record', compact(
+            'calidadReina',
+            'apiario',
+            'apicultor',
+            'reemplazos',
+            'ultimoReemplazo'
+        ))
+        ->setPaper('A4','portrait')
+        ->setOptions([
+            'isHtml5ParserEnabled'=>true,
+            'isPhpEnabled'=>true,
+            'defaultFont'=>'DejaVu Sans',
+            'enable_remote'=>true,
+            'chroot'=>public_path(),
+        ]);
+
+        return $pdf->download("Reina_{$apiario->nombre}.pdf");
     }
 
     public function qrPdf(Apiario $apiario, Colmena $colmena)
