@@ -230,9 +230,9 @@ class VisitaController extends Controller
             'motivo_tratamiento' => 'required|in:varroa,nosema,otro',
             'motivo_otro' => 'nullable|string|required_if:motivo_tratamiento,otro',
             'responsable' => 'required|string',
-            'nombre_comercial_medicamento' => 'nullable|string',
-            'principio_activo_medicamento' => 'nullable|string',
-            'periodo_resguardo' => 'nullable|string',
+            //'nombre_comercial_medicamento' => 'nullable|string',
+            //'principio_activo_medicamento' => 'nullable|string',
+            //'periodo_resguardo' => 'nullable|string',
             'observaciones' => 'nullable|string',
         ]);
 
@@ -249,9 +249,9 @@ class VisitaController extends Controller
                 'varroa_dosificacion'                  => 'nullable|string',
                 'varroa_metodo_aplicacion'             => 'nullable|string',
                 'varroa_fecha_monitoreo_varroa'        => 'nullable|date',
-                //'varroa_producto_comercial'            => 'nullable|string',
-                //'varroa_ingrediente_activo'            => 'nullable|string',
-                //'varroa_periodo_carencia'              => 'nullable|integer',
+                'varroa_producto_comercial'            => 'nullable|string',
+                'varroa_ingrediente_activo'            => 'nullable|string',
+                'varroa_periodo_carencia'              => 'nullable|integer',
             ];
         } elseif ($commonData['motivo_tratamiento'] === 'nosema') {
             $pccRules = [
@@ -263,8 +263,8 @@ class VisitaController extends Controller
                 'nosemosis_dosificacion'                   => 'nullable|string',
                 'nosemosis_metodo_aplicacion'              => 'nullable|string',
                 'nosemosis_fecha_monitoreo_nosema'         => 'nullable|date',
-                //'nosemosis_producto_comercial'             => 'nullable|string',
-                //'nosemosis_ingrediente_activo'             => 'nullable|string',
+                'nosemosis_producto_comercial'             => 'nullable|string',
+                'nosemosis_ingrediente_activo'             => 'nullable|string',
             ];
         }
 
@@ -281,9 +281,9 @@ class VisitaController extends Controller
                     'motivo'                       => $data['motivo_tratamiento']==='otro'
                                                     ? $data['motivo_otro']
                                                     : $data['motivo_tratamiento'],
-                    'nombre_comercial_medicamento' => $data['nombre_comercial_medicamento'],
-                    'principio_activo_medicamento' => $data['principio_activo_medicamento'],
-                    'periodo_resguardo'            => $data['periodo_resguardo'],
+                    //'nombre_comercial_medicamento' => $data['nombre_comercial_medicamento'],
+                    //'principio_activo_medicamento' => $data['principio_activo_medicamento'],
+                    //'periodo_resguardo'            => $data['periodo_resguardo'],
                     'responsable'                  => $data['responsable'],
                     'observaciones'                => $data['observaciones'] ?? null,
                 ]);
@@ -297,9 +297,9 @@ class VisitaController extends Controller
                     'motivo'                       => $data['motivo_tratamiento']==='otro'
                                                     ? $data['motivo_otro']
                                                     : $data['motivo_tratamiento'],
-                    'nombre_comercial_medicamento' => $data['nombre_comercial_medicamento'],
-                    'principio_activo_medicamento' => $data['principio_activo_medicamento'],
-                    'periodo_resguardo'            => $data['periodo_resguardo'],
+                    //'nombre_comercial_medicamento' => $data['nombre_comercial_medicamento'],
+                    //'principio_activo_medicamento' => $data['principio_activo_medicamento'],
+                    //'periodo_resguardo'            => $data['periodo_resguardo'],
                     'responsable'                  => $data['responsable'],
                     'observaciones'                => $data['observaciones'] ?? null,
                 ]);
@@ -323,9 +323,9 @@ class VisitaController extends Controller
                             'dosificacion'            => $data['varroa_dosificacion'] ?? null,
                             'metodo_aplicacion'       => $data['varroa_metodo_aplicacion'] ?? null,
                             'fecha_monitoreo_varroa'  => $data['varroa_fecha_monitoreo_varroa'] ?? null,
-                            //'producto_comercial'      => $data['varroa_producto_comercial'] ?? null,
-                            //'ingrediente_activo'      => $data['varroa_ingrediente_activo'] ?? null,
-                            //'periodo_carencia'        => $data['varroa_periodo_carencia'] ?? null,
+                            'producto_comercial'      => $data['varroa_producto_comercial'] ?? null,
+                            'ingrediente_activo'      => $data['varroa_ingrediente_activo'] ?? null,
+                            'periodo_carencia'        => $data['varroa_periodo_carencia'] ?? null,
                         ])
                     );
                     $firstId = $firstId ?? $pv->id;
@@ -345,8 +345,8 @@ class VisitaController extends Controller
                             'dosificacion'                  => $data['nosemosis_dosificacion'] ?? null,
                             'metodo_aplicacion'             => $data['nosemosis_metodo_aplicacion'] ?? null,
                             'fecha_monitoreo_nosema'        => $data['nosemosis_fecha_monitoreo_nosema'] ?? null,
-                            //'producto_comercial'            => $data['nosemosis_producto_comercial'] ?? null,
-                            //'ingrediente_activo'            => $data['nosemosis_ingrediente_activo'] ?? null,
+                            'producto_comercial'            => $data['nosemosis_producto_comercial'] ?? null,
+                            'ingrediente_activo'            => $data['nosemosis_ingrediente_activo'] ?? null,
                         ])
                     );
                     $firstId = $firstId ?? $pn->id;
@@ -573,8 +573,12 @@ class VisitaController extends Controller
 
     public function showHistorial($apiarioId)
     {
-        // Obtener el apiario y sus visitas
-        $apiario = Apiario::with('visitas.usuario')->findOrFail($apiarioId);
+        // Obtener el apiario, sus visitas y sus relaciones con varroa y nosemosis
+         $apiario = Apiario::with([
+            'visitas.usuario',
+            'visitas.presenciaVarroa',
+            'visitas.presenciaNosemosis',
+        ])->findOrFail($apiarioId);
         // Retornar la vista de historial con los datos del apiario y sus visitas
         return view('visitas.historial', compact('apiario'));
     }

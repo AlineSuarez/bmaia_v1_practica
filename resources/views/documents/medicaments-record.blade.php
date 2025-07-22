@@ -114,17 +114,35 @@
     </thead>
     <tbody>
         @forelse($data['visits'] as $visit)
+            @php
+                // Determinar motivo en minúsculas
+                $motivo = strtolower($visit->motivo_tratamiento ?? $visit->motivo);
+
+                // Por defecto:
+                $med = $act = null;
+
+                if ($motivo === 'varroa' && $visit->presenciaVarroa) {
+                    $med = $visit->presenciaVarroa->producto_comercial;
+                    $act = $visit->presenciaVarroa->ingrediente_activo;
+                }
+                elseif ($motivo === 'nosema' && $visit->presenciaNosemosis) {
+                    $med = $visit->presenciaNosemosis->producto_comercial;
+                    $act = $visit->presenciaNosemosis->ingrediente_activo;
+                }
+            @endphp
             <tr>
-                <td>{{ $visit->fecha_visita ?? 'N/A' }}</td>
-                <td>{{ $visit->motivo_tratamiento ?? 'N/A' }}</td>
-                <td>{{ $visit->nombre_comercial_medicamento ?? 'N/A' }}</td>
-                <td>{{ $visit->principio_activo_medicamento ?? 'N/A' }}</td>
-                <td>{{ $visit->periodo_resguardo ?? 'N/A' }}</td>
-                <td>{{ $visit->responsable ?? 'N/A' }}</td>
-                <td>{{ $visit->observaciones ?? 'N/A' }}</td>
+                <td>{{ \Carbon\Carbon::parse($visit->fecha_visita)->format('d/m/Y') }}</td>
+                <td>{{ ucfirst($motivo) }}</td>
+                <td>{{ $med  ?? '-' }}</td>
+                <td>{{ $act  ?? '-' }}</td>
+                <td>{{ $visit->periodo_resguardo ?? '-' }}</td>
+                <td>{{ $visit->responsable        ?? '-' }}</td>
+                <td>{{ $visit->observaciones      ?? '-' }}</td>
             </tr>
         @empty
-            <tr><td colspan="8">No hay registros disponibles.</td></tr>
+            <tr>
+                <td colspan="7" class="text-center">No hay registros disponibles.</td>
+            </tr>
         @endforelse
     </tbody>
 </table>

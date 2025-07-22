@@ -191,8 +191,6 @@
                                                                     <span class="option-desc">Calidad y reemplazos de reina</span>
                                                                 </div>
                                                             </a>
-                                                        @else
-                                                            <span class="dropdown-option disabled">Sin registros de reina</span>
                                                         @endif
                                                     </div>
                                                 </div>

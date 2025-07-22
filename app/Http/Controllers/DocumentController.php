@@ -410,27 +410,23 @@ class DocumentController extends Controller
     {
         try {
             $apiario = Apiario::with(['comuna.region'])->findOrFail($apiarioId);
-            $medicamentos = Visita::where('apiario_id', $apiarioId)
+
+            // Ahora con relaciones de presencia
+            $medicamentos = Visita::with(['presenciaVarroa', 'presenciaNosemosis'])
+                ->where('apiario_id', $apiarioId)
                 ->where('tipo_visita', 'Uso de Medicamentos')
                 ->get();
 
             $beekeeperData = $this->getBeekeeperData();
-            $apiaryData = $this->getApiaryData($apiario);
+            $apiaryData   = $this->getApiaryData($apiario);
 
             $data = array_merge($beekeeperData, $apiaryData, ['visits' => $medicamentos]);
 
             $pdf = Pdf::loadView('documents.medicaments-record', compact('data'));
-            $pdf->setPaper('A4', 'portrait');
-            $pdf->setOptions([
-                'isHtml5ParserEnabled' => true,
-                'isPhpEnabled' => false,
-                'defaultFont' => 'DejaVu Sans',
-                'enable_remote' => false
-            ]);
-
+            // … resto inalterado …
             return $pdf->download('Medicamentos_Apiario_' . $apiario->nombre . '.pdf');
-
-        } catch (\Exception $e) {
+        }
+        catch (\Exception $e) {
             \Log::error('Error generating medicaments document: ' . $e->getMessage());
             return back()->with('error', 'Error al generar el documento de medicamentos: ' . $e->getMessage());
         }

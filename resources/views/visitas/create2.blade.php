@@ -122,7 +122,8 @@
                 </div>
             </section>
 
-            <!-- Información del Medicamento -->
+            <!-- Información del Medicamento
+            
             <section class="form-section medication-info">
                 <div class="section-header">
                     <div class="section-icon">
@@ -198,6 +199,9 @@
                     </div>
                 </div>
             </section>
+            
+            -->
+            
 
             <!-- Observaciones Adicionales -->
             <section class="form-section observations-info">

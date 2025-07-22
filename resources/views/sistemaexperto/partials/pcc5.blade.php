@@ -83,9 +83,7 @@
       ) }}">
             <span class="field-helper">Forma en que se aplicó el tratamiento.</span>
         </div>
-
-                <!-- 
-                    <div class="form-field">
+        <div class="form-field">
             <label for="nosemosis_producto_comercial" class="field-label">Producto Comercial</label>
             <input type="text" id="nosemosis_producto_comercial" name="nosemosis_producto_comercial" class="field-input text-input"
                 placeholder="Ej: Nosevit, Apiherb" value="{{ old(
@@ -104,6 +102,5 @@
       ) }}">
             <span class="field-helper">Principio activo del producto.</span>
         </div>
-                -->
     </div>
 </div>

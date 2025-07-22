@@ -332,10 +332,14 @@
                             <!-- Medicamentos Tab -->
                             <div class="tab-pane fade" id="medicamentos" role="tabpanel">
                                 @if($apiario->visitas->where('tipo_visita', 'Uso de Medicamentos')->isEmpty())
-                                    <div class="no-data-message">
-                                        <i class="fas fa-info-circle me-2"></i>
-                                        No hay registros de uso de medicamentos.
-                                    </div>
+                                    <table class="table">
+                                        <tr>
+                                            <td colspan="10" class="text-center text-muted">
+                                                <i class="fas fa-info-circle me-2"></i>
+                                                No hay registros de uso de medicamentos.
+                                            </td>
+                                        </tr>
+                                    </table>
                                 @else
                                     <div class="table-container">
                                         <div class="table-header">
@@ -350,6 +354,7 @@
                                                         <th>Motivo</th>
                                                         <th>Nombre Comercial</th>
                                                         <th>Principio Activo</th>
+                                                        <th>Presencia</th>
                                                         <th>Período Resguardo</th>
                                                         <th>Responsable</th>
                                                         <th>Observaciones</th>
@@ -359,17 +364,43 @@
                                                 </thead>
                                                 <tbody>
                                                     @foreach($apiario->visitas->where('tipo_visita', 'Uso de Medicamentos')->sortByDesc('fecha_visita') as $visita)
+                                                        @php
+                                                        $motivo = strtolower($visita->motivo_tratamiento ?? $visita->motivo);
+
+                                                        $nombreComercial  = null;
+                                                        $principioActivo  = null;
+                                                        $valorPresencia   = null;
+
+                                                        if ($motivo === 'varroa' && $visita->presenciaVarroa) {
+                                                            $nombreComercial = $visita->presenciaVarroa->producto_comercial;
+                                                            $principioActivo = $visita->presenciaVarroa->ingrediente_activo;
+                                                            // si quieres el diagnóstico visual:
+                                                            $valorPresencia  = $visita->presenciaVarroa->diagnostico_visual;
+                                                        }
+                                                        elseif ($motivo === 'nosema' && $visita->presenciaNosemosis) {
+                                                            $nombreComercial = $visita->presenciaNosemosis->producto_comercial;
+                                                            $principioActivo = $visita->presenciaNosemosis->ingrediente_activo;
+                                                            // si quieres los signos clínicos:
+                                                            $valorPresencia  = $visita->presenciaNosemosis->signos_clinicos;
+                                                        }
+                                                    @endphp
                                                         <tr class="table-row" data-date="{{ $visita->fecha_visita }}">
                                                             <td class="date-cell">
                                                                 <div class="date-container">
                                                                     <span class="date-main">{{ \Carbon\Carbon::parse($visita->fecha_visita)->format('d/m/Y') }}</span>
                                                                 </div>
                                                             </td>
-                                                            <td class="motivo-treatment">{{ $visita->motivo_tratamiento ?? 'N/A' }}</td>
-                                                            <td class="medication-name">{{ $visita->nombre_comercial_medicamento ?? 'N/A' }}</td>
-                                                            <td class="active-ingredient">{{ $visita->principio_activo_medicamento ?? 'N/A' }}</td>
+                                                            <td class="motivo-treatment">{{ ucfirst($motivo) }}</td>
+                                                            <td class="medication-name">{{ $nombreComercial  ?? 'N/A' }}</td>
+                                                            <td class="active-ingredient">{{ $principioActivo  ?? 'N/A' }}</td>
+
+                                                            {{-- Celda condicional de Presencia --}}
+                                                            <td class="presence-cell">
+                                                                {{ $valorPresencia ?? '–' }}
+                                                            </td>
+
                                                             <td class="period-cell">
-                                                                @if($visita->periodo_resguardo && $visita->periodo_resguardo != 'N/A')
+                                                                @if($visita->periodo_resguardo && $visita->periodo_resguardo !== 'N/A')
                                                                     <span class="period-badge">{{ $visita->periodo_resguardo }}</span>
                                                                 @else
                                                                     <span class="period-badge period-na">No especificado</span>
@@ -379,34 +410,27 @@
                                                             <td class="observations-cell">{{ $visita->observaciones ?? 'N/A' }}</td>
                                                             <td class="status-cell">
                                                                 @php
-                $fechaTratamiento = \Carbon\Carbon::parse($visita->fecha_visita);
-                $periodoResguardo = $visita->periodo_resguardo ?? '';
-
-                if (preg_match('/(\d+)/', $periodoResguardo, $matches)) {
-                    $dias = (int) $matches[1];
-                    $fechaFin = $fechaTratamiento->copy()->addDays($dias);
-
-                    if (now() < $fechaFin) {
-                        $status = 'En Resguardo';
-                        $statusClass = 'danger';
-                    } else {
-                        $status = 'Finalizado';
-                        $statusClass = 'success';
-                    }
-                } else {
-                    $status = 'Sin Periodo';
-                    $statusClass = 'secondary';
-                }
+                                                                    $fechaTrat = \Carbon\Carbon::parse($visita->fecha_visita);
+                                                                    $periodo  = $visita->periodo_resguardo ?? '';
+                                                                    if (preg_match('/(\d+)/', $periodo, $m)) {
+                                                                        $dias    = (int)$m[1];
+                                                                        $fin     = $fechaTrat->copy()->addDays($dias);
+                                                                        $status  = now() < $fin ? 'En Resguardo' : 'Finalizado';
+                                                                        $cls     = now() < $fin ? 'danger' : 'success';
+                                                                    } else {
+                                                                        $status = 'Sin Periodo';
+                                                                        $cls    = 'secondary';
+                                                                    }
                                                                 @endphp
-                                                                <span class="status-badge status-{{ $statusClass }}">{{ $status }}</span>
+                                                                <span class="status-badge status-{{ $cls }}">{{ $status }}</span>
                                                             </td>
                                                             <td class="actions-cell">
                                                                 <a href="{{ route('generate.document.medicamentos', $apiario->id) }}"
-                                                                    class="btn btn-outline-secondary btn-sm" title="Generar PDF" target="_blank">
+                                                                class="btn btn-outline-secondary btn-sm" title="Generar PDF" target="_blank">
                                                                     <i class="fas fa-file-pdf"></i>
                                                                 </a>
                                                                 <a href="{{ route('apiarios.medicamentos-registro.edit', [$apiario->id, $visita->id]) }}"
-                                                                    class="btn btn-outline-primary btn-sm">
+                                                                class="btn btn-outline-primary btn-sm">
                                                                     <i class="fas fa-edit"></i>
                                                                 </a>
                                                             </td>
@@ -418,6 +442,7 @@
                                     </div>
                                 @endif
                             </div>
+
                             <!-- Alimentaciones Tab -->
                             <div class="tab-pane fade" id="alimentacion" role="tabpanel">  {{-- <- AQUÍ CAMBIAMOS EL ID --}}
                                 @if($apiario->visitas->where('tipo_visita', 'Alimentación')->isEmpty())
@@ -532,10 +557,12 @@
                                                         <td>{{ $reina->estado_actual }}</td>
                                                         <td>{{ $reina->fecha_reemplazo ? \Carbon\Carbon::parse($reina->fecha_reemplazo)->format('d/m/Y') : '-' }}</td>
                                                         <td class="actions-cell">
-                                                            <a href="{{ route('generate.document.reina', $apiario->id) }}"
-                                                                class="btn btn-outline-secondary btn-sm" title="Generar PDF" target="_blank">
-                                                                <i class="fas fa-file-pdf"></i>
-                                                            </a>
+                                                            @if($apiario->calidadesReina->count())
+                                                                <a href="{{ route('generate.document.reina', $apiario->id) }}"
+                                                                    class="btn btn-outline-secondary btn-sm" title="Generar PDF" target="_blank">
+                                                                    <i class="fas fa-file-pdf"></i>
+                                                                </a>
+                                                            @endif
                                                             <a href="{{ route('visitas.reina.edit', [$apiario->id, $reina->visita_id]) }}"
                                                                 class="btn btn-outline-primary btn-sm">
                                                                 <i class="fas fa-edit"></i>

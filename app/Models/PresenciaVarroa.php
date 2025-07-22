@@ -21,12 +21,12 @@ class PresenciaVarroa extends Model
         'metodo_diagnostico',
         'fecha_monitoreo_varroa',
         // tratamientos
-        //'producto_comercial',
-        //'ingrediente_activo',
+        'producto_comercial',
+        'ingrediente_activo',
         'fecha_aplicacion',
         'dosificacion',
         'metodo_aplicacion',
-        //'periodo_carencia',
+        'periodo_carencia',
         'n_colmenas_tratadas',
     ];
     protected $casts = [
