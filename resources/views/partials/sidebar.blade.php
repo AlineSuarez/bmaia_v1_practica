@@ -95,7 +95,7 @@
                                 <span class="apicola-active-indicator"></span>
                             </a>
                         </li>
-                        <li class="apicola-sidebar-item">
+                        <!-- <li class="apicola-sidebar-item">
                             <a class="apicola-sidebar-link {{ request()->routeIs('sistemaexperto.index') ? 'active' : '' }}"
                                 href="{{ route('sistemaexperto.index') }}">
                                 <div class="apicola-icon-container">
@@ -106,7 +106,7 @@
                                 <span class="apicola-active-indicator"></span>
                                 <span class="apicola-menu-badge premium">IA</span>
                             </a>
-                        </li>
+                        </li> -->
                         <li class="apicola-sidebar-item">
                             <a class="apicola-sidebar-link {{ request()->routeIs('dashboard') ? 'active' : '' }}"
                                 href="{{ route('dashboard') }}">

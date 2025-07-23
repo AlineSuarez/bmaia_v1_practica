@@ -282,7 +282,7 @@ Route::middleware(['auth'])->group(function () {
         return [
             'auth_user' => Auth::check() ? Auth::user()->email : 'no user',
             'date_format' => config('app.date_format'),
-            'from_model' => optional(Auth::user()->preference)->date_format,
+            'from_model' => optional(Auth::user()->preference)->date_format ?? 'default_format',
         ];
     });
 
