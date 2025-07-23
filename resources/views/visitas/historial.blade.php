@@ -196,28 +196,27 @@
                                                     @foreach($apiario->visitas->where('tipo_visita', 'Visita General')->sortByDesc('fecha_visita') as $visita)
                                                         <tr class="table-row" data-date="{{ $visita->fecha_visita }}">
                                                             <td class="date-cell">
-                                                                <div class="date-container">
-                                                                    <!--<span class="date-main">{{ \Carbon\Carbon::parse($visita->fecha_visita)->format('d/m/Y') }}</span>-->
-                                                                    <span class="date-main">@date($visita->fecha_visita)</span>
-                                                                </div>
-                                                            </td>
-                                                            <td class="visitor-name">{{ $visita->nombres }}</td>
-                                                            <td class="visitor-surname">{{ $visita->apellidos }}</td>
-                                                            <td class="rut-cell">{{ $visita->rut }}</td>
-                                                            <td class="motivo-cell">
-                                                                <span class="motivo-text">{{ $visita->motivo }}</span>
-                                                            </td>
-                                                            <td class="phone-cell">{{ $visita->telefono }}</td>
-                                                            <td class="signature-cell">{{ $visita->firma }}</td>
-                                                            <td class="duration-cell">
-                                                                <span class="duration-badge">
-                                                                    {{ $visita->duracion_visita ?? 'No especificado' }}
+                                                                <span class="date-main">
+                                                                    @if ($visita->fecha_visita)
+                                                                        {{ date('d/m/Y', strtotime($visita->fecha_visita)) }}
+                                                                    @else
+                                                                        N/A
+                                                                    @endif
                                                                 </span>
+                                                            </td>
+                                                            <td class="visitor-name">{{ $visita->visitaGeneral->nombres ?? '---' }}</td>
+                                                            <td class="visitor-surname">{{ $visita->visitaGeneral->apellidos ?? '---' }}</td>
+                                                            <td class="rut-cell">{{ $visita->visitaGeneral->rut ?? '---' }}</td>
+                                                            <td class="motivo-cell">{{ $visita->visitaGeneral->motivo ?? '---' }}</td>
+                                                            <td class="phone-cell">{{ $visita->visitaGeneral->telefono ?? '---' }}</td>
+                                                            <td class="signature-cell">{{ $visita->visitaGeneral->firma ?? '---' }}</td>
+                                                            <td class="duration-cell">
+                                                                <span class="duration-badge">{{ $visita->duracion_visita ?? 'No especificado' }}</span>
                                                             </td>
                                                             <td class="actions-cell">
                                                                 <a href="{{ route('generate.document.visitas', $apiario->id) }}"
                                                                     class="btn btn-outline-secondary btn-sm" title="Generar PDF" target="_blank">
-                                                                        <i class="fas fa-file-pdf"></i>
+                                                                    <i class="fas fa-file-pdf"></i>
                                                                 </a>
                                                                 <a href="{{ route('visitas.visitas-general', $apiario->id) }}?visita_id={{ $visita->id }}"
                                                                     class="btn btn-outline-primary btn-sm">
@@ -226,6 +225,7 @@
                                                             </td>
                                                         </tr>
                                                     @endforeach
+
                                                 </tbody>
                                             </table>
                                         </div>
@@ -266,57 +266,58 @@
                                                 </thead>
                                                 <tbody>
                                                     @foreach($apiario->visitas->where('tipo_visita', 'Inspección de Visita')->sortByDesc('fecha_visita') as $visita)
+                                                        @php $inspeccion = $visita->inspeccion; @endphp
                                                         <tr class="table-row" data-date="{{ $visita->fecha_visita }}">
                                                             <td class="date-cell">
                                                                 <div class="date-container">
                                                                     <span class="date-main">{{ \Carbon\Carbon::parse($visita->fecha_visita)->format('d/m/Y') }}</span>
                                                                 </div>
                                                             </td>
-                                                            <td class="number-cell">{{ $visita->num_colmenas_totales ?? 'N/A' }}</td>
-                                                            <td class="number-cell active">{{ $visita->num_colmenas_activas ?? 'N/A' }}</td>
-                                                            <td class="number-cell sick">{{ $visita->num_colmenas_enfermas ?? 'N/A' }}</td>
-                                                            <td class="number-cell dead">{{ $visita->num_colmenas_muertas ?? 'N/A' }}</td>
-                                                            <td class="number-cell">{{ $visita->num_colmenas_inspeccionadas ?? 'N/A' }}</td>
+                                                            <td class="number-cell">{{ $inspeccion->num_colmenas_totales ?? 'N/A' }}</td>
+                                                            <td class="number-cell active">{{ $inspeccion->num_colmenas_activas ?? 'N/A' }}</td>
+                                                            <td class="number-cell sick">{{ $inspeccion->num_colmenas_enfermas ?? 'N/A' }}</td>
+                                                            <td class="number-cell dead">{{ $inspeccion->num_colmenas_muertas ?? 'N/A' }}</td>
+                                                            <td class="number-cell">{{ $inspeccion->num_colmenas_inspeccionadas ?? 'N/A' }}</td>
                                                             <td class="flujo-cell">
-                                                                <span class="flujo-badge flujo-{{ strtolower(str_replace(' ', '-', $visita->flujo_nectar_polen ?? 'normal')) }}">
-                                                                    {{ $visita->flujo_nectar_polen ?? 'N/A' }}
+                                                                <span class="flujo-badge flujo-{{ strtolower(str_replace(' ', '-', $inspeccion->flujo_nectar_polen ?? 'normal')) }}">
+                                                                    {{ $inspeccion->flujo_nectar_polen ?? 'N/A' }}
                                                                 </span>
                                                             </td>
-                                                            <td class="revisor-cell">{{ $visita->nombre_revisor_apiario ?? 'N/A' }}</td>
+                                                            <td class="revisor-cell">{{ $inspeccion->nombre_revisor_apiario ?? 'N/A' }}</td>
                                                             <td class="suspicion-cell">
-                                                                @if($visita->sospecha_enfermedad && $visita->sospecha_enfermedad != 'N/A')
-                                                                    <span class="suspicion-badge suspicion-yes">{{ $visita->sospecha_enfermedad }}</span>
+                                                                @if(!empty($inspeccion?->sospecha_enfermedad) && $inspeccion->sospecha_enfermedad !== 'N/A')
+                                                                    <span class="suspicion-badge suspicion-yes">{{ $inspeccion->sospecha_enfermedad }}</span>
                                                                 @else
                                                                     <span class="suspicion-badge suspicion-no">Sin sospecha</span>
                                                                 @endif
                                                             </td>
-                                                            <td class="observations-cell">{{ $visita->observaciones ?? 'N/A' }}</td>
+                                                            <td class="observations-cell">{{ $inspeccion->observaciones ?? 'N/A' }}</td>
                                                             <td class="status-cell">
                                                                 @php
-                $totalColmenas = $visita->num_colmenas_totales ?? 0;
-                $colmenasEnfermas = $visita->num_colmenas_enfermas ?? 0;
-                $colmenasMuertas = $visita->num_colmenas_muertas ?? 0;
+                                                                    $totalColmenas = $inspeccion->num_colmenas_totales ?? 0;
+                                                                    $colmenasEnfermas = $inspeccion->num_colmenas_enfermas ?? 0;
+                                                                    $colmenasMuertas = $inspeccion->num_colmenas_muertas ?? 0;
 
-                if ($colmenasEnfermas > 0 || $colmenasMuertas > 0) {
-                    $status = 'Requiere Atención';
-                    $statusClass = 'warning';
-                } elseif ($totalColmenas > 0) {
-                    $status = 'Saludable';
-                    $statusClass = 'success';
-                } else {
-                    $status = 'Sin Datos';
-                    $statusClass = 'secondary';
-                }
+                                                                    if ($colmenasEnfermas > 0 || $colmenasMuertas > 0) {
+                                                                        $status = 'Requiere Atención';
+                                                                        $statusClass = 'warning';
+                                                                    } elseif ($totalColmenas > 0) {
+                                                                        $status = 'Saludable';
+                                                                        $statusClass = 'success';
+                                                                    } else {
+                                                                        $status = 'Sin Datos';
+                                                                        $statusClass = 'secondary';
+                                                                    }
                                                                 @endphp
                                                                 <span class="status-badge status-{{ $statusClass }}">{{ $status }}</span>
                                                             </td>
                                                             <td class="actions-cell">
                                                                 <a href="{{ route('generate.document.inspeccion', $apiario->id) }}"
-                                                                    class="btn btn-outline-secondary btn-sm" title="Generar PDF" target="_blank">
+                                                                class="btn btn-outline-secondary btn-sm" title="Generar PDF" target="_blank">
                                                                     <i class="fas fa-file-pdf"></i>
                                                                 </a>
                                                                 <a href="{{ route('visitas.create', $apiario->id) }}?visita_id={{ $visita->id }}"
-                                                                    class="btn btn-outline-primary btn-sm">
+                                                                class="btn btn-outline-primary btn-sm">
                                                                     <i class="fas fa-edit"></i>
                                                                 </a>
                                                             </td>
@@ -328,6 +329,7 @@
                                     </div>
                                 @endif
                             </div>
+
 
                             <!-- Medicamentos Tab -->
                             <div class="tab-pane fade" id="medicamentos" role="tabpanel">

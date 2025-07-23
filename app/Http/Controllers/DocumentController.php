@@ -349,7 +349,8 @@ class DocumentController extends Controller
     {
         try {
             $apiario = Apiario::with(['comuna.region'])->findOrFail($id);
-            $visitas = Visita::with('usuario')
+
+            $visitas = Visita::with('visitaGeneral')
                 ->where('apiario_id', $id)
                 ->where('tipo_visita', 'Visita General')
                 ->get();
@@ -380,7 +381,8 @@ class DocumentController extends Controller
     {
         try {
             $apiario = Apiario::with(['comuna.region'])->findOrFail($apiarioId);
-            $inspecciones = Visita::where('apiario_id', $apiarioId)
+            $inspecciones = Visita::with('inspeccion')
+                ->where('apiario_id', $apiarioId)
                 ->where('tipo_visita', 'Inspección de Visita')
                 ->get();
 

@@ -107,7 +107,7 @@
                             Motivo de la Visita
                         </label>
                         <input type="text" id="motivo" name="motivo" class="field-input text-input"
-                            placeholder="Ej: Inspección rutinaria, mantenimiento, cosecha, etc." value="{{ old('motivo', $visita->motivo ?? '') }}"
+                            placeholder="Ej: Inspección rutinaria, mantenimiento, cosecha, etc." value="{{ old('motivo', $visitaGeneral->motivo ?? '') }}"
                             required>
                         <span class="field-helper">Describa brevemente el propósito de su visita</span>
                     </div>

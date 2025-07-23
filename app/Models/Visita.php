@@ -52,6 +52,10 @@ class Visita extends Model
         'estado_nutricional_id',
     ];
 
+    protected $casts = [
+        'fecha_visita' => 'datetime', 
+    ];
+
     public function toPrompt()
     {
         return "Informe Apícola:
@@ -114,5 +118,15 @@ class Visita extends Model
     public function preparacionInvernada()
     {
         return $this->belongsTo(PreparacionInvernada::class, 'preparacion_invernada_id');
+    }
+
+    public function visitaGeneral()
+    {
+        return $this->hasOne(VisitaGeneral::class, 'visita_id');
+    }
+
+    public function inspeccion()
+    {
+        return $this->hasOne(VisitaInspeccion::class, 'visita_id');
     }
 }
