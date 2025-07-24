@@ -13,32 +13,40 @@ class PaymentController extends Controller
     {
         // Validar que el plan esté presente en la solicitud
         $request->validate([
-            'plan' => 'required|in:mensual,anual',
+            'plan' => 'required|in:afc,me,ge',
         ]);
         $user = Auth::user();
-        // Obtener el plan seleccionado
         $plan = $request->input('plan');
         $transaction = new Transaction();
 
-         // Asignar el monto correspondiente según el plan
-         $amount = $plan === 'mensual' ? 8900 : 90000; // Mensual: 8.900 CLP, Anual: 90.000 CLP
+        // Asignar el monto según el plan seleccionado
+        switch ($plan) {
+            case 'afc':
+                $amount = 69900;
+                break;
+            case 'me':
+                $amount = 87900;
+                break;
+            case 'ge':
+                $amount = 150900;
+                break;
+            default:
+                return redirect()->back()->with('error', 'Plan no válido');
+        }
 
         $response = $transaction->create(
-            uniqid(), // Orden de compra única
-            uniqid(), // Código de sesión
+            uniqid(),
+            uniqid(),
             $amount,
-            route('payment.response') // URL de retorno
+            route('payment.response')
         );
 
-
-
-        // Guardar la transacción en la base de datos
         Payment::create([
             'user_id' => $user->id,
             'transaction_id' => $response->getToken(),
             'status' => 'pending',
             'amount' => $amount,
-            'plan' => $plan, // Guardamos el plan elegido
+            'plan' => $plan,
         ]);
 
         return redirect($response->getUrl() . '?token_ws=' . $response->getToken());

@@ -353,7 +353,7 @@ Route::get('/send-email', [MailController::class, 'sendEmail']);
 
 // Pagos
 Route::middleware(['auth'])->group(function () {
-    Route::get('/payment/initiate', [PaymentController::class, 'initiatePayment'])->name('payment.initiate');
+    Route::post('/payment/initiate', [PaymentController::class, 'initiatePayment'])->name('payment.initiate');
     Route::get('/payment/response', [PaymentController::class, 'paymentResponse'])->name('payment.response');
 });
 

@@ -74,6 +74,21 @@
                             @endif
 
                             <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label for="profile_picture" style="text-align: center;">Foto de Perfil</label>
+                                        <div class="profile-picture-preview mb-3">
+                                            <img id="imagePreview"
+                                                src="{{ $user->profile_picture ? asset('storage/' . $user->profile_picture) : asset('img/avatar/avatar_02.svg') }}"
+                                                alt="Vista previa"
+                                                style="width: 150px; height: 150px; border-radius: 50%; object-fit: cover; border: 3px solid #dee2e6; display: block; margin: 0 auto;">
+                                        </div>
+
+                                        <input type="file" class="form-control input-file-sm" id="profile_picture" name="profile_picture" accept="image/*"
+                                            style="max-width:450px; margin:0 auto; display:block;">
+                                        <small class="form-text text-muted">Formatos aceptados: JPG, PNG (máx. 2MB)</small>
+                                    </div>
+                                </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="rut">RUT del usuario o Representante Legal</label>
@@ -177,23 +192,6 @@
                                                 id="nregistro" name="nregistro" value='{{ $user->numero_registro}}'>
                                         </div>
                                         <small class="form-text text-muted">Registro oficial como apicultor</small>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="profile_picture">Foto de Perfil</label>
-
-                                        <!-- Previsualización de la imagen -->
-                                        <div class="profile-picture-preview mb-3">
-                                            <img id="imagePreview"
-                                                src="{{ $user->profile_picture ? asset('storage/' . $user->profile_picture) : asset('img/avatar/avatar_02.svg') }}"
-                                                alt="Vista previa"
-                                                style="width: 150px; height: 150px; border-radius: 50%; object-fit: cover; border: 3px solid #dee2e6; display: block; margin: 0 auto;">
-                                        </div>
-
-                                        <input type="file" class="form-control" id="profile_picture" name="profile_picture"
-                                            accept="image/*">
-                                        <small class="form-text text-muted">Formatos aceptados: JPG, PNG (máx. 2MB)</small>
                                     </div>
                                 </div>
                             </div>
@@ -551,7 +549,19 @@
                             </div>
                         </div>
 
-                        <form action="{{ route('payment.initiate') }}" method="GET" class="plans-form">
+                        <form action="{{ route('payment.initiate') }}" method="POST" class="plans-form">
+                            @csrf
+
+                            @if ($errors->any())
+                                <div class="alert alert-danger">
+                                    <ul class="mb-0">
+                                        @foreach ($errors->all() as $error)
+                                            <li>{{ $error }}</li>
+                                        @endforeach
+                                    </ul>
+                                </div>
+                            @endif
+
                             <div class="table-responsive mb-4">
                                 <table class="table table-bordered plans-table">
                                     <thead class="table-light">
@@ -603,7 +613,7 @@
                                             <td>
                                                 <div class="form-check">
                                                     <input class="form-check-input" type="radio" name="plan" id="planAFC"
-                                                        value="anual" {{ $user->plan == 'afc' ? 'checked' : '' }}>
+                                                        value="afc" {{ $user->plan == 'afc' ? 'checked' : '' }}>
                                                     <label class="form-check-label" for="planAFC">Seleccionar</label>
                                                 </div>
                                             </td>
@@ -1127,6 +1137,80 @@
                 comunaSelect.disabled = false;
             });
         });
+
+        function handleProfileImageCompression() {
+                const input = document.getElementById('profile_picture');
+                const preview = document.getElementById('imagePreview');
+
+                if (!input || !preview) return;
+
+                input.addEventListener('change', function (event) {
+                    const file = event.target.files[0];
+                    if (!file) return;
+
+                    const acceptedTypes = [
+                        'image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/bmp', 'image/svg+xml'
+                    ];
+                    if (!acceptedTypes.includes(file.type)) {
+                        alert('Por favor selecciona una imagen en formato JPG, PNG, WEBP, GIF, BMP o SVG.');
+                        input.value = '';
+                        return;
+                    }
+
+                    const reader = new FileReader();
+                    reader.onload = function (e) {
+                        const img = new Image();
+                        img.onload = function () {
+                            const canvas = document.createElement('canvas');
+                            const maxWidth = 600;
+                            const maxHeight = 600;
+                            let width = img.width;
+                            let height = img.height;
+
+                            if (width > maxWidth || height > maxHeight) {
+                                if (width > height) {
+                                    height = Math.round(height * (maxWidth / width));
+                                    width = maxWidth;
+                                } else {
+                                    width = Math.round(width * (maxHeight / height));
+                                    height = maxHeight;
+                                }
+                            }
+
+                            canvas.width = width;
+                            canvas.height = height;
+                            const ctx = canvas.getContext('2d');
+                            ctx.drawImage(img, 0, 0, width, height);
+
+                            // Calidad 0.85 para mejor calidad visual
+                            canvas.toBlob(function (blob) {
+                                preview.src = URL.createObjectURL(blob);
+
+                                let sizeDiv = document.getElementById('imageSize');
+                                if (!sizeDiv) {
+                                    sizeDiv = document.createElement('div');
+                                    sizeDiv.id = 'imageSize';
+                                    sizeDiv.style.textAlign = 'center';
+                                    sizeDiv.style.color = '#888';
+                                    sizeDiv.style.fontSize = '0.95em';
+                                    sizeDiv.style.marginTop = '0.5em';
+                                    input.parentNode.insertBefore(sizeDiv, input.nextSibling);
+                                }
+                                const sizeKB = (blob.size / 1024).toFixed(1);
+
+                                const compressedFile = new File([blob], file.name.replace(/\.[^/.]+$/, ".jpg"), { type: "image/jpeg" });
+                                const dataTransfer = new DataTransfer();
+                                dataTransfer.items.add(compressedFile);
+                                input.files = dataTransfer.files;
+                            }, 'image/jpeg', 0.85);
+                        };
+                        img.src = e.target.result;
+                    };
+                    reader.readAsDataURL(file);
+                });
+            }
+
+            document.addEventListener('DOMContentLoaded', handleProfileImageCompression);
     </script>
 @endsection
 

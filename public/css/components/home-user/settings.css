@@ -1,55 +1,31 @@
 :root {
-    /* Amarillos y colores de miel más apagados */
+    /* Colores principales */
     --primary-color: #e6b800;
-    /* Amarillo mostaza */
     --primary-dark: rgb(243, 195, 21);
-    /* Mostaza oscuro */
     --secondary-color: #d4b146;
-    /* Amarillo oro apagado */
     --secondary-light: #efe3c0;
-    /* Crema con toque amarillo */
     --accent-color: #d18417;
-    /* Ámbar oscuro */
-
-    /* Colores complementarios ajustados */
     --success-color: #7ba840;
-    /* Verde oliva */
     --danger-color: #d9534f;
-    /* Rojo más templado */
     --warning-color: #c26a0c;
-    /* Ámbar tostado */
-
-    /* Fondos y tonos neutros */
     --light-bg: #f9f6ea;
-    /* Fondo crema muy suave */
     --lighter-bg: #fcfbf7;
-    /* Fondo blanco cálido */
     --dark-bg: #4e3629;
-    /* Marrón oscuro más neutro */
 
-    /* Textos */
+    /* Colores de texto */
     --text-dark: #3e2e22;
-    /* Marrón oscuro para texto principal */
     --text-medium: #6d5743;
-    /* Marrón medio para títulos */
     --text-light: #ffffff;
-    /* Texto claro */
     --text-muted: #8d7a68;
-    /* Texto secundario */
 
     /* Bordes y detalles */
     --border-color: #ebe6d9;
-    /* Borde suave */
     --shadow-color: rgba(178, 160, 134, 0.15);
-    /* Sombra cálida */
 
     /* Efectos de estado */
     --hover-bg: rgba(230, 184, 0, 0.08);
-    /* Fondo hover amarillo suave */
     --active-bg: rgba(230, 184, 0, 0.15);
-    /* Fondo activo amarillo suave */
     --focus-shadow: rgba(188, 150, 17, 0.25);
-    /* Sombra de foco */
 }
 
 /* Estilos generales */
@@ -64,7 +40,6 @@ body {
     padding: 2rem 1rem;
 }
 
-/* Cabecera de configuración */
 .settings-header {
     text-align: center;
     margin-bottom: 2rem;
@@ -161,11 +136,30 @@ body {
     color: var(--primary-dark);
     font-weight: 600;
     margin-bottom: 0.75rem;
+    text-align: center;
+}
+
+.settings-card .card-header p {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    text-align: center;
 }
 
 .settings-card .card-body {
     padding: 1.75rem;
     background-color: #fff;
+}
+
+.input-file-sm {
+    margin: 0 auto;
+    display: block;
+    padding: 0.4rem 0.75rem;
+    font-size: 0.95rem;
+    max-width: 420px;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+
 }
 
 /* Formularios */
@@ -547,14 +541,11 @@ body {
     border-top: 1px solid var(--border-color);
 }
 
-/* Efectos de foco para mejorar accesibilidad */
 :focus {
     outline: none;
 }
 
-/* Mejorar aspecto de las tablas */
 .table {
-    border-collapse: separate;
     border-spacing: 0;
 }
 
