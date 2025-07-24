@@ -115,4 +115,14 @@ class Visita extends Model
     {
         return $this->belongsTo(PreparacionInvernada::class, 'preparacion_invernada_id');
     }
+
+    public function visitaGeneral()
+    {
+        return $this->hasOne(VisitaGeneral::class, 'visita_id');
+    }
+
+    public function inspeccion()
+    {
+        return $this->hasOne(VisitaInspeccion::class, 'visita_id');
+    }
 }

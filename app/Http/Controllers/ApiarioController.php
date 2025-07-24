@@ -7,14 +7,14 @@ use Illuminate\Support\Facades\Storage;
 use App\Models\Apiario;
 use App\Models\Comuna;
 use App\Models\Region;
-use Auth;
+use Illuminate\Support\Facades\Auth;
 
 
 class ApiarioController extends Controller
 {
     public function index()
     {
-        $userId = auth()->id();
+        $userId = Auth::id();
         // 1) Fijos
         $apiariosFijos = Apiario::with('comuna')
             ->where('user_id', $userId)
@@ -89,7 +89,7 @@ class ApiarioController extends Controller
         ]);
 
         // 2) completamos campos extra
-        $data['user_id'] = auth()->id();
+        $data['user_id'] = $userId = Auth::id();
         $data['region_id'] = $data['region'];
         $data['comuna_id'] = $data['comuna'];
         unset($data['region'], $data['comuna']);
@@ -137,7 +137,7 @@ class ApiarioController extends Controller
     {
         // Buscar el apiario por ID y verificar que pertenezca al usuario autenticado
         $apiario = Apiario::where('id', $apiarioId)
-            ->where('user_id', auth()->id())
+            ->where('user_id', operator: Auth::id())
             ->first(); // Usa first() para obtener una instancia del modelo
         // Verifica si el apiario existe
         if ($apiario) {
@@ -319,7 +319,7 @@ class ApiarioController extends Controller
         $apiario = Apiario::findOrFail($id);
 
         // Verificar que el apiario pertenece al usuario autenticado
-        if ($apiario->user_id !== auth()->id()) {
+        if ($apiario->user_id !== Auth::id()) {
             return redirect()->route('apiarios.index')->with('error', 'No tienes permisos para ver este apiario.');
         }
 
@@ -330,7 +330,7 @@ class ApiarioController extends Controller
     public function destroy($id)
     {
         $apiario = Apiario::where('id', $id)
-            ->where('user_id', auth()->id())
+            ->where('user_id', Auth::id())
             ->firstOrFail();
 
         // Eliminar la foto si existe

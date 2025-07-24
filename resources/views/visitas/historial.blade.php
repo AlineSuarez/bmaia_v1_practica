@@ -196,28 +196,27 @@
                                                     @foreach($apiario->visitas->where('tipo_visita', 'Visita General')->sortByDesc('fecha_visita') as $visita)
                                                         <tr class="table-row" data-date="{{ $visita->fecha_visita }}">
                                                             <td class="date-cell">
-                                                                <div class="date-container">
-                                                                    <!--<span class="date-main">{{ \Carbon\Carbon::parse($visita->fecha_visita)->format('d/m/Y') }}</span>-->
-                                                                    <span class="date-main">@date($visita->fecha_visita)</span>
-                                                                </div>
-                                                            </td>
-                                                            <td class="visitor-name">{{ $visita->nombres }}</td>
-                                                            <td class="visitor-surname">{{ $visita->apellidos }}</td>
-                                                            <td class="rut-cell">{{ $visita->rut }}</td>
-                                                            <td class="motivo-cell">
-                                                                <span class="motivo-text">{{ $visita->motivo }}</span>
-                                                            </td>
-                                                            <td class="phone-cell">{{ $visita->telefono }}</td>
-                                                            <td class="signature-cell">{{ $visita->firma }}</td>
-                                                            <td class="duration-cell">
-                                                                <span class="duration-badge">
-                                                                    {{ $visita->duracion_visita ?? 'No especificado' }}
+                                                                <span class="date-main">
+                                                                    @if ($visita->fecha_visita)
+                                                                        {{ date('d/m/Y', strtotime($visita->fecha_visita)) }}
+                                                                    @else
+                                                                        N/A
+                                                                    @endif
                                                                 </span>
+                                                            </td>
+                                                            <td class="visitor-name">{{ $visita->visitaGeneral->nombres ?? '---' }}</td>
+                                                            <td class="visitor-surname">{{ $visita->visitaGeneral->apellidos ?? '---' }}</td>
+                                                            <td class="rut-cell">{{ $visita->visitaGeneral->rut ?? '---' }}</td>
+                                                            <td class="motivo-cell">{{ $visita->visitaGeneral->motivo ?? '---' }}</td>
+                                                            <td class="phone-cell">{{ $visita->visitaGeneral->telefono ?? '---' }}</td>
+                                                            <td class="signature-cell">{{ $visita->visitaGeneral->firma ?? '---' }}</td>
+                                                            <td class="duration-cell">
+                                                                <span class="duration-badge">{{ $visita->duracion_visita ?? 'No especificado' }}</span>
                                                             </td>
                                                             <td class="actions-cell">
                                                                 <a href="{{ route('generate.document.visitas', $apiario->id) }}"
                                                                     class="btn btn-outline-secondary btn-sm" title="Generar PDF" target="_blank">
-                                                                        <i class="fas fa-file-pdf"></i>
+                                                                    <i class="fas fa-file-pdf"></i>
                                                                 </a>
                                                                 <a href="{{ route('visitas.visitas-general', $apiario->id) }}?visita_id={{ $visita->id }}"
                                                                     class="btn btn-outline-primary btn-sm">
@@ -226,6 +225,7 @@
                                                             </td>
                                                         </tr>
                                                     @endforeach
+
                                                 </tbody>
                                             </table>
                                         </div>
@@ -266,57 +266,58 @@
                                                 </thead>
                                                 <tbody>
                                                     @foreach($apiario->visitas->where('tipo_visita', 'Inspección de Visita')->sortByDesc('fecha_visita') as $visita)
+                                                        @php $inspeccion = $visita->inspeccion; @endphp
                                                         <tr class="table-row" data-date="{{ $visita->fecha_visita }}">
                                                             <td class="date-cell">
                                                                 <div class="date-container">
                                                                     <span class="date-main">{{ \Carbon\Carbon::parse($visita->fecha_visita)->format('d/m/Y') }}</span>
                                                                 </div>
                                                             </td>
-                                                            <td class="number-cell">{{ $visita->num_colmenas_totales ?? 'N/A' }}</td>
-                                                            <td class="number-cell active">{{ $visita->num_colmenas_activas ?? 'N/A' }}</td>
-                                                            <td class="number-cell sick">{{ $visita->num_colmenas_enfermas ?? 'N/A' }}</td>
-                                                            <td class="number-cell dead">{{ $visita->num_colmenas_muertas ?? 'N/A' }}</td>
-                                                            <td class="number-cell">{{ $visita->num_colmenas_inspeccionadas ?? 'N/A' }}</td>
+                                                            <td class="number-cell">{{ $inspeccion->num_colmenas_totales ?? 'N/A' }}</td>
+                                                            <td class="number-cell active">{{ $inspeccion->num_colmenas_activas ?? 'N/A' }}</td>
+                                                            <td class="number-cell sick">{{ $inspeccion->num_colmenas_enfermas ?? 'N/A' }}</td>
+                                                            <td class="number-cell dead">{{ $inspeccion->num_colmenas_muertas ?? 'N/A' }}</td>
+                                                            <td class="number-cell">{{ $inspeccion->num_colmenas_inspeccionadas ?? 'N/A' }}</td>
                                                             <td class="flujo-cell">
-                                                                <span class="flujo-badge flujo-{{ strtolower(str_replace(' ', '-', $visita->flujo_nectar_polen ?? 'normal')) }}">
-                                                                    {{ $visita->flujo_nectar_polen ?? 'N/A' }}
+                                                                <span class="flujo-badge flujo-{{ strtolower(str_replace(' ', '-', $inspeccion->flujo_nectar_polen ?? 'normal')) }}">
+                                                                    {{ $inspeccion->flujo_nectar_polen ?? 'N/A' }}
                                                                 </span>
                                                             </td>
-                                                            <td class="revisor-cell">{{ $visita->nombre_revisor_apiario ?? 'N/A' }}</td>
+                                                            <td class="revisor-cell">{{ $inspeccion->nombre_revisor_apiario ?? 'N/A' }}</td>
                                                             <td class="suspicion-cell">
-                                                                @if($visita->sospecha_enfermedad && $visita->sospecha_enfermedad != 'N/A')
-                                                                    <span class="suspicion-badge suspicion-yes">{{ $visita->sospecha_enfermedad }}</span>
+                                                                @if(!empty($inspeccion?->sospecha_enfermedad) && $inspeccion->sospecha_enfermedad !== 'N/A')
+                                                                    <span class="suspicion-badge suspicion-yes">{{ $inspeccion->sospecha_enfermedad }}</span>
                                                                 @else
                                                                     <span class="suspicion-badge suspicion-no">Sin sospecha</span>
                                                                 @endif
                                                             </td>
-                                                            <td class="observations-cell">{{ $visita->observaciones ?? 'N/A' }}</td>
+                                                            <td class="observations-cell">{{ $inspeccion->observaciones ?? 'N/A' }}</td>
                                                             <td class="status-cell">
                                                                 @php
-                $totalColmenas = $visita->num_colmenas_totales ?? 0;
-                $colmenasEnfermas = $visita->num_colmenas_enfermas ?? 0;
-                $colmenasMuertas = $visita->num_colmenas_muertas ?? 0;
+                                                                    $totalColmenas = $inspeccion->num_colmenas_totales ?? 0;
+                                                                    $colmenasEnfermas = $inspeccion->num_colmenas_enfermas ?? 0;
+                                                                    $colmenasMuertas = $inspeccion->num_colmenas_muertas ?? 0;
 
-                if ($colmenasEnfermas > 0 || $colmenasMuertas > 0) {
-                    $status = 'Requiere Atención';
-                    $statusClass = 'warning';
-                } elseif ($totalColmenas > 0) {
-                    $status = 'Saludable';
-                    $statusClass = 'success';
-                } else {
-                    $status = 'Sin Datos';
-                    $statusClass = 'secondary';
-                }
+                                                                    if ($colmenasEnfermas > 0 || $colmenasMuertas > 0) {
+                                                                        $status = 'Requiere Atención';
+                                                                        $statusClass = 'warning';
+                                                                    } elseif ($totalColmenas > 0) {
+                                                                        $status = 'Saludable';
+                                                                        $statusClass = 'success';
+                                                                    } else {
+                                                                        $status = 'Sin Datos';
+                                                                        $statusClass = 'secondary';
+                                                                    }
                                                                 @endphp
                                                                 <span class="status-badge status-{{ $statusClass }}">{{ $status }}</span>
                                                             </td>
                                                             <td class="actions-cell">
                                                                 <a href="{{ route('generate.document.inspeccion', $apiario->id) }}"
-                                                                    class="btn btn-outline-secondary btn-sm" title="Generar PDF" target="_blank">
+                                                                class="btn btn-outline-secondary btn-sm" title="Generar PDF" target="_blank">
                                                                     <i class="fas fa-file-pdf"></i>
                                                                 </a>
                                                                 <a href="{{ route('visitas.create', $apiario->id) }}?visita_id={{ $visita->id }}"
-                                                                    class="btn btn-outline-primary btn-sm">
+                                                                class="btn btn-outline-primary btn-sm">
                                                                     <i class="fas fa-edit"></i>
                                                                 </a>
                                                             </td>
@@ -328,6 +329,7 @@
                                     </div>
                                 @endif
                             </div>
+
 
                             <!-- Medicamentos Tab -->
                             <div class="tab-pane fade" id="medicamentos" role="tabpanel">
@@ -458,37 +460,41 @@
                                                     </tr>
                                                 </thead>
                                                 @php
-                                                    $colmenasIds = $apiario->colmenas->pluck('id'); // ← IDs de las colmenas del apiario
-                                                    $estado = \App\Models\EstadoNutricional::whereIn('colmena_id', $colmenasIds)
-                                                                ->latest('fecha_aplicacion')
-                                                                ->first();
+                                                    $colmenasIds = $apiario->colmenas->pluck('id');
+                                                    $estadosNutricionales = \App\Models\EstadoNutricional::whereIn('colmena_id', $colmenasIds)
+                                                        ->orderByDesc('fecha_aplicacion')
+                                                        ->get()
+                                                        ->groupBy('visita_id');
                                                 @endphp
 
                                                 <tbody>
-                                                @if ($estado)
-                                                    <tr>
-                                                        <td>{{ $estado->tipo_alimentacion ?? 'N/A' }}</td>
-                                                        <td>{{ date('Y-m-d', strtotime($estado->fecha_aplicacion)) ?? 'N/A' }}</td>
-                                                        <td>{{ $estado->insumo_utilizado ?? 'N/A' }}</td>
-                                                        <td>{{ $estado->objetivo ?? 'N/A' }}</td>
-                                                        <td>{{ $estado->dosifiacion ?? 'N/A' }}</td>
-                                                        <td>{{ $estado->metodo_utilizado ?? 'N/A' }}</td>
-                                                        <td class="actions-cell">
-                                                            <a href="{{ route('generate.document.alimentacion', $apiario->id) }}"
+                                                    @forelse($estadosNutricionales as $visitaId => $grupo)
+                                                        @php
+                                                            $estado = $grupo->first(); // usamos solo uno por grupo
+                                                        @endphp
+                                                        <tr>
+                                                            <td>{{ $estado->tipo_alimentacion ?? 'N/A' }}</td>
+                                                            <td>{{ $estado->fecha_aplicacion ? \Carbon\Carbon::parse($estado->fecha_aplicacion)->format('Y-m-d') : 'N/A' }}</td>
+                                                            <td>{{ $estado->insumo_utilizado ?? 'N/A' }}</td>
+                                                            <td>{{ $estado->objetivo ?? 'N/A' }}</td>
+                                                            <td>{{ $estado->dosifiacion ?? 'N/A' }}</td>
+                                                            <td>{{ $estado->metodo_utilizado ?? 'N/A' }}</td>
+                                                            <td class="actions-cell">
+                                                                <a href="{{ route('generate.document.alimentacion', $apiario->id) }}"
                                                                 class="btn btn-outline-secondary btn-sm" title="Generar PDF" target="_blank">
-                                                                <i class="fas fa-file-pdf"></i>
-                                                            </a>
-                                                            <a href="{{ route('visitas.alimentacion.edit', [$apiario->id, $estado->visita_id]) }}"
+                                                                    <i class="fas fa-file-pdf"></i>
+                                                                </a>
+                                                                <a href="{{ route('visitas.alimentacion.edit', [$apiario->id, $estado->visita_id]) }}"
                                                                 class="btn btn-outline-primary btn-sm">
-                                                                <i class="fas fa-edit"></i>
-                                                            </a>
-                                                        </td>
-                                                    </tr>
-                                                @else
-                                                    <tr>
-                                                        <td colspan="6" class="text-center text-muted">No hay datos de alimentación registrados.</td>
-                                                    </tr>
-                                                @endif
+                                                                    <i class="fas fa-edit"></i>
+                                                                </a>
+                                                            </td>
+                                                        </tr>
+                                                    @empty
+                                                        <tr>
+                                                            <td colspan="7" class="text-center text-muted">No hay datos de alimentación registrados.</td>
+                                                        </tr>
+                                                    @endforelse
                                                 </tbody>
                                             </table>
                                         </div>
@@ -527,29 +533,29 @@
                                                 </thead>
                                                 @php
                                                     $colmenasIds = $apiario->colmenas->pluck('id');
-                                                    $reina = \App\Models\CalidadReina::whereIn('colmena_id', $colmenasIds)
-                                                                ->latest('fecha_introduccion')
-                                                                ->first();
-
-                                                    $reemplazos = [];
-                                                    $ultimo     = null;
-
-                                                    if ($reina) {
-                                                        $raw = $reina->reemplazos_realizados;
-                                                        if (is_string($raw)) {
-                                                            // si viene como string, lo decodificamos
-                                                            $reemplazos = json_decode($raw, true) ?: [];
-                                                        } elseif (is_array($raw)) {
-                                                            // si ya es array (cast de Eloquent), lo usamos directamente
-                                                            $reemplazos = $raw;
-                                                        }
-                                                        // tomamos el último reemplazo (si existe)
-                                                        $ultimo = $reemplazos ? end($reemplazos) : null;
-                                                    }
+                                                    $calidadesReina = \App\Models\CalidadReina::whereIn('colmena_id', $colmenasIds)
+                                                                        ->orderByDesc('fecha_introduccion')
+                                                                        ->get()
+                                                                        ->groupBy('visita_id'); // agrupamos por visita
                                                 @endphp
 
                                                 <tbody>
-                                                @if ($reina)
+                                                @forelse($calidadesReina as $grupo)
+                                                    @php
+                                                        $reina = $grupo->first(); // mostramos solo una por visita
+                                                        $reemplazos = [];
+                                                        $ultimo = null;
+
+                                                        if ($reina) {
+                                                            $raw = $reina->reemplazos_realizados;
+                                                            if (is_string($raw)) {
+                                                                $reemplazos = json_decode($raw, true) ?: [];
+                                                            } elseif (is_array($raw)) {
+                                                                $reemplazos = $raw;
+                                                            }
+                                                            $ultimo = $reemplazos ? end($reemplazos) : null;
+                                                        }
+                                                    @endphp
                                                     <tr>
                                                         <td>{{ $reina->postura_reina }}</td>
                                                         <td>{{ $reina->estado_cria }}</td>
@@ -560,7 +566,7 @@
                                                         <td>{{ $reina->fecha_introduccion ? \Carbon\Carbon::parse($reina->fecha_introduccion)->format('d/m/Y') : '-' }}</td>
                                                         <td>{{ $reina->estado_actual }}</td>
                                                         <td>
-                                                            @if($ultimo && ! empty($ultimo['fecha']))
+                                                            @if($ultimo && !empty($ultimo['fecha']))
                                                                 {{ \Carbon\Carbon::parse($ultimo['fecha'])->format('d/m/Y') }}
                                                             @else
                                                                 -
@@ -569,22 +575,23 @@
                                                         <td class="actions-cell">
                                                             @if($apiario->calidadesReina->count())
                                                                 <a href="{{ route('generate.document.reina', $apiario->id) }}"
-                                                                    class="btn btn-outline-secondary btn-sm" title="Generar PDF" target="_blank">
+                                                                class="btn btn-outline-secondary btn-sm" title="Generar PDF" target="_blank">
                                                                     <i class="fas fa-file-pdf"></i>
                                                                 </a>
                                                             @endif
                                                             <a href="{{ route('visitas.reina.edit', [$apiario->id, $reina->visita_id]) }}"
-                                                                class="btn btn-outline-primary btn-sm">
+                                                            class="btn btn-outline-primary btn-sm">
                                                                 <i class="fas fa-edit"></i>
                                                             </a>
                                                         </td>
                                                     </tr>
-                                                @else
+                                                @empty
                                                     <tr>
-                                                        <td colspan="6" class="text-center text-muted">No hay datos de reina registrados.</td>
+                                                        <td colspan="10" class="text-center text-muted">No hay datos de reina registrados.</td>
                                                     </tr>
-                                                @endif
+                                                @endforelse
                                                 </tbody>
+
                                             </table>
                                         </div>
                                     </div>

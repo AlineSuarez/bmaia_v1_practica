@@ -20,10 +20,12 @@
                     <a class="nav-link active" id="user-data-tab" data-bs-toggle="tab" href="#user-data" role="tab"
                         aria-controls="user-data" aria-selected="true">Datos del Usuario/a</a>
                 </li>
+                <!--
                 <li class="nav-item" role="presentation">
                     <a class="nav-link" id="billing-tab" data-bs-toggle="tab" href="#billing" role="tab"
                         aria-controls="billing" aria-selected="false">Datos de Facturación</a>
                 </li>
+-->
                 <li class="nav-item" role="presentation">
                     <a class="nav-link" id="security-tab" data-bs-toggle="tab" href="#security" role="tab"
                         aria-controls="security" aria-selected="false">Seguridad</a>
@@ -32,7 +34,7 @@
                     <a class="nav-link" id="plans-tab" data-bs-toggle="tab" href="#plans" role="tab" aria-controls="plans"
                         aria-selected="false">Planes</a>
                 </li>
-                <li class="nav-item" role="presentation">
+<!--<li class="nav-item" role="presentation">
                     <a class="nav-link" id="permissions-tab" data-bs-toggle="tab" href="#permissions" role="tab"
                         aria-controls="permissions" aria-selected="false">Permisos</a>
                 </li>
@@ -43,7 +45,7 @@
                 <li class="nav-item" role="presentation">
                     <a class="nav-link" id="utilities-tab" data-bs-toggle="tab" href="#utilities" role="tab"
                         aria-controls="utilities" aria-selected="false">Utilidades</a>
-                </li>
+                </li>-->
             </ul>
         </nav>
 

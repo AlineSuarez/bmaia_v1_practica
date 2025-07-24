@@ -127,18 +127,18 @@
             </thead>
             <tbody>
                 @forelse ($data['visits']->where('tipo_visita', 'Inspección de Visita') as $visit)
+                    @php $insp = $visit->inspeccion; @endphp
                     <tr>
-                        <td>{{ $visit->fecha_visita ?? '' }}</td>
-                        <td>{{ $visit->num_colmenas_totales ?? '' }}</td>
-                        <td>{{ $visit->num_colmenas_activas ?? '' }}</td>
-                        <td>{{ $visit->num_colmenas_enfermas ?? '' }}</td>
-                        <td>{{ $visit->num_colmenas_muertas ?? '' }}</td>
-                        <td>{{ $visit->num_colmenas_inspeccionadas ?? '' }}</td>
-                        <td>{{ $visit->nombre_revisor_apiario ?? '' }}</td>
-                        <td>{{ $visit->sospecha_enfermedad ?? '' }}</td>
-                        <td class="text-left">{{ $visit->observaciones ?? '' }}</td>
+                        <td>{{ \Carbon\Carbon::parse($visit->fecha_visita)->format('d/m/Y') }}</td>
+                        <td>{{ $insp?->num_colmenas_totales ?? '' }}</td>
+                        <td>{{ $insp?->num_colmenas_activas ?? '' }}</td>
+                        <td>{{ $insp?->num_colmenas_enfermas ?? '' }}</td>
+                        <td>{{ $insp?->num_colmenas_muertas ?? '' }}</td>
+                        <td>{{ $insp?->num_colmenas_inspeccionadas ?? '' }}</td>
+                        <td>{{ $insp?->nombre_revisor_apiario ?? '' }}</td>
+                        <td>{{ $insp?->sospecha_enfermedad ?? '' }}</td>
+                        <td class="text-left">{{ $insp?->observaciones ?? '' }}</td>
                     </tr>
-                    
                 @empty
                     <tr><td colspan="9">No hay registros de inspección.</td></tr>
                 @endforelse
