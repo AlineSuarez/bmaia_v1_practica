@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Apiario;
 use Illuminate\Http\Request;
-use Auth;
+use Illuminate\Support\Facades\Auth;
 
 class ZonificacionController extends Controller
 {

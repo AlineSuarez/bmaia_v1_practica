@@ -24,7 +24,7 @@ class SistemaExpertoController extends Controller
 {
     public function index()
     {
-        $apiarios = auth()->user()->apiarios;
+        $apiarios = Auth::user()->apiarios;
         return view('sistemaexperto.index', compact('apiarios'));
     }
 

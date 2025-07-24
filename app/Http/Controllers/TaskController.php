@@ -8,6 +8,7 @@ use App\Models\TareasPredefinidas;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\Log;
 
 
 class TaskController extends Controller
@@ -125,7 +126,7 @@ class TaskController extends Controller
             }
             return redirect()->back()->with('success', 'Subtarea actualizada correctamente');
         } catch (\Exception $e) {
-            \Log::error('Error al actualizar tarea: ' . $e->getMessage());
+            Log::error('Error al actualizar tarea: ' . $e->getMessage());
             if ($request->ajax()) {
                 return response()->json(['message' => 'Error interno'], 500);
             }
@@ -191,7 +192,7 @@ class TaskController extends Controller
 
     public function updateStatus(Request $request, $id)
     {
-        \Log::info('Entró a updateStatus', [
+        Log::info('Entró a updateStatus', [
             'id' => $id,
             'estado' => $request->estado
         ]);
@@ -339,23 +340,6 @@ class TaskController extends Controller
         $subtareas = SubTarea::with('tareaGeneral')->get(); // o tu relación correcta
         return view('tareas.imprimir-todas', compact('subtareas'));
     }
-
-    /*
-    public function obtenerSubtareasUsuarioJson()
-    {
-        $user = Auth::user();
-
-        $tareasGenerales = TareaGeneral::whereIn('id', 
-            Subtarea::where('user_id', $user->id)->pluck('tarea_general_id')
-        )
-        ->with(['subtareas' => function ($query) use ($user) {
-            $query->where('user_id', $user->id);
-        }])
-        ->get();
-
-        return response()->json($tareasGenerales);
-    }
-   */
 
     public function storeAjax(Request $request)
     {

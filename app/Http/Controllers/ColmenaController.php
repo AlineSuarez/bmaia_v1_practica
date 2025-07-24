@@ -13,6 +13,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 
 class ColmenaController extends Controller
 {
@@ -77,7 +78,7 @@ class ColmenaController extends Controller
 
     public function show(Apiario $apiario, Colmena $colmena)
     {
-        if (!auth()->check()) {
+        if (!Auth::check()) {
             return redirect()->route('colmenas.public', ['colmena' => $colmena->id]);
         }
 
@@ -373,38 +374,6 @@ class ColmenaController extends Controller
         return view('colmenas.historicas', compact('apiario', 'colmenasPorOrigen'));
     }
 
-    /*
-    public function exportHistoricas(Apiario $apiario)
-    {
-        $movimientos = MovimientoColmena::where('apiario_destino_id', $apiario->id)
-            ->orWhere('apiario_origen_id', $apiario->id)
-            ->with(['apiarioOrigen', 'apiarioDestino', 'colmena'])
-            ->orderByDesc('fecha_movimiento')
-            ->get();
-
-        // 2) Agrupo por cada colmena los movimientos que encontró
-        $colmenas = $movimientos
-            ->groupBy(fn($mov) => $mov->colmena->id)
-            ->map(function($movs){
-                $col = $movs->first()->colmena;      // modelo Colmena
-                $col->movimientos = $movs;           // le inyecto la colección de movimientos
-                return $col;
-            })
-            ->sortBy('numero')                       // opcional: ordenarlas por número
-            ->values();
-
-        // 3) Genero el PDF con la vista
-        $pdf = Pdf::loadView('documents.historial-apiario', [
-            'apiario'         => $apiario,
-            'colmenas'        => $colmenas,
-            'fechaGeneracion' => now()->format('d/m/Y H:i'),
-        ]);
-
-        $filename = "historial_apiario_{$apiario->nombre}_" . now()->format('Y-m-d') . ".pdf";
-        return $pdf->download($filename);
-    }
-    */
-
     public function exportHistoricas(Apiario $apiario)
     {
         $movimientos = MovimientoColmena::where('apiario_destino_id', $apiario->id)
@@ -417,7 +386,7 @@ class ColmenaController extends Controller
             ->groupBy(fn($mov) => $mov->colmena->id)
             ->map(function ($movs) {
                 $col = $movs->first()->colmena;
-                $col->movimientos = $movs;
+                $col->movimientos_list = $movs;
                 return $col;
             })
             ->sortBy('numero')
@@ -443,9 +412,9 @@ class ColmenaController extends Controller
             'region_destino' => optional($apiario->comuna->region)->nombre ?? '—',
             'comuna_destino' => optional($apiario->comuna)->nombre ?? '—',
             'coordenadas_destino' => $apiario->latitud . ', ' . $apiario->longitud,
-            'apicultor_nombre' => auth()->user()->name,
-            'apicultor_rut' => auth()->user()->rut ?? '—',
-            'registro_nacional' => auth()->user()->numero_registro ?? '—',
+            'apicultor_nombre' => Auth::user()->name,
+            'apicultor_rut' => Auth::user()->rut ?? '—',
+            'registro_nacional' => Auth::user()->numero_registro ?? '—',
         ]);
 
         $filename = "historial_apiario_{$apiario->nombre}_" . now()->format('Y-m-d') . ".pdf";

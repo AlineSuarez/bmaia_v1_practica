@@ -56,18 +56,17 @@ class PaymentController extends Controller
             $payment->update(['status' => 'paid']);
 
             // Obtener el usuario y el plan
-            $user = Auth::user();
+            $user = \App\Models\User::find(Auth::id());
             $plan = $payment->plan; // Asumimos que el plan se guardó en el pago
 
             // Determinar la fecha de expiración
             $fechaVencimiento = now()->addMonths($plan === 'mensual' ? 1 : 12);
 
             // Actualizar el usuario con el plan y la fecha de expiración
-            $user->update([
-                'plan' => $plan,
-                'fecha_vencimiento' => $fechaVencimiento,
-                'webpay_status' => 'pagado'
-            ]);
+            $user->plan = $plan;
+            $user->fecha_vencimiento = $fechaVencimiento;
+            $user->webpay_status = 'pagado';
+            $user->save();
 
             return redirect()->route('payment.success');
         } else {

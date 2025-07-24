@@ -102,7 +102,7 @@ class PreferencesController extends Controller
     public function reset()
     {
         try {
-            Preference::updateOrCreate(
+            $prefs = Preference::updateOrCreate(
                 ['user_id' => Auth::id()],
                 [
                     'language'         => 'es_CL',

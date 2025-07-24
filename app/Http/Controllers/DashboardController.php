@@ -9,7 +9,7 @@ use App\Models\User;
 use App\Models\Task;
 use App\Models\SubTarea;
 use App\Models\Visita;
-use Auth;
+use Illuminate\Support\Facades\Auth;
 
 class DashboardController extends Controller
 {

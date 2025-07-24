@@ -169,56 +169,6 @@ class VisitaController extends Controller
         return view('visitas.create3', compact('apiario'));
     }
 
-    /*
-    public function store(Request $request, Apiario $apiario)
-    {
-        $data = $request->validate([
-            'fecha_inspeccion'             => 'required|date',
-            'num_colmenas_totales'         => 'required|integer',
-            'num_colmenas_activas'         => 'required|integer',
-            'num_colmenas_enfermas'        => 'required|integer',
-            'num_colmenas_muertas'         => 'required|integer',
-            'num_colmenas_inspeccionadas'  => 'required|integer',
-            'flujo_nectar_polen'           => 'required|string',
-            'nombre_revisor_apiario'       => 'required|string',
-            'sospecha_enfermedad'          => 'nullable|string',
-            'observaciones'                => 'nullable|string',
-        ]);
-
-        // Si viene visita_id, actualizamos
-        if ($id = $request->visita_id) {
-            $visita = Visita::findOrFail($id);
-            $visita->update([
-                'fecha_visita'               => $data['fecha_inspeccion'],
-                'num_colmenas_totales'       => $data['num_colmenas_totales'],
-                'num_colmenas_activas'       => $data['num_colmenas_activas'],
-                'num_colmenas_enfermas'      => $data['num_colmenas_enfermas'],
-                'num_colmenas_muertas'       => $data['num_colmenas_muertas'],
-                'num_colmenas_inspeccionadas'=> $data['num_colmenas_inspeccionadas'],
-                'flujo_nectar_polen'         => $data['flujo_nectar_polen'],
-                'nombre_revisor_apiario'     => $data['nombre_revisor_apiario'],
-                'sospecha_enfermedad'        => $data['sospecha_enfermedad'],
-                'observaciones'              => $data['observaciones'],
-            ]);
-
-            return redirect()
-                ->route('visitas.historial', $apiario)
-                ->with('success', 'Inspección actualizada correctamente.');
-        }
-
-        // Si no, creamos nueva
-        Visita::create(array_merge($data, [
-            'apiario_id'   => $apiario->id,
-            'fecha_visita' => $data['fecha_inspeccion'],
-            'tipo_visita'  => 'Inspección de Visita',
-        ]));
-
-        return redirect()
-            ->route('visitas.historial', $apiario)
-            ->with('success', 'Inspección registrada correctamente.');
-    } 
-    */
-
     public function store(Request $request, Apiario $apiario)
     {
         $data = $request->validate([
@@ -457,45 +407,6 @@ class VisitaController extends Controller
 
         return view('visitas.create2', compact('apiario', 'visita', 'pcc4', 'pcc5'));
     }
-
-    /*
-    public function storeGeneral(Request $request, Apiario $apiario)
-    {
-        $data = $request->validate([
-            'fecha'  => 'required|date',
-            'motivo' => 'required|string',
-        ]);
-
-        $fields = [
-            'apiario_id'   => $apiario->id,
-            'fecha_visita' => $data['fecha'],
-            'motivo'       => $data['motivo'],
-            'tipo_visita'  => 'Visita General',
-            'nombres'      => auth()->user()->name,
-            'apellidos'    => auth()->user()->last_name,
-            'rut'          => auth()->user()->rut,
-            'telefono'     => auth()->user()->telefono,
-            'firma'        => auth()->user()->firma,
-        ];
-
-        if ($request->filled('visita_id')) {
-            // ACTUALIZAR
-            $visita = Visita::where('id', $request->visita_id)
-                            ->where('apiario_id', $apiario->id)
-                            ->firstOrFail();
-            $visita->update($fields);
-            $mensaje = 'Visita general actualizada correctamente.';
-        } else {
-            // CREAR
-            Visita::create($fields);
-            $mensaje = 'Visita general registrada correctamente.';
-        }
-
-        return redirect()
-            ->route('visitas.historial', $apiario)
-            ->with('success', $mensaje);
-    }
-    */
 
     public function storeGeneral(Request $request, Apiario $apiario)
     {

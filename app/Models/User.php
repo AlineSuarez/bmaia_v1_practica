@@ -102,12 +102,12 @@ class User extends Authenticatable
 
     public function alerts()
     {
-        return $this->hasMany(\App\Models\Alert::class);
+        return $this->hasMany(Alert::class);
     }
 
     public function reminders()
     {
-        return $this->hasMany(\App\Models\Reminder::class);
+        return $this->hasMany(Reminder::class);
     }
 
     public function importantDates()
@@ -117,12 +117,12 @@ class User extends Authenticatable
 
     public function contacts()
     {
-        return $this->hasMany(\App\Models\EmergencyContact::class);
+        return $this->hasMany(EmergencyContact::class);
     }
 
     public function preference()
     {
-        return $this->hasOne(\App\Models\Preference::class);
+        return $this->hasOne(Preference::class);
     }
 
 }

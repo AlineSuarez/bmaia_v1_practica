@@ -29,7 +29,7 @@ class OpenAIController extends Controller
 
         } catch (\Exception $e) {
             // Registrar el error para depuración
-            \Log::error('Error al usar OpenAI API', ['exception' => $e]);
+            Log::error('Error al usar OpenAI API', ['exception' => $e]);
 
             return response()->json([
                 'error' => 'Hubo un problema al procesar tu solicitud.',

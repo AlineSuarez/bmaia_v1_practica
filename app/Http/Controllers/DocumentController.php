@@ -5,12 +5,13 @@ namespace App\Http\Controllers;
 use App\Models\Apiario;
 use App\Models\Visita;
 use App\Models\Colmena;
-use Auth;
 use Barryvdh\DomPDF\Facade\Pdf;
 use App\Models\SistemaExperto;
 use App\Models\CalidadReina;
 use App\Models\Comuna;
 use App\Models\Region;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
 
 class DocumentController extends Controller
 {
@@ -29,7 +30,7 @@ class DocumentController extends Controller
 
         try {
             if (!$this->isGdAvailable()) {
-                \Log::info('GD no disponible, usando método básico para imágenes.');
+                Log::info('GD no disponible, usando método básico para imágenes.');
                 return $this->convertImageBasic($imagePath);
             }
 
@@ -56,12 +57,12 @@ class DocumentController extends Controller
                     return $this->processWebpWithGd($imagePath);
 
                 default:
-                    \Log::warning("Formato de imagen no soportado: {$mimeType} en {$imagePath}");
+                    Log::warning("Formato de imagen no soportado: {$mimeType} en {$imagePath}");
                     return null;
             }
 
         } catch (\Exception $e) {
-            \Log::error('Error converting image to base64: ' . $e->getMessage());
+            Log::error('Error converting image to base64: ' . $e->getMessage());
             // Fallback al método básico si GD falla
             return $this->convertImageBasic($imagePath);
         }
@@ -91,13 +92,13 @@ class DocumentController extends Controller
             }
 
             if ($mimeType === 'image/png') {
-                \Log::info("PNG detectado pero GD no disponible. Imagen omitida: {$imagePath}");
+                Log::info("PNG detectado pero GD no disponible. Imagen omitida: {$imagePath}");
             }
 
             return null;
 
         } catch (\Exception $e) {
-            \Log::error('Error en método básico de conversión: ' . $e->getMessage());
+            Log::error('Error en método básico de conversión: ' . $e->getMessage());
             return null;
         }
     }
@@ -109,7 +110,7 @@ class DocumentController extends Controller
             // Crear imagen desde PNG
             $sourceImage = imagecreatefrompng($imagePath);
             if (!$sourceImage) {
-                \Log::error("No se pudo crear imagen desde PNG: {$imagePath}");
+                Log::error("No se pudo crear imagen desde PNG: {$imagePath}");
                 return null;
             }
 
@@ -140,7 +141,7 @@ class DocumentController extends Controller
             return 'data:image/jpeg;base64,' . base64_encode($jpegData);
 
         } catch (\Exception $e) {
-            \Log::error('Error procesando PNG con GD: ' . $e->getMessage());
+            Log::error('Error procesando PNG con GD: ' . $e->getMessage());
             return null;
         }
     }
@@ -168,7 +169,7 @@ class DocumentController extends Controller
             return 'data:image/jpeg;base64,' . base64_encode($jpegData);
 
         } catch (\Exception $e) {
-            \Log::error('Error procesando JPEG con GD: ' . $e->getMessage());
+            Log::error('Error procesando JPEG con GD: ' . $e->getMessage());
 
             // Fallback: usar archivo original
             try {
@@ -189,7 +190,7 @@ class DocumentController extends Controller
             return 'data:image/gif;base64,' . base64_encode($imageData);
 
         } catch (\Exception $e) {
-            \Log::error('Error procesando GIF: ' . $e->getMessage());
+            Log::error('Error procesando GIF: ' . $e->getMessage());
             return null;
         }
     }
@@ -200,13 +201,13 @@ class DocumentController extends Controller
         try {
             // Verificar si GD soporta WebP
             if (!function_exists('imagecreatefromwebp')) {
-                \Log::warning('GD no soporta WebP en este servidor');
+                Log::warning('GD no soporta WebP en este servidor');
                 return null;
             }
 
             $sourceImage = imagecreatefromwebp($imagePath);
             if (!$sourceImage) {
-                \Log::error("No se pudo crear imagen desde WebP: {$imagePath}");
+                Log::error("No se pudo crear imagen desde WebP: {$imagePath}");
                 return null;
             }
 
@@ -221,7 +222,7 @@ class DocumentController extends Controller
             return 'data:image/jpeg;base64,' . base64_encode($jpegData);
 
         } catch (\Exception $e) {
-            \Log::error('Error procesando WebP con GD: ' . $e->getMessage());
+            Log::error('Error procesando WebP con GD: ' . $e->getMessage());
             return null;
         }
     }
@@ -237,7 +238,7 @@ class DocumentController extends Controller
             return $this->convertImageToBase64($imagePath);
 
         } catch (\Exception $e) {
-            \Log::error('Error preparando imagen para PDF: ' . $e->getMessage());
+            Log::error('Error preparando imagen para PDF: ' . $e->getMessage());
             return null;
         }
     }
@@ -245,7 +246,7 @@ class DocumentController extends Controller
     // Metodo para obtener los datos del apicultor
     private function getBeekeeperData()
     {
-        $user = auth()->user();
+        $user = Auth::user();
 
         // Convertir firma a base64 (con o sin GD)
         $firmaBase64 = null;
@@ -320,7 +321,7 @@ class DocumentController extends Controller
 
             // Log para debugging
             if (!$this->isGdAvailable()) {
-                \Log::info('PDF generado sin GD. Algunas imágenes pueden no mostrarse correctamente.');
+                Log::info('PDF generado sin GD. Algunas imágenes pueden no mostrarse correctamente.');
             }
 
             // Configurar opciones de dompdf
@@ -339,7 +340,7 @@ class DocumentController extends Controller
             return $pdf->download('Detalles_Apiario_' . $apiario->nombre . '.pdf');
 
         } catch (\Exception $e) {
-            \Log::error('Error generando documento: ' . $e->getMessage());
+            Log::error('Error generando documento: ' . $e->getMessage());
             return back()->with('error', 'Error al generar el documento: ' . $e->getMessage());
         }
     }
@@ -372,7 +373,7 @@ class DocumentController extends Controller
             return $pdf->download('Visitas_Apiario_' . $apiario->nombre . '.pdf');
 
         } catch (\Exception $e) {
-            \Log::error('Error generating visits document: ' . $e->getMessage());
+            Log::error('Error generating visits document: ' . $e->getMessage());
             return back()->with('error', 'Error al generar el documento de visitas: ' . $e->getMessage());
         }
     }
@@ -403,7 +404,7 @@ class DocumentController extends Controller
             return $pdf->download('Inspecciones_Apiario_' . $apiario->numero . '.pdf');
 
         } catch (\Exception $e) {
-            \Log::error('Error generating inspection document: ' . $e->getMessage());
+            Log::error('Error generating inspection document: ' . $e->getMessage());
             return back()->with('error', 'Error al generar el documento de inspecciones: ' . $e->getMessage());
         }
     }
@@ -429,7 +430,7 @@ class DocumentController extends Controller
             return $pdf->download('Medicamentos_Apiario_' . $apiario->nombre . '.pdf');
         }
         catch (\Exception $e) {
-            \Log::error('Error generating medicaments document: ' . $e->getMessage());
+            Log::error('Error generating medicaments document: ' . $e->getMessage());
             return back()->with('error', 'Error al generar el documento de medicamentos: ' . $e->getMessage());
         }
     }

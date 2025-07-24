@@ -7,7 +7,7 @@ use App\Models\Message;
 use OpenAI;
 use App\Models\Apiario;
 use App\Models\Visita;
-use Auth;
+use Illuminate\Support\Facades\Auth;
 
 class ChatbotController extends Controller
 {
@@ -29,7 +29,7 @@ public function send(Request $request)
         'message' => 'required|string',
     ]);
 
-    $user = auth()->user();
+    $user = Auth::user();
 
     // Obtener los apiarios y visitas del usuario
     $apiarios = Apiario::with('comuna')
@@ -168,7 +168,7 @@ public function send(Request $request)
 
     public function getMessages()
     {
-        $messages = Message::where('user_id', auth()->id())
+        $messages = Message::where('user_id', Auth::id())
             ->orderBy('created_at', 'asc')
             ->get();
 
@@ -226,9 +226,6 @@ private function classifyIntent($message)
 
     return 'default'; // Si no coincide con ninguna intención específica
 }
-
-
-
 
 public function generarConsejos()
 {
