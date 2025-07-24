@@ -244,7 +244,7 @@
                                 <path d="M19 12H5m7-7l-7 7 7 7" />
                             </svg>
                         </span>
-                        Cancelar
+                        Volver
                     </a>
                     <button type="reset" class="btn btn-outline">
                         <span class="btn-icon">

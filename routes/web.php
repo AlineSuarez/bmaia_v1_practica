@@ -209,6 +209,7 @@ Route::prefix('apiarios/{apiario}/colmenas')->name('colmenas.')->group(function 
     Route::get('/{colmena}/historial', [ColmenaController::class, 'historial'])->name('historial');
     Route::get('/{colmena}/historial/export', [ColmenaController::class, 'exportHistorial'])->name('historial.export');
     Route::get('/{colmena}/qr-pdf', [DocumentController::class, 'qrPdf'])->name('qr-pdf');
+    Route::put('/{colmena}/color', [ColmenaController::class, 'updateColor'])->name('updateColor');
 });
 
 Route::get('/colmena-publica/{colmena}', [ColmenaController::class, 'publicView'])->name('colmenas.public');
@@ -282,7 +283,7 @@ Route::middleware(['auth'])->group(function () {
         return [
             'auth_user' => Auth::check() ? Auth::user()->email : 'no user',
             'date_format' => config('app.date_format'),
-            'from_model' => optional(Auth::user()->preference)->date_format,
+            'from_model' => optional(Auth::user()->preference)->date_format ?? 'default_format',
         ];
     });
 

@@ -278,6 +278,7 @@
                                 </div>
                             @endforeach
                         </div>
+                        <div class="pagination-controls" id="paginationFijos"></div>
                     </div>
                 @endif
 
@@ -475,6 +476,7 @@
                                 </div>
                             @endforeach
                         </div>
+                        <div class="pagination-controls" id="paginationBase"></div>
                     </div>
                 @endif
 
@@ -670,6 +672,7 @@
                                 </div>
                             @endforeach
                         </div>
+                        <div class="pagination-controls" id="paginationTemporales"></div>
                     </div>
                 @endif
 

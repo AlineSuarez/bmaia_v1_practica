@@ -597,6 +597,7 @@ body {
     background: linear-gradient(135deg, var(--honey-600), var(--honey-700));
     transform: translateY(-2px);
     box-shadow: 0 8px 20px rgba(255, 200, 0, 0.3);
+    border: var(--honey-800) 1px solid;
 }
 
 .btn-secondary {
@@ -609,6 +610,7 @@ body {
     background: var(--honey-50);
     border-color: var(--honey-400);
     transform: translateY(-1px);
+    color: var(--honey-800);
 }
 
 .btn-outline {
@@ -618,8 +620,7 @@ body {
 }
 
 .btn-outline:hover {
-    background: var(--honey-100);
-    border-color: var(--honey-500);
+    border-color: var(--honey-600);
     color: var(--honey-700);
     transform: translateY(-1px);
 }

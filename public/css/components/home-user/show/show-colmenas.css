@@ -713,6 +713,21 @@
     box-shadow: var(--shadow-md);
 }
 
+.btn-outline-primary {
+    background: linear-gradient(135deg, #3b82f6, #2563eb);
+    color: var(--color-white);
+    border: none;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.25);
+}
+
+.btn-outline-primary:hover {
+    background: linear-gradient(135deg, #2563eb, #1d4ed8);
+    transform: translateY(-2px);
+    color: var(--color-white);
+    box-shadow: 0 8px 25px rgba(59, 130, 246, 0.35);
+}
+
 .btn-ghost {
     background: transparent;
     color: var(--color-amber-600);
@@ -1056,5 +1071,409 @@ html {
 
     .card-footer {
         display: none;
+    }
+}
+
+#modalColorColmena .modal-content {
+    background: var(--color-white);
+    border-radius: 20px;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(255, 193, 7, 0.1);
+    border: none;
+    padding: 0;
+    overflow: hidden;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    backdrop-filter: blur(10px);
+}
+
+#modalColorColmena .modal-dialog {
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: calc(100vh - 3rem);
+    margin: 1.5rem auto;
+}
+
+#modalColorColmena .modal-header {
+    background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 50%, #d97706 100%);
+    color: var(--color-white);
+    border-bottom: none;
+    padding: 24px 28px 20px 28px;
+    position: relative;
+    overflow: hidden;
+}
+
+#modalColorColmena .modal-header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(45deg, rgba(255,255,255,0.1) 0%, transparent 100%);
+    pointer-events: none;
+}
+
+#modalColorColmena .modal-title {
+    font-size: 20px;
+    font-weight: 700;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    position: relative;
+    z-index: 1;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+#modalColorColmena .modal-title i {
+    font-size: 22px;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+}
+
+#modalColorColmena .btn-close {
+    color: rgba(255, 255, 255, 0.9);
+    opacity: 1;
+    transition: all 0.2s ease;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(10px);
+    position: relative;
+    z-index: 2;
+    font-size: 20px;
+    border: none;
+    padding: 0;
+}
+
+#modalColorColmena .btn-close::before {
+    content: '×';
+    font-size: 24px;
+    font-weight: 300;
+    line-height: 1;
+}
+
+#modalColorColmena .btn-close:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+#modalColorColmena .modal-body {
+    padding: 32px 28px;
+    background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+    position: relative;
+}
+
+#modalColorColmena .modal-body::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: 
+        radial-gradient(circle at 20% 20%, rgba(251, 191, 36, 0.03) 0%, transparent 50%),
+        radial-gradient(circle at 80% 80%, rgba(245, 158, 11, 0.03) 0%, transparent 50%);
+    pointer-events: none;
+}
+
+#modalColorColmena label.form-label {
+    color: #92400e;
+    font-weight: 600;
+    font-size: 15px;
+    margin-bottom: 10px;
+    position: relative;
+    z-index: 1;
+    text-shadow: 0 1px 2px rgba(255,255,255,0.8);
+}
+
+#modalColorColmena select.form-control {
+    border-radius: 12px;
+    border: 2px solid #fde68a;
+    font-size: 15px;
+    padding: 12px 16px;
+    margin-bottom: 8px;
+    background: var(--color-white);
+    color: #78350f;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+    position: relative;
+    z-index: 1;
+}
+
+#modalColorColmena select.form-control:focus {
+    border-color: #f59e0b;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.1), 0 4px 12px -2px rgba(0, 0, 0, 0.1);
+    transform: translateY(-1px);
+}
+
+#modalColorColmena select.form-control:hover {
+    border-color: #fbbf24;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 12px -2px rgba(0, 0, 0, 0.08);
+}
+
+#modalColorColmena #colorPersonalizadoDiv {
+    margin-top: 20px;
+    padding: 20px;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.8) 0%, rgba(254, 243, 199, 0.6) 100%);
+    border-radius: 16px;
+    border: 2px dashed #fbbf24;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+    position: relative;
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+}
+
+#modalColorColmena #colorPersonalizadoDiv:hover {
+    border-color: #f59e0b;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(254, 243, 199, 0.8) 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px -8px rgba(0, 0, 0, 0.1);
+}
+
+#modalColorColmena input[type="color"] {
+    width: 80px;
+    height: 50px;
+    border: 3px solid var(--color-white);
+    background: transparent;
+    cursor: pointer;
+    margin-top: 8px;
+    box-shadow: 0 8px 25px -8px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(251, 191, 36, 0.1);
+    border-radius: 12px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: hidden;
+}
+
+#modalColorColmena input[type="color"]:hover {
+    transform: scale(1.05) translateY(-2px);
+    box-shadow: 0 12px 35px -12px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(251, 191, 36, 0.2);
+}
+
+#modalColorColmena input[type="color"]:focus {
+    outline: none;
+    transform: scale(1.05) translateY(-2px);
+    box-shadow: 0 0 0 4px rgba(251, 191, 36, 0.2), 0 12px 35px -12px rgba(0, 0, 0, 0.25);
+}
+
+#modalColorColmena .modal-footer {
+    background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+    border-top: 1px solid rgba(251, 191, 36, 0.2);
+    padding: 24px 28px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 16px;
+    position: relative;
+}
+
+#modalColorColmena .modal-footer::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 20px;
+    right: 20px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent 0%, rgba(251, 191, 36, 0.3) 50%, transparent 100%);
+}
+
+#modalColorColmena .btn-success,
+#modalColorColmena .btn-secondary {
+    min-width: 120px;
+    padding: 12px 24px;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 14px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border: none;
+    position: relative;
+    overflow: hidden;
+}
+
+#modalColorColmena .btn-success {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: white;
+    box-shadow: 0 4px 14px 0 rgba(16, 185, 129, 0.3);
+}
+
+#modalColorColmena .btn-success:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px -8px rgba(16, 185, 129, 0.4);
+    background: linear-gradient(135deg, #059669 0%, #047857 100%);
+}
+
+#modalColorColmena .btn-secondary {
+    background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);
+    color: white;
+    box-shadow: 0 4px 14px 0 rgba(107, 114, 128, 0.2);
+}
+
+#modalColorColmena .btn-secondary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px -8px rgba(107, 114, 128, 0.3);
+    background: linear-gradient(135deg, #4b5563 0%, #374151 100%);
+}
+
+/* Vista previa de colmena en modal */
+.colmena-preview-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 24px;
+    position: relative;
+    z-index: 1;
+}
+
+#modalColorColmena .colmena-card {
+    width: 85px;
+    height: 85px;
+    border-width: 3px;
+    border-style: solid;
+    border-radius: 16px;
+    background: linear-gradient(135deg, #ffffff 0%, #f9fafb 50%, #f3f4f6 100%);
+    box-shadow: 
+        0 20px 25px -5px rgba(0, 0, 0, 0.1), 
+        0 10px 10px -5px rgba(0, 0, 0, 0.04),
+        inset 0 1px 0 rgba(255, 255, 255, 0.6);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+    cursor: default;
+}
+
+#modalColorColmena .colmena-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(45deg, rgba(255,255,255,0.3) 0%, transparent 100%);
+    pointer-events: none;
+}
+
+#modalColorColmena .colmena-card:hover {
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 
+        0 25px 35px -10px rgba(0, 0, 0, 0.15), 
+        0 15px 15px -10px rgba(0, 0, 0, 0.08),
+        inset 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+
+#modalColorColmena .colmena-icon {
+    font-size: 2.2rem;
+    color: #6b7280;
+    margin-bottom: 4px;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+    transition: all 0.3s ease;
+    position: relative;
+    z-index: 1;
+}
+
+#modalColorColmena .colmena-number {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #374151;
+    line-height: 1;
+    transition: all 0.3s ease;
+    position: relative;
+    z-index: 1;
+    text-shadow: 0 1px 2px rgba(255,255,255,0.8);
+}
+
+/* Responsividad Modal */
+@media (max-width: 768px) {
+    #modalColorColmena .modal-dialog {
+        max-width: 95vw;
+        margin: 1.5rem auto;
+        min-height: calc(100vh - 3rem);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    #modalColorColmena .modal-content {
+        border-radius: 16px;
+        padding: 0;
+    }
+    #modalColorColmena .modal-header {
+        padding: 20px 20px 16px 20px;
+    }
+    #modalColorColmena .modal-body {
+        padding: 24px 20px;
+    }
+    #modalColorColmena .modal-footer {
+        padding: 20px;
+    }
+    #modalColorColmena .modal-title {
+        font-size: 18px;
+    }
+    #modalColorColmena .colmena-card {
+        width: 70px;
+        height: 70px;
+    }
+    #modalColorColmena .colmena-icon {
+        font-size: 1.8rem;
+    }
+    #modalColorColmena .colmena-number {
+        font-size: 0.9rem;
+    }
+}
+
+@media (max-width: 480px) {
+    #modalColorColmena .modal-dialog {
+        max-width: 99vw;
+        margin: 0.5rem auto;
+        min-height: calc(100vh - 1rem);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    #modalColorColmena .modal-content {
+        border-radius: 12px;
+    }
+    #modalColorColmena .modal-header {
+        padding: 16px 16px 12px 16px;
+    }
+    #modalColorColmena .modal-body {
+        padding: 20px 16px;
+    }
+    #modalColorColmena .modal-footer {
+        padding: 16px;
+        flex-direction: column;
+        gap: 12px;
+    }
+    #modalColorColmena .modal-title {
+        font-size: 16px;
+    }
+    #modalColorColmena .btn-success,
+    #modalColorColmena .btn-secondary {
+        width: 100%;
+        min-width: auto;
+    }
+    #modalColorColmena .colmena-card {
+        width: 60px;
+        height: 60px;
+    }
+    #modalColorColmena .colmena-icon {
+        font-size: 1.5rem;
+    }
+    #modalColorColmena .colmena-number {
+        font-size: 0.8rem;
+    }
+    #modalColorColmena input[type="color"] {
+        width: 100%;
+        height: 45px;
     }
 }

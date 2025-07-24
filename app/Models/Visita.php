@@ -52,6 +52,10 @@ class Visita extends Model
         'estado_nutricional_id',
     ];
 
+    protected $casts = [
+        'fecha_visita' => 'datetime', 
+    ];
+
     public function toPrompt()
     {
         return "Informe Apícola:

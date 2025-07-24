@@ -176,7 +176,7 @@
       </div>
 
       <!-- 5. Sistema Experto Card -->
-      <div class="metric-card sistema-experto">
+      <!-- <div class="metric-card sistema-experto">
         <a href="{{ route('sistemaexperto.index') }}" class="metric-link">
         <div class="metric-header">
           <div class="metric-icon">
@@ -194,7 +194,7 @@
           </div>
         </div>
         </a>
-      </div>
+      </div> -->
 
       <!-- 6. Dashboard Analytics Card -->
       <div class="metric-card dashboard-analytics">

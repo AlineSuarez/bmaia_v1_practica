@@ -22,14 +22,15 @@
       <div class="modal-particle modal-particle-4"></div>
 
       <div class="development-icon">
-        <img src="{{ asset('img/abeja.png') }}" width="160px" height="130px" alt="Fondo IA">
+        <img src="{{ asset('img/abeja.png') }}" width="160px" height="130px" alt="Fondo apícola">
       </div>
       <p>¡Bienvenido a B-Ma<span class="highlight">iA</span>!</p>
-      <p>Presentamos B-MaiA: el nuevo Agente de Inteligencia Artificial al servicio de la Apicultura Chilena
+      <p>Presentamos B-MaiA: el nuevo sistema de gestión apícola al servicio de la Apicultura Chilena
         <i style="font-weight:bold;">(versión
           Beta)</i>
       </p>
-      <p>En Bee Fractal estamos desarrollando una IA que te ayudará a gestionar tus colmenas de forma más inteligente.
+      <p>En Bee Fractal estamos desarrollando una plataforma que te ayudará a gestionar tus colmenas de forma más
+        eficiente.
       </p>
       <p style="font-weight:bold;">¡Mantente informado y sé el primero en probarlo!</p>
 
@@ -43,7 +44,7 @@
 <section id="inicio" class="hero-section">
   <div class="image-container-hero">
     <!-- Imagen de fondo -->
-    <img src="{{ asset('img/home/home_panel.jpg') }}" alt="Fondo IA" class="background-image">
+    <img src="{{ asset('img/home/home_panel.jpg') }}" alt="Fondo Apícola" class="background-image">
 
     <!-- Overlay gradient for depth -->
     <div class="premium-overlay"></div>
@@ -51,7 +52,7 @@
     <div class="content-wrapper">
       <div class="hero-text">
         <h1>Bienvenido a B-Ma<span class="highlight">iA</span></span></h1>
-        <p class="tagline">Inteligencia Artificial al servicio de la Apicultura</p>
+        <p class="tagline">Gestión apícola al servicio de la Apicultura</p>
       </div>
     </div>
 
@@ -68,10 +69,10 @@
       <div class="maia-content-row">
         <div class="maia-text">
           <p>
-            Imagina tener un asesor experto disponible las 24 horas para ayudarte con tus colmenas.
+            Imagina tener un sistema disponible las 24 horas para ayudarte con tus colmenas.
           </p>
           <p>
-            B-MaiA es un Agente de Inteligencia Artificial diseñado pensando en los apicultores chilenos. B-MaiA
+            B-MaiA es un sistema de gestión apícola diseñado pensando en los apicultores chilenos. B-MaiA
             entiende
             los desafíos
             de los productores y está listo para responder tus consultas técnicas, ayudarte a llevar registros por voz
@@ -420,19 +421,11 @@
                   <div class="ipad-screen">
                     <video class="feature-video" autoplay loop muted playsinline
                       poster="https://files.cdn-files-a.com/uploads/10098964/800_6761de379c2f5-thumbnail.jpg">
-                      <source type="video/mp4" src="/img/simple.mp4">
+                      <source type="video/mp4" src="/img/Bee.mp4">
                     </video>
                   </div>
                 </div>
               </div>
-              <!-- <div class="smartphone-frame">
-                <div class="smartphone-screen">
-                  <video class="feature-video" autoplay loop muted playsinline
-                    poster="https://files.cdn-files-a.com/uploads/10098964/800_6761de379c2f5-thumbnail.jpg">
-                    <source type="video/mp4" src="/img/simple.mp4">
-                  </video>
-                </div>
-              </div> -->
             </div>
             <div class="glow-effect glow-effect-efficiency"></div>
             <!-- Enhanced decorative elements -->
@@ -521,8 +514,8 @@
 
     <!-- Texto introductorio adicional -->
     <div class="intro-text">
-      <h2 style="font-weight: bold; margin-bottom: 30px;">B-MaiA la forma más inteligente de gestionar tus colmenas</h2>
-      <p>Plataforma todo en uno, 100% digital, que integra herramientas avanzadas de IA para gestionar tus colmenas de
+      <h2 style="font-weight: bold; margin-bottom: 30px;">B-MaiA la forma más eficiente de gestionar tus colmenas</h2>
+      <p>Plataforma todo en uno, 100% digital, que integra herramientas avanzadas para gestionar tus colmenas de
         manera más
         fácil y rápida, adaptándose a las particularidades de la apicultura chilena.</p>
       <div class="cta-buttons">
@@ -533,7 +526,7 @@
     <div class="herramientas-grid-container">
       <ul class="herramientas-grid">
         <!-- Sistema Experto -->
-        <li class="herramienta-card">
+        <!-- <li class="herramienta-card">
           <div class="herramienta-header">
             <div class="herramienta-icon">
               <i class="fa-solid fa-brain"></i>
@@ -541,9 +534,9 @@
             <h3>Sistema Experto</h3>
           </div>
           <div class="herramienta-body">
-            <p>Realiza consultas técnicas a nuestro Agente de IA y obtén respuestas precisas, basadas en la información
+            <p>Realiza consultas técnicas y obtén respuestas precisas, basadas en la información
               de
-              tu apiario y nuestra base de conocimiento. Tendrás un asesor experto las 24 horas del día, 365 días del
+              tu apiario y nuestra base de conocimiento. Tendrás un asesor disponible las 24 horas del día, 365 días del
               año.
             </p>
             <div class="herramienta-stat">
@@ -551,7 +544,7 @@
               <span class="stat-label">Precisión de respuestas</span>
             </div>
           </div>
-        </li>
+        </li> -->
 
         <!-- Cuaderno de Campo -->
         <li class="herramienta-card">
@@ -855,7 +848,7 @@
       <!-- Contenido visible incluso cuando está colapsado -->
       <div class="process-preview"
         style="padding: 0 20px 20px; text-align: center; margin-bottom: 20px; border-bottom: 1px dashed rgba(255, 143, 0, 0.2);">
-        <p style="margin-bottom: 15px; font-size: 1rem; color: #555;">Nuestra IA analiza tus datos, junto con
+        <p style="margin-bottom: 15px; font-size: 1rem; color: #555;">Nuestro sistema analiza tus datos, junto con
           información
           climática y de floración local, para entregarte alertas tempranas y recomendaciones personalizadas. <span
             style="font-style: italic; color: #ff8f00;">Haz clic para ver el proceso completo.</span></p>
@@ -893,7 +886,7 @@
         </div>
 
         <div class="contenedor-img">
-          <img src="{{ asset('img/home/procesar.png') }}" alt="Fondo IA" class="img-flotante">
+          <img src="{{ asset('img/home/procesar.png') }}" alt="Fondo Apícola" class="img-flotante">
         </div>
 
         <div class="process-flow">
@@ -969,12 +962,12 @@
               <i class="fa-solid fa-brain"></i>
             </div>
             <div class="step-content">
-              <h3>Análisis inteligente</h3>
+              <h3>Análisis avanzado</h3>
               <p>B-MaiA integra y analiza los datos registrados, correlacionando el estado de desarrollo de las
                 colmenas,
                 las
                 condiciones
-                ambientales del apiario, y el registro de los manejos aplicados. Nuestro Agente de IA identifica
+                ambientales del apiario, y el registro de los manejos aplicados. El sistema identifica
                 patrones
                 y
                 genera
@@ -1023,19 +1016,19 @@
             </div>
           </div>
 
-          <div class="process-connector"></div>
+          <!-- <div class="process-connector"></div> -->
 
-          <div class="process-step">
+          <!-- <div class="process-step">
             <div class="step-number">6</div>
             <div class="step-icon">
               <i class="fa-solid fa-robot"></i>
             </div>
             <div class="step-content">
               <h3>Consulta al Sistema Experto</h3>
-              <p>Realiza consultas técnicas a nuestro Agente de IA, y obtén respuestas precisas, basadas en la
+              <p>Realiza consultas técnicas y obtén respuestas precisas, basadas en la
                 información
                 de tu propio
-                apiario. Tendrás un asesor experto las 24 horas del día, durante 365 días del año.</p>
+                apiario. Tendrás un asesor disponible las 24 horas del día, durante 365 días del año.</p>
               <div class="step-illustration">
                 <div class="ai-assistant-animation">
                   <div class="chat-container-horizontal">
@@ -1070,12 +1063,12 @@
                 </div>
               </div>
             </div>
-          </div>
+          </div> -->
 
           <div class="process-connector"></div>
 
           <div class="process-step">
-            <div class="step-number">7</div>
+            <div class="step-number">6</div>
             <div class="step-icon">
               <i class="fa-solid fa-chart-simple"></i>
             </div>
@@ -1115,7 +1108,7 @@
           <div class="process-connector"></div>
 
           <div class="process-step">
-            <div class="step-number">8</div>
+            <div class="step-number">7</div>
             <div class="step-icon">
               <i class="fa-solid fa-chart-line"></i>
             </div>
@@ -1189,10 +1182,10 @@
             <i class="fa-solid fa-shield-virus" style="font-size: 24px; color: #ff8f00; margin-bottom: 8px;"></i>
             <span style="font-size: 0.8rem; color: #666;">Salud</span>
           </div>
-          <div class="preview-icon" style="display: flex; flex-direction: column; align-items: center;">
+          <!-- <div class="preview-icon" style="display: flex; flex-direction: column; align-items: center;">
             <i class="fa-solid fa-robot" style="font-size: 24px; color: #ff8f00; margin-bottom: 8px;"></i>
             <span style="font-size: 0.8rem; color: #666;">IA Experto</span>
-          </div>
+          </div> -->
           <div class="preview-icon" style="display: flex; flex-direction: column; align-items: center;">
             <i class="fa-solid fa-mobile-alt" style="font-size: 24px; color: #ff8f00; margin-bottom: 8px;"></i>
             <span style="font-size: 0.8rem; color: #666;">Accesibilidad</span>
@@ -1268,13 +1261,13 @@
         <div class="benefits-category">
           <h3 class="category-title">Gestión de Datos e Información</h3>
           <div class="benefits-row">
-            <div class="benefit-item"
-              data-tooltip="Realiza consultas técnicas a nuestro Agente de IA, y obtén respuestas precisas y contextualizadas basadas en la información de tu propio apiario.">
+            <!-- <div class="benefit-item"
+              data-tooltip="Realiza consultas técnicas y obtén respuestas precisas y contextualizadas basadas en la información de tu propio apiario.">
               <div class="benefit-icon">
                 <i class="fas fa-robot"></i>
               </div>
               <span class="benefit-label">Sistema Experto</span>
-            </div>
+            </div> -->
 
             <div class="benefit-item"
               data-tooltip="Visualiza la información de tus apiarios de un vistazo y toma decisiones basadas en datos concretos.">
@@ -1459,7 +1452,8 @@
         <h2 class="section-title">Contacto</h2>
         <p class="section-description">En Bee Fractal valoramos la comunicación directa con los apicultores. Si tienes
           preguntas, comentarios o simplemente
-          quieres saber más sobre cómo nuestra IA puede ayudarte, no dudes en contactarnos. ¡Estamos aquí para apoyarte!
+          quieres saber más sobre cómo nuestra plataforma puede ayudarte, no dudes en contactarnos. ¡Estamos aquí para
+          apoyarte!
         </p>
       </div>
 
@@ -1519,10 +1513,10 @@
           </div>
         </a>
       </div>
-      <p class="section-description" style="text-align: center; font-weight: bold;">B-MaiA: Inteligencia Artificial al
+      <p class="section-description" style="text-align: center; font-weight: bold;">B-MaiA: Gestión apícola al
         servicio de la Apicultura.
       </p>
-      <p style="text-align: center;"> Un agente de IA desarrollado por Bee Fractal SpA al servicio del apicultor
+      <p style="text-align: center;"> Un sistema desarrollado por Bee Fractal SpA al servicio del apicultor
         chileno.</p>
     </div>
   </div>
@@ -1558,7 +1552,7 @@
       <p class="footer-description">
         Nuestra misión es contribuir a la creación de una apicultura más eficiente y resiliente. Inspirado en la
         filosofía
-        Solarpunk, nuestro rol es integrar de manera armoniosa las soluciones de Inteligencia Artificial (IA) con el
+        Solarpunk, nuestro rol es integrar de manera armoniosa las soluciones tecnológicas con el
         entorno
         silvestre y natural, construyendo sistemas productivos que sean más sostenibles para el futuro.
       </p>

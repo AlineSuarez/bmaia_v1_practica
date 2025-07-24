@@ -1,26 +1,35 @@
+
 @extends('layouts.app')
 
 @section('content')
-<div class="expert-system-container">
-  <div class="container-fluid">
 
-    <div class="row g-4">
+  <head>
+    <link rel="stylesheet" href="{{ asset('./css/components/home-user/create/nutritional-status.css') }}">
+  </head>
+
+  <div class="expert-system-container">
+    <div class="pcc3-content">
+
       @php
-          $visita = $visita ?? null;
-          $estado = $estado ?? null;
+        $visita = $visita ?? null;
+        $estado = $estado ?? null;
       @endphp
 
       {{-- Contenido de PCC3 --}}
-      <div class="col-lg-9 col-md-8">
+      <div class="pcc3-main">
         <form action="{{ route('visitas.store3', $apiario) }}" method="POST">
           @csrf
           @if(isset($visita))
-                <input type="hidden" name="visita_id" value="{{ $visita->id }}">
+            <input type="hidden" name="visita_id" value="{{ $visita->id }}">
           @endif
 
           @if($errors->any())
             <div class="alert alert-danger">
-              <ul class="mb-0">
+              <div class="alert-header">
+                <i class="fas fa-exclamation-triangle"></i>
+                <strong>Se encontraron errores en el formulario:</strong>
+              </div>
+              <ul>
                 @foreach($errors->all() as $e)
                   <li>{{ $e }}</li>
                 @endforeach
@@ -28,96 +37,140 @@
             </div>
           @endif
 
-          <div class="step-card p-4 bg-white rounded shadow-sm">
-            <div class="step-header mb-4 d-flex align-items-center">
-              <div class="step-icon bg-green-100 p-2 rounded-circle me-3">
-                <i class="fas fa-leaf text-green-600"></i>
+          <div class="step-card">
+            <div class="step-header">
+              <div class="step-icon">
+                <i class="fas fa-seedling"></i>
               </div>
-              <div>
+              <div class="step-header-content">
                 <h4>PCC3 – Estado Nutricional</h4>
-                <small>Evaluación de la alimentación y reservas de la colmena</small>
+                <small class="text-muted">Evaluación completa de la alimentación y reservas nutricionales de la colmena</small>
+              </div>
+              <div class="step-badge">
+                <small>Punto Crítico de Control</small>
               </div>
             </div>
 
-            <div class="row g-3">
-              <div class="col-md-6">
-                <label class="form-label">Objetivo</label>
-                <select name="objetivo" class="form-select" required>
-                  <option value="">Seleccionar…</option>
-                  <option value="estimulacion" {{ old('objetivo', $estado->objetivo ?? '') == 'estimulacion' ? 'selected' : '' }}>
-                    Estimulación
-                  </option>
-                  <option value="mantencion" {{ old('objetivo', $estado->objetivo ?? '') == 'mantencion' ? 'selected' : '' }}>
-                    Mantención
-                  </option>
-                </select>
+            {{-- Sección: Configuración Nutricional --}}
+            <div class="nutrition-section">
+              <div class="section-title">
+                <h5>
+                  <i class="fas fa-bullseye"></i>
+                  Configuración Nutricional
+                </h5>
+                <small class="text-muted">Defina el objetivo y tipo de alimentación a aplicar</small>
               </div>
-              <div class="col-md-6">
-                <label class="form-label">Tipo de alimentación</label>
-                <input
-                  type="text"
-                  name="tipo_alimentacion"
-                  value="{{ old('tipo_alimentacion', $estado->tipo_alimentacion ?? '') }}"
-                  class="form-control"
-                  placeholder="Ej: Jarabe, Polen…"
-                  required
-                />
-              </div>
-              <div class="col-md-6">
-                <label class="form-label">Fecha de aplicación</label>
-                <input
-                  type="date"
-                  name="fecha_aplicacion_insumo_utilizado"
-                  value="{{ old('fecha_aplicacion_insumo_utilizado', optional($estado)->fecha_aplicacion?->format('Y-m-d')) }}""
-                  class="form-control"
-                  required
-                />
-              </div>
-              <div class="col-md-6">
-                <label class="form-label">Insumo utilizado</label>
-                <input
-                  type="text"
-                  name="insumo_utilizado"
-                  value="{{ old('insumo_utilizado', $estado->insumo_utilizado ?? '') }}"
-                  class="form-control"
-                  placeholder="Nombre del insumo…"
-                />
-              </div>
-              <div class="col-md-6">
-                <label class="form-label">Dosificación</label>
-                <input
-                  type="text"
-                  name="dosificacion"
-                  value="{{ old('dosificacion', $estado->dosifiacion ?? '') }}"
-                  class="form-control"
-                  placeholder="Cantidad y frecuencia…"
-                />
-              </div>
-              <div class="col-md-6">
-                <label class="form-label">Método utilizado</label>
-                <input
-                  type="text"
-                  name="metodo_utilizado"
-                  value="{{ old('metodo_utilizado', $estado->metodo_utilizado ?? '') }}"
-                  class="form-control"
-                  placeholder="Método de aplicación…"
-                />
+
+              <div class="field-group">
+                <div class="form-field">
+                  <label class="form-label">
+                    <i class="fas fa-target"></i>
+                    Objetivo de Alimentación
+                  </label>
+                  <select name="objetivo" class="form-select" required>
+                    <option value="">Seleccione el objetivo nutricional...</option>
+                    <option value="estimulacion" {{ old('objetivo', $estado->objetivo ?? '') == 'estimulacion' ? 'selected' : '' }}>
+                      Estimulación - Desarrollo y crecimiento activo
+                    </option>
+                    <option value="mantencion" {{ old('objetivo', $estado->objetivo ?? '') == 'mantencion' ? 'selected' : '' }}>
+                      Mantención - Preservación del estado actual
+                    </option>
+                  </select>
+                  <small class="form-text text-muted">Seleccione según las necesidades de la colmena</small>
+                </div>
+
+                <div class="form-field">
+                  <label class="form-label">
+                    <i class="fas fa-apple-alt"></i>
+                    Tipo de Alimentación
+                  </label>
+                  <input type="text" name="tipo_alimentacion"
+                    value="{{ old('tipo_alimentacion', $estado->tipo_alimentacion ?? '') }}" class="form-control"
+                    placeholder="Ej: Jarabe de azúcar, suplemento proteico, polen natural..." required />
+                  <small class="form-text text-muted">Especifique el tipo de alimento proporcionado</small>
+                </div>
               </div>
             </div>
 
-            <div class="mt-4 d-flex justify-content-between">
-              <a href="{{ url()->previous() }}" class="btn btn-secondary">
-                ← Volver
-              </a>
-              <button type="submit" class="btn btn-success">
-                Guardar PCC3
-              </button>
+            {{-- Sección: Detalles de Aplicación --}}
+            <div class="application-section">
+              <div class="section-title">
+                <h5>
+                  <i class="fas fa-calendar-check"></i>
+                  Detalles de Aplicación
+                </h5>
+                <small class="text-muted">Registre la información específica del tratamiento aplicado</small>
+              </div>
+
+              <div class="field-group">
+                <div class="form-field">
+                  <label class="form-label">
+                    <i class="fas fa-calendar-day"></i>
+                    Fecha de Aplicación
+                  </label>
+                  <input type="date" name="fecha_aplicacion_insumo_utilizado"
+                    value="{{ old('fecha_aplicacion_insumo_utilizado', optional($estado)->fecha_aplicacion?->format('Y-m-d')) }}"
+                    class="form-control" required />
+                  <small class="form-text text-muted">Fecha cuando se aplicó el tratamiento nutricional</small>
+                </div>
+
+                <div class="form-field">
+                  <label class="form-label">
+                    <i class="fas fa-box"></i>
+                    Insumo Utilizado
+                  </label>
+                  <input type="text" name="insumo_utilizado"
+                    value="{{ old('insumo_utilizado', $estado->insumo_utilizado ?? '') }}" class="form-control"
+                    placeholder="Nombre comercial o descripción del producto utilizado..." />
+                  <small class="form-text text-muted">Identifique el producto específico aplicado</small>
+                </div>
+
+                <div class="form-field">
+                  <label class="form-label">
+                    <i class="fas fa-prescription-bottle"></i>
+                    Dosificación
+                  </label>
+                  <input type="text" name="dosificacion" value="{{ old('dosificacion', $estado->dosifiacion ?? '') }}"
+                    class="form-control" placeholder="Cantidad y frecuencia (ej: 500ml cada 3 días)..." />
+                  <small class="form-text text-muted">Especifique cantidad exacta y frecuencia de aplicación</small>
+                </div>
+
+                <div class="form-field">
+                  <label class="form-label">
+                    <i class="fas fa-tools"></i>
+                    Método de Aplicación
+                  </label>
+                  <input type="text" name="metodo_utilizado"
+                    value="{{ old('metodo_utilizado', $estado->metodo_utilizado ?? '') }}" class="form-control"
+                    placeholder="Método utilizado (alimentador interno, fumigación, etc.)..." />
+                  <small class="form-text text-muted">Describa cómo se aplicó el tratamiento</small>
+                </div>
+              </div>
+            </div>
+
+            {{-- Acciones del Formulario --}}
+            <div class="form-actions">
+              <div class="form-actions-row">
+                <a href="{{ url()->previous() }}" class="btn btn-secondary">
+                  <i class="fas fa-arrow-left"></i>
+                  Volver
+                </a>
+                <div class="action-buttons">
+                  <button type="reset" class="btn btn-outline-secondary">
+                    <i class="fas fa-undo"></i>
+                    Limpiar Formulario
+                  </button>
+                  <button type="submit" class="btn btn-success">
+                    <i class="fas fa-save"></i>
+                    Guardar Estado PCC3
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
         </form>
       </div>
-    </div>
 
+    </div>
   </div>
-</div>
 @endsection

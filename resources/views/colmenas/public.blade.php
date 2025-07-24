@@ -99,31 +99,6 @@
                                     </div>
                                 </div>
 
-                                @if($colmena->numero_marcos)
-                                    <div class="info-item" style="--index: 2">
-                                        <div class="info-icon"
-                                            style="background: linear-gradient(135deg, var(--color-amber-500), var(--color-amber-600));">
-                                            <i class="fas fa-layer-group"></i>
-                                        </div>
-                                        <div class="info-content">
-                                            <span class="info-label">Marcos:</span>
-                                            <span class="info-value">{{ $colmena->numero_marcos }}</span>
-                                        </div>
-                                    </div>
-                                @endif
-
-                                @if($colmena->estado_inicial)
-                                    <div class="info-item" style="--index: 3">
-                                        <div class="info-icon secondary">
-                                            <i class="fas fa-chart-line"></i>
-                                        </div>
-                                        <div class="info-content">
-                                            <span class="info-label">Estado inicial:</span>
-                                            <span class="badge badge-light">{{ $colmena->estado_inicial }}</span>
-                                        </div>
-                                    </div>
-                                @endif
-
                                 <div class="info-item" style="--index: 4">
                                     <div class="info-icon success">
                                         <i class="fas fa-calendar-plus"></i>
@@ -146,20 +121,6 @@
                                     </div>
                                 @endif
                             </div>
-
-                            @if($colmena->observaciones)
-                                <div class="observations-section">
-                                    <div class="observations-content">
-                                        <div class="flex items-center gap-2 mb-3">
-                                            <i class="fas fa-sticky-note" style="color: var(--color-amber-600);"></i>
-                                            <strong style="color: var(--color-amber-800);">Observaciones:</strong>
-                                        </div>
-                                        <p style="color: var(--color-amber-700); font-size: var(--font-sm); margin: 0;">
-                                            {{ $colmena->observaciones }}
-                                        </p>
-                                    </div>
-                                </div>
-                            @endif
 
                             <!-- Estadísticas -->
                             <div class="stats-section">

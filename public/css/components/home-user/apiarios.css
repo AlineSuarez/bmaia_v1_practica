@@ -1,7 +1,3 @@
-/* ============================================================
-   DISEÑO MINIMALISTA MODERNO - VARIABLES
-   ============================================================ */
-
 :root {
     /* Colores principales */
     --primary: #f5a700;
@@ -521,7 +517,7 @@ body {
    TABLAS - SCROLL VISIBLE EN PANTALLAS PEQUEÑAS
    ============================================================ */
 
-   .table-container {
+.table-container {
     overflow-x: auto !important;
     overflow-y: hidden;
     position: relative;
@@ -1104,54 +1100,55 @@ body {
     align-items: center;
 }
 
-.page-btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 36px;
-    height: 36px;
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    background: var(--white);
-    color: var(--text);
-    cursor: pointer;
-    transition: var(--transition);
-    font-size: 0.875rem;
-    font-weight: 500;
-    text-decoration: none;
-    flex-shrink: 0;
-}
-
-.page-btn:hover {
-    background: var(--primary-light);
-    border-color: var(--primary);
-    color: var(--primary-dark);
-    text-decoration: none;
-}
-
-.page-btn.active {
-    background: var(--primary);
-    border-color: var(--primary);
-    color: var(--white);
-}
-
-.page-btn:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-    background: var(--gray-100);
-}
-
-.page-btn:disabled:hover {
-    background: var(--gray-100);
-    border-color: var(--border);
+i.fas.fa-chevron-left {
     color: var(--text-muted);
-    transform: none;
+    cursor: pointer;
+}
+
+i.fas.fa-chevron-right {
+    color: var(--text-muted);
+    cursor: pointer;
+}
+
+i.fas.fa-chevron-left:hover,
+i.fas.fa-chevron-right:hover {
+    color: var(--primary);
+}
+
+.pagination-controls i {
+    transition: color 0.2s ease;
+}
+.pagination-controls i:hover {
+    color: var(--primary);
+}
+.pagination-controls i:active {
+    color: var(--primary-dark);
+}
+
+.page-item.active .page-link {
+    color: var(--primary-dark);
+    border-color: var(--primary-dark);
+}
+
+.page-link:hover {
+    color: var(--primary);
+    border-color: var(--primary);
+}
+
+a.page-link:active,
+a.page-link:focus {
+    color: var(--primary-dark);
+    border-color: var(--primary-dark);
+}
+
+a.page-link:hover {
+    color: var(--primary);
+    border-color: var(--primary);
 }
 
 /* ============================================================
-   ESTADOS VACÍOS
+   SECCIÓN VACÍA
    ============================================================ */
-
 .empty-section {
     display: flex;
     flex-direction: column;
@@ -1203,7 +1200,7 @@ body {
    MODALES - SOLUCIÓN PARA SCROLL INTERMITENTE EN MODAL
    ============================================================ */
 
-   .modern-modal {
+.modern-modal {
     border: none;
     border-radius: var(--radius-lg);
     box-shadow: var(--shadow-xl);
@@ -2935,7 +2932,6 @@ body {
    AJUSTES PARA VISTA DE TARJETAS EN TOOLBAR
    ============================================================ */
 
-/* Responsive para toolbar con switch de vista */
 @media (max-width: 768px) {
     .view-toggle-container {
         padding: var(--space-2) var(--space-3);
@@ -3046,10 +3042,8 @@ body {
     }
 }
 
-/* Reemplazar la sección de badges en tarjetas en apiarios.css */
-
 /* ============================================================
-   LÍMITE DE TEXTO EN TARJETAS - BADGES AJUSTABLES POR RESOLUCIÓN
+   LÍMITE DE TEXTO EN TARJETAS
    ============================================================ */
 
 /* Contenedor de badges con ajuste automático */
@@ -3216,7 +3210,7 @@ body {
     }
 }
 
-/* Estilos por tipo de badge - mantener colores */
+/* Estilos por tipo de badge */
 .card-badge-modern.primary {
     background: linear-gradient(
         135deg,
@@ -3280,18 +3274,17 @@ body {
         max-width: 90vw !important;
         min-width: 85vw !important;
         margin: 0 auto !important;
-        /* NUEVO: Forzar centrado específico para 991px */
         position: relative !important;
         left: 50% !important;
         transform: translateX(-50%) !important;
     }
-    
+
     .modal-dialog {
         width: 100% !important;
         align-items: center !important;
         justify-content: center !important;
     }
-    
+
     .modern-modal .modal-header,
     .modern-modal .modal-body {
         padding: var(--space-4);
@@ -3306,11 +3299,11 @@ body {
         left: 50% !important;
         transform: translateX(-50%) !important;
     }
-    
+
     .modal-dialog {
         padding: var(--space-2) !important;
     }
-    
+
     .modern-modal .modal-header,
     .modern-modal .modal-body {
         padding: var(--space-3);
@@ -3325,18 +3318,17 @@ body {
         left: 50% !important;
         transform: translateX(-50%) !important;
     }
-    
+
     .modal-dialog {
         padding: var(--space-1) !important;
     }
-    
+
     .modern-modal .modal-header,
     .modern-modal .modal-body {
         padding: var(--space-2);
     }
 }
 
-/* NUEVO: Override para cualquier estilo conflictivo */
 .modal.show .modal-dialog {
     transform: none !important;
 }
@@ -3346,7 +3338,6 @@ body {
     transform: translateX(-50%) !important;
 }
 
-/* NUEVO: Asegurar que el backdrop no interfiera */
 .modal-backdrop {
     position: fixed !important;
     top: 0 !important;

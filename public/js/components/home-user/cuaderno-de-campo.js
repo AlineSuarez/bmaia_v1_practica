@@ -247,6 +247,16 @@ document.addEventListener("click", function (e) {
     }
 });
 
+// Guardar la página actual por pestaña en localStorage
+function setCurrentPage(tabName, page) {
+    localStorage.setItem(`apiaryPage_${tabName}`, page);
+}
+
+// Obtener la página guardada por pestaña
+function getCurrentPage(tabName) {
+    return parseInt(localStorage.getItem(`apiaryPage_${tabName}`)) || 1;
+}
+
 // Función para cambiar de pestaña (mejorada)
 function switchTab(tabName) {
     // Desactivar todas las pestañas y contenidos
@@ -277,7 +287,103 @@ function switchTab(tabName) {
 
         // Actualizar el filtro de búsqueda para la nueva pestaña
         filterApiaries();
+
+        // --- AGREGADO: volver a inicializar la paginación según la pestaña ---
+        if (tabName === "fijos") {
+            paginateApiaries(
+                "apiariesFijosContainer",
+                "paginationFijos",
+                6,
+                getCurrentPage("fijos"),
+                "fijos"
+            );
+        } else if (tabName === "base") {
+            paginateApiaries(
+                "apiariesBaseContainer",
+                "paginationBase",
+                6,
+                getCurrentPage("base"),
+                "base"
+            );
+        } else if (tabName === "temporales") {
+            paginateApiaries(
+                "apiariesTemporalesContainer",
+                "paginationTemporales",
+                6,
+                getCurrentPage("temporales"),
+                "temporales"
+            );
+        }
     }
+}
+
+// Función para paginar apiarios
+function paginateApiaries(
+    containerId,
+    paginationId,
+    cardsPerPage = 6,
+    initialPage = 1,
+    tabName = ""
+) {
+    const container = document.getElementById(containerId);
+    const pagination = document.getElementById(paginationId);
+    if (!container || !pagination) return;
+
+    const cards = Array.from(container.getElementsByClassName("apiary-card"));
+    let currentPage = initialPage;
+    const totalPages = Math.ceil(cards.length / cardsPerPage);
+
+    function showPage(page) {
+        currentPage = page;
+        cards.forEach((card, idx) => {
+            if (idx >= (page - 1) * cardsPerPage && idx < page * cardsPerPage) {
+                card.style.display = "";
+                card.classList.remove("page-animating", "page-animated");
+                void card.offsetWidth; // Forzar reflow
+                card.classList.add("page-animating", "page-animated");
+            } else {
+                card.style.display = "none";
+                card.classList.remove("page-animating", "page-animated");
+            }
+        });
+        renderPagination();
+        if (tabName) setCurrentPage(tabName, currentPage);
+
+        // --- Mantener el scroll en la posición del contenedor ---
+        if (container) {
+            container.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+    }
+
+    function renderPagination() {
+        if (totalPages <= 1) {
+            pagination.innerHTML = "";
+            return;
+        }
+        let html = "";
+        if (currentPage > 1) {
+            html += `<button class="page-btn" data-page="${
+                currentPage - 1
+            }">&laquo;</button>`;
+        }
+        for (let i = 1; i <= totalPages; i++) {
+            html += `<button class="page-btn${
+                i === currentPage ? " active" : ""
+            }" data-page="${i}">${i}</button>`;
+        }
+        if (currentPage < totalPages) {
+            html += `<button class="page-btn" data-page="${
+                currentPage + 1
+            }">&raquo;</button>`;
+        }
+        pagination.innerHTML = html;
+
+        pagination.querySelectorAll(".page-btn").forEach((btn) => {
+            btn.onclick = () => showPage(Number(btn.getAttribute("data-page")));
+        });
+    }
+
+    showPage(currentPage);
 }
 
 // Configuración al cargar el documento
@@ -410,4 +516,27 @@ document.addEventListener("DOMContentLoaded", function () {
             this.style.transform = "";
         });
     });
+
+    // Inicializar paginación al cargar
+    paginateApiaries(
+        "apiariesFijosContainer",
+        "paginationFijos",
+        6,
+        getCurrentPage("fijos"),
+        "fijos"
+    );
+    paginateApiaries(
+        "apiariesBaseContainer",
+        "paginationBase",
+        6,
+        getCurrentPage("base"),
+        "base"
+    );
+    paginateApiaries(
+        "apiariesTemporalesContainer",
+        "paginationTemporales",
+        6,
+        getCurrentPage("temporales"),
+        "temporales"
+    );
 });

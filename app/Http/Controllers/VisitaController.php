@@ -111,19 +111,26 @@ class VisitaController extends Controller
     public function create($id_apiario)
     {
         $user = auth()->user();
-        $apiario = Apiario::where('user_id', auth()->id())
+
+        $apiario = Apiario::where('user_id', $user->id)
                         ->findOrFail($id_apiario);
 
         $visita = null;
+        $inspeccion = null;
+
         if ($id = request('visita_id')) {
-            $visita = Visita::where('id', $id)
+            $visita = Visita::with('inspeccion')
+                            ->where('id', $id)
                             ->where('apiario_id', $id_apiario)
                             ->where('tipo_visita', 'Inspección de Visita')
                             ->firstOrFail();
+
+            $inspeccion = $visita->inspeccion;
         }
 
-        return view('visitas.create', compact('apiario', 'visita'));
+        return view('visitas.create', compact('apiario', 'visita', 'inspeccion'));
     }
+
 
     public function createMedicamentos($id_apiario)
     {
@@ -137,16 +144,20 @@ class VisitaController extends Controller
         $apiario = Apiario::where('user_id', auth()->id())
                         ->findOrFail($id_apiario);
 
-        // Sólo cargo si me pasan visita_id
         $visita = null;
+        $visitaGeneral = null;
+
         if ($visitaId = request()->get('visita_id')) {
-            $visita = Visita::where('id', $visitaId)
+            $visita = Visita::with('visitaGeneral')
+                            ->where('id', $visitaId)
                             ->where('apiario_id', $apiario->id)
                             ->where('tipo_visita', 'Visita General')
                             ->firstOrFail();
+
+            $visitaGeneral = $visita->visitaGeneral;
         }
 
-        return view('visitas.create1', compact('apiario', 'visita'));
+        return view('visitas.create1', compact('apiario', 'visita', 'visitaGeneral'));
     }
 
     public function createAlimentacion($id_apiario)

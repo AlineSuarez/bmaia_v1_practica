@@ -63,7 +63,7 @@
                                 </label>
                                 <input type="text" id="nombre_revisor_apiario" name="nombre_revisor_apiario"
                                     class="field-input text-input" placeholder="Ingrese el nombre completo del revisor"
-                                    value="{{ old('nombre_revisor_apiario', $visita->nombre_revisor_apiario ?? '') }}" required>
+                                    value="{{ old('nombre_revisor_apiario', $inspeccion->nombre_revisor_apiario ?? '') }}" required>
                                 <span class="field-helper">Persona responsable de la inspección</span>
                             </div>
                         </div>
@@ -97,7 +97,7 @@
                                     <label for="num_colmenas_totales" class="field-label">Colmenas Totales</label>
                                     <input type="number" id="num_colmenas_totales" name="num_colmenas_totales"
                                         class="field-input number-input" min="0" placeholder="0"
-                                        value="{{ old('num_colmenas_totales', $visita->num_colmenas_totales ?? '') }}" required>
+                                        value="{{ old('num_colmenas_totales', $inspeccion->num_colmenas_totales ?? '') }}" required>
                                 </div>
                             </div>
 
@@ -114,7 +114,7 @@
                                     <label for="num_colmenas_activas" class="field-label">Colmenas Activas</label>
                                     <input type="number" id="num_colmenas_activas" name="num_colmenas_activas"
                                         class="field-input number-input" min="0" placeholder="0"
-                                        value="{{ old('num_colmenas_activas', $visita->num_colmenas_activas ?? '') }}" required>
+                                        value="{{ old('num_colmenas_activas', $inspeccion->num_colmenas_activas ?? '') }}" required>
                                 </div>
                             </div>
 
@@ -131,7 +131,7 @@
                                     <label for="num_colmenas_enfermas" class="field-label">Colmenas Enfermas</label>
                                     <input type="number" id="num_colmenas_enfermas" name="num_colmenas_enfermas"
                                         class="field-input number-input" min="0" placeholder="0"
-                                        value="{{ old('num_colmenas_enfermas', $visita->num_colmenas_enfermas ?? '') }}" required>
+                                        value="{{ old('num_colmenas_enfermas', $inspeccion->num_colmenas_enfermas ?? '') }}" required>
                                 </div>
                             </div>
 
@@ -150,7 +150,7 @@
                                     <label for="num_colmenas_muertas" class="field-label">Colmenas Muertas</label>
                                     <input type="number" id="num_colmenas_muertas" name="num_colmenas_muertas"
                                         class="field-input number-input" min="0" placeholder="0"
-                                        value="{{ old('num_colmenas_muertas', $visita->num_colmenas_muertas ?? '') }}" required>
+                                        value="{{ old('num_colmenas_muertas', $inspeccion->num_colmenas_muertas ?? '') }}" required>
                                 </div>
                             </div>
 
@@ -168,7 +168,7 @@
                                     <label for="num_colmenas_inspeccionadas" class="field-label">Colmenas Inspeccionadas</label>
                                     <input type="number" id="num_colmenas_inspeccionadas" name="num_colmenas_inspeccionadas"
                                         class="field-input number-input" min="0" placeholder="0"
-                                        value="{{ old('num_colmenas_inspeccionadas', $visita->num_colmenas_inspeccionadas ?? '') }}" required>
+                                        value="{{ old('num_colmenas_inspeccionadas', $inspeccion->num_colmenas_inspeccionadas ?? '') }}" required>
                                 </div>
                             </div>
                         </div>
@@ -207,13 +207,13 @@
                                 <div class="select-wrapper">
                                     <select id="flujo_nectar_polen" name="flujo_nectar_polen" class="field-select" required>
                                         <option value="">Seleccione el estado del flujo</option>
-                                        <option value="abundante" {{ old('flujo_nectar_polen', $visita->flujo_nectar_polen ?? '')=='abundante'? 'selected':'' }}>
+                                        <option value="abundante" {{ old('flujo_nectar_polen', $inspeccion->flujo_nectar_polen ?? '')=='abundante'? 'selected':'' }}>
                                             Abundante - Excelente disponibilidad
                                         </option>
-                                        <option value="regular" {{ old('flujo_nectar_polen', $visita->flujo_nectar_polen ?? '')=='regular'? 'selected':'' }}>
+                                        <option value="regular" {{ old('flujo_nectar_polen', $inspeccion->flujo_nectar_polen ?? '')=='regular'? 'selected':'' }}>
                                             Regular - Disponibilidad moderada
                                         </option>
-                                        <option value="deficiente" {{ old('flujo_nectar_polen', $visita->flujo_nectar_polen ?? '')=='deficiente'? 'selected':'' }}>
+                                        <option value="deficiente" {{ old('flujo_nectar_polen', $inspeccion->flujo_nectar_polen ?? '')=='deficiente'? 'selected':'' }}>
                                             Deficiente - Baja disponibilidad
                                         </option>
                                     </select>
@@ -256,7 +256,7 @@
                                 </label>
                                 <input type="text" id="sospecha_enfermedad" name="sospecha_enfermedad"
                                     class="field-input text-input" placeholder="Describa cualquier signo de enfermedad observado"
-                                    value="{{ old('sospecha_enfermedad', $visita->sospecha_enfermedad ?? '') }}">
+                                    value="{{ old('sospecha_enfermedad', $inspeccion->sospecha_enfermedad ?? '') }}">
                                 <span class="field-helper">Opcional: Indique síntomas o signos anómalos</span>
                             </div>
 
@@ -274,7 +274,7 @@
                                     Observaciones Generales
                                 </label>
                                 <textarea id="observaciones" name="observaciones" class="field-textarea" rows="3"
-                                    placeholder="Ingrese observaciones adicionales, comportamiento de las abejas, condiciones climáticas, etc.">{{ old('observaciones', $visita->observaciones ?? '') }}</textarea>
+                                    placeholder="Ingrese observaciones adicionales, comportamiento de las abejas, condiciones climáticas, etc.">{{ old('observaciones', $inspeccion->observaciones ?? '') }}</textarea>
                                 <span class="field-helper">Anote cualquier observación relevante sobre la inspección</span>
                             </div>
                         </div>
@@ -289,7 +289,7 @@
                                         <path d="M19 12H5m7-7l-7 7 7 7" />
                                     </svg>
                                 </span>
-                                Cancelar
+                                Volver
                             </a>
                             <button type="reset" class="btn btn-outline">
                                 <span class="btn-icon">
