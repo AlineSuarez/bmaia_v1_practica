@@ -8,7 +8,7 @@
     <link href="{{ asset('./css/components/home-user/dashboard.css') }}" rel="stylesheet">
   </head>
   <!-- Verificar carga del middleware 
-      <p>Formato en config: {{ config('app.date_format') }}</p>
+    <p>Formato en config: {{ config('app.date_format') }}</p>
     <p>Hoy es: @date(now())</p> -->
 
   <!-- Loader con animación de panal (fuera del contenedor principal) -->
@@ -50,7 +50,6 @@
         </div>
         <div class="stat-info">
         <span class="stat-label">Hoy</span>
-        <!-- <span class="stat-value">{{ date('d M, Y') }}</span> -->
         <span class="stat-value">@date(now())</span>
         </div>
       </div>
@@ -177,24 +176,24 @@
 
       <!-- 5. Sistema Experto Card -->
       <!-- <div class="metric-card sistema-experto">
-        <a href="{{ route('sistemaexperto.index') }}" class="metric-link">
-        <div class="metric-header">
-          <div class="metric-icon">
-          <i class="fas fa-brain"></i>
-          </div>
-        </div>
-        <div class="metric-content">
-          <div class="metric-title">Sistema Experto</div>
-          <div class="metric-value">IA</div>
-          <div class="metric-progress">
-          <div class="progress-bar" style="width: 80%"></div>
-          </div>
-          <div class="metric-detail">
-          Asistencia inteligente para decisiones
-          </div>
-        </div>
-        </a>
-      </div> -->
+    <a href="{{ route('sistemaexperto.index') }}" class="metric-link">
+    <div class="metric-header">
+    <div class="metric-icon">
+    <i class="fas fa-brain"></i>
+    </div>
+    </div>
+    <div class="metric-content">
+    <div class="metric-title">Sistema Experto</div>
+    <div class="metric-value">IA</div>
+    <div class="metric-progress">
+    <div class="progress-bar" style="width: 80%"></div>
+    </div>
+    <div class="metric-detail">
+    Asistencia inteligente para decisiones
+    </div>
+    </div>
+    </a>
+    </div> -->
 
       <!-- 6. Dashboard Analytics Card -->
       <div class="metric-card dashboard-analytics">
@@ -221,128 +220,128 @@
 
     <!-- Secciones del Dashboard -->
     <!-- <div class="dashboard-sections">
-      <div class="section-row">
-      <!-- Actividad Reciente
-      <div class="dashboard-section">
-      <div class="section-header">
-      <h2>Actividad Reciente</h2>
-      <div class="section-actions">
-      <div class="dashboard-dropdown">
-      <button class="btn-filter">
-      <i class="fas fa-filter"></i>
-      <span>Filtrar</span>
-      </button>
-      <div class="dashboard-dropdown-menu">
-      <a href="#" class="dashboard-dropdown-item active">Todas</a>
-      <a href="#" class="dashboard-dropdown-item">Inspecciones</a>
-      <a href="#" class="dashboard-dropdown-item">Tareas</a>
-      <a href="#" class="dashboard-dropdown-item">Sistema</a>
-      </div>
-      </div>
-      </div>
-      </div>
-      <div class="section-content">
-      <div class="activity-list">
-      @if(isset($actividades) && count($actividades) > 0)
-      @foreach($actividades as $actividad)
-      <div class="activity-item">
-      <div class="activity-time-line">
-      <div class="activity-time">{{ $actividad->fecha ?? '10:30 AM' }}</div>
-      <div class="activity-line"></div>
-      </div>
-      <div class="activity-content">
-      <div class="activity-icon {{ $actividad->tipo ?? 'inspeccion' }}">
-      <i
-      class="fas fa-{{ $actividad->tipo == 'tarea' ? 'tasks' : ($actividad->tipo == 'sistema' ? 'cog' : 'clipboard-check') }}"></i>
-      </div>
-      <div class="activity-details">
-      <div class="activity-text">{{ $actividad->descripcion ?? 'Inspección completada en Apiario Norte' }}
-      </div>
-      <div class="activity-meta">
-      <span class="activity-type">{{ ucfirst($actividad->tipo ?? 'Inspección') }}</span>
-      <span class="activity-user">{{ $actividad->usuario ?? 'Juan Pérez' }}</span>
-      </div>
-      </div>
-      </div>
-      </div>
-      @endforeach
-      @else
-      <div class="empty-state">
-      <div class="empty-icon">
-      <i class="fas fa-clipboard-list"></i>
-      </div>
-      <p>No hay actividades recientes</p>
-      <button class="btn-action">Crear actividad</button>
-      </div>
-      @endif
-      </div>
-      </div>
-      </div>
+    <div class="section-row">
+    <!-- Actividad Reciente
+    <div class="dashboard-section">
+    <div class="section-header">
+    <h2>Actividad Reciente</h2>
+    <div class="section-actions">
+    <div class="dashboard-dropdown">
+    <button class="btn-filter">
+    <i class="fas fa-filter"></i>
+    <span>Filtrar</span>
+    </button>
+    <div class="dashboard-dropdown-menu">
+    <a href="#" class="dashboard-dropdown-item active">Todas</a>
+    <a href="#" class="dashboard-dropdown-item">Inspecciones</a>
+    <a href="#" class="dashboard-dropdown-item">Tareas</a>
+    <a href="#" class="dashboard-dropdown-item">Sistema</a>
+    </div>
+    </div>
+    </div>
+    </div>
+    <div class="section-content">
+    <div class="activity-list">
+    @if(isset($actividades) && count($actividades) > 0)
+    @foreach($actividades as $actividad)
+    <div class="activity-item">
+    <div class="activity-time-line">
+    <div class="activity-time">{{ $actividad->fecha ?? '10:30 AM' }}</div>
+    <div class="activity-line"></div>
+    </div>
+    <div class="activity-content">
+    <div class="activity-icon {{ $actividad->tipo ?? 'inspeccion' }}">
+    <i
+    class="fas fa-{{ $actividad->tipo == 'tarea' ? 'tasks' : ($actividad->tipo == 'sistema' ? 'cog' : 'clipboard-check') }}"></i>
+    </div>
+    <div class="activity-details">
+    <div class="activity-text">{{ $actividad->descripcion ?? 'Inspección completada en Apiario Norte' }}
+    </div>
+    <div class="activity-meta">
+    <span class="activity-type">{{ ucfirst($actividad->tipo ?? 'Inspección') }}</span>
+    <span class="activity-user">{{ $actividad->usuario ?? 'Juan Pérez' }}</span>
+    </div>
+    </div>
+    </div>
+    </div>
+    @endforeach
+    @else
+    <div class="empty-state">
+    <div class="empty-icon">
+    <i class="fas fa-clipboard-list"></i>
+    </div>
+    <p>No hay actividades recientes</p>
+    <button class="btn-action">Crear actividad</button>
+    </div>
+    @endif
+    </div>
+    </div>
+    </div>
 
-      Próximas Tareas
-      <div class="dashboard-section">
-      <div class="section-header">
-      <h2>Próximas Tareas</h2>
-      <div class="section-actions">
-      <button class="btn-add">
-      <i class="fas fa-plus"></i>
-      <span>Nueva tarea</span>
-      </button>
-      <a href="{{ route('tareas') }}" class="btn-view-all">Ver todas</a>
-      </div>
-      </div>
-      <div class="section-content">
-      <div class="tasks-list">
-      @if(isset($proximasTareas) && count($proximasTareas) > 0)
-      @foreach($proximasTareas as $tarea)
-      <div class="task-item priority-{{ $tarea->prioridad ?? 'media' }}">
-      <div class="task-content">
-      <div class="task-header">
-      <div class="task-priority">
-      <span class="priority-indicator"></span>
-      <span class="priority-text">{{ ucfirst($tarea->prioridad ?? 'Media') }}</span>
-      </div>
-      <div class="task-date">
-      <i class="far fa-calendar-alt"></i>
-      <span>{{ $tarea->fecha_limite ?? 'Mañana' }}</span>
-      </div>
-      </div>
-      <div class="task-body">
-      <h3 class="task-title">{{ $tarea->titulo ?? 'Inspección de colmenas' }}</h3>
-      <p class="task-description">
-      {{ $tarea->descripcion ?? 'Revisar estado de las colmenas en el apiario principal' }}
-      </p>
-      </div>
-      <div class="task-footer">
-      <div class="task-status">
-      <span
-      class="status-badge {{ $tarea->estado ?? 'pendiente' }}">{{ ucfirst($tarea->estado ?? 'Pendiente') }}</span>
-      </div>
-      <div class="task-actions">
-      <button class="task-action-btn">
-      <i class="fas fa-check-circle"></i>
-      </button>
-      <button class="task-action-btn">
-      <i class="fas fa-edit"></i>
-      </button>
-      </div>
-      </div>
-      </div>
-      </div>
-      @endforeach
-      @else
-      <div class="empty-state">
-      <div class="empty-icon">
-      <i class="fas fa-check-circle"></i>
-      </div>
-      <p>No hay tareas pendientes</p>
-      <button class="btn-action">Crear tarea</button>
-      </div>
-      @endif
-      </div>
-      </div>
-      </div>
-      </div>
+    Próximas Tareas
+    <div class="dashboard-section">
+    <div class="section-header">
+    <h2>Próximas Tareas</h2>
+    <div class="section-actions">
+    <button class="btn-add">
+    <i class="fas fa-plus"></i>
+    <span>Nueva tarea</span>
+    </button>
+    <a href="{{ route('tareas') }}" class="btn-view-all">Ver todas</a>
+    </div>
+    </div>
+    <div class="section-content">
+    <div class="tasks-list">
+    @if(isset($proximasTareas) && count($proximasTareas) > 0)
+    @foreach($proximasTareas as $tarea)
+    <div class="task-item priority-{{ $tarea->prioridad ?? 'media' }}">
+    <div class="task-content">
+    <div class="task-header">
+    <div class="task-priority">
+    <span class="priority-indicator"></span>
+    <span class="priority-text">{{ ucfirst($tarea->prioridad ?? 'Media') }}</span>
+    </div>
+    <div class="task-date">
+    <i class="far fa-calendar-alt"></i>
+    <span>{{ $tarea->fecha_limite ?? 'Mañana' }}</span>
+    </div>
+    </div>
+    <div class="task-body">
+    <h3 class="task-title">{{ $tarea->titulo ?? 'Inspección de colmenas' }}</h3>
+    <p class="task-description">
+    {{ $tarea->descripcion ?? 'Revisar estado de las colmenas en el apiario principal' }}
+    </p>
+    </div>
+    <div class="task-footer">
+    <div class="task-status">
+    <span
+    class="status-badge {{ $tarea->estado ?? 'pendiente' }}">{{ ucfirst($tarea->estado ?? 'Pendiente') }}</span>
+    </div>
+    <div class="task-actions">
+    <button class="task-action-btn">
+    <i class="fas fa-check-circle"></i>
+    </button>
+    <button class="task-action-btn">
+    <i class="fas fa-edit"></i>
+    </button>
+    </div>
+    </div>
+    </div>
+    </div>
+    @endforeach
+    @else
+    <div class="empty-state">
+    <div class="empty-icon">
+    <i class="fas fa-check-circle"></i>
+    </div>
+    <p>No hay tareas pendientes</p>
+    <button class="btn-action">Crear tarea</button>
+    </div>
+    @endif
+    </div>
+    </div>
+    </div>
+    </div>
     </div> -->
 
     <!-- Sección de Clima y Condiciones -->
@@ -372,325 +371,6 @@
     </div>
     </div>
   </div>
-@endsection
 
-@section('optional-scripts')
-  <script>
-    document.addEventListener('DOMContentLoaded', function () {
-    // Animación de carga
-    setTimeout(function () {
-      document.getElementById('dashboard-loader').classList.add('fade-out');
-      setTimeout(function () {
-      document.getElementById('dashboard-loader').style.display = 'none';
-      document.getElementById('main-contenload').style.display = 'block';
-      document.getElementById('main-contenload').classList.add('fade-in');
-      }, 800);
-    }, 1200);
-
-    // Inicializar dropdowns
-    const dropdownButtons = document.querySelectorAll('#dashboard-container .btn-filter');
-    dropdownButtons.forEach(button => {
-      button.addEventListener('click', function () {
-      const dropdownMenu = this.nextElementSibling;
-      dropdownMenu.classList.toggle('show');
-      });
-    });
-
-    // Cerrar dropdowns al hacer clic fuera
-    document.addEventListener('click', function (event) {
-      if (!event.target.matches('#dashboard-container .btn-filter')) {
-      const dropdowns = document.querySelectorAll('#dashboard-container .dashboard-dropdown-menu');
-      dropdowns.forEach(dropdown => {
-        if (dropdown.classList.contains('show')) {
-        dropdown.classList.remove('show');
-        }
-      });
-      }
-    });
-
-    // Inicializar las barras de progreso con animación
-    const progressBars = document.querySelectorAll('#dashboard-container .progress-bar');
-    progressBars.forEach(bar => {
-      const width = bar.style.width;
-      bar.style.width = '0';
-      setTimeout(() => {
-      bar.style.width = width;
-      }, 300);
-    });
-    });
-
-    document.addEventListener('DOMContentLoaded', function () {
-    // Animación de carga
-    setTimeout(function () {
-      document.getElementById('dashboard-loader').classList.add('fade-out');
-      setTimeout(function () {
-      document.getElementById('dashboard-loader').style.display = 'none';
-      document.getElementById('main-contenload').style.display = 'block';
-      document.getElementById('main-contenload').classList.add('fade-in');
-      }, 800);
-    }, 1200);
-
-    // Inicializar dropdowns
-    const dropdownButtons = document.querySelectorAll('#dashboard-container .btn-filter');
-    dropdownButtons.forEach(button => {
-      button.addEventListener('click', function () {
-      const dropdownMenu = this.nextElementSibling;
-      dropdownMenu.classList.toggle('show');
-      });
-    });
-
-    // Cerrar dropdowns al hacer clic fuera
-    document.addEventListener('click', function (event) {
-      if (!event.target.matches('#dashboard-container .btn-filter')) {
-      const dropdowns = document.querySelectorAll('#dashboard-container .dashboard-dropdown-menu');
-      dropdowns.forEach(dropdown => {
-        if (dropdown.classList.contains('show')) {
-        dropdown.classList.remove('show');
-        }
-      });
-      }
-    });
-
-    // Inicializar las barras de progreso con animación
-    const progressBars = document.querySelectorAll('#dashboard-container .progress-bar');
-    progressBars.forEach(bar => {
-      const width = bar.style.width;
-      bar.style.width = '0';
-      setTimeout(() => {
-      bar.style.width = width;
-      }, 300);
-    });
-
-    // --- CLIMA ---
-    const apiKey = 'de61de99d65654be2bf826e37b82888a';
-    const weatherMsg = document.getElementById('weather-msg-js');
-    const weatherCards = document.getElementById('weather-cards-js');
-    const weatherTitle = document.getElementById('weather-title-js');
-    const datePicker = document.getElementById('weather-date-picker');
-    const headerTemp = document.getElementById('header-temp');
-    const headerWeather = document.getElementById('header-weather');
-    let volverBtn = null;
-    const iconColors = {
-      'Clear': '#FFD600',
-      'Clouds': '#90A4AE',
-      'Rain': '#2196F3',
-      'Drizzle': '#4FC3F7',
-      'Thunderstorm': '#FF7043',
-      'Snow': '#90CAF9',
-      'Mist': '#B0BEC5'
-    };
-    const iconos = {
-      'Clear': 'fa-sun',
-      'Clouds': 'fa-cloud',
-      'Rain': 'fa-cloud-showers-heavy',
-      'Drizzle': 'fa-cloud-rain',
-      'Thunderstorm': 'fa-bolt',
-      'Snow': 'fa-snowflake',
-      'Mist': 'fa-smog'
-    };
-    // Cambiar a 5 días
-    const dias = ['Hoy', 'Mañana', 'Pasado mañana', 'En 3 días', 'En 4 días', 'En 5 días'];
-
-    function reverseGeocode(lat, lon, callback) {
-      fetch(`/reverse-geocode?lat=${lat}&lon=${lon}`)
-      .then(res => res.json())
-      .then(data => {
-        if (data && data.address) {
-        let lugar = data.address.village || data.address.town || data.address.city || data.address.hamlet || data.address.county || '';
-        let region = data.address.state || '';
-        let pais = data.address.country_code ? data.address.country_code.toUpperCase() : '';
-        callback(`${lugar}${region ? ', ' + region : ''}${pais ? ', ' + pais : ''}`);
-        } else {
-        callback('');
-        }
-      })
-      .catch(() => callback(''));
-    }
-
-    let days = {};
-    let dayKeys = [];
-    let daysArray = [];
-
-    function renderMainCards() {
-      let html = '';
-      for (let i = 0; i < 6; i++) {
-      if (!daysArray[i]) {
-        // Si no hay datos para este día, muestra tarjeta vacía
-        html += `<div class="weather-card${i === 0 ? ' today' : ''}">
-      <div class="weather-header">
-      <div class="weather-day">${dias[i]}</div>
-      <div class="weather-date">${dayKeys[i] || ''}</div>
-      </div>
-      <div class="weather-icon">
-      <i class="fas fa-question" style="color:#ccc;font-size:2.2em"></i>
-      </div>
-      <div class="weather-temp">---</div>
-      <div class="weather-details" style="margin-top:8px">
-      <div class="weather-detail">No hay datos para este día.</div>
-      </div>
-      </div>`;
-        continue;
-      }
-      const day = daysArray[i];
-      const main = day.weather[0].main;
-      const color = iconColors[main] || '#FFD600';
-      html += `<div class="weather-card${i === 0 ? ' today' : ''}">
-      <div class="weather-header">
-      <div class="weather-day">${dias[i]}</div>
-      <div class="weather-date">${dayKeys[i]}</div>
-      </div>
-      <div class="weather-icon">
-      <i class="fas ${iconos[main] || 'fa-sun'}" style="color:${color};font-size:2.2em"></i>
-      </div>
-      <div class="weather-temp" style="font-weight:bold;font-size:1.4em">${Math.round(day.main.temp)}°C</div>
-      <div class="weather-details" style="margin-top:8px">
-      <div class="weather-detail" style="text-transform:capitalize">
-      <i class="fas fa-info-circle"></i>
-      ${day.weather[0].description}
-      </div>
-      <div class="weather-detail">
-      <i class="fas fa-tint"></i>
-      Humedad: ${day.main.humidity}%
-      </div>
-      </div>
-    </div>`;
-      }
-      weatherCards.innerHTML = html;
-      if (volverBtn) volverBtn.style.display = 'none';
-    }
-
-    function renderSelectedDay(dateStr) {
-      const idx = dayKeys.indexOf(dateStr);
-      let html = '';
-      if (idx === -1) {
-      html = `<div class="weather-card">
-      <div class="weather-header">
-      <div class="weather-day">Sin datos</div>
-      <div class="weather-date">${dateStr}</div>
-      </div>
-      <div class="weather-icon">
-      <i class="fas fa-question" style="color:#ccc;font-size:2.2em"></i>
-      </div>
-      <div class="weather-temp">---</div>
-      <div class="weather-details" style="margin-top:8px">
-      <div class="weather-detail">No hay datos para este día.</div>
-      </div>
-      </div>`;
-      } else {
-      const day = daysArray[idx];
-      const main = day.weather[0].main;
-      const color = iconColors[main] || '#FFD600';
-      html = `<div class="weather-card">
-      <div class="weather-header">
-      <div class="weather-day">Seleccionado</div>
-      <div class="weather-date">${dayKeys[idx]}</div>
-      </div>
-      <div class="weather-icon">
-      <i class="fas ${iconos[main] || 'fa-sun'}" style="color:${color};font-size:2.2em"></i>
-      </div>
-      <div class="weather-temp" style="font-weight:bold;font-size:1.4em">${Math.round(day.main.temp)}°C</div>
-      <div class="weather-details" style="margin-top:8px">
-      <div class="weather-detail" style="text-transform:capitalize">
-      <i class="fas fa-info-circle"></i>
-      ${day.weather[0].description}
-      </div>
-      <div class="weather-detail">
-      <i class="fas fa-tint"></i>
-      Humedad: ${day.main.humidity}%
-      </div>
-      </div>
-      </div>`;
-      }
-      weatherCards.innerHTML = html;
-      if (volverBtn) volverBtn.style.display = 'inline-block';
-    }
-
-    function crearBotonVolver() {
-      if (!volverBtn) {
-      volverBtn = document.createElement('button');
-      volverBtn.textContent = 'Volver a la actualidad';
-      volverBtn.className = 'btn btn-warning';
-      volverBtn.style.margin = '12px 0 0 0';
-      volverBtn.onclick = function () {
-        if (datePicker) datePicker.value = '';
-        renderMainCards();
-      };
-      weatherCards.parentNode.insertBefore(volverBtn, weatherCards.nextSibling);
-      }
-      volverBtn.style.display = 'none';
-    }
-
-    if (navigator.geolocation) {
-      if (weatherMsg) weatherMsg.textContent = 'Obteniendo ubicación...';
-      navigator.geolocation.getCurrentPosition(function (position) {
-      const lat = position.coords.latitude;
-      const lon = position.coords.longitude;
-      if (weatherMsg) weatherMsg.textContent = 'Cargando clima...';
-      fetch(`https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric&lang=es`)
-        .then(res => res.json())
-        .then(data => {
-        // Actualizar header con el clima de hoy
-        if (data.list && data.list.length > 0) {
-          const hoy = data.list[0];
-          const temp = Math.round(hoy.main.temp) + '°C';
-          const clima = hoy.weather[0].description.charAt(0).toUpperCase() + hoy.weather[0].description.slice(1);
-          if (headerTemp) headerTemp.textContent = temp;
-          if (headerWeather) headerWeather.textContent = clima;
-        }
-
-        reverseGeocode(lat, lon, function (lugarExacto) {
-          if (lugarExacto) {
-          weatherTitle.textContent = `${lugarExacto}`;
-          } else if (data.city && data.city.name) {
-          weatherTitle.textContent = `${data.city.name}, ${data.city.country}`;
-          } else {
-          weatherTitle.textContent = 'Ubicación desconocida';
-          }
-        });
-
-        if (!data.list || !Array.isArray(data.list)) {
-          if (weatherMsg) weatherMsg.textContent = 'No se pudo obtener el clima.';
-          return;
-        }
-        // Tomar el primer pronóstico de cada día
-        days = {};
-        dayKeys = [];
-        daysArray = [];
-        data.list.forEach(item => {
-          const date = new Date(item.dt * 1000).toISOString().split('T')[0];
-          if (!days[date]) {
-          days[date] = item;
-          dayKeys.push(date);
-          daysArray.push(item);
-          }
-        });
-
-        crearBotonVolver();
-        renderMainCards();
-
-        // Configurar el calendario
-        if (datePicker) {
-          datePicker.min = dayKeys[0];
-          datePicker.max = dayKeys[dayKeys.length - 1];
-          datePicker.value = '';
-          datePicker.onchange = function () {
-          if (datePicker.value) {
-            renderSelectedDay(datePicker.value);
-          } else {
-            renderMainCards();
-          }
-          };
-        }
-        })
-        .catch(() => {
-        if (weatherMsg) weatherMsg.textContent = 'No se pudo obtener el clima.';
-        });
-      }, function () {
-      if (weatherMsg) weatherMsg.textContent = 'No se pudo obtener la ubicación.';
-      });
-    } else {
-      if (weatherMsg) weatherMsg.textContent = 'La geolocalización no está soportada por su navegador.';
-    }
-    });
-  </script>
+  <script src="{{ asset('js/components/home-user/panel-de-control.js') }}"></script>
 @endsection

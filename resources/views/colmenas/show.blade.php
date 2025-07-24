@@ -508,24 +508,30 @@
                     <div class="modal-body">
                         <div class="form-group mb-3">
                             <label for="color_etiqueta" class="form-label">Color etiqueta</label>
-                            <select name="color_etiqueta" id="color_etiqueta" class="form-control mb-2" required>
+                            <select name="color_etiqueta" id="color_etiqueta" class="form-control mb-2">
                                 @php
                                     $colores = [
+                                        '' => 'Sin color',
                                         '#ffc107' => 'Amarillo',
+                                        '#007bff' => 'Azul',
                                         '#28a745' => 'Verde',
                                         '#17a2b8' => 'Celeste',
                                         '#dc3545' => 'Rojo',
                                         '#6f42c1' => 'Morado',
-                                        '#343a40' => 'Negro'
+                                        '#343a40' => 'Negro',
                                     ];
                                 @endphp
-                                <option value="">Selecciona un color predefinido...</option>
+                                <option value="" {{ ($colmena->color_etiqueta === null || $colmena->color_etiqueta === '') ? 'selected' : '' }}>
+                                    Sin color (color por defecto)
+                                </option>
                                 @foreach ($colores as $hex => $nombre)
-                                    <option value="{{ $hex }}" {{ ($colmena->color_etiqueta ?? '') == $hex ? 'selected' : '' }}>
-                                        {{ $nombre }}
-                                    </option>
+                                    @if($hex !== '')
+                                        <option value="{{ $hex }}" {{ ($colmena->color_etiqueta ?? '') == $hex ? 'selected' : '' }}>
+                                            {{ $nombre }}
+                                        </option>
+                                    @endif
                                 @endforeach
-                                <option value="personalizado" {{ (!in_array($colmena->color_etiqueta ?? '', array_keys($colores)) && !empty($colmena->color_etiqueta)) ? 'selected' : '' }}>
+                                <option value="personalizado" {{ (!empty($colmena->color_etiqueta) && !in_array($colmena->color_etiqueta, array_keys($colores))) ? 'selected' : '' }}>
                                     Personalizado
                                 </option>
                             </select>
@@ -541,7 +547,26 @@
                         <!-- Vista previa dinámica del color de la colmena -->
                         <div class="colmena-preview-container mb-3" style="display: flex; justify-content: center;">
                             <div id="colmenaPreview" class="colmena-card"
-                                style="border-color: {{ $colmena->color_etiqueta ?? '#ccc' }}; width: 80px; height: 80px; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: default;">
+                                style="
+                                                background-color:
+                                                    @if($colmena->color_etiqueta)
+                                                        @php
+                                                            $hex = ltrim($colmena->color_etiqueta, '#');
+                                                            if (strlen($hex) === 6) {
+                                                                $r = hexdec(substr($hex, 0, 2));
+                                                                $g = hexdec(substr($hex, 2, 2));
+                                                                $b = hexdec(substr($hex, 4, 2));
+                                                                echo "rgba($r, $g, $b, 0.47)";
+                                                            } else {
+                                                                echo $colmena->color_etiqueta;
+                                                            }
+                                                        @endphp
+                                                    @else
+                                                        transparent
+                                                    @endif
+                                                ;
+                                                border-color: {{ $colmena->color_etiqueta ?? '#ccc' }};
+                                                width: 80px; height: 80px; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: default;">
                                 <div class="colmena-icon" style="font-size: 2rem;">
                                     <i class="fas fa-cube"></i>
                                 </div>
@@ -572,6 +597,18 @@
         document.getElementById('color_etiqueta').addEventListener('change', toggleColorPersonalizado);
         window.addEventListener('DOMContentLoaded', toggleColorPersonalizado);
 
+        function hexToRgba(hex, alpha = 0.47) {
+            hex = hex.replace('#', '');
+            if (hex.length === 3) {
+                hex = hex.split('').map(h => h + h).join('');
+            }
+            if (hex.length !== 6) return hex;
+            const r = parseInt(hex.substring(0, 2), 16);
+            const g = parseInt(hex.substring(2, 4), 16);
+            const b = parseInt(hex.substring(4, 6), 16);
+            return `rgba(${r},${g},${b},${alpha})`;
+        }
+
         function updateColmenaPreview() {
             const select = document.getElementById('color_etiqueta');
             const colorInput = document.getElementById('color_personalizado');
@@ -581,10 +618,17 @@
             if (color === 'personalizado' && colorInput) {
                 color = colorInput.value;
             }
+            // Si no hay color seleccionado, muestra el color original y borde gris
             if (!color || color === '') {
-                color = '#ccc';
+                preview.style.backgroundColor = 'transparent';
+                preview.style.borderColor = '#ccc';
+            } else if (color.startsWith('#')) {
+                preview.style.backgroundColor = hexToRgba(color, 0.47);
+                preview.style.borderColor = color;
+            } else {
+                preview.style.backgroundColor = color;
+                preview.style.borderColor = color;
             }
-            preview.style.borderColor = color;
         }
 
         document.getElementById('color_etiqueta').addEventListener('change', function () {

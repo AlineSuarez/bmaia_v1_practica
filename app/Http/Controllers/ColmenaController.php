@@ -427,8 +427,13 @@ class ColmenaController extends Controller
             ? $request->color_personalizado
             : $request->color_etiqueta;
 
+        // Si el color es vacío, lo guardamos como null
+        if ($color === '') {
+            $color = null;
+        }
+
         $request->validate([
-            'color_etiqueta' => 'required|string',
+            'color_etiqueta' => 'nullable|string',
             'color_personalizado' => 'nullable|string',
         ]);
 

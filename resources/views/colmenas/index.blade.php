@@ -66,9 +66,26 @@
                                         'apiario' => $apiario->id,
                                         'colmena' => $colmena->id,
                                     ]);
+                                    $color = $colmena->color_etiqueta ?? 'transparent'; // Color por defecto
+                                    // Si el color es muy fuerte, puedes agregar transparencia
+                                    if ($colmena->color_etiqueta) {
+                                        // Ejemplo: convertir hex a rgba con opacidad 0.47
+                                        $hex = ltrim($colmena->color_etiqueta, '#');
+                                        if (strlen($hex) === 6) {
+                                            $r = hexdec(substr($hex, 0, 2));
+                                            $g = hexdec(substr($hex, 2, 2));
+                                            $b = hexdec(substr($hex, 4, 2));
+                                            $color = "rgba($r, $g, $b, 0.47)";
+                                        } else {
+                                            $color = $colmena->color_etiqueta;
+                                        }
+                                    } else {
+                                        $color = 'transparent';
+                                    }
                                 @endphp
 
-                                <div class="colmena-card" style="border-color: {{ $colmena->color_etiqueta }};"
+                                <div class="colmena-card"
+                                    style="background-color: {{ $color }}; border-color: {{ $colmena->color_etiqueta ?? '#70707045' }}; --colmena-color: {{ $colmena->color_etiqueta ?? '#f5f5f5' }};"
                                     onclick="window.location='{{ $url }}'"
                                     data-tooltip="<img src='https://api.qrserver.com/v1/create-qr-code/?data={{ urlencode($url) }}&size=100x100'>">
                                     <div class="colmena-icon">
