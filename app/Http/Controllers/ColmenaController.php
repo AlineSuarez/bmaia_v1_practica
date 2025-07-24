@@ -125,20 +125,27 @@ class ColmenaController extends Controller
 
         // La fecha más reciente entre todas las tablas
         $lastFecha = collect([
-            optional($pcc1)->fecha      ?? optional($pcc1)->created_at,
-            optional($pcc2)->fecha      ?? optional($pcc2)->created_at,
-            optional($pcc3)->fecha      ?? optional($pcc3)->created_at,
-            optional($pcc4)->fecha      ?? optional($pcc4)->created_at,
-            optional($pcc5)->fecha      ?? optional($pcc5)->created_at,
-            optional($pcc6)->fecha      ?? optional($pcc6)->created_at,
-            optional($pcc7)->fecha      ?? optional($pcc7)->created_at,
+            optional($pcc1)->fecha ?? optional($pcc1)->created_at,
+            optional($pcc2)->fecha ?? optional($pcc2)->created_at,
+            optional($pcc3)->fecha ?? optional($pcc3)->created_at,
+            optional($pcc4)->fecha ?? optional($pcc4)->created_at,
+            optional($pcc5)->fecha ?? optional($pcc5)->created_at,
+            optional($pcc6)->fecha ?? optional($pcc6)->created_at,
+            optional($pcc7)->fecha ?? optional($pcc7)->created_at,
         ])->filter()->max();
 
         return view('colmenas.show', compact(
             'apiario',
             'colmena',
-            'pcc1','pcc2','pcc3','pcc4','pcc5','pcc6','pcc7',
-            'pccCount','lastFecha'
+            'pcc1',
+            'pcc2',
+            'pcc3',
+            'pcc4',
+            'pcc5',
+            'pcc6',
+            'pcc7',
+            'pccCount',
+            'lastFecha'
         ));
     }
 
@@ -318,23 +325,30 @@ class ColmenaController extends Controller
         $pccCount = collect([$pcc1, $pcc2, $pcc3, $pcc4, $pcc5, $pcc6, $pcc7])
             ->filter()
             ->count();
-        
+
         // La fecha más reciente entre todas las tablas
         $lastFecha = collect([
-            optional($pcc1)->fecha      ?? optional($pcc1)->created_at,
-            optional($pcc2)->fecha      ?? optional($pcc2)->created_at,
-            optional($pcc3)->fecha      ?? optional($pcc3)->created_at,
-            optional($pcc4)->fecha      ?? optional($pcc4)->created_at,
-            optional($pcc5)->fecha      ?? optional($pcc5)->created_at,
-            optional($pcc6)->fecha      ?? optional($pcc6)->created_at,
-            optional($pcc7)->fecha      ?? optional($pcc7)->created_at,
+            optional($pcc1)->fecha ?? optional($pcc1)->created_at,
+            optional($pcc2)->fecha ?? optional($pcc2)->created_at,
+            optional($pcc3)->fecha ?? optional($pcc3)->created_at,
+            optional($pcc4)->fecha ?? optional($pcc4)->created_at,
+            optional($pcc5)->fecha ?? optional($pcc5)->created_at,
+            optional($pcc6)->fecha ?? optional($pcc6)->created_at,
+            optional($pcc7)->fecha ?? optional($pcc7)->created_at,
         ])->filter()->max();
 
         return view('colmenas.public', compact(
             'colmena',
             'apiario',
-            'pcc1', 'pcc2', 'pcc3', 'pcc4', 'pcc5', 'pcc6', 'pcc7',
-            'pccCount', 'lastFecha'
+            'pcc1',
+            'pcc2',
+            'pcc3',
+            'pcc4',
+            'pcc5',
+            'pcc6',
+            'pcc7',
+            'pccCount',
+            'lastFecha'
         ));
     }
 
@@ -349,10 +363,11 @@ class ColmenaController extends Controller
         // 2) Agrupo por el nombre de su apiario de origen
         $colmenasPorOrigen = $movimientos
             ->groupBy(fn($mov) => $mov->apiarioOrigen?->nombre ?? 'Sin especificar')
-            ->map(fn($grupo) => $grupo
-                ->pluck('colmena')
-                ->sortBy('numero')
-                ->values()
+            ->map(
+                fn($grupo) => $grupo
+                    ->pluck('colmena')
+                    ->sortBy('numero')
+                    ->values()
             );
 
         return view('colmenas.historicas', compact('apiario', 'colmenasPorOrigen'));
@@ -400,7 +415,7 @@ class ColmenaController extends Controller
 
         $colmenas = $movimientos
             ->groupBy(fn($mov) => $mov->colmena->id)
-            ->map(function($movs){
+            ->map(function ($movs) {
                 $col = $movs->first()->colmena;
                 $col->movimientos = $movs;
                 return $col;
@@ -435,6 +450,25 @@ class ColmenaController extends Controller
 
         $filename = "historial_apiario_{$apiario->nombre}_" . now()->format('Y-m-d') . ".pdf";
         return $pdf->download($filename);
+    }
+
+    public function updateColor(Request $request, $apiarioId, $colmenaId)
+    {
+        $color = $request->color_etiqueta === 'personalizado'
+            ? $request->color_personalizado
+            : $request->color_etiqueta;
+
+        $request->validate([
+            'color_etiqueta' => 'required|string',
+            'color_personalizado' => 'nullable|string',
+        ]);
+
+        $colmena = Colmena::findOrFail($colmenaId);
+        $colmena->color_etiqueta = $color;
+        $colmena->save();
+
+        return redirect()->route('colmenas.show', [$apiarioId, $colmenaId])
+            ->with('success', 'Color actualizado correctamente');
     }
 
 }

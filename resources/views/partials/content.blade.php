@@ -421,19 +421,11 @@
                   <div class="ipad-screen">
                     <video class="feature-video" autoplay loop muted playsinline
                       poster="https://files.cdn-files-a.com/uploads/10098964/800_6761de379c2f5-thumbnail.jpg">
-                      <source type="video/mp4" src="/img/simple.mp4">
+                      <source type="video/mp4" src="/img/Bee.mp4">
                     </video>
                   </div>
                 </div>
               </div>
-              <!-- <div class="smartphone-frame">
-                <div class="smartphone-screen">
-                  <video class="feature-video" autoplay loop muted playsinline
-                    poster="https://files.cdn-files-a.com/uploads/10098964/800_6761de379c2f5-thumbnail.jpg">
-                    <source type="video/mp4" src="/img/simple.mp4">
-                  </video>
-                </div>
-              </div> -->
             </div>
             <div class="glow-effect glow-effect-efficiency"></div>
             <!-- Enhanced decorative elements -->

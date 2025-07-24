@@ -11,9 +11,6 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
     </head>
 
-    <!-- ============================================================
-                     DISEÑO MINIMALISTA FULL-WIDTH CON SISTEMA DE TARJETAS
-                     ============================================================ -->
     <div class="apiarios-container">
 
         <!-- Header Principal Minimalista -->
