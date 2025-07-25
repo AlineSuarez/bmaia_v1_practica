@@ -20,31 +20,48 @@ class TaskController extends Controller
 
     public function index()
     {
-        // Obtener el usuario autenticado
         $user = Auth::user();
 
-        // Obtener solo las subtareas que pertenecen al usuario autenticado
-        $subtareas = SubTarea::where('user_id', $user->id)->get();
+        // Si no existen subtareas para el usuario, insertar tareas predefinidas automáticamente
+        if (SubTarea::where('user_id', $user->id)->count() === 0) {
+            $predefinidas = TareasPredefinidas::all();
 
-        // FILTRA LOS NULOS AQUÍ
-        $subtareas = $subtareas->filter();
+            foreach ($predefinidas as $tarea) {
+                SubTarea::create([
+                    'tarea_general_id' => $tarea->tarea_general_id,
+                    'user_id' => $user->id,
+                    'nombre' => $tarea->nombre,
+                    'fecha_inicio' => $tarea->fecha_inicio ?? now(),
+                    'fecha_limite' => $tarea->fecha_limite ?? now()->addDays(7),
+                    'prioridad' => $tarea->prioridad ?? 'media',
+                    'estado' => 'Pendiente',
+                    'archivada' => false,
+                ]);
+            }
+        }
 
-        // Obtener los ids de las TareasGenerales asociadas a las subtareas
+        // Mostrar solo tareas NO archivadas
+        $subtareas = SubTarea::where('user_id', $user->id)
+            ->where('archivada', false)
+            ->get()
+            ->filter();
+
         $tareasGeneralesIds = $subtareas->pluck('tarea_general_id')->unique();
+
         $listaEtapa = TareaGeneral::with('predefinidas')
-            ->has('predefinidas') // Solo etapas con tareas predefinidas asociadas
+            ->has('predefinidas')
             ->get();
-        // Obtener las TareasGenerales correspondientes a las subtareas
+
         $tareasGenerales = TareaGeneral::whereIn('id', $tareasGeneralesIds)
             ->with([
                 'subtareas' => function ($query) use ($user) {
-                    $query->where('user_id', $user->id); // Cargar solo las subtareas del usuario
+                    $query->where('user_id', $user->id)->where('archivada', false);
                 }
             ])
             ->get();
-        // Obtener los apiarios del usuario autenticado
-        $apiarios = $user->apiarios; // Asumiendo que la relación está definida en el modelo User
-        // Formatear fechas en TareasGenerales y Subtareas
+
+        $apiarios = $user->apiarios;
+
         $tareasGenerales->each(function ($tarea) {
             if ($tarea->fecha_inicio) {
                 $tarea->fecha_inicio_formatted = Carbon::parse($tarea->fecha_inicio)->format('d-m-Y');
@@ -52,7 +69,6 @@ class TaskController extends Controller
             if ($tarea->fecha_fin) {
                 $tarea->fecha_fin_formatted = Carbon::parse($tarea->fecha_fin)->format('d-m-Y');
             }
-            // Formatear fechas en cada subtarea
             $tarea->subtareas->each(function ($subtarea) {
                 if ($subtarea->fecha_inicio) {
                     $subtarea->fecha_inicio_formatted = Carbon::parse($subtarea->fecha_inicio)->format('d-m-Y');
@@ -62,8 +78,37 @@ class TaskController extends Controller
                 }
             });
         });
-        // Devolver la vista con los datos
+
         return view('tareas.index', compact('subtareas', 'tareasGenerales', 'apiarios', 'listaEtapa'));
+    }
+
+    public function archivar($id)
+    {
+        $tarea = SubTarea::findOrFail($id);
+        $tarea->archivada = true;
+        $tarea->save();
+
+        return redirect()->route('tareas')->with('success', 'Tarea archivada correctamente.');
+    }
+
+    public function restaurar($id)
+    {
+        $tarea = SubTarea::findOrFail($id);
+        $tarea->archivada = false;
+        $tarea->save();
+
+        return redirect()->route('tareas')->with('success', 'Tarea restaurada correctamente.');
+    }
+
+    public function verArchivadas()
+    {
+        $user = Auth::user();
+
+        $tareasArchivadas = SubTarea::where('user_id', $user->id)
+                                ->where('archivada', true)
+                                ->get();
+
+        return view('tareas.archivadas', compact('tareasArchivadas'));
     }
 
     public function loadView($view)

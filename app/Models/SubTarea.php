@@ -52,4 +52,15 @@ class SubTarea extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function scopeActivas($query)
+    {
+        return $query->where('archivada', false);
+    }
+
+    public function scopeArchivadas($query)
+    {
+        return $query->where('archivada', true);
+    }
+
 }

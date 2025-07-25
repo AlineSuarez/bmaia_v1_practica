@@ -223,6 +223,12 @@ Route::get('apiarios/{apiario}/visitas', [VisitaController::class, 'showHistoria
 Route::get('/tareas/json', [TaskController::class, 'obtenerEventosJson'])->name('tareas.json');
 
 // Rutas para tareas
+
+Route::post('/tareas/{id}/archivar', [TaskController::class, 'archivar'])->name('tareas.archivar');
+Route::post('/tareas/restaurar/{id}', [TaskController::class, 'restaurar'])->name('tareas.restaurar');
+Route::get('/tareas/archivadas', [TaskController::class, 'verArchivadas'])->name('tareas.archivadas');
+
+
 Route::delete('/tareas/{id}', [TaskController::class, 'destroy'])->name('tareas.destroy');
 Route::get('/tareas', [TaskController::class, 'index'])->name('tareas');
 Route::post('/tareas', [TaskController::class, 'store'])->name('tareas.store');

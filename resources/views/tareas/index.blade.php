@@ -48,6 +48,9 @@
                         title="Crear tareas personalizadas">
                         <i class="fa fa-plus-circle"></i> Crear Tareas
                     </button>
+                    <a href="{{ route('tareas.archivadas') }}" class="btn btn-secondary">
+                        <i class="fa fa-archive"></i> Ver Archivadas
+                    </a>
                 </div>
             </section>
 
