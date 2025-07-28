@@ -74,7 +74,8 @@ Route::middleware(['auth'])->group(function () {
         ];
         return redirect()->route($routes[$default] ?? 'dashboard');
     })->middleware(['auth']);
-
+// web.php
+Route::get('/apiarios-temporales/{apiario}/detalle-movimiento', [ApiarioController::class, 'detalleMovimiento']);
     Route::get('/apiarios/create-temporal', [ApiarioController::class, 'createTemporal'])->name('apiarios.createTemporal');
     Route::resource('apiarios', ApiarioController::class);
 
@@ -238,7 +239,7 @@ Route::patch('/tareas/{id}/update-status', [TaskController::class, 'updateStatus
 Route::get('/tareas/{id}', [TaskController::class, 'show'])->name('tareas.show');
 Route::post('/tareas/update/{id}', [TaskController::class, 'guardarCambios']);
 Route::patch('/tareas/{id}/update', [TaskController::class, 'updateTarea']);
-Route::get('/todas-las-tareas/imprimir', [TaskController::class, 'imprimirTodas'])->name('tareas.imprimirTodas');
+Route::get('/todas-las-tareas/imprimir', [DocumentController::class, 'imprimirTodasSubtareas'])->name('tareas.imprimirTodas');
 Route::get('/datos-subtareas', [TaskController::class, 'obtenerSubtareasJson'])->name('tareas.datos');
 
 // 1) Pantalla del calendario

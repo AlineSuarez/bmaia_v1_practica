@@ -8,7 +8,7 @@ use App\Models\Apiario;
 use App\Models\Comuna;
 use App\Models\Region;
 use Illuminate\Support\Facades\Auth;
-
+use App\Models\MovimientoColmena;
 
 class ApiarioController extends Controller
 {
@@ -341,5 +341,30 @@ class ApiarioController extends Controller
         $apiario->delete();
 
         return redirect()->route('apiarios.index')->with('success', 'Apiario eliminado con éxito');
+    }
+
+    public function detalleMovimiento(Apiario $apiario)
+    {
+        $movimientos = MovimientoColmena::where('apiario_destino_id', $apiario->id)
+            ->orWhere('apiario_origen_id', $apiario->id)
+            ->with(['apiarioOrigen', 'colmena'])
+            ->orderByDesc('fecha_movimiento')
+            ->get();
+
+        $colmenas = $movimientos
+            ->groupBy(fn($mov) => $mov->colmena->id)
+            ->map(function ($movs) {
+                $col = $movs->first()->colmena;
+                $col->movimientos_list = $movs;
+                return $col;
+            })
+            ->sortBy('numero')
+            ->values();
+
+        $colmenasPorOrigen = $colmenas->groupBy(fn($col) => optional($col->movimientos_list->first()->apiarioOrigen)->nombre ?? 'Sin origen');
+
+        $mov = $movimientos->first();
+
+        return view('apiarios.detalle-movimiento', compact('apiario', 'mov', 'colmenasPorOrigen'));
     }
 }

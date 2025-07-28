@@ -380,12 +380,6 @@ class TaskController extends Controller
         return response()->json($tareas);
     }
 
-    public function imprimirTodas()
-    {
-        $subtareas = SubTarea::with('tareaGeneral')->get(); // o tu relación correcta
-        return view('tareas.imprimir-todas', compact('subtareas'));
-    }
-
     public function storeAjax(Request $request)
     {
         $request->validate([

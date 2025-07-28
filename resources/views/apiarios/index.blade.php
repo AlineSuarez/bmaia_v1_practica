@@ -509,6 +509,7 @@
                                                         class="action-icon view" title="Ver Colmenas">
                                                         <i class="fas fa-cubes"></i>
                                                     </a>
+<!--       
                                                     <a href="{{ route('colmenas.historicas.export', $apiario->id) }}"
                                                             class="action-icon download"
                                                             title="Exportar historial de todas las colmenas">
@@ -517,7 +518,11 @@
                                                     <a href="{{ route('generate.document', $apiario->id) }}"
                                                         class="action-icon download" title="Descargar Detalle del Apiario">
                                                         <i class="fas fa-download"></i>
-                                                    </a>
+                                                    </a>                                                    
+-->
+                                                    <button type="button" class="btn btn-sm btn-primary" title="Opciones Detalle Movimiento" data-bs-toggle="modal" data-bs-target="#modalOpcionesApiario" data-id="{{ $apiario->id }}">
+                                                        <i class="fas fa-cogs me-1"></i>
+                                                    </button>
                                                 </div>
                                             </td>
                                         </tr>
@@ -633,7 +638,7 @@
                                                             class="action-icon view" title="Ver Colmenas Historicas">
                                                             <i class="fas fa-cubes"></i>
                                                         </a>
-                                                        <a href="{{ route('colmenas.historicas.export', $apiario->id) }}"
+                                                        <!-- <a href="{{ route('colmenas.historicas.export', $apiario->id) }}"
                                                             class="action-icon download"
                                                             title="Exportar historial de todas las colmenas">
                                                             <i class="fas fa-file-alt"></i>
@@ -641,6 +646,10 @@
                                                         <a href="{{ route('generate.document', $apiario->id) }}"
                                                         class="action-icon download" title="Descargar Detalle del Apiario">
                                                         <i class="fas fa-download"></i>
+                                                        -->
+                                                        <button type="button" class="btn btn-sm btn-primary" title="Opciones Detalle Movimiento" data-bs-toggle="modal" data-bs-target="#modalOpcionesApiario" data-id="{{ $apiario->id }}">
+                                                            <i class="fas fa-cogs me-1"></i>
+                                                        </button>
                                                     </a>
                                                     </div>
                                                 </td>
@@ -893,6 +902,52 @@
         </div>
     </div>
 
+    <!-- Modal de Opciones -->
+    <div class="modal fade" id="modalOpcionesApiario" tabindex="-1" aria-labelledby="modalOpcionesApiarioLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalOpcionesApiarioLabel">Opciones del Movimiento</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <p>¿Qué deseas hacer con este apiario?</p>
+                    <button type="button" class="btn btn-sm btn-outline-info" title="Ver Detalle Movimiento" data-bs-toggle="modal" data-bs-target="#detalleMovimientoModal" data-id="{{ $apiario->id }}">
+                        <i class="fas fa-route"></i> 
+                    </button>
+                    
+                    <a href="{{ route('colmenas.historicas.export', $apiario->id) }}"
+                        class="action-icon download"
+                        title="Exportar historial de todas las colmenas">
+                        <i class="fas fa-file-alt"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Detalle Movimiento Apiario Temporal -->
+    <div class="modal fade" id="detalleMovimientoModal" tabindex="-1" aria-labelledby="detalleMovimientoModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content modern-modal">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="detalleMovimientoModalLabel">
+                    <i class="fas fa-route"></i> Detalle del Movimiento
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="detalleMovimientoContent">
+                    <!-- Contenido se rellena vía AJAX o inyectado desde Blade si se pre-renderiza -->
+                    <div class="loading-spinner text-center">
+                        <i class="fas fa-spinner fa-spin fa-2x"></i>
+                        <p>Cargando detalles del movimiento...</p>
+                    </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
 
 @section('optional-scripts')
@@ -902,4 +957,48 @@
         window.csrfToken = "{{ csrf_token() }}";
     </script>
     <script src="{{ asset('js/components/home-user/apiarios.js') }}"></script>
+    <script>
+        const baseVerDetalle = "{{ url('/apiarios-temporales') }}/";
+        const baseDescargarDoc = "{{ route('generate.document', ['id' => '__ID__']) }}";
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const modal = document.getElementById('modalOpcionesApiario');
+            modal.addEventListener('show.bs.modal', function (event) {
+                const button = event.relatedTarget;
+                const apiarioId = button.getAttribute('data-id');
+
+                // Enlazar dinámicamente
+                document.getElementById('btn-ver-detalle').href = baseVerDetalle + apiarioId;
+                document.getElementById('btn-descargar-doc').href = baseDescargarDoc.replace('__ID__', apiarioId);
+            });
+        });
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const modalDetalle = document.getElementById('detalleMovimientoModal');
+            modalDetalle.addEventListener('show.bs.modal', function (event) {
+                const button = event.relatedTarget;
+                const apiarioId = button.getAttribute('data-id');
+                const contentDiv = document.getElementById('detalleMovimientoContent');
+
+                contentDiv.innerHTML = `
+                    <div class="loading-spinner text-center">
+                        <i class="fas fa-spinner fa-spin fa-2x"></i>
+                        <p>Cargando detalles del movimiento...</p>
+                    </div>
+                `;
+
+                fetch(`/apiarios-temporales/${apiarioId}/detalle-movimiento`)
+                    .then(response => response.text())
+                    .then(html => {
+                        contentDiv.innerHTML = html;
+                    })
+                    .catch(error => {
+                        contentDiv.innerHTML = `<div class="alert alert-danger">Error al cargar detalle.</div>`;
+                    });
+            });
+        });
+    </script>
+
+
 @endsection

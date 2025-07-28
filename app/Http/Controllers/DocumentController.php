@@ -12,6 +12,7 @@ use App\Models\Comuna;
 use App\Models\Region;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
+use App\Models\SubTarea;
 
 class DocumentController extends Controller
 {
@@ -529,6 +530,24 @@ class DocumentController extends Controller
         $filename = "qr_colmena_{$colmena->numero}_{$apiario->nombre}.pdf";
         // Descargar el archivo PDF
         return $pdf->download($filename);
+    }
+
+    public function imprimirTodasSubtareas()
+    {
+        $subtareas = SubTarea::with('tareaGeneral')
+            ->where('archivada', false)
+            ->get();
+
+        $pdf = Pdf::loadView('documents.tareas-todas', compact('subtareas'));
+        $pdf->setPaper('A4', 'portrait');
+        $pdf->setOptions([
+            'isHtml5ParserEnabled' => true,
+            'isPhpEnabled' => false,
+            'defaultFont' => 'DejaVu Sans',
+            'enable_remote' => false,
+        ]);
+
+        return $pdf->download('Tareas_Activas.pdf');
     }
 
 }

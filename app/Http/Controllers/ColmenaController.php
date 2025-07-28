@@ -374,6 +374,7 @@ class ColmenaController extends Controller
         return view('colmenas.historicas', compact('apiario', 'colmenasPorOrigen'));
     }
 
+    /*
     public function exportHistoricas(Apiario $apiario)
     {
         $movimientos = MovimientoColmena::where('apiario_destino_id', $apiario->id)
@@ -420,6 +421,124 @@ class ColmenaController extends Controller
         $filename = "historial_apiario_{$apiario->nombre}_" . now()->format('Y-m-d') . ".pdf";
         return $pdf->download($filename);
     }
+    */
+    private function getBeekeeperData()
+        {
+            $user = Auth::user();
+
+            // Convertir firma a base64 (con o sin GD)
+            $firmaBase64 = null;
+            if ($user->firma) {
+                $firmaPath = storage_path('app/public/firmas/' . $user->firma);
+                $firmaBase64 = $this->prepareImageForPdf($firmaPath);
+            }
+
+            return [
+                'legal_representative' => $user->name,
+                'last_name' => $user->last_name ?? '',
+                'registration_number' => $user->numero_registro ?? '',
+                'email' => $user->email,
+                'rut' => $user->rut ?? '',
+                'phone' => $user->telefono ?? '',
+                'address' => $user->direccion ?? '',
+                'region' => optional($user->region)->nombre ?? '',
+                'commune' => optional($user->comuna)->nombre ?? '',
+                'firma' => $user->firma ?? '',
+                'firma_base64' => $firmaBase64,
+            ];
+        }
+
+    private function getApiaryData(Apiario $apiario)
+    {
+        $comuna = $apiario->comuna;
+
+        $fotoBase64 = null;
+        if ($apiario->foto) {
+            $fotoPath = storage_path('app/public/' . $apiario->foto);
+            if (file_exists($fotoPath)) {
+                try {
+                    $mimeType = mime_content_type($fotoPath);
+                    $allowedMimes = ['image/jpeg', 'image/jpg', 'image/gif'];
+                    if (in_array($mimeType, $allowedMimes)) {
+                        $imageData = file_get_contents($fotoPath);
+                        $fotoBase64 = 'data:' . $mimeType . ';base64,' . base64_encode($imageData);
+                    }
+                } catch (\Exception $e) {}
+            }
+        }
+
+        return [
+            'apiary_name' => $apiario->nombre,
+            'apiary_number' => '#00' . $apiario->id,
+            'activity' => $apiario->objetivo_produccion ?? $apiario->actividad ?? '',
+            'installation_date' => $apiario->temporada_produccion ?? '',
+            'utm_x' => optional($comuna)->utm_x ?? '',
+            'utm_y' => optional($comuna)->utm_y ?? '',
+            'utm_huso' => optional($comuna)->utm_huso ?? '',
+            'latitude' => $apiario->latitud ?? '',
+            'longitude' => $apiario->longitud ?? '',
+            'nomadic' => $apiario->trashumante ? 'Sí' : 'No',
+            'hive_count' => $apiario->num_colmenas ?? '',
+            'foto' => $apiario->foto ?? '',
+            'foto_base64' => $fotoBase64,
+        ];
+    }
+
+    public function exportHistoricas(Apiario $apiario)
+    {
+        $movimientos = MovimientoColmena::where('apiario_destino_id', $apiario->id)
+            ->orWhere('apiario_origen_id', $apiario->id)
+            ->with(['apiarioOrigen', 'apiarioDestino', 'colmena'])
+            ->orderByDesc('fecha_movimiento')
+            ->get();
+
+        $colmenas = $movimientos
+            ->groupBy(fn($mov) => $mov->colmena->id)
+            ->map(function ($movs) {
+                $col = $movs->first()->colmena;
+                $col->movimientos_list = $movs;
+                return $col;
+            })
+            ->sortBy('numero')
+            ->values();
+
+        $mov = $movimientos->first();
+
+        // ✅ Datos del apiario (ubicación, número, tipo, foto, etc.)
+        $apiarioData = $this->getApiaryData($apiario);
+
+        // ✅ Datos del apicultor (nombre, rut, firma, comuna, etc.)
+        $beekeeper = $this->getBeekeeperData();
+
+        // ✅ Render del PDF
+        $pdf = Pdf::loadView('documents.historial-apiario', [
+            'apiario' => $apiario,
+            'colmenas' => $colmenas,
+            'fechaGeneracion' => now()->format('d/m/Y H:i'),
+
+            // Datos del movimiento
+            'tipo_movimiento' => $mov->tipo_movimiento ?? 'traslado',
+            'fecha_inicio_mov' => $mov->fecha_inicio_mov ?? $mov->fecha_movimiento,
+            'fecha_termino_mov' => $mov->fecha_termino_mov ?? $mov->fecha_movimiento,
+            'motivo_movimiento' => $mov->motivo_movimiento ?? null,
+            'transportista' => $mov->transportista ?? '—',
+            'vehiculo' => $mov->vehiculo ?? '—',
+            'cultivo' => $mov->cultivo ?? null,
+            'periodo_floracion' => $mov->periodo_floracion ?? null,
+            'hectareas' => $mov->hectareas ?? null,
+            'region_destino' => optional($apiario->comuna->region)->nombre ?? '—',
+            'comuna_destino' => optional($apiario->comuna)->nombre ?? '—',
+            'coordenadas_destino' => $apiario->latitud . ', ' . $apiario->longitud,
+
+            // Datos del apiario y del apicultor
+            'apiarioData' => $apiarioData,
+            'beekeeper' => $beekeeper,
+        ]);
+
+        $filename = "historial_apiario_{$apiario->nombre}_" . now()->format('Y-m-d') . ".pdf";
+        return $pdf->download($filename);
+    }
+
 
     public function updateColor(Request $request, $apiarioId, $colmenaId)
     {
