@@ -259,11 +259,7 @@
                     @endphp
                     @if($firmaBase64)
                         <img src="{{ $firmaBase64 }}" alt="Firma" style="max-height:55px; max-width:230px;">
-                    @else
-                        <span style="color: #666; font-style: italic; font-size: 8px;">(Firma no disponible)</span>
                     @endif
-                @else
-                    <span style="color: #666; font-style: italic; font-size: 8px;">(Firma no disponible)</span>
                 @endif
             </div>
             <div class="signature-info">

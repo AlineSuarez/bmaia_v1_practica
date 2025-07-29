@@ -1808,7 +1808,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
 // MODAL OPCIONES APIARIO: ENLACES DINÁMICOS
 document.addEventListener("DOMContentLoaded", () => {
-    const baseDescargarDoc = "/generate-document/__ID__";
+    // Cambia la URL base a la ruta correcta de exportación
+    const baseDescargarDoc = "/apiarios/__ID__/colmenas/historicas/export";
 
     // Cuando se abre el modal de opciones
     const modal = document.getElementById("modalOpcionesApiario");
@@ -1819,7 +1820,9 @@ document.addEventListener("DOMContentLoaded", () => {
             if (!apiarioId) return;
 
             // Enlazar dinámicamente los botones
-            const btnVerDetalle = document.getElementById("btnVerDetalleMovimiento");
+            const btnVerDetalle = document.getElementById(
+                "btnVerDetalleMovimiento"
+            );
             if (btnVerDetalle) {
                 btnVerDetalle.onclick = function () {
                     openDetalleMovimientoModal(apiarioId);
@@ -1827,7 +1830,11 @@ document.addEventListener("DOMContentLoaded", () => {
             }
             const btnExportar = document.getElementById("btnExportarHistorial");
             if (btnExportar) {
-                btnExportar.href = baseDescargarDoc.replace("__ID__", apiarioId);
+                // Asigna la ruta correcta al href
+                btnExportar.href = baseDescargarDoc.replace(
+                    "__ID__",
+                    apiarioId
+                );
             }
         });
     }
