@@ -33,7 +33,8 @@
                 </div>
             </div>
             <div class="header-actions">
-                <button id="showArchivedButton" class="action-btn secondary" data-bs-toggle="modal" data-bs-target="#archivedModal">
+                <button id="showArchivedButton" class="action-btn secondary" data-bs-toggle="modal"
+                    data-bs-target="#archivedModal">
                     <i class="fas fa-archive"></i>
                     <span>Archivados ({{ $apiariosArchivados->count() }})</span>
                 </button>
@@ -75,8 +76,8 @@
         <main class="content-area" id="apiariosTabContent">
 
             <!-- ============================================================
-                             PESTAÑA APIARIOS FIJOS - CON SISTEMA DE TARJETAS
-                             ============================================================ -->
+                                                    PESTAÑA APIARIOS FIJOS - CON SISTEMA DE TARJETAS
+                                                    ============================================================ -->
             <section class="tab-pane active" id="fijos" role="tabpanel" aria-labelledby="fijos-tab">
 
                 <div class="section-toolbar">
@@ -90,8 +91,8 @@
                     <div class="toolbar-right">
                         <!-- EL SWITCH SE AÑADE AUTOMÁTICAMENTE VÍA JAVASCRIPT -->
                         <a href="{{ route('apiarios.create', ['tipo' => 'fijo']) }}" class="action-btn primary">
-                        <i class="fas fa-plus"></i>
-                        <span>Nuevo Apiario Fijo</span>
+                            <i class="fas fa-plus"></i>
+                            <span>Nuevo Apiario Fijo</span>
                         </a>
                     </div>
                 </div>
@@ -227,8 +228,8 @@
             </section>
 
             <!-- ============================================================
-                             PESTAÑA TRASHUMANCIA - CON SISTEMA DE TARJETAS
-                             ============================================================ -->
+                    PESTAÑA TRASHUMANCIA - CON SISTEMA DE TARJETAS
+            ============================================================ -->
             <section class="tab-pane" id="trashumantes" role="tabpanel" aria-labelledby="trashumantes-tab">
 
                 <!-- Sección Apiarios Base -->
@@ -376,7 +377,6 @@
                             </div>
                         </div>
 
-                        <!-- CONTENEDOR DE TARJETAS (SE CREA AUTOMÁTICAMENTE VÍA JAVASCRIPT) -->
                         <!-- Las tarjetas se generan dinámicamente desde los datos de la tabla -->
 
                     @else
@@ -444,8 +444,8 @@
                                 <tbody>
                                     @forelse($apiariosTemporales as $apiario)
                                         @php
-    $mov = $apiario->ultimoMovimientoDestino;
-    $apiarioOrigen = $mov ? $mov->apiarioOrigen : null;
+                                            $mov = $apiario->ultimoMovimientoDestino;
+                                            $apiarioOrigen = $mov ? $mov->apiarioOrigen : null;
                                         @endphp
                                         <tr>
                                             <td>
@@ -501,28 +501,29 @@
                                             <td>
                                                 <div class="action-group">
                                                     <a href="{{ route('apiarios.editTemporal', $apiario->id) }}"
-                                                        class="action-icon edit"
-                                                        title="Editar Apiario Temporal">
+                                                        class="action-icon edit" title="Editar Apiario Temporal">
                                                         <i class="fas fa-edit"></i>
                                                     </a>
                                                     <a href="{{ route('colmenas.index', $apiario->id) }}"
                                                         class="action-icon view" title="Ver Colmenas">
                                                         <i class="fas fa-cubes"></i>
                                                     </a>
-<!--       
-                                                    <a href="{{ route('colmenas.historicas.export', $apiario->id) }}"
-                                                            class="action-icon download"
-                                                            title="Exportar historial de todas las colmenas">
-                                                            <i class="fas fa-file-alt"></i>
-                                                        </a>
-                                                    <a href="{{ route('generate.document', $apiario->id) }}"
-                                                        class="action-icon download" title="Descargar Detalle del Apiario">
-                                                        <i class="fas fa-download"></i>
-                                                    </a>                                                    
--->
-                                                    <button type="button" class="btn btn-sm btn-primary" title="Opciones Detalle Movimiento" data-bs-toggle="modal" data-bs-target="#modalOpcionesApiario" data-id="{{ $apiario->id }}">
-                                                        <i class="fas fa-cogs me-1"></i>
-                                                    </button>
+                                                    <!--       
+                                                            <a href="{{ route('colmenas.historicas.export', $apiario->id) }}"
+                                                                    class="action-icon download"
+                                                                    title="Exportar historial de todas las colmenas">
+                                                                    <i class="fas fa-file-alt"></i>
+                                                                </a>
+                                                            <a href="{{ route('generate.document', $apiario->id) }}"
+                                                                class="action-icon download" title="Descargar Detalle del Apiario">
+                                                                <i class="fas fa-download"></i>
+                                                            </a>                                                    
+                                                        -->
+                                                    <a href="#" class="action-icon view cogs"
+                                                        title="Opciones Detalle Movimiento" data-bs-toggle="modal"
+                                                        data-bs-target="#modalOpcionesApiario" data-id="{{ $apiario->id }}">
+                                                        <i class="fas fa-cogs"></i>
+                                                    </a>
                                                 </div>
                                             </td>
                                         </tr>
@@ -570,8 +571,8 @@
     </div>
 
     <!-- ============================================================
-                     MODAL ARCHIVADOS - REDISEÑADO
-                     ============================================================ -->
+                                        MODAL ARCHIVADOS
+                    ============================================================ -->
     <div class="modal fade" id="archivedModal" tabindex="-1" aria-labelledby="archivedModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-xl">
             <div class="modal-content modern-modal">
@@ -639,18 +640,18 @@
                                                             <i class="fas fa-cubes"></i>
                                                         </a>
                                                         <!-- <a href="{{ route('colmenas.historicas.export', $apiario->id) }}"
-                                                            class="action-icon download"
-                                                            title="Exportar historial de todas las colmenas">
-                                                            <i class="fas fa-file-alt"></i>
+                                                                        class="action-icon download"
+                                                                        title="Exportar historial de todas las colmenas">
+                                                                        <i class="fas fa-file-alt"></i>
+                                                                    </a>
+                                                                    <a href="{{ route('generate.document', $apiario->id) }}"
+                                                                    class="action-icon download" title="Descargar Detalle del Apiario">
+                                                                    <i class="fas fa-download"></i>
+                                                                    -->
+                                                        <a href="#" class="action-icon view cogs" title="Ver Detalle Movimiento"
+                                                            onclick="openDetalleMovimientoModal({{ $apiario->id }}); return false;">
+                                                            <i class="fas fa-cogs"></i>
                                                         </a>
-                                                        <a href="{{ route('generate.document', $apiario->id) }}"
-                                                        class="action-icon download" title="Descargar Detalle del Apiario">
-                                                        <i class="fas fa-download"></i>
-                                                        -->
-                                                        <button type="button" class="btn btn-sm btn-primary" title="Opciones Detalle Movimiento" data-bs-toggle="modal" data-bs-target="#modalOpcionesApiario" data-id="{{ $apiario->id }}">
-                                                            <i class="fas fa-cogs me-1"></i>
-                                                        </button>
-                                                    </a>
                                                     </div>
                                                 </td>
                                             </tr>
@@ -697,8 +698,8 @@
     </div>
 
     <!-- ============================================================
-                     MODALES FUNCIONALES (SE MANTIENEN INTACTOS)
-                     ============================================================ -->
+                                MODALES FUNCIONALES
+                    ============================================================ -->
 
     <!-- Modales de eliminación para apiarios fijos -->
     @foreach ($apiariosFijos as $apiario)
@@ -903,46 +904,58 @@
     </div>
 
     <!-- Modal de Opciones -->
-    <div class="modal fade" id="modalOpcionesApiario" tabindex="-1" aria-labelledby="modalOpcionesApiarioLabel" aria-hidden="true">
+    <div class="modal fade" id="modalOpcionesApiario" tabindex="-1" aria-labelledby="modalOpcionesApiarioLabel"
+        aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
+            <div class="modal-content modern-modal new-modal">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="modalOpcionesApiarioLabel">Opciones del Movimiento</h5>
+                    <div class="modal-title-group">
+                        <h5 class="modal-title" id="modalOpcionesApiarioLabel">
+                            <i class="fas fa-cogs"></i>
+                            Opciones del Movimiento
+                        </h5>
+                    </div>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
                 </div>
-                <div class="modal-body text-center">
-                    <p>¿Qué deseas hacer con este apiario?</p>
-                    <button type="button" class="btn btn-sm btn-outline-info" title="Ver Detalle Movimiento" data-bs-toggle="modal" data-bs-target="#detalleMovimientoModal" data-id="{{ $apiario->id }}">
-                        <i class="fas fa-route"></i> 
-                    </button>
-                    
-                    <a href="{{ route('colmenas.historicas.export', $apiario->id) }}"
-                        class="action-icon download"
-                        title="Exportar historial de todas las colmenas">
-                        <i class="fas fa-file-alt"></i>
-                    </a>
+                <div class="modal-body">
+                    <p class="modal-description mb-4">¿Qué deseas hacer con este apiario?</p>
+                    <div class="action-group opciones-menu">
+                        <button type="button" class="opcion-btn" id="btnVerDetalleMovimiento">
+                            <i class="fas fa-route"></i>
+                            <span>Ver Detalle Movimiento</span>
+                        </button>
+                        <a href="#" class="opcion-btn" id="btnExportarHistorial">
+                            <i class="fas fa-file-alt"></i>
+                            <span>Exportar Historial</span>
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
     <!-- Modal Detalle Movimiento Apiario Temporal -->
-    <div class="modal fade" id="detalleMovimientoModal" tabindex="-1" aria-labelledby="detalleMovimientoModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-xl">
-            <div class="modal-content modern-modal">
+    <div id="detalleMovimientoModal" class="custom-modal d-none">
+        <div class="custom-modal-backdrop" onclick="closeDetalleMovimiento()"></div>
+        <div class="custom-modal-dialog custom-modal-xl">
+            <div class="modal-content modern-modal new-modal-2">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="detalleMovimientoModalLabel">
-                    <i class="fas fa-route"></i> Detalle del Movimiento
-                    </h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                    <div class="modal-title-group">
+                        <h5 class="modal-title" id="detalleMovimientoModalLabel">
+                            <i class="fas fa-route"></i>
+                            Detalle del Movimiento
+                        </h5>
+                    </div>
+                    <button type="button" class="action-icon delete" onclick="closeDetalleMovimiento()" title="Cerrar">
+                        <i class="fas fa-times"></i>
+                    </button>
                 </div>
                 <div class="modal-body">
                     <div id="detalleMovimientoContent">
-                    <!-- Contenido se rellena vía AJAX o inyectado desde Blade si se pre-renderiza -->
-                    <div class="loading-spinner text-center">
-                        <i class="fas fa-spinner fa-spin fa-2x"></i>
-                        <p>Cargando detalles del movimiento...</p>
-                    </div>
+                        <div class="loading-spinner text-center">
+                            <i class="fas fa-spinner fa-spin fa-2x"></i>
+                            <p>Cargando detalles del movimiento...</p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -957,48 +970,4 @@
         window.csrfToken = "{{ csrf_token() }}";
     </script>
     <script src="{{ asset('js/components/home-user/apiarios.js') }}"></script>
-    <script>
-        const baseVerDetalle = "{{ url('/apiarios-temporales') }}/";
-        const baseDescargarDoc = "{{ route('generate.document', ['id' => '__ID__']) }}";
-
-        document.addEventListener('DOMContentLoaded', () => {
-            const modal = document.getElementById('modalOpcionesApiario');
-            modal.addEventListener('show.bs.modal', function (event) {
-                const button = event.relatedTarget;
-                const apiarioId = button.getAttribute('data-id');
-
-                // Enlazar dinámicamente
-                document.getElementById('btn-ver-detalle').href = baseVerDetalle + apiarioId;
-                document.getElementById('btn-descargar-doc').href = baseDescargarDoc.replace('__ID__', apiarioId);
-            });
-        });
-    </script>
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const modalDetalle = document.getElementById('detalleMovimientoModal');
-            modalDetalle.addEventListener('show.bs.modal', function (event) {
-                const button = event.relatedTarget;
-                const apiarioId = button.getAttribute('data-id');
-                const contentDiv = document.getElementById('detalleMovimientoContent');
-
-                contentDiv.innerHTML = `
-                    <div class="loading-spinner text-center">
-                        <i class="fas fa-spinner fa-spin fa-2x"></i>
-                        <p>Cargando detalles del movimiento...</p>
-                    </div>
-                `;
-
-                fetch(`/apiarios-temporales/${apiarioId}/detalle-movimiento`)
-                    .then(response => response.text())
-                    .then(html => {
-                        contentDiv.innerHTML = html;
-                    })
-                    .catch(error => {
-                        contentDiv.innerHTML = `<div class="alert alert-danger">Error al cargar detalle.</div>`;
-                    });
-            });
-        });
-    </script>
-
-
 @endsection

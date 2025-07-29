@@ -1,63 +1,110 @@
+
 @extends('layouts.app')
 
 @section('title', 'Tareas Archivadas - B-MaiA')
 
 @section('content')
-    <div class="container mt-4">
-        <!-- Encabezado -->
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <div>
-                <h2 class="mb-0"><i class="fa fa-archive me-2"></i>Tareas Archivadas</h2>
-                <p class="text-muted">Restaura tus tareas archivadas cuando las necesites nuevamente.</p>
-            </div>
-            <a href="{{ route('tareas') }}" class="btn btn-outline-secondary">
-                <i class="fa fa-arrow-left me-1"></i> Volver a mis tareas
-            </a>
-        </div>
+    <head>
+        <link rel="stylesheet" href="{{ asset('./css/components/home-user/tasks/archives.css') }}">
+    </head>
 
-        <!-- Alertas -->
-        @if(session('success'))
-            <div class="alert alert-success alert-dismissible fade show" role="alert">
-                <i class="fa fa-check-circle me-1"></i> {{ session('success') }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
-            </div>
-        @endif
+    <div class="archivadas-container">
+        <div class="archivadas-wrapper">
+            <!-- Encabezado principal -->
+            <header class="archivadas-header">
+                <div class="header-content">
+                    <div class="header-left">
+                        <h1 class="header-title">
+                            <i class="fa fa-archive"></i>
+                            <span>Tareas Archivadas</span>
+                        </h1>
+                        <p class="header-subtitle">Restaura tus tareas archivadas cuando las necesites nuevamente</p>
+                    </div>
+                    <div class="header-actions">
+                        <a href="{{ route('tareas') }}" class="btn-volver" title="Volver a mis tareas">
+                            <i class="fa fa-arrow-left"></i>
+                            <span>Volver a mis tareas</span>
+                        </a>
+                    </div>
+                </div>
+            </header>
 
-        <!-- Lista de tareas archivadas -->
-        @if ($tareasArchivadas->isEmpty())
-            <div class="alert alert-warning text-center">
-                <i class="fa fa-inbox fa-2x text-muted"></i>
-                <p class="mt-2 mb-0">No tienes tareas archivadas actualmente.</p>
-            </div>
-        @else
-            <ul class="list-group">
-                @foreach ($tareasArchivadas as $tarea)
-                    <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
-                        <div class="me-auto">
-                            <h5 class="mb-1">
-                                <i class="fa fa-archive me-2 text-primary"></i>{{ $tarea->nombre }}
-                            </h5>
-                            <small class="text-muted">
-                                <i class="fa fa-calendar-day me-1"></i>{{ \Carbon\Carbon::parse($tarea->fecha_inicio)->format('d/m/Y') }}
-                                &nbsp;&rarr;&nbsp;
-                                <i class="fa fa-calendar-check me-1"></i>{{ \Carbon\Carbon::parse($tarea->fecha_limite)->format('d/m/Y') }}
-                            </small>
-                            <div>
-                                <span class="badge bg-{{ strtolower($tarea->prioridad ?? 'secondary') }} mt-2">
-                                    Prioridad: {{ ucfirst($tarea->prioridad ?? 'Media') }}
-                                </span>
+            <!-- Alertas -->
+            @if(session('success'))
+                <div class="alert-success">
+                    <div class="alert-content">
+                        <i class="fa fa-check-circle"></i>
+                        <span>{{ session('success') }}</span>
+                        <button type="button" class="alert-close" onclick="this.parentElement.parentElement.style.display='none'">
+                            <i class="fa fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+            @endif
+
+            <!-- Contenido principal -->
+            <main class="archivadas-content">
+                @if ($tareasArchivadas->isEmpty())
+                    <!-- Estado vacío -->
+                    <div class="empty-state">
+                        <div class="empty-state-content">
+                            <div class="empty-icon">
+                                <i class="fa fa-inbox"></i>
                             </div>
+                            <h3 class="empty-title">No hay tareas archivadas</h3>
+                            <p class="empty-message">Las tareas archivadas aparecerán aquí cuando las archives desde tu lista principal</p>
                         </div>
+                    </div>
+                @else
+                    <!-- Lista de tareas archivadas -->
+                    <div class="tareas-archivadas-container">
+                        <div class="tareas-grid">
+                            @foreach ($tareasArchivadas as $tarea)
+                                <div class="tarea-card" data-tarea-id="{{ $tarea->id }}">
+                                    <div class="card-header">
+                                        <div class="card-icon">
+                                            <i class="fa fa-archive"></i>
+                                        </div>
+                                        <h4 class="card-title">{{ $tarea->nombre }}</h4>
+                                    </div>
 
-                        <form action="{{ route('tareas.restaurar', $tarea->id) }}" method="POST">
-                            @csrf
-                            <button class="btn btn-success btn-sm" type="submit">
-                                <i class="fa fa-rotate-left me-1"></i> Restaurar
-                            </button>
-                        </form>
-                    </li>
-                @endforeach
-            </ul>
-        @endif
+                                    <div class="card-body">
+                                        <div class="card-dates">
+                                            <div class="date-item">
+                                                <i class="fa fa-calendar-day"></i>
+                                                <span class="date-label">Inicio:</span>
+                                                <span class="date-value">{{ \Carbon\Carbon::parse($tarea->fecha_inicio)->format('d/m/Y') }}</span>
+                                            </div>
+                                            <div class="date-item">
+                                                <i class="fa fa-calendar-check"></i>
+                                                <span class="date-label">Límite:</span>
+                                                <span class="date-value">{{ \Carbon\Carbon::parse($tarea->fecha_limite)->format('d/m/Y') }}</span>
+                                            </div>
+                                        </div>
+
+                                        <div class="card-meta">
+                                            <div class="priority-badge priority-{{ strtolower($tarea->prioridad ?? 'media') }}">
+                                                <i class="fa fa-flag"></i>
+                                                <span>{{ ucfirst($tarea->prioridad ?? 'Media') }}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="card-actions">
+                                        <form action="{{ route('tareas.restaurar', $tarea->id) }}" method="POST" class="restore-form">
+                                            @csrf
+                                            <button class="btn-restaurar" type="submit" title="Restaurar tarea">
+                                                <i class="fa fa-rotate-left"></i>
+                                                <span>Restaurar</span>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
+                @endif
+            </main>
+        </div>
     </div>
 @endsection

@@ -1504,6 +1504,17 @@ document.addEventListener("DOMContentLoaded", function () {
                 else if (title?.toLowerCase().includes("eliminar"))
                     buttonClass += " delete";
 
+                // --- MODIFICACIÓN: botón de opciones de movimiento ---
+                if (
+                    icon.includes("fa-cogs") ||
+                    title?.toLowerCase().includes("opciones")
+                ) {
+                    const dataId = action.getAttribute("data-id") || "";
+                    buttonClass += " action-icon cogs";
+                    buttons += `<a href="#" class="${buttonClass}" title="${title}" data-bs-toggle="modal" data-bs-target="#modalOpcionesApiario" data-id="${dataId}"><i class="${icon}"></i></a>`;
+                    return;
+                }
+
                 if (href) {
                     buttons += `<a href="${href}" class="${buttonClass}" title="${title}"><i class="${icon}"></i></a>`;
                 } else if (action.tagName === "BUTTON") {
@@ -1663,6 +1674,39 @@ document.addEventListener("DOMContentLoaded", function () {
             }, 100);
         }
     });
+
+    window.openDetalleMovimientoModal = function (apiarioId) {
+        const modal = document.getElementById("detalleMovimientoModal");
+        if (modal) {
+            modal.classList.remove("d-none");
+            const contentDiv = document.getElementById(
+                "detalleMovimientoContent"
+            );
+            if (contentDiv) {
+                contentDiv.innerHTML = `
+                <div class="loading-spinner text-center">
+                    <i class="fas fa-spinner fa-spin fa-2x"></i>
+                    <p>Cargando detalles del movimiento...</p>
+                </div>
+            `;
+                fetch(`/apiarios-temporales/${apiarioId}/detalle-movimiento`)
+                    .then((response) => response.text())
+                    .then((html) => {
+                        contentDiv.innerHTML = html;
+                    })
+                    .catch((error) => {
+                        contentDiv.innerHTML = `<div class="alert alert-danger">Error al cargar detalle.</div>`;
+                    });
+            }
+        }
+    };
+
+    window.closeDetalleMovimiento = function () {
+        const modal = document.getElementById("detalleMovimientoModal");
+        if (modal) {
+            modal.classList.add("d-none");
+        }
+    };
 });
 
 // ============================================================
@@ -1761,3 +1805,30 @@ document.addEventListener("DOMContentLoaded", function () {
         }, 20);
     });
 })();
+
+// MODAL OPCIONES APIARIO: ENLACES DINÁMICOS
+document.addEventListener("DOMContentLoaded", () => {
+    const baseDescargarDoc = "/generate-document/__ID__";
+
+    // Cuando se abre el modal de opciones
+    const modal = document.getElementById("modalOpcionesApiario");
+    if (modal) {
+        modal.addEventListener("show.bs.modal", function (event) {
+            const button = event.relatedTarget;
+            const apiarioId = button?.getAttribute("data-id");
+            if (!apiarioId) return;
+
+            // Enlazar dinámicamente los botones
+            const btnVerDetalle = document.getElementById("btnVerDetalleMovimiento");
+            if (btnVerDetalle) {
+                btnVerDetalle.onclick = function () {
+                    openDetalleMovimientoModal(apiarioId);
+                };
+            }
+            const btnExportar = document.getElementById("btnExportarHistorial");
+            if (btnExportar) {
+                btnExportar.href = baseDescargarDoc.replace("__ID__", apiarioId);
+            }
+        });
+    }
+});

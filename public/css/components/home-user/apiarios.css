@@ -82,7 +82,6 @@
 /* ============================================================
    RESET Y BASE
    ============================================================ */
-
 *,
 *::before,
 *::after {
@@ -112,7 +111,6 @@ body {
 /* ============================================================
    CONTENEDOR PRINCIPAL
    ============================================================ */
-
 .apiarios-container {
     min-height: 100vh;
     padding: 0;
@@ -125,7 +123,6 @@ body {
 /* ============================================================
    HEADER PRINCIPAL
    ============================================================ */
-
 .page-header {
     display: flex;
     justify-content: space-between;
@@ -192,7 +189,6 @@ body {
 /* ============================================================
    NAVEGACIÓN DE PESTAÑAS
    ============================================================ */
-
 .tabs-nav {
     display: flex;
     background: var(--bg);
@@ -301,10 +297,27 @@ body {
     color: var(--white);
 }
 
+.tab-line {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.25rem;
+}
+
+.tab-line:last-child {
+    margin-bottom: 0;
+}
+
+.tab-line .tab-title {
+    margin: 0;
+}
+
+.tab-line .tab-badge {
+    margin-left: 0.5rem;
+}
+
 /* ============================================================
    CONTENIDO PRINCIPAL
    ============================================================ */
-
 .content-area {
     min-height: calc(100vh - 200px);
 }
@@ -340,7 +353,6 @@ body {
 /* ============================================================
    SECCIONES Y SUBSECCIONES
    ============================================================ */
-
 .subsection {
     margin-bottom: var(--space-12);
 }
@@ -398,7 +410,6 @@ body {
 /* ============================================================
    BOTONES DE ACCIÓN
    ============================================================ */
-
 .action-btn {
     display: inline-flex;
     align-items: center;
@@ -501,7 +512,6 @@ body {
 /* ============================================================
    CONTENEDORES DE DATOS
    ============================================================ */
-
 .data-container {
     background: var(--bg-card);
     border: 1px solid var(--border);
@@ -511,12 +521,12 @@ body {
     /* Evitar scroll intermitente */
     transform: translateZ(0);
     -webkit-transform: translateZ(0);
+    animation: slideIn 0.3s ease-out;
 }
 
 /* ============================================================
    TABLAS - SCROLL VISIBLE EN PANTALLAS PEQUEÑAS
    ============================================================ */
-
 .table-container {
     overflow-x: auto !important;
     overflow-y: hidden;
@@ -549,35 +559,29 @@ body {
 /* ============================================================
    SCROLL VISIBLE EN PANTALLAS PEQUEÑAS
    ============================================================ */
-
 /* Tablet y menores - mostrar scroll horizontal */
 @media (max-width: 1600px) {
     .table-container {
         scrollbar-width: thin;
         scrollbar-color: var(--gray-300) var(--bg-alt);
     }
-
     .table-container::-webkit-scrollbar {
         width: 6px;
         height: 8px;
         background: var(--bg-alt);
     }
-
     .table-container::-webkit-scrollbar-track {
         background: var(--bg-alt);
         border-radius: 4px;
     }
-
     .table-container::-webkit-scrollbar-thumb {
         background: var(--gray-300);
         border-radius: 4px;
         border: 1px solid var(--bg-alt);
     }
-
     .table-container::-webkit-scrollbar-thumb:hover {
         background: var(--gray-400);
     }
-
     .table-container::-webkit-scrollbar-corner {
         background: var(--bg-alt);
     }
@@ -588,18 +592,77 @@ body {
     .table-container {
         scrollbar-width: auto;
     }
-
     .table-container::-webkit-scrollbar {
         height: 10px;
     }
-
     .table-container::-webkit-scrollbar-thumb {
         background: var(--primary);
         border-radius: 5px;
     }
-
     .table-container::-webkit-scrollbar-thumb:hover {
         background: var(--primary-dark);
+    }
+}
+
+@media (max-width: 2400px) and (min-resolution: 1.25dppx) {
+    .table-container {
+        scrollbar-width: thin !important;
+        scrollbar-color: var(--gray-300) var(--bg-alt) !important;
+    }
+    .table-container::-webkit-scrollbar {
+        width: 6px !important;
+        height: 8px !important;
+        background: var(--bg-alt) !important;
+    }
+    .table-container::-webkit-scrollbar-track {
+        background: var(--bg-alt) !important;
+        border-radius: 4px !important;
+    }
+    .table-container::-webkit-scrollbar-thumb {
+        background: var(--gray-300) !important;
+        border-radius: 4px !important;
+        border: 1px solid var(--bg-alt) !important;
+    }
+    .table-container::-webkit-scrollbar-thumb:hover {
+        background: var(--gray-400) !important;
+    }
+    .table-container::-webkit-scrollbar-corner {
+        background: var(--bg-alt) !important;
+    }
+}
+
+@media (max-width: 3000px) and (min-resolution: 1.5dppx) {
+    .table-container {
+        scrollbar-width: auto !important;
+    }
+    .table-container::-webkit-scrollbar {
+        height: 12px !important;
+    }
+    .table-container::-webkit-scrollbar-thumb {
+        background: var(--primary) !important;
+        border-radius: 6px !important;
+    }
+    .table-container::-webkit-scrollbar-thumb:hover {
+        background: var(--primary-dark) !important;
+    }
+}
+
+@media (max-width: 2000px) {
+    .table-container {
+        scrollbar-width: thin !important;
+        scrollbar-color: var(--primary) var(--bg-alt) !important;
+    }
+    .table-container::-webkit-scrollbar {
+        width: 8px !important;
+        height: 10px !important;
+        background: var(--bg-alt) !important;
+    }
+    .table-container::-webkit-scrollbar-thumb {
+        background: var(--primary) !important;
+        border-radius: 5px !important;
+    }
+    .table-container::-webkit-scrollbar-thumb:hover {
+        background: var(--primary-dark) !important;
     }
 }
 
@@ -611,6 +674,9 @@ body {
     /* CAMBIO CLAVE: auto en lugar de fixed */
     table-layout: auto;
     border-spacing: 0;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
 }
 
 .data-table thead {
@@ -630,6 +696,16 @@ body {
     position: relative;
     background: inherit;
     text-align: center;
+    border-right: 1px solid var(--border);
+    border-bottom: 2px solid var(--border);
+}
+
+.data-table th:first-child {
+    border-left: 1px solid var(--border);
+}
+
+.data-table th:last-child {
+    border-right: none;
 }
 
 .data-table th.select-col {
@@ -646,29 +722,19 @@ body {
     background: rgba(245, 167, 0, 0.02);
 }
 
-.data-table td {
-    padding: var(--space-4);
-    vertical-align: middle;
-    color: var(--text);
-    border-bottom: 1px solid var(--border-light);
-    min-height: 60px;
-    text-align: center;
-    max-width: 180px;
-    word-wrap: break-word;
-    overflow-wrap: break-word;
-    white-space: normal;
-    line-height: 1.4;
+.data-table tbody tr:hover td {
+    background: rgba(245, 167, 0, 0.02);
+    border-right: 1px solid rgba(245, 167, 0, 0.1);
 }
 
-.data-table tbody tr:last-child td {
-    border-bottom: none;
+.data-table tbody tr:hover td:first-child {
+    border-left: 1px solid rgba(245, 167, 0, 0.1);
 }
 
-/* ============================================================
-   LÍNEAS DIVISORAS VERTICALES EN TABLAS
-   ============================================================ */
+.data-table tbody tr:hover td:last-child {
+    border-right: none;
+}
 
-.data-table th,
 .data-table td {
     padding: var(--space-4);
     vertical-align: middle;
@@ -684,79 +750,23 @@ body {
     line-height: 1.4;
 }
 
-.data-table th:first-child,
 .data-table td:first-child {
     border-left: 1px solid var(--border-light);
 }
 
-.data-table th:last-child,
 .data-table td:last-child {
     border-right: none;
 }
 
-.data-table thead th {
-    border-right: 1px solid var(--border);
-    border-bottom: 2px solid var(--border);
-}
-
-.data-table thead th:first-child {
-    border-left: 1px solid var(--border);
-}
-
-.data-table thead th:last-child {
-    border-right: none;
-}
-
-.data-table {
-    border: 1px solid var(--border);
-    border-radius: var(--radius-lg);
-    overflow: hidden;
-}
-
-.data-container {
-    border-radius: var(--radius-lg);
-    overflow: hidden;
-}
-
-@media (max-width: 768px) {
-    .data-table th,
-    .data-table td {
-        border-right: 1px solid var(--border-light);
-        border-bottom: 1px solid var(--border-light);
-    }
-
-    .data-table th:first-child,
-    .data-table td:first-child {
-        border-left: 1px solid var(--border-light);
-    }
-
-    .data-table thead th {
-        border-right: 1px solid var(--border-light);
-        border-bottom: 1px solid var(--border);
-    }
-
-    .data-table thead th:first-child {
-        border-left: 1px solid var(--border-light);
-    }
-}
-
-.data-table tbody tr:hover td {
-    background: rgba(245, 167, 0, 0.02);
-    border-right: 1px solid rgba(245, 167, 0, 0.1);
-}
-
-.data-table tbody tr:hover td:first-child {
-    border-left: 1px solid rgba(245, 167, 0, 0.1);
-}
-
-.data-table tbody tr:hover td:last-child {
-    border-right: none;
+.data-table tbody tr:last-child td {
+    border-bottom: none;
 }
 
 /* ============================================================
-   LÍMITE MEJORADO SOLO PARA COLUMNA OBJETIVO
+   LÍMITE MEJORADO PARA COLUMNAS OBJETIVO Y MANEJO
    ============================================================ */
-
+.data-table td:nth-child(6),
+.data-table td:nth-child(7),
 .data-table td:nth-child(8) {
     max-width: 220px;
     min-width: 180px;
@@ -767,6 +777,7 @@ body {
     padding: var(--space-3);
 }
 
+.data-table td:nth-child(6) .badge,
 .data-table td:nth-child(7) .badge,
 .data-table td:nth-child(8) .badge {
     display: inline-block;
@@ -780,6 +791,7 @@ body {
     padding: var(--space-2) var(--space-3);
 }
 
+.data-table th:nth-child(6),
 .data-table th:nth-child(7),
 .data-table th:nth-child(8) {
     max-width: 220px;
@@ -788,41 +800,8 @@ body {
 }
 
 /* ============================================================
-   LÍMITE MEJORADO PARA COLUMNAS OBJETIVO Y MANEJO
-   ============================================================ */
-
-.data-table td:nth-child(6) {
-    max-width: 220px;
-    min-width: 180px;
-    word-wrap: break-word;
-    overflow-wrap: break-word;
-    white-space: normal;
-    line-height: 1.4;
-    padding: var(--space-3);
-}
-
-.data-table td:nth-child(6) .badge {
-    display: inline-block;
-    width: auto;
-    max-width: 100%;
-    word-wrap: break-word;
-    overflow-wrap: break-word;
-    white-space: normal;
-    text-align: center;
-    line-height: 1.4;
-    padding: var(--space-2) var(--space-3);
-}
-
-.data-table th:nth-child(6) {
-    max-width: 220px;
-    min-width: 180px;
-    text-align: center;
-}
-
-/* ============================================================
    CELDAS ESPECIALIZADAS
    ============================================================ */
-
 .cell-content {
     display: flex;
     flex-direction: column;
@@ -902,7 +881,6 @@ body {
 /* ============================================================
    BADGES
    ============================================================ */
-
 .badge {
     display: inline-flex;
     align-items: center;
@@ -944,7 +922,6 @@ body {
 /* ============================================================
    CHECKBOXES PERSONALIZADOS
    ============================================================ */
-
 .checkbox-wrapper {
     display: inline-flex;
     align-items: center;
@@ -1000,7 +977,6 @@ body {
 /* ============================================================
    ACCIONES DE TABLA
    ============================================================ */
-
 .action-group {
     display: flex;
     gap: var(--space-2);
@@ -1053,6 +1029,17 @@ body {
     color: var(--white);
 }
 
+.action-icon.cogs {
+    color: var(--text-muted);
+    border-color: rgba(89, 90, 90, 0.3);
+}
+
+.action-icon.cogs:hover {
+    background: rgb(89, 90, 90);
+    border-color: rgba(89, 90, 90, 0.3);
+    color: var(--white);
+}
+
 .action-icon.download {
     color: var(--success);
     border-color: rgba(16, 185, 129, 0.3);
@@ -1078,7 +1065,6 @@ body {
 /* ============================================================
    PAGINACIÓN
    ============================================================ */
-
 .pagination-container {
     display: flex;
     justify-content: space-between;
@@ -1100,27 +1086,21 @@ body {
     align-items: center;
 }
 
-i.fas.fa-chevron-left {
-    color: var(--text-muted);
-    cursor: pointer;
-}
-
+i.fas.fa-chevron-left,
 i.fas.fa-chevron-right {
     color: var(--text-muted);
     cursor: pointer;
+    transition: color 0.2s ease;
 }
 
 i.fas.fa-chevron-left:hover,
-i.fas.fa-chevron-right:hover {
-    color: var(--primary);
-}
-
-.pagination-controls i {
-    transition: color 0.2s ease;
-}
+i.fas.fa-chevron-right:hover,
 .pagination-controls i:hover {
     color: var(--primary);
 }
+
+i.fas.fa-chevron-left:active,
+i.fas.fa-chevron-right:active,
 .pagination-controls i:active {
     color: var(--primary-dark);
 }
@@ -1130,7 +1110,8 @@ i.fas.fa-chevron-right:hover {
     border-color: var(--primary-dark);
 }
 
-.page-link:hover {
+.page-link:hover,
+a.page-link:hover {
     color: var(--primary);
     border-color: var(--primary);
 }
@@ -1139,11 +1120,6 @@ a.page-link:active,
 a.page-link:focus {
     color: var(--primary-dark);
     border-color: var(--primary-dark);
-}
-
-a.page-link:hover {
-    color: var(--primary);
-    border-color: var(--primary);
 }
 
 /* ============================================================
@@ -1179,6 +1155,7 @@ a.page-link:hover {
     border-radius: var(--radius-xl);
     margin-bottom: var(--space-4);
     font-size: 2rem;
+    animation: pulse 2s ease-in-out infinite;
 }
 
 .empty-title {
@@ -1197,9 +1174,8 @@ a.page-link:hover {
 }
 
 /* ============================================================
-   MODALES - SOLUCIÓN PARA SCROLL INTERMITENTE EN MODAL
+   MODALES - UNIFICADOS
    ============================================================ */
-
 .modern-modal {
     border: none;
     border-radius: var(--radius-lg);
@@ -1207,7 +1183,6 @@ a.page-link:hover {
     overflow: hidden;
     transform: translateZ(0);
     max-width: 1300px;
-    min-width: 800px;
     margin: 0 auto !important;
     position: relative !important;
     left: auto !important;
@@ -1250,12 +1225,10 @@ a.page-link:hover {
 .modern-modal .modal-body {
     padding: var(--space-6);
     background: var(--bg);
-    /* Controlar scroll en modal body */
     overflow-y: auto;
     max-height: 70vh;
 }
 
-/* Scrollbar personalizado para modal body */
 .modern-modal .modal-body::-webkit-scrollbar {
     width: 6px;
 }
@@ -1304,10 +1277,22 @@ a.page-link:hover {
     box-shadow: var(--shadow-md);
 }
 
+.modal.show .modal-dialog {
+    transform: none !important;
+}
+
+.modal-backdrop {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    z-index: 1040 !important;
+}
+
 /* ============================================================
    ELEMENTOS INFORMATIVOS DE MODALES
    ============================================================ */
-
 .selected-info {
     background: var(--gray-50);
     border: 1px solid var(--border);
@@ -1390,481 +1375,116 @@ a.page-link:hover {
     flex-shrink: 0;
 }
 
-/* ============================================================
-   RESPONSIVE DESIGN
-   ============================================================ */
-
-@media (max-width: 1200px) {
-    .page-header {
-        padding: var(--space-4) var(--space-6);
-        gap: 2rem;
-    }
-
-    .tab-pane {
-        padding: var(--space-4) var(--space-6);
-    }
-
-    .data-table th,
-    .data-table td {
-        padding: var(--space-3);
-    }
+/* Opciones del modal: estilo menú grande y moderno */
+.opciones-menu {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+    margin: 2rem 0 1rem 0;
 }
 
-@media (max-width: 768px) {
-    .page-header {
-        flex-direction: column;
-        gap: var(--space-4);
-        padding: var(--space-4);
-    }
-
-    .header-main {
-        flex-direction: column;
-        gap: var(--space-4);
-        text-align: center;
-        width: 100%;
-    }
-
-    .header-stats {
-        justify-content: center;
-        flex-wrap: wrap;
-        gap: var(--space-3);
-    }
-
-    .header-actions {
-        width: 100%;
-        justify-content: center;
-    }
-
-    .page-title {
-        font-size: 1.5rem;
-    }
-
-    .tabs-nav {
-        flex-direction: column;
-        position: static;
-    }
-
-    .tab-item {
-        padding: var(--space-4);
-        justify-content: center;
-    }
-
-    .tab-pane {
-        padding: var(--space-4);
-    }
-
-    .section-toolbar {
-        flex-direction: column;
-        gap: var(--space-4);
-        align-items: stretch;
-    }
-
-    .toolbar-left,
-    .toolbar-right {
-        justify-content: center;
-        text-align: center;
-        flex-direction: column;
-    }
-
-    .toolbar-right {
-        flex-wrap: wrap;
-    }
-
-    .action-btn {
-        flex: 1;
-        justify-content: center;
-        min-width: 0;
-        font-size: 11px;
-        font-weight: 500;
-    }
-
-    .data-table {
-        font-size: 0.75rem;
-        min-width: 600px;
-        table-layout: auto;
-    }
-
-    .data-table th,
-    .data-table td {
-        padding: var(--space-2);
-        height: auto;
-    }
-
-    .preview-image {
-        width: 40px;
-        height: 30px;
-    }
-
-    .action-icon {
-        width: 28px;
-        height: 28px;
-    }
-
-    .numeric-cell {
-        min-width: 1.5rem;
-        height: 1.5rem;
-        font-size: 0.75rem;
-    }
-
-    .pagination-container {
-        flex-direction: column;
-        gap: var(--space-3);
-        padding: var(--space-4);
-    }
-
-    .pagination-controls {
-        justify-content: center;
-        flex-wrap: wrap;
-    }
-
-    .page-btn {
-        width: 32px;
-        height: 32px;
-        font-size: 0.75rem;
-    }
-
-    .empty-section {
-        padding: var(--space-8) var(--space-4);
-    }
-
-    .empty-icon {
-        width: 3rem;
-        height: 3rem;
-        font-size: 1.5rem;
-    }
-
-    .empty-title {
-        font-size: 1.125rem;
-    }
+.opcion-btn {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    background: #f6f7fa;
+    color: #222;
+    border: none;
+    border-radius: 0.75rem;
+    padding: 1.1rem 1.5rem;
+    font-size: 1.08rem;
+    font-weight: 500;
+    box-shadow: 0 1px 6px 0 rgba(60, 60, 60, 0.06);
+    transition: background 0.18s, color 0.18s, box-shadow 0.18s;
+    cursor: pointer;
+    text-align: left;
+    width: 100%;
+    outline: none;
+    text-decoration: none;
 }
 
-@media (max-width: 480px) {
-    .page-header {
-        padding: var(--space-3);
-    }
-
-    .tab-pane {
-        padding: var(--space-3);
-    }
-
-    .page-title {
-        font-size: 1.25rem;
-    }
-
-    .stat-item {
-        padding: var(--space-2) var(--space-3);
-        min-width: 3rem;
-    }
-
-    .stat-number {
-        font-size: 1.25rem;
-    }
-
-    .data-table {
-        min-width: 500px;
-    }
-
-    .data-table th,
-    .data-table td {
-        padding: var(--space-1) var(--space-2);
-    }
-
-    .preview-image {
-        width: 32px;
-        height: 24px;
-    }
-
-    .action-icon {
-        width: 24px;
-        height: 24px;
-    }
-
-    .action-btn {
-        padding: var(--space-2) var(--space-3);
-        font-size: 0.8125rem;
-    }
-
-    .section-title {
-        font-size: 1.125rem;
-    }
-
-    .badge {
-        font-size: 0.625rem;
-        padding: 2px var(--space-2);
-    }
-
-    .page-btn {
-        width: 28px;
-        height: 28px;
-        font-size: 0.6875rem;
-    }
-}
-
-@media (max-width: 2400px) and (min-resolution: 1.25dppx) {
-    .table-container {
-        scrollbar-width: thin !important;
-        scrollbar-color: var(--gray-300) var(--bg-alt) !important;
-    }
-
-    .table-container::-webkit-scrollbar {
-        width: 6px !important;
-        height: 8px !important;
-        background: var(--bg-alt) !important;
-    }
-
-    .table-container::-webkit-scrollbar-track {
-        background: var(--bg-alt) !important;
-        border-radius: 4px !important;
-    }
-
-    .table-container::-webkit-scrollbar-thumb {
-        background: var(--gray-300) !important;
-        border-radius: 4px !important;
-        border: 1px solid var(--bg-alt) !important;
-    }
-
-    .table-container::-webkit-scrollbar-thumb:hover {
-        background: var(--gray-400) !important;
-    }
-
-    .table-container::-webkit-scrollbar-corner {
-        background: var(--bg-alt) !important;
-    }
-}
-
-@media (max-width: 3000px) and (min-resolution: 1.5dppx) {
-    .table-container {
-        scrollbar-width: auto !important;
-    }
-
-    .table-container::-webkit-scrollbar {
-        height: 12px !important;
-    }
-
-    .table-container::-webkit-scrollbar-thumb {
-        background: var(--primary) !important;
-        border-radius: 6px !important;
-    }
-
-    .table-container::-webkit-scrollbar-thumb:hover {
-        background: var(--primary-dark) !important;
-    }
-}
-
-@media (max-width: 2000px) {
-    .table-container {
-        scrollbar-width: thin !important;
-        scrollbar-color: var(--primary) var(--bg-alt) !important;
-    }
-
-    .table-container::-webkit-scrollbar {
-        width: 8px !important;
-        height: 10px !important;
-        background: var(--bg-alt) !important;
-    }
-
-    .table-container::-webkit-scrollbar-thumb {
-        background: var(--primary) !important;
-        border-radius: 5px !important;
-    }
-
-    .table-container::-webkit-scrollbar-thumb:hover {
-        background: var(--primary-dark) !important;
-    }
-}
-
-/* ============================================================
-   UTILIDADES
-   ============================================================ */
-
-.text-center {
+.opcion-btn i {
+    font-size: 1.35em;
+    color: #4b8df8;
+    min-width: 1.7em;
     text-align: center;
 }
-.text-left {
-    text-align: left;
+
+.opcion-btn:hover,
+.opcion-btn:focus {
+    background: #e9eef7;
+    color: #1a4a8a;
+    box-shadow: 0 2px 12px 0 rgba(60, 60, 60, 0.1);
+    text-decoration: none;
 }
-.text-right {
-    text-align: right;
+
+.opcion-btn:active {
+    background: #dde5f3;
+    color: #17407c;
 }
-.font-mono {
-    font-family: var(--font-mono);
-}
-.font-semibold {
-    font-weight: 600;
-}
-.font-bold {
-    font-weight: 700;
-}
-.text-muted {
-    color: var(--text-muted);
-}
-.text-light {
-    color: var(--text-light);
-}
-.d-flex {
+
+/* MODAL PERSONALIZADO SIN BOOTSTRAP */
+.custom-modal {
+    position: fixed;
+    z-index: 2000;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
     display: flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    animation: fadeIn 0.2s;
 }
-.d-none {
+
+.custom-modal.d-none {
     display: none;
 }
-.align-items-center {
-    align-items: center;
-}
-.justify-content-center {
-    justify-content: center;
-}
-.justify-content-between {
-    justify-content: space-between;
-}
-.gap-2 {
-    gap: var(--space-2);
-}
-.gap-3 {
-    gap: var(--space-3);
-}
-.gap-4 {
-    gap: var(--space-4);
-}
-.mb-0 {
-    margin-bottom: 0;
-}
-.mb-2 {
-    margin-bottom: var(--space-2);
-}
-.mb-4 {
-    margin-bottom: var(--space-4);
-}
-.mt-2 {
-    margin-top: var(--space-2);
-}
-.mt-4 {
-    margin-top: var(--space-4);
-}
-.p-2 {
-    padding: var(--space-2);
-}
-.p-4 {
-    padding: var(--space-4);
-}
-.px-3 {
-    padding-left: var(--space-3);
-    padding-right: var(--space-3);
-}
-.py-2 {
-    padding-top: var(--space-2);
-    padding-bottom: var(--space-2);
+
+.custom-modal-backdrop {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(17, 24, 39, 0.45);
+    z-index: 1;
 }
 
-/* ============================================================
-   FOCUS Y ACCESIBILIDAD
-   ============================================================ */
-
-*:focus-visible {
-    outline: 2px solid var(--primary);
-    outline-offset: 2px;
-    border-radius: var(--radius-sm);
+.custom-modal-dialog {
+    position: relative;
+    z-index: 2;
+    background: none;
+    border-radius: var(--radius-lg);
+    min-width: 350px;
+    max-width: 95vw;
+    width: auto;
+    animation: fadeInUp 0.25s;
+    display: flex;
+    flex-direction: column;
 }
 
-.action-btn:focus-visible,
-.action-icon:focus-visible,
-.page-btn:focus-visible {
-    transform: translateY(-1px);
-    box-shadow: var(--shadow-md);
+.custom-modal-xl {
+    min-width: 800px;
+    max-width: 1300px;
 }
 
-.tab-item:focus-visible {
-    background: var(--primary-alpha);
-    color: var(--primary);
-}
-
-/* ============================================================
-   PRINT STYLES
-   ============================================================ */
-
-@media print {
-    .header-actions,
-    .toolbar-right,
-    .action-group,
-    .pagination-container,
-    .tabs-nav {
-        display: none !important;
-    }
-
-    .apiarios-container {
-        background: white;
-        box-shadow: none;
-    }
-
-    .page-title {
-        color: black !important;
-        font-size: 18pt;
-    }
-
-    .data-table {
-        font-size: 8pt;
-        min-width: auto;
-        table-layout: auto;
-    }
-
-    .data-table th,
-    .data-table td {
-        padding: 4pt;
-        border: 1px solid #ccc;
-        height: auto;
-    }
-
-    .badge {
-        background: #f0f0f0 !important;
-        color: #333 !important;
-        border: 1px solid #ccc;
-    }
-
-    .tab-pane {
-        padding: 0;
-    }
-
-    .tab-pane.active {
-        display: block !important;
-    }
-}
-
-/* ============================================================
-   ANIMACIONES ADICIONALES
-   ============================================================ */
-
-@keyframes slideIn {
+@keyframes fadeInUp {
     from {
         opacity: 0;
-        transform: translateX(-20px);
+        transform: translateY(40px);
     }
     to {
         opacity: 1;
-        transform: translateX(0);
+        transform: translateY(0);
     }
-}
-
-@keyframes pulse {
-    0%,
-    100% {
-        transform: scale(1);
-    }
-    50% {
-        transform: scale(1.02);
-    }
-}
-
-.data-container {
-    animation: slideIn 0.3s ease-out;
-}
-
-.empty-icon {
-    animation: pulse 2s ease-in-out infinite;
 }
 
 /* ============================================================
    SWITCH DE VISTA INDEPENDIENTE (TABLA/TARJETAS)
    ============================================================ */
-
 .view-toggle-container {
     display: flex;
     align-items: center;
@@ -1980,7 +1600,6 @@ a.page-link:hover {
 /* ============================================================
    SISTEMA DE TARJETAS INDEPENDIENTE
    ============================================================ */
-
 .cards-view-container {
     display: none;
     opacity: 0;
@@ -2158,26 +1777,72 @@ a.page-link:hover {
     font-weight: 600;
 }
 
+/* ============================================================
+   BADGES EN TARJETAS - CONSOLIDADOS Y AUTO-AJUSTABLES
+   ============================================================ */
 .card-badges-modern {
     display: flex;
-    flex-wrap: wrap;
-    gap: var(--space-3);
-    margin-bottom: var(--space-6);
+    flex-direction: column;
+    gap: var(--space-2);
+    margin: var(--space-4) 0;
+    padding: var(--space-3);
+    background: var(--gray-50);
+    border-radius: var(--radius);
+    border-left: 3px solid var(--primary);
+    width: 100%;
+    max-width: 100%;
+    overflow: hidden;
 }
 
-.card-badge-modern {
-    display: inline-flex;
-    align-items: center;
-    padding: var(--space-2) var(--space-4);
+.card-badge-item-modern {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-2);
+    margin-bottom: var(--space-2);
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+.card-badge-item-modern:last-child {
+    margin-bottom: 0;
+}
+
+.card-badge-label-modern {
     font-size: 0.75rem;
     font-weight: 600;
+    color: var(--text-muted);
     text-transform: uppercase;
-    letter-spacing: 0.05em;
-    border-radius: var(--radius);
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+    flex-shrink: 0;
+    min-width: 50px;
+    max-width: 80px;
+    align-self: flex-start;
+}
+
+.card-badge-item-modern .card-badge-modern {
+    max-width: calc(100% - 90px);
+    min-width: 0;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    white-space: normal;
+    line-height: 1.3;
+    text-align: center;
+    padding: var(--space-1) var(--space-2);
+    height: auto;
+    min-height: 24px;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.7rem;
+    overflow: hidden;
+    margin: 0;
+    border-radius: var(--radius-sm);
     border: 1px solid transparent;
     transition: var(--transition);
     position: relative;
-    overflow: hidden;
 }
 
 .card-badge-modern::before {
@@ -2198,6 +1863,11 @@ a.page-link:hover {
 
 .card-badge-modern:hover::before {
     left: 100%;
+}
+
+.card-badge-modern:hover {
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-sm);
 }
 
 .card-badge-modern.primary {
@@ -2228,6 +1898,16 @@ a.page-link:hover {
     );
     color: #1e40af;
     border-color: var(--info);
+}
+
+.card-badge-modern.warning {
+    background: linear-gradient(
+        135deg,
+        var(--warning-light) 0%,
+        rgba(245, 158, 11, 0.15) 100%
+    );
+    color: #92400e;
+    border-color: var(--warning);
 }
 
 .card-location-modern {
@@ -2401,7 +2081,6 @@ a.page-link:hover {
     overflow: hidden;
 }
 
-/* SIMPLIFICAR HOVERS - Solo cambio de color y escala sutil */
 .card-action-btn-modern:hover {
     text-decoration: none;
     transform: translateY(-2px) scale(1.05);
@@ -2452,821 +2131,21 @@ a.page-link:hover {
     border-color: var(--danger);
 }
 
-/* Simplificar hover de tarjetas también */
-.apiario-card-modern:hover {
-    transform: translateY(-4px);
-    box-shadow: var(--shadow-lg);
-    border-color: var(--primary);
-}
-
-/* Quitar animaciones complejas de badges */
-.card-badge-modern:hover {
-    transform: translateY(-1px);
-    box-shadow: var(--shadow-sm);
-}
-
-/* Reemplazar la sección de badges en el archivo apiarios.css */
-
 /* ============================================================
-   BADGES CON LABELS EN TARJETAS - AUTO-AJUSTABLES
+   RESPONSIVE DESIGN
    ============================================================ */
-
-.card-badge-item-modern {
-    display: flex;
-    align-items: center;
-    gap: var(--space-2);
-    margin-bottom: var(--space-2);
-}
-
-.card-badge-item-modern:last-child {
-    margin-bottom: 0;
-}
-
-.card-badge-label-modern {
-    font-size: var(--text-xs);
-    font-weight: 600;
-    color: var(--text-muted);
-    min-width: fit-content;
-    width: auto;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    white-space: nowrap;
-    flex-shrink: 0;
-}
-
-.card-badges-modern {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-2);
-    margin: var(--space-4) 0;
-    padding: var(--space-3);
-    background: var(--gray-50);
-    border-radius: var(--radius);
-    border-left: 3px solid var(--primary);
-    width: fit-content;
-    min-width: 100%;
-    max-width: 100%;
-}
-
-/* Badge individual auto-ajustable */
-.card-badge-item-modern .card-badge-modern {
-    margin: 0;
-    padding: var(--space-1) var(--space-2);
-    width: fit-content;
-    min-width: auto;
-    max-width: none;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    white-space: nowrap;
-    overflow: visible;
-    text-overflow: unset;
-    flex-shrink: 0;
-}
-
-/* Contenedor flexible para label + badge */
-.card-badge-item-modern {
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-    gap: var(--space-2);
-    width: 100%;
-    flex-wrap: nowrap;
-}
-
-/* Auto-ajuste específico por tipo de badge */
-.card-badge-modern.secondary,
-.card-badge-modern.info,
-.card-badge-modern.warning,
-.card-badge-modern.primary {
-    font-size: var(--text-xs);
-    font-weight: 500;
-    border-radius: var(--radius-sm);
-    transition: var(--transition);
-    box-sizing: border-box;
-}
-
-/* Responsive mejorado para auto-ajuste */
-@media (max-width: 768px) {
-    .card-badge-label-modern {
-        font-size: 10px;
-        min-width: auto;
-        width: auto;
-    }
-
-    .card-badges-modern {
-        padding: var(--space-2);
-        width: 100%;
-    }
-
-    .card-badge-item-modern {
-        flex-wrap: wrap;
-        gap: var(--space-1);
-    }
-
-    .card-badge-item-modern .card-badge-modern {
-        padding: 2px var(--space-1);
-        font-size: 10px;
-    }
-}
-
-@media (max-width: 480px) {
-    .card-badge-item-modern {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 2px;
-    }
-
-    .card-badge-label-modern {
-        margin-bottom: 2px;
-    }
-
-    .card-badge-item-modern .card-badge-modern {
-        align-self: flex-start;
-    }
-}
-
-/* Auto-ajuste dinámico basado en contenido */
-.card-badge-modern[data-length="short"] {
-    min-width: 60px;
-}
-
-.card-badge-modern[data-length="medium"] {
-    min-width: 80px;
-}
-
-.card-badge-modern[data-length="long"] {
-    min-width: 120px;
-}
-
-/* Flexibilidad total del contenedor */
-.card-badges-modern {
-    container-type: inline-size;
-}
-
-/* Container queries para auto-ajuste avanzado */
-@container (max-width: 200px) {
-    .card-badge-item-modern {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-}
-
-@container (min-width: 300px) {
-    .card-badge-item-modern {
-        flex-direction: row;
-        align-items: center;
-    }
-}
-
-/* ============================================================
-   RESPONSIVE PARA SISTEMA DE TARJETAS
-   ============================================================ */
-
-/* Desktop y pantallas grandes */
-@media (min-width: 1200px) {
-    .cards-grid {
-        grid-template-columns: repeat(auto-fill, minmax(420px, 1fr));
-        gap: var(--space-8);
-        padding: var(--space-6) 0;
-    }
-}
-
-/* Laptop y pantallas medianas */
-@media (max-width: 1199px) and (min-width: 992px) {
-    .cards-grid {
-        grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
-        gap: var(--space-6);
-        padding: var(--space-5) 0;
-    }
-
-    .apiario-card-modern {
-        max-width: 100%;
-    }
-}
-
-/* Tablet horizontal */
-@media (max-width: 991px) and (min-width: 768px) {
-    .cards-grid {
-        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-        gap: var(--space-5);
-        padding: var(--space-4) 0;
-    }
-
-    .card-header-modern,
-    .card-body-modern {
-        padding: var(--space-4);
-    }
-
-    .card-info-grid-modern {
-        gap: var(--space-3);
-    }
-
-    .card-title-modern {
-        font-size: 1.125rem;
-    }
-
-    .card-image-modern,
-    .card-no-image-modern {
-        height: 140px;
-    }
-}
-
-/* Tablet vertical y móviles grandes */
-@media (max-width: 767px) and (min-width: 576px) {
-    .cards-grid {
-        grid-template-columns: 1fr;
-        gap: var(--space-4);
-        padding: var(--space-3) var(--space-2);
-        margin: 0 auto;
-        max-width: 100%;
-    }
-
-    .apiario-card-modern {
-        width: 100%;
-        max-width: 100%;
-        margin: 0 auto;
-    }
-
-    .card-header-modern,
-    .card-body-modern {
-        padding: var(--space-4);
-    }
-
-    .card-info-grid-modern {
-        grid-template-columns: 1fr;
-        gap: var(--space-3);
-    }
-
-    .card-badges-modern {
-        padding: var(--space-3);
-    }
-
-    .card-badge-item-modern {
-        flex-direction: row;
-        align-items: center;
-        gap: var(--space-2);
-    }
-
-    .card-image-modern,
-    .card-no-image-modern {
-        height: 120px;
-    }
-
-    .card-actions-modern {
-        flex-direction: column;
-        gap: var(--space-3);
-        align-items: stretch;
-    }
-
-    .card-actions-left-modern,
-    .card-actions-right-modern {
-        justify-content: center;
-    }
-}
-
-/* Móviles pequeños */
-@media (max-width: 575px) {
-    .cards-grid {
-        grid-template-columns: 1fr;
-        gap: var(--space-3);
-        padding: var(--space-2);
-        margin: 0;
-        width: 100%;
-    }
-
-    .apiario-card-modern {
-        width: 100%;
-        max-width: 100%;
-        margin: 0;
-        border-radius: var(--radius);
-    }
-
-    .card-header-modern,
-    .card-body-modern {
-        padding: var(--space-3);
-    }
-
-    .card-title-modern {
-        font-size: 1rem;
-        margin-bottom: var(--space-2);
-    }
-
-    .card-title-modern i {
-        font-size: 1rem;
-        padding: var(--space-1);
-    }
-
-    .card-subtitle-modern {
-        font-size: 0.75rem;
-    }
-
-    .card-info-grid-modern {
-        grid-template-columns: 1fr;
-        gap: var(--space-2);
-        margin-bottom: var(--space-4);
-    }
-
-    .card-info-item-modern {
-        padding: var(--space-2);
-    }
-
-    .card-info-label-modern {
-        font-size: 0.625rem;
-    }
-
-    .card-info-value-modern {
-        font-size: 0.875rem;
-    }
-
-    .card-badges-modern {
-        padding: var(--space-2);
-        margin: var(--space-3) 0;
-    }
-
-    .card-badge-item-modern {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: var(--space-1);
-        margin-bottom: var(--space-1);
-    }
-
-    .card-badge-label-modern {
-        font-size: 0.625rem;
-        margin-bottom: 2px;
-    }
-
-    .card-badge-item-modern .card-badge-modern {
-        padding: 2px var(--space-1);
-        font-size: 0.625rem;
-        align-self: flex-start;
-    }
-
-    .card-location-modern {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: var(--space-2);
-        padding: var(--space-3);
-        margin-bottom: var(--space-4);
-    }
-
-    .card-location-text-modern,
-    .card-coordinates-modern {
-        font-size: 0.75rem;
-        width: 100%;
-        text-align: left;
-    }
-
-    .card-coordinates-modern {
-        word-break: break-all;
-        font-size: 0.625rem;
-    }
-
-    .card-image-modern,
-    .card-no-image-modern {
-        height: 100px;
-        margin-bottom: var(--space-3);
-    }
-
-    .card-no-image-modern i {
-        font-size: 1.5rem;
-        margin-bottom: var(--space-1);
-    }
-
-    .card-no-image-modern span {
-        font-size: 0.75rem;
-    }
-
-    .card-actions-modern {
-        flex-direction: column;
-        gap: var(--space-3);
-        align-items: stretch;
-        padding-top: var(--space-3);
-    }
-
-    .card-actions-left-modern {
-        justify-content: center;
-        order: 2;
-    }
-
-    .card-actions-right-modern {
-        justify-content: center;
-        order: 1;
-        flex-wrap: wrap;
-        gap: var(--space-2);
-    }
-
-    .card-action-btn-modern {
-        width: 36px;
-        height: 36px;
-        font-size: 0.875rem;
-    }
-
-    .card-checkbox-modern {
-        top: var(--space-3);
-        right: var(--space-3);
-    }
-
-    .card-checkbox-modern .checkmark {
-        width: 16px;
-        height: 16px;
-    }
-}
-
-/* Móviles muy pequeños */
-@media (max-width: 320px) {
-    .cards-grid {
-        padding: var(--space-1);
-        gap: var(--space-2);
-    }
-
-    .card-header-modern,
-    .card-body-modern {
-        padding: var(--space-2);
-    }
-
-    .card-title-modern {
-        font-size: 0.875rem;
-        flex-direction: column;
-        align-items: flex-start;
-        gap: var(--space-1);
-    }
-
-    .card-subtitle-modern {
-        font-size: 0.625rem;
-    }
-
-    .card-info-grid-modern {
-        gap: var(--space-1);
-    }
-
-    .card-info-item-modern {
-        padding: var(--space-1);
-    }
-
-    .card-badges-modern {
-        padding: var(--space-1);
-    }
-
-    .card-location-modern {
-        padding: var(--space-2);
-    }
-
-    .card-image-modern,
-    .card-no-image-modern {
-        height: 80px;
-    }
-
-    .card-actions-right-modern {
-        gap: var(--space-1);
-    }
-
-    .card-action-btn-modern {
-        width: 32px;
-        height: 32px;
-        font-size: 0.75rem;
-    }
-}
-
-/* ============================================================
-   AJUSTES PARA VISTA DE TARJETAS EN TOOLBAR
-   ============================================================ */
-
-@media (max-width: 768px) {
-    .view-toggle-container {
-        padding: var(--space-2) var(--space-3);
-        gap: var(--space-2);
-    }
-
-    .view-toggle-label {
-        font-size: 0.625rem;
-    }
-
-    .view-switch {
-        width: 50px;
-        height: 30px;
-        border-radius: 15px;
-    }
-
-    .view-switch-option {
-        font-size: 0.6rem;
-    }
-
-    .view-switch-option.left {
-        left: 6px;
-    }
-
-    .view-switch-option.right {
-        right: 6px;
-    }
-}
-
-@media (max-width: 480px) {
-    .toolbar-right {
-        flex-direction: column;
-        gap: var(--space-2);
-        width: 100%;
-    }
-
-    .view-toggle-container {
-        justify-content: center;
-        order: -1;
-    }
-}
-
-/* ============================================================
-   UTILIDADES ADICIONALES PARA MÓVILES
-   ============================================================ */
-
-/* Evitar overflow horizontal en móviles */
-@media (max-width: 768px) {
-    .cards-view-container {
-        overflow-x: hidden;
-        width: 100%;
-    }
-
-    .cards-grid {
-        overflow-x: hidden;
-        width: 100%;
-    }
-
-    /* Asegurar que las tarjetas no se salgan del contenedor */
-    .apiario-card-modern {
-        min-width: 0;
-        word-wrap: break-word;
-        overflow-wrap: break-word;
-    }
-
-    /* Texto que puede ser muy largo */
-    .card-location-text-modern,
-    .card-coordinates-modern,
-    .card-info-value-modern {
-        word-break: break-word;
-        overflow-wrap: break-word;
-        hyphens: auto;
-    }
-}
-
-/* Temporal route responsive para tarjetas de trashumancia */
-@media (max-width: 576px) {
-    .temporal-route-modern {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: var(--space-2);
-        padding: var(--space-3);
-        background: linear-gradient(
-            135deg,
-            var(--gray-50) 0%,
-            var(--white) 100%
-        );
-        border-radius: var(--radius);
-        margin-bottom: var(--space-4);
-        border: 1px solid var(--border);
-    }
-
-    .temporal-route-modern i {
-        color: var(--primary);
-        font-size: 1rem;
-        padding: var(--space-2);
-        background: var(--white);
-        border-radius: var(--radius);
-        box-shadow: var(--shadow-sm);
-    }
-
-    .temporal-route-text-modern {
-        font-size: 0.75rem;
-        color: var(--text);
-        font-weight: 500;
-        word-break: break-word;
-        line-height: 1.4;
-    }
-}
-
-/* ============================================================
-   LÍMITE DE TEXTO EN TARJETAS
-   ============================================================ */
-
-/* Contenedor de badges con ajuste automático */
-.card-badges-modern {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-2);
-    margin: var(--space-4) 0;
-    padding: var(--space-3);
-    background: var(--gray-50);
-    border-radius: var(--radius);
-    border-left: 3px solid var(--primary);
-    width: 100%;
-    max-width: 100%;
-    overflow: hidden; /* Evitar desbordamiento */
-}
-
-/* Item individual de badge */
-.card-badge-item-modern {
-    display: flex;
-    align-items: flex-start;
-    gap: var(--space-2);
-    margin-bottom: var(--space-2);
-    width: 100%;
-    max-width: 100%;
-    box-sizing: border-box;
-}
-
-.card-badge-item-modern:last-child {
-    margin-bottom: 0;
-}
-
-/* Label del badge - ajustable */
-.card-badge-label-modern {
-    font-size: 0.75rem;
-    font-weight: 600;
-    color: var(--text-muted);
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    white-space: nowrap;
-    flex-shrink: 0;
-    min-width: 50px;
-    max-width: 80px; /* NUEVO: Límite máximo */
-    align-self: flex-start;
-}
-
-/* Badge que se ajusta automáticamente */
-.card-badge-item-modern .card-badge-modern {
-    max-width: calc(100% - 90px);
-    min-width: 0;
-    word-wrap: break-word;
-    overflow-wrap: break-word;
-    white-space: normal;
-    line-height: 1.3;
-    text-align: center;
-    padding: var(--space-1) var(--space-2);
-    height: auto;
-    min-height: 24px;
-    box-sizing: border-box;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 0.7rem;
-    overflow: hidden;
-}
-
-/* Responsive específico para badges */
 @media (max-width: 1200px) {
-    .card-badge-label-modern {
-        font-size: 0.625rem;
-        min-width: 45px;
-        max-width: 70px;
+    .page-header {
+        padding: var(--space-4) var(--space-6);
+        gap: 2rem;
     }
-
-    .card-badge-item-modern .card-badge-modern {
-        font-size: 0.6875rem;
-        max-width: calc(100% - 80px);
-        padding: 4px 8px;
-        min-height: 22px;
+    .tab-pane {
+        padding: var(--space-4) var(--space-6);
     }
-}
-
-@media (max-width: 992px) {
-    .card-badge-label-modern {
-        font-size: 0.625rem;
-        min-width: 40px;
-        max-width: 60px;
+    .data-table th,
+    .data-table td {
+        padding: var(--space-3);
     }
-
-    .card-badge-item-modern .card-badge-modern {
-        font-size: 0.525rem;
-        max-width: calc(100% - 70px);
-        padding: 3px 6px;
-        min-height: 20px;
-    }
-}
-
-@media (max-width: 768px) {
-    .card-badges-modern {
-        padding: var(--space-2);
-    }
-
-    .card-badge-label-modern {
-        font-size: 0.625rem;
-        min-width: 35px;
-        max-width: 50px;
-    }
-
-    .card-badge-item-modern .card-badge-modern {
-        font-size: 0.625rem;
-        max-width: calc(100% - 60px);
-        padding: 2px 4px;
-        min-height: 18px;
-        line-height: 1.2;
-    }
-}
-
-@media (max-width: 576px) {
-    .card-badge-item-modern {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: var(--space-1);
-    }
-
-    .card-badge-label-modern {
-        margin-bottom: 2px;
-        min-width: auto;
-        max-width: none;
-        font-size: 0.625rem;
-    }
-
-    .card-badge-item-modern .card-badge-modern {
-        max-width: 100%;
-        align-self: stretch;
-        padding: var(--space-1) var(--space-2);
-        font-size: 0.625rem;
-        min-height: 16px;
-    }
-}
-
-@media (max-width: 480px) {
-    .card-badge-label-modern {
-        font-size: 0.5625rem;
-    }
-
-    .card-badge-item-modern .card-badge-modern {
-        font-size: 0.65rem;
-        padding: 1px 4px;
-        min-height: 14px;
-        line-height: 1.1;
-    }
-}
-
-@media (max-width: 360px) {
-    .card-badge-label-modern {
-        font-size: 0.5rem;
-    }
-
-    .card-badge-item-modern .card-badge-modern {
-        font-size: 0.5rem;
-        padding: 1px 2px;
-        min-height: 12px;
-        line-height: 1;
-    }
-}
-
-/* Estilos por tipo de badge */
-.card-badge-modern.primary {
-    background: linear-gradient(
-        135deg,
-        var(--primary-light) 0%,
-        rgba(245, 167, 0, 0.15) 100%
-    );
-    color: var(--primary-dark);
-    border: 1px solid var(--primary);
-}
-
-.card-badge-modern.secondary {
-    background: linear-gradient(
-        135deg,
-        var(--gray-100) 0%,
-        var(--gray-200) 100%
-    );
-    color: var(--gray-700);
-    border: 1px solid var(--gray-300);
-}
-
-.card-badge-modern.info {
-    background: linear-gradient(
-        135deg,
-        var(--info-light) 0%,
-        rgba(59, 130, 246, 0.15) 100%
-    );
-    color: #1e40af;
-    border: 1px solid var(--info);
-}
-
-.card-badge-modern.warning {
-    background: linear-gradient(
-        135deg,
-        var(--warning-light) 0%,
-        rgba(245, 158, 11, 0.15) 100%
-    );
-    color: #92400e;
-    border: 1px solid var(--warning);
-}
-
-.tab-line {
-    display: flex;
-    align-items: center;
-    margin-bottom: 0.25rem;
-}
-
-.tab-line:last-child {
-    margin-bottom: 0;
-}
-
-.tab-line .tab-title {
-    margin: 0;
-}
-
-.tab-line .tab-badge {
-    margin-left: 0.5rem;
 }
 
 @media (max-width: 991px) {
@@ -3279,70 +2158,601 @@ a.page-link:hover {
         transform: translateX(-50%) !important;
     }
 
+    .modern-modal.new-modal {
+        max-width: 1300px !important;
+        min-width: 500px !important;
+        margin: 0 auto !important;
+        position: relative !important;
+        left: 35% !important;
+        transform: translateX(-33%) !important;
+    }
+
+    .modern-modal.new-modal-2 {
+        max-width: 1500px !important;
+        margin: 0 auto !important;
+        position: relative !important;
+        left: 50% !important;
+        transform: translateX(-50%) !important;
+    }
+
     .modal-dialog {
         width: 100% !important;
         align-items: center !important;
         justify-content: center !important;
     }
-
     .modern-modal .modal-header,
     .modern-modal .modal-body {
         padding: var(--space-4);
     }
+    .custom-modal-xl {
+        min-width: 95vw;
+        max-width: 98vw;
+    }
 }
 
 @media (max-width: 768px) {
+    .page-header {
+        flex-direction: column;
+        gap: var(--space-4);
+        padding: var(--space-4);
+    }
+    .header-main {
+        flex-direction: column;
+        gap: var(--space-4);
+        text-align: center;
+        width: 100%;
+    }
+    .header-stats {
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: var(--space-3);
+    }
+    .header-actions {
+        width: 100%;
+        justify-content: center;
+    }
+    .page-title {
+        font-size: 1.5rem;
+    }
+    .tabs-nav {
+        flex-direction: column;
+        position: static;
+    }
+    .tab-item {
+        padding: var(--space-4);
+        justify-content: center;
+    }
+    .tab-pane {
+        padding: var(--space-4);
+    }
+    .section-toolbar {
+        flex-direction: column;
+        gap: var(--space-4);
+        align-items: stretch;
+    }
+    .toolbar-left,
+    .toolbar-right {
+        justify-content: center;
+        text-align: center;
+        flex-direction: column;
+    }
+    .toolbar-right {
+        flex-wrap: wrap;
+    }
+    .action-btn {
+        justify-content: center;
+        min-width: 0;
+        font-size: 11px;
+        font-weight: 500;
+    }
+    .data-table {
+        font-size: 0.75rem;
+        min-width: 600px;
+        table-layout: auto;
+    }
+    .data-table th,
+    .data-table td {
+        padding: var(--space-2);
+        height: auto;
+    }
+    .preview-image {
+        width: 40px;
+        height: 30px;
+    }
+    .action-icon {
+        width: 28px;
+        height: 28px;
+    }
+    .numeric-cell {
+        min-width: 1.5rem;
+        height: 1.5rem;
+        font-size: 0.75rem;
+    }
+    .pagination-container {
+        flex-direction: column;
+        gap: var(--space-3);
+        padding: var(--space-4);
+    }
+    .pagination-controls {
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+    .empty-section {
+        padding: var(--space-8) var(--space-4);
+    }
+    .empty-icon {
+        width: 3rem;
+        height: 3rem;
+        font-size: 1.5rem;
+    }
+    .empty-title {
+        font-size: 1.125rem;
+    }
+    .cards-grid {
+        grid-template-columns: 1fr;
+        gap: var(--space-4);
+        padding: var(--space-3) var(--space-2);
+        margin: 0 auto;
+        max-width: 100%;
+    }
+    .apiario-card-modern {
+        width: 100%;
+        max-width: 100%;
+        margin: 0 auto;
+    }
+    .card-info-grid-modern {
+        grid-template-columns: 1fr;
+        gap: var(--space-3);
+    }
+    .card-badges-modern {
+        padding: var(--space-3);
+    }
+    .card-badge-item-modern {
+        flex-direction: row;
+        align-items: center;
+        gap: var(--space-2);
+    }
+    .card-badge-label-modern {
+        font-size: 0.625rem;
+        min-width: 35px;
+        max-width: 50px;
+    }
+    .card-badge-item-modern .card-badge-modern {
+        font-size: 0.625rem;
+        max-width: calc(100% - 60px);
+        padding: 2px 4px;
+        min-height: 18px;
+        line-height: 1.2;
+    }
+    .card-image-modern,
+    .card-no-image-modern {
+        height: 120px;
+    }
+    .card-actions-modern {
+        flex-direction: column;
+        gap: var(--space-3);
+        align-items: stretch;
+    }
+    .card-actions-left-modern,
+    .card-actions-right-modern {
+        justify-content: center;
+    }
     .modern-modal {
         max-width: 95vw !important;
         min-width: 90vw !important;
         margin: 0 auto !important;
-        left: 50% !important;
+        left: 48% !important;
         transform: translateX(-50%) !important;
     }
-
     .modal-dialog {
         padding: var(--space-2) !important;
     }
-
     .modern-modal .modal-header,
     .modern-modal .modal-body {
         padding: var(--space-3);
     }
+    .view-toggle-container {
+        padding: var(--space-2) var(--space-3);
+        gap: var(--space-2);
+    }
+    .view-toggle-label {
+        font-size: 0.625rem;
+    }
+    .view-switch {
+        width: 50px;
+        height: 30px;
+        border-radius: 15px;
+    }
+    .view-switch-option {
+        font-size: 0.6rem;
+    }
+    .view-switch-option.left {
+        left: 6px;
+    }
+    .view-switch-option.right {
+        right: 6px;
+    }
+    .opciones-menu {
+        gap: 0.5rem;
+        margin: 1rem 0 0.5rem 0;
+    }
+    .opcion-btn {
+        padding: 0.8rem 1rem;
+        font-size: 0.98rem;
+    }
+
+    .modern-modal.new-modal {
+        max-width: 400px !important;
+        min-width: 300px !important;
+        margin: 0 auto !important;
+        left: 40% !important;
+        transform: translateX(-50%) !important;
+    }
 }
 
-@media (max-width: 576px) {
+@media (max-width: 480px) {
+    .page-header {
+        padding: var(--space-3);
+    }
+    .tab-pane {
+        padding: var(--space-3);
+    }
+    .page-title {
+        font-size: 1.25rem;
+    }
+    .stat-item {
+        padding: var(--space-2) var(--space-3);
+        min-width: 3rem;
+    }
+    .stat-number {
+        font-size: 1.25rem;
+    }
+    .data-table {
+        min-width: 500px;
+    }
+    .data-table th,
+    .data-table td {
+        padding: var(--space-1) var(--space-2);
+    }
+    .preview-image {
+        width: 32px;
+        height: 24px;
+    }
+    .action-icon {
+        width: 24px;
+        height: 24px;
+    }
+    .action-btn {
+        padding: var(--space-2) var(--space-3);
+        font-size: 0.8125rem;
+    }
+    .section-title {
+        font-size: 1.125rem;
+    }
+    .badge {
+        font-size: 0.625rem;
+        padding: 2px var(--space-2);
+    }
+    .cards-grid {
+        grid-template-columns: 1fr;
+        gap: var(--space-3);
+        padding: var(--space-2);
+        margin: 0;
+        width: 100%;
+    }
+    .apiario-card-modern {
+        width: 100%;
+        max-width: 100%;
+        margin: 0;
+        border-radius: var(--radius);
+    }
+    .card-header-modern,
+    .card-body-modern {
+        padding: var(--space-3);
+    }
+    .card-title-modern {
+        font-size: 1rem;
+        margin-bottom: var(--space-2);
+    }
+    .card-title-modern i {
+        font-size: 1rem;
+        padding: var(--space-1);
+    }
+    .card-subtitle-modern {
+        font-size: 0.75rem;
+    }
+    .card-info-grid-modern {
+        grid-template-columns: 1fr;
+        gap: var(--space-2);
+        margin-bottom: var(--space-4);
+    }
+    .card-info-item-modern {
+        padding: var(--space-2);
+    }
+    .card-info-label-modern {
+        font-size: 0.625rem;
+    }
+    .card-info-value-modern {
+        font-size: 0.875rem;
+    }
+    .card-badges-modern {
+        padding: var(--space-2);
+        margin: var(--space-3) 0;
+    }
+    .card-badge-item-modern {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--space-1);
+        margin-bottom: var(--space-1);
+    }
+    .card-badge-label-modern {
+        font-size: 0.625rem;
+        margin-bottom: 2px;
+        min-width: auto;
+        max-width: none;
+    }
+    .card-badge-item-modern .card-badge-modern {
+        padding: 2px var(--space-1);
+        font-size: 0.625rem;
+        align-self: flex-start;
+        max-width: 100%;
+    }
+    .card-location-modern {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--space-2);
+        padding: var(--space-3);
+        margin-bottom: var(--space-4);
+    }
+    .card-location-text-modern,
+    .card-coordinates-modern {
+        font-size: 0.75rem;
+        width: 100%;
+        text-align: left;
+    }
+    .card-coordinates-modern {
+        word-break: break-all;
+        font-size: 0.625rem;
+    }
+    .card-image-modern,
+    .card-no-image-modern {
+        height: 100px;
+        margin-bottom: var(--space-3);
+    }
+    .card-no-image-modern i {
+        font-size: 1.5rem;
+        margin-bottom: var(--space-1);
+    }
+    .card-no-image-modern span {
+        font-size: 0.75rem;
+    }
+    .card-actions-modern {
+        flex-direction: column;
+        gap: var(--space-3);
+        align-items: stretch;
+        padding-top: var(--space-3);
+    }
+    .card-actions-left-modern {
+        justify-content: center;
+        order: 2;
+    }
+    .card-actions-right-modern {
+        justify-content: center;
+        order: 1;
+        flex-wrap: wrap;
+        gap: var(--space-2);
+    }
+    .card-action-btn-modern {
+        width: 36px;
+        height: 36px;
+        font-size: 0.875rem;
+    }
+    .card-checkbox-modern {
+        top: var(--space-3);
+        right: var(--space-3);
+    }
+    .card-checkbox-modern .checkmark {
+        width: 16px;
+        height: 16px;
+    }
     .modern-modal {
         max-width: 98vw !important;
         min-width: 95vw !important;
         margin: 0 auto !important;
-        left: 50% !important;
+        left: 47.% !important;
         transform: translateX(-50%) !important;
     }
-
     .modal-dialog {
         padding: var(--space-1) !important;
     }
-
     .modern-modal .modal-header,
     .modern-modal .modal-body {
         padding: var(--space-2);
     }
+    .toolbar-right {
+        flex-direction: column;
+        gap: var(--space-2);
+        width: 100%;
+    }
+    .view-toggle-container {
+        justify-content: center;
+        order: -1;
+    }
+    .modern-modal.new-modal {
+        max-width: 95vw !important;
+        min-width: 70vw !important;
+        margin: 0 auto !important;
+        left: 47% !important;
+        transform: translateX(-50%) !important;
+    }
 }
 
-.modal.show .modal-dialog {
-    transform: none !important;
+/* ============================================================
+   UTILIDADES
+   ============================================================ */
+.text-center {
+    text-align: center;
+}
+.text-left {
+    text-align: left;
+}
+.text-right {
+    text-align: right;
+}
+.font-mono {
+    font-family: var(--font-mono);
+}
+.font-semibold {
+    font-weight: 600;
+}
+.font-bold {
+    font-weight: 700;
+}
+.text-muted {
+    color: var(--text-muted);
+}
+.text-light {
+    color: var(--text-light);
+}
+.d-flex {
+    display: flex;
+}
+.d-none {
+    display: none;
+}
+.align-items-center {
+    align-items: center;
+}
+.justify-content-center {
+    justify-content: center;
+}
+.justify-content-between {
+    justify-content: space-between;
+}
+.gap-2 {
+    gap: var(--space-2);
+}
+.gap-3 {
+    gap: var(--space-3);
+}
+.gap-4 {
+    gap: var(--space-4);
+}
+.mb-0 {
+    margin-bottom: 0;
+}
+.mb-2 {
+    margin-bottom: var(--space-2);
+}
+.mb-4 {
+    margin-bottom: var(--space-4);
+}
+.mt-2 {
+    margin-top: var(--space-2);
+}
+.mt-4 {
+    margin-top: var(--space-4);
+}
+.p-2 {
+    padding: var(--space-2);
+}
+.p-4 {
+    padding: var(--space-4);
+}
+.px-3 {
+    padding-left: var(--space-3);
+    padding-right: var(--space-3);
+}
+.py-2 {
+    padding-top: var(--space-2);
+    padding-bottom: var(--space-2);
 }
 
-.modal.show .modern-modal {
-    left: 50% !important;
-    transform: translateX(-50%) !important;
+/* ============================================================
+   FOCUS Y ACCESIBILIDAD
+   ============================================================ */
+*:focus-visible {
+    outline: 2px solid var(--primary);
+    outline-offset: 2px;
+    border-radius: var(--radius-sm);
 }
 
-.modal-backdrop {
-    position: fixed !important;
-    top: 0 !important;
-    left: 0 !important;
-    width: 100% !important;
-    height: 100% !important;
-    z-index: 1040 !important;
+.action-btn:focus-visible,
+.action-icon:focus-visible,
+.card-action-btn-modern:focus-visible {
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-md);
 }
+
+.tab-item:focus-visible {
+    background: var(--primary-alpha);
+    color: var(--primary);
+}
+
+/* ============================================================
+   PRINT STYLES
+   ============================================================ */
+@media print {
+    .header-actions,
+    .toolbar-right,
+    .action-group,
+    .pagination-container,
+    .tabs-nav {
+        display: none !important;
+    }
+    .apiarios-container {
+        background: white;
+        box-shadow: none;
+    }
+    .page-title {
+        color: black !important;
+        font-size: 18pt;
+    }
+    .data-table {
+        font-size: 8pt;
+        min-width: auto;
+        table-layout: auto;
+    }
+    .data-table th,
+    .data-table td {
+        padding: 4pt;
+        border: 1px solid #ccc;
+        height: auto;
+    }
+    .badge {
+        background: #f0f0f0 !important;
+        color: #333 !important;
+        border: 1px solid #ccc;
+    }
+    .tab-pane {
+        padding: 0;
+    }
+    .tab-pane.active {
+        display: block !important;
+    }
+}
+
+/* ============================================================
+   ANIMACIONES ADICIONALES
+   ============================================================ */
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateX(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes pulse {
+    0%,
+    100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.02);
+    }
+}
+

@@ -1994,3 +1994,13 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 });
+
+document.addEventListener("DOMContentLoaded", function () {
+    const btnVerArchivadas = document.getElementById("btn-ver-archivadas");
+    if (btnVerArchivadas) {
+        btnVerArchivadas.addEventListener("click", function () {
+            const url = this.getAttribute("data-url");
+            if (url) window.location.href = url;
+        });
+    }
+});

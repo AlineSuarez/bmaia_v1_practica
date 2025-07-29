@@ -145,15 +145,17 @@
                                         <i class="fa-solid fa-save"></i>
                                     </button>
 
-                                    <button type="button" class="action-button delete-button eliminar-tarea"
-                                        data-id="{{ $task->id }}" title="Eliminar tarea">
-                                        <i class="fa-solid fa-trash"></i>
-                                    </button>
+                                    <!-- <button type="button" class="action-button delete-button eliminar-tarea"
+                                                                        data-id="{{ $task->id }}" title="Eliminar tarea">
+                                                                        <i class="fa-solid fa-trash"></i>
+                                                                    </button> -->
 
-                                    <form action="{{ route('tareas.archivar', $task->id) }}" method="POST" onsubmit="return confirm('¿Estás seguro de archivar esta tarea?');">
+                                    <form action="{{ route('tareas.archivar', $task->id) }}" method="POST"
+                                        onsubmit="return confirm('¿Estás seguro de archivar esta tarea?');"
+                                        style="display:inline;">
                                         @csrf
-                                        <button type="submit" class="btn btn-sm btn-warning">
-                                            <i class="fa fa-archive me-1"></i> Archivar
+                                        <button type="submit" class="action-button archive-button" title="Archivar tarea">
+                                            <i class="fa fa-archive"></i>
                                         </button>
                                     </form>
 
