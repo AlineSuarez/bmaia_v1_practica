@@ -45,9 +45,6 @@ class RefactorEliminacionCamposYTablas extends Migration
             if (Schema::hasColumn('colmenas', 'historial')) {
                 $table->dropColumn('historial');
             }
-            if (Schema::hasColumn('colmenas', 'deleted_at')) {
-                $table->dropColumn('deleted_at');
-            }
         });
 
         // Eliminar columnas de tareas_generales
@@ -146,7 +143,6 @@ class RefactorEliminacionCamposYTablas extends Migration
             $table->integer('numero_marcos')->nullable();
             $table->text('observaciones')->nullable();
             $table->text('historial')->nullable();
-            $table->softDeletes(); // deleted_at
         });
 
         Schema::table('tareas_generales', function (Blueprint $table) {
