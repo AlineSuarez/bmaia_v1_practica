@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'B-MaiA - Colmena de Tareas')
+@section('title', 'B-MaiA - Plan de Trabajo Anual')
 
 @section('content')
 

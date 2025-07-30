@@ -219,9 +219,9 @@
                         </div>
                         <h3 class="empty-title">No hay apiarios fijos</h3>
                         <p class="empty-description">Comienza creando tu primer apiario fijo</p>
-                        <a href="{{ route('apiarios.create') }}" class="action-btn primary large">
+                        <a href="{{ route('apiarios.create', ['tipo' => 'fijo']) }}" class="action-btn primary large">
                             <i class="fas fa-plus"></i>
-                            <span>Crear Primer Apiario</span>
+                            <span>Crear Apiario Fijo</span>
                         </a>
                     </div>
                 @endif
@@ -390,7 +390,7 @@
                             </div>
                             <h3 class="empty-title">No hay apiarios base</h3>
                             <p class="empty-description">Crea un apiario base para comenzar la trashumancia</p>
-                            <a href="{{ route('apiarios.create') }}?tipo=base" class="action-btn primary large">
+                            <a href="{{ route('apiarios.create', ['tipo' => 'trashumante']) }}" class="action-btn primary large">
                                 <i class="fas fa-plus"></i>
                                 <span>Crear Apiario Base</span>
                             </a>
@@ -448,8 +448,8 @@
                                 <tbody>
                                     @forelse($apiariosTemporales as $apiario)
                                         @php
-                                            $mov = $apiario->ultimoMovimientoDestino;
-                                            $apiarioOrigen = $mov ? $mov->apiarioOrigen : null;
+    $mov = $apiario->ultimoMovimientoDestino;
+    $apiarioOrigen = $mov ? $mov->apiarioOrigen : null;
                                         @endphp
                                         <tr>
                                             <td>
@@ -512,17 +512,6 @@
                                                         class="action-icon view" title="Ver Colmenas">
                                                         <i class="fas fa-cubes"></i>
                                                     </a>
-                                                    <!--       
-                                                            <a href="{{ route('colmenas.historicas.export', $apiario->id) }}"
-                                                                    class="action-icon download"
-                                                                    title="Exportar historial de todas las colmenas">
-                                                                    <i class="fas fa-file-alt"></i>
-                                                                </a>
-                                                            <a href="{{ route('generate.document', $apiario->id) }}"
-                                                                class="action-icon download" title="Descargar Detalle del Apiario">
-                                                                <i class="fas fa-download"></i>
-                                                            </a>                                                    
-                                                        -->
                                                     <a href="#" class="action-icon view cogs"
                                                         title="Opciones Detalle Movimiento" data-bs-toggle="modal"
                                                         data-bs-target="#modalOpcionesApiario" data-id="{{ $apiario->id }}">
@@ -643,15 +632,6 @@
                                                             class="action-icon view" title="Ver Colmenas Historicas">
                                                             <i class="fas fa-cubes"></i>
                                                         </a>
-                                                        <!-- <a href="{{ route('colmenas.historicas.export', $apiario->id) }}"
-                                                                        class="action-icon download"
-                                                                        title="Exportar historial de todas las colmenas">
-                                                                        <i class="fas fa-file-alt"></i>
-                                                                    </a>
-                                                                    <a href="{{ route('generate.document', $apiario->id) }}"
-                                                                    class="action-icon download" title="Descargar Detalle del Apiario">
-                                                                    <i class="fas fa-download"></i>
-                                                                    -->
                                                         <a href="#" 
                                                             class="action-icon view cogs"
                                                             title="Opciones del Apiario"

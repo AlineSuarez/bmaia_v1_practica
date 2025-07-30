@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'B-Maia - Dashboard Apícola')
+@section('title', 'B-Maia - Panel de Indicadores')
 
 @section('content')
 

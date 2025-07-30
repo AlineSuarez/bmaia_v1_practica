@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'B-Maia - Zonificación')
+@section('title', 'B-Maia - Localización de Apiarios')
 @section('content')
     <div class="zonificacion-container">
         <!-- Header con efecto panal -->

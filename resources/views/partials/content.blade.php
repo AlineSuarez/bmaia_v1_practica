@@ -52,7 +52,7 @@
     <div class="content-wrapper">
       <div class="hero-text">
         <h1>Bienvenido a B-Ma<span class="highlight">iA</span></span></h1>
-        <p class="tagline">Gestión apícola al servicio de la Apicultura</p>
+        <p class="tagline">Ecosistema de Apicultura Inteligente</p>
       </div>
     </div>
 

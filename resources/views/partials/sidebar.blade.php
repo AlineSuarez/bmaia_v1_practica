@@ -80,7 +80,7 @@
                                     <i class="fas fa-tasks"></i>
                                     <span class="apicola-icon-background"></span>
                                 </div>
-                                <span class="apicola-menu-text">Tareas</span>
+                                <span class="apicola-menu-text">Plan de Trabajo</span>
                                 <span class="apicola-active-indicator"></span>
                             </a>
                         </li>
@@ -91,7 +91,7 @@
                                     <i class="fas fa-map-marker-alt"></i>
                                     <span class="apicola-icon-background"></span>
                                 </div>
-                                <span class="apicola-menu-text">Zonificación</span>
+                                <span class="apicola-menu-text">Localización</span>
                                 <span class="apicola-active-indicator"></span>
                             </a>
                         </li>
@@ -114,7 +114,7 @@
                                     <i class="fas fa-chart-line"></i>
                                     <span class="apicola-icon-background"></span>
                                 </div>
-                                <span class="apicola-menu-text">Dashboard</span>
+                                <span class="apicola-menu-text">Indicadores</span>
                                 <span class="apicola-active-indicator"></span>
                             </a>
                         </li>
