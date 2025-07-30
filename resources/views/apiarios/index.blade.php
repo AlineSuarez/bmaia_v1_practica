@@ -351,6 +351,10 @@
                                                             class="action-icon download" title="Descargar Detalle del Apiario">
                                                             <i class="fas fa-download"></i>
                                                         </a>
+                                                        <button class="action-icon delete" data-bs-toggle="modal"
+                                                            data-bs-target="#deleteModal{{ $apiario->id }}" title="Eliminar">
+                                                            <i class="fas fa-trash"></i>
+                                                        </button>
                                                     </div>
                                                 </td>
                                             </tr>
@@ -648,8 +652,12 @@
                                                                     class="action-icon download" title="Descargar Detalle del Apiario">
                                                                     <i class="fas fa-download"></i>
                                                                     -->
-                                                        <a href="#" class="action-icon view cogs" title="Ver Detalle Movimiento"
-                                                            onclick="openDetalleMovimientoModal({{ $apiario->id }}); return false;">
+                                                        <a href="#" 
+                                                            class="action-icon view cogs"
+                                                            title="Opciones del Apiario"
+                                                            data-bs-toggle="modal"
+                                                            data-bs-target="#modalOpcionesApiario"
+                                                            data-id="{{ $apiario->id }}">
                                                             <i class="fas fa-cogs"></i>
                                                         </a>
                                                     </div>
@@ -773,6 +781,29 @@
                 </div>
             </div>
         @endif
+
+        <!-- Modal de Eliminación -->
+        <div class="modal fade" id="deleteModal{{ $apiario->id }}" tabindex="-1" aria-labelledby="deleteModalLabel{{ $apiario->id }}" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content modern-modal">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="deleteModalLabel{{ $apiario->id }}">Eliminar Apiario</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                    </div>
+                    <div class="modal-body">
+                        ¿Estás seguro que deseas eliminar <strong>{{ $apiario->nombre }}</strong>?
+                    </div>
+                    <div class="modal-footer">
+                        <form action="{{ route('apiarios.destroy', $apiario->id) }}" method="POST">
+                            @csrf
+                            @method('DELETE')
+                            <button type="button" class="action-btn secondary" data-bs-dismiss="modal">Cancelar</button>
+                            <button type="submit" class="action-btn danger">Eliminar</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
     @endforeach
 
     <!-- Modales para apiarios temporales -->
