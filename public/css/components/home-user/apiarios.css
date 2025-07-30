@@ -2559,7 +2559,7 @@ a.page-link:focus {
         max-width: 98vw !important;
         min-width: 95vw !important;
         margin: 0 auto !important;
-        left: 47.% !important;
+        left: 47% !important;
         transform: translateX(-50%) !important;
     }
     .modal-dialog {
@@ -2756,3 +2756,16 @@ a.page-link:focus {
     }
 }
 
+#modalOpcionesApiario.show {
+    background: rgba(0, 0, 0, 0.493) !important;
+    transition: background 0.2s;
+}
+
+#modalOpcionesApiario .modal-dialog {
+    z-index: 1051;
+}
+
+#modalOpcionesApiario .modal-content {
+    z-index: 1052;
+    position: relative;
+}
