@@ -130,7 +130,8 @@
                                 @endif
                             </div>
 
-                            <!-- Estadísticas -->
+                            <!-- Estadísticas 
+                             
                             <div class="stats-section">
                                 <h6
                                     style="margin: 0; font-weight: 700; font-size: var(--font-base); display: flex; align-items: center; gap: var(--spacing-2);">
@@ -156,6 +157,8 @@
                                     </div>
                                 </div>
                             </div>
+                            -->
+                            
                         </div>
                     </div>
                 </div>
@@ -167,7 +170,7 @@
                     <div class="card-header">
                         <h5 class="card-title">
                             <i class="fas fa-clipboard-list card-title-icon"></i>
-                            Evaluación PCC Actual
+                            Estado de Desarrollo de la Colmena
                         </h5>
                     </div>
 
@@ -195,7 +198,7 @@
                                     <div class="pcc-icon">
                                         <i class="fas fa-baby"></i>
                                     </div>
-                                    <h6 class="pcc-title">PCC1 – Desarrollo Cámara de Cría</h6>
+                                    <h6 class="pcc-title">Desarrollo de la Cámara de Cría</h6>
                                 </div>
                                 <div class="pcc-content">
                                     @if($pcc1)
@@ -250,7 +253,7 @@
                                     <div class="pcc-icon">
                                         <i class="fas fa-crown"></i>
                                     </div>
-                                    <h6 class="pcc-title">PCC2 – Calidad de la Reina</h6>
+                                    <h6 class="pcc-title">Estado de la Reina</h6>
                                 </div>
                                 <div class="pcc-content">
                                     @if($pcc2)
@@ -284,7 +287,7 @@
                                     <div class="pcc-icon">
                                         <i class="fas fa-utensils"></i>
                                     </div>
-                                    <h6 class="pcc-title">PCC3 – Estado Nutricional</h6>
+                                    <h6 class="pcc-title">Estado Nutricional</h6>
                                 </div>
                                 <div class="pcc-content">
                                     @if($pcc3)
@@ -314,7 +317,7 @@
                                     <div class="pcc-icon">
                                         <i class="fas fa-bug"></i>
                                     </div>
-                                    <h6 class="pcc-title">PCC4 – Varroa</h6>
+                                    <h6 class="pcc-title">Control de Varroa</h6>
                                 </div>
                                 <div class="pcc-content">
                                     @if($pcc4)
@@ -352,7 +355,7 @@
                                     <div class="pcc-icon">
                                         <i class="fas fa-microscope"></i>
                                     </div>
-                                    <h6 class="pcc-title">PCC5 – Nosemosis</h6>
+                                    <h6 class="pcc-title">Control de Nosema</h6>
                                 </div>
                                 <div class="pcc-content">
                                     @if($pcc5)
@@ -386,7 +389,7 @@
                                     <div class="pcc-icon">
                                         <i class="fas fa-tractor"></i>
                                     </div>
-                                    <h6 class="pcc-title">PCC6 – Índice de Cosecha</h6>
+                                    <h6 class="pcc-title">Índice de Cosecha</h6>
                                 </div>
                                 <div class="pcc-content">
                                     @if($pcc6)
@@ -412,7 +415,7 @@
                                     <div class="pcc-icon">
                                         <i class="fas fa-snowflake"></i>
                                     </div>
-                                    <h6 class="pcc-title">PCC7 – Preparación Invernada</h6>
+                                    <h6 class="pcc-title">Preparación para la Invernada</h6>
                                 </div>
                                 <div class="pcc-content">
                                     @if($pcc7)
@@ -480,7 +483,7 @@
                             @else
                                 <span class="text-amber-600 font-bold flex items-center">
                                     <i class="fas fa-exclamation-triangle mr-2"></i>
-                                    Primero ingresa PCC 2 3, 4 o 5 en el Cuaderno de Campo
+                                    Debes ingresar datos en el Cuaderno de Campo
                                 </span>
                             @endif
                         </div>

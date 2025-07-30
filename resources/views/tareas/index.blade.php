@@ -22,8 +22,7 @@
         <div class="apiario-wrapper">
             <!-- Encabezado principal -->
             <header class="apiario-header">
-                <h1 class="apiario-title"><span>Colmena de Tareas</span></h1>
-                <p class="apiario-subtitle">Organiza y gestiona tus tareas con eficiencia</p>
+                <h1 class="apiario-title"><span>Plan de Trabajo Anual</span></h1>
             </header>
 
             <!-- Controles de vista y administración -->

@@ -49,7 +49,7 @@
                     <i class="fas fa-warehouse"></i>
                 </div>
                 <div class="tab-content">
-                    <span class="tab-title">Apiarios Fijos/Permanentes</span>
+                    <span class="tab-title">Apiarios Fijos</span>
                 </div>
                 <div class="tab-badge">{{ count($apiariosFijos) }}</div>
             </button>

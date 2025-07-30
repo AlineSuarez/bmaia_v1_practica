@@ -38,7 +38,7 @@
                     @endif
                     <div class="stat-item">
                         <div class="stat-icon"><i class="fas fa-layer-group"></i></div>
-                        <span>Grupos: {{ $colmenasPorApiarioBase->count() }}</span>
+                        <span>N° Apiarios Base: {{ $colmenasPorApiarioBase->count() }}</span>
                     </div>
                 </div>
             </div>

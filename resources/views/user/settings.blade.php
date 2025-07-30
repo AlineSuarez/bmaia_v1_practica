@@ -9,8 +9,8 @@
     <div class="container">
         <header class="settings-header">
             <h1>Configuración de la Cuenta</h1>
-            <p class="settings-description">Gestiona todos los aspectos de tu cuenta de BeeMaiA para optimizar tu
-                experiencia apícola.</p>
+            <!--<p class="settings-description">Gestiona todos los aspectos de tu cuenta de BeeMaiA para optimizar tu
+                experiencia apícola.</p> -->
         </header>
 
         <!-- Navegación de Pestañas -->
@@ -20,12 +20,10 @@
                     <a class="nav-link active" id="user-data-tab" data-bs-toggle="tab" href="#user-data" role="tab"
                         aria-controls="user-data" aria-selected="true">Datos del Usuario/a</a>
                 </li>
-                <!--
                 <li class="nav-item" role="presentation">
                     <a class="nav-link" id="billing-tab" data-bs-toggle="tab" href="#billing" role="tab"
                         aria-controls="billing" aria-selected="false">Datos de Facturación</a>
                 </li>
--->
                 <li class="nav-item" role="presentation">
                     <a class="nav-link" id="security-tab" data-bs-toggle="tab" href="#security" role="tab"
                         aria-controls="security" aria-selected="false">Seguridad</a>
@@ -579,7 +577,7 @@
                                                 <ul class="plan-features">
                                                     <li>Vive la experiencia durante 16 días de prueba</li>
                                                     <li>Acceso limitado a funcionalidades básicas</li>
-                                                    <li>Ideal para conocer la plataforma</li>
+                                                    <!--<li>Ideal para conocer la plataforma</li>-->
                                                 </ul>
                                             </td>
                                             <td>Prueba gratuita</td>
@@ -598,7 +596,7 @@
                                                     <li>1 Usuario Administrador</li>
                                                     <li>Apiarios ilimitados hasta 299 colmenas</li>
                                                     <li>Acceso a todas las funcionalidades básicas</li>
-                                                    <li>Soporte técnico por correo electrónico</li>
+                                                    <li>Soporte técnico estándar</li>
                                                 </ul>
                                             </td>
                                             <td>
@@ -623,9 +621,8 @@
                                             <td>
                                                 <ul class="plan-features">
                                                     <li>1 Usuario Administrador</li>
-                                                    <li>1 Colaborador</li>
                                                     <li>Apiarios ilimitados hasta 799 colmenas</li>
-                                                    <li>Acceso a todas las funcionalidades</li>
+                                                    <li>Acceso a todas las funcionalidades básicas</li>
                                                     <li>Soporte técnico prioritario</li>
                                                 </ul>
                                             </td>
@@ -651,9 +648,8 @@
                                             <td>
                                                 <ul class="plan-features">
                                                     <li>1 Usuario Administrador</li>
-                                                    <li>3 Colaboradores</li>
                                                     <li>Apiarios ilimitados y sin límite de colmenas</li>
-                                                    <li>Acceso a todas las funcionalidades premium</li>
+                                                    <li>Acceso a todas las funcionalidades básicas</li>
                                                     <li>Soporte técnico prioritario 24/7</li>
                                                     <li>Capacitación personalizada</li>
                                                 </ul>
@@ -711,8 +707,8 @@
 
                             <div class="form-actions mt-4">
                                 <button type="submit" class="btn btn-success">Suscribirse Ahora</button>
-                                <a href="#" class="btn btn-outline-primary ms-2" data-bs-toggle="modal"
-                                    data-bs-target="#planComparisonModal">Comparar Planes</a>
+                                <!--<a href="#" class="btn btn-outline-primary ms-2" data-bs-toggle="modal"
+                                    data-bs-target="#planComparisonModal">Comparar Planes</a> -->
                             </div>
                         </form>
                     </div>

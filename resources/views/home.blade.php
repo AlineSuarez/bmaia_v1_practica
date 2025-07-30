@@ -128,7 +128,7 @@
           </div>
         </div>
         <div class="metric-content">
-          <div class="metric-title">Tareas</div>
+          <div class="metric-title">Plan de Trabajo</div>
           <div class="metric-value">{{ $t_urgentes + $t_pendientes + $t_progreso }}</div>
           <div class="metric-progress">
           <div class="progress-bar" style="width: 45%"></div>
@@ -163,7 +163,7 @@
         </div>
         <div class="metric-content">
           <div class="metric-title">Zonificación</div>
-          <div class="metric-value">Áreas</div>
+          <div class="metric-value">Distribución de Colmenas</div>
           <div class="metric-progress">
           <div class="progress-bar" style="width: 85%"></div>
           </div>
@@ -205,12 +205,12 @@
         </div>
         <div class="metric-content">
           <div class="metric-title">Análisis</div>
-          <div class="metric-value">Datos</div>
+          <div class="metric-value">Indicadores</div>
           <div class="metric-progress">
           <div class="progress-bar" style="width: 70%"></div>
           </div>
           <div class="metric-detail">
-          Estadísticas y tendencias apícolas
+          Estadísticas
           </div>
         </div>
         </a>
@@ -348,9 +348,9 @@
     <div class="weather-section">
       <div class="section-header">
       <h2 id="weather-title-js"></h2>
-      <div class="section-actions" style="display: flex; align-items: center;">
+      <!--<div class="section-actions" style="display: flex; align-items: center;">
         <input type="date" id="weather-date-picker" style="margin-right:10px;">
-      </div>
+      </div> -->
       </div>
       <div id="weather-cards-js" class="weather-cards">
       <div class="weather-card">
