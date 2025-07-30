@@ -242,7 +242,7 @@
                             </h2>
                             <span class="info-text" style="margin-left: 1rem; color: #888; font-size: 0.95em;">
                                 <i class="fas fa-info-circle"></i>
-                                Selecciona un apiario base para trasladar a un apiario temporal
+                                Selecciona un apiario base para crear un apiario temporal
                             </span>
                         </div>
 
@@ -409,7 +409,7 @@
                         </div>
                         <div class="toolbar-right">
                             <!-- Botón Trasladar (ahora aquí) -->
-                            <button id="trasladarColmenasButton" class="action-btn warning" disabled>
+                            <button id="trasladarColmenasButton" class="action-btn warning" title="Para crear un apiario temporal debes seleccionar los apiarios bases que usarás" disabled>
                                 <i class="fas fa-arrow-right"></i>
                                 <span>Trasladar</span>
                             </button>
@@ -539,7 +539,7 @@
                                                         <i class="fas fa-route"></i>
                                                     </div>
                                                     <h4 class="empty-title">No hay apiarios temporales</h4>
-                                                    <p class="empty-description">Los apiarios trasladados aparecerán aquí</p>
+                                                    <p class="empty-description">Los apiarios temporales creados para trashumancia aparecerán aquí</p>
                                                 </div>
                                             </td>
                                         </tr>

@@ -576,8 +576,7 @@
                                             <td>
                                                 <ul class="plan-features">
                                                     <li>Vive la experiencia durante 16 días de prueba</li>
-                                                    <li>Acceso limitado a funcionalidades básicas</li>
-                                                    <!--<li>Ideal para conocer la plataforma</li>-->
+                                                    <li>Acceso a todas las funcionalidades básicas</li>
                                                 </ul>
                                             </td>
                                             <td>Prueba gratuita</td>

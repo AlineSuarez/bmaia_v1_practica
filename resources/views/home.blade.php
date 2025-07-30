@@ -50,7 +50,7 @@
         </div>
         <div class="stat-info">
         <span class="stat-label">Hoy</span>
-        <span class="stat-value">@date(now())</span>
+        <span class="stat-value">{{ date('d M, Y') }}</span>
         </div>
       </div>
       <div class="quick-stat">

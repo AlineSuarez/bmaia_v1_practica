@@ -26,7 +26,6 @@
         </a>
 
         <h1 class="fade-in-up">
-            <span>Sistema de Gestión Apícola</span>
             Editar Apiario
         </h1>
 
@@ -107,19 +106,37 @@
                     <label for="tipo_manejo">
                         <i class="fas fa-cogs fa-fw"></i> Tipo de Manejo
                     </label>
-                    <input type="text" class="form-control" id="tipo_manejo" name="tipo_manejo"
-                        value="{{ $apiario->tipo_manejo }}" required placeholder="Ej: Orgánico, Convencional"
-                        maxlength="150">
+                    <select class="form-control" id="tipo_manejo" name="tipo_manejo" required>
+                        <option value="">Seleccione una opción</option>
+                        <option value="Convencional" {{ $apiario->tipo_manejo == 'Convencional' ? 'selected' : '' }}>
+                            Convencional
+                        </option>
+                        <option value="Orgánico" {{ $apiario->tipo_manejo == 'Orgánico' ? 'selected' : '' }}>
+                            Orgánico
+                        </option>
+                    </select>
                     <div class="custom-tooltip" data-tooltip-for="tipo_manejo">Define el método de manejo que utilizas en
                         este apiario.</div>
                 </div>
                 <div class="form-group col-md-6">
                     <label for="objetivo_produccion">
-                        <i class="fas fa-bullseye fa-fw"></i> Objetivo de Producción
+                        <i class="fas fa-bullseye fa-fw"></i> Actividad del Apiario
                     </label>
-                    <input type="text" class="form-control" id="objetivo_produccion" name="objetivo_produccion"
-                        value="{{ $apiario->objetivo_produccion }}" required placeholder="Ej: Miel, Polen, Propóleo"
-                        maxlength="150">
+                    <select class="form-control" id="objetivo_produccion" name="objetivo_produccion" required>
+                        <option value="">Seleccione una opción</option>
+                        <option value="Producción" {{ $apiario->objetivo_produccion == 'Producción' ? 'selected' : '' }}>
+                            Producción (miel, polen, propóleo, jalea real, cera de abeja)
+                        </option>
+                        <option value="Material biológico" {{ $apiario->objetivo_produccion == 'Material biológico' ? 'selected' : '' }}>
+                            Material biológico
+                        </option>
+                        <option value="Polinización" {{ $apiario->objetivo_produccion == 'Polinización' ? 'selected' : '' }}>
+                            Polinización
+                        </option>
+                        <option value="Otras" {{ $apiario->objetivo_produccion == 'Otras' ? 'selected' : '' }}>
+                            Otras (apiterapia, autoconsumo o investigación y educación)
+                        </option>
+                    </select>
                     <div class="custom-tooltip" data-tooltip-for="objetivo_produccion">Indica los productos principales que
                         esperas obtener de este apiario.</div>
                 </div>

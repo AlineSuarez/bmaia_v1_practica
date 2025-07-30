@@ -43,7 +43,7 @@
                 <i class="fas fa-seedling"></i>
               </div>
               <div class="step-header-content">
-                <h4>PCC3 – Estado Nutricional</h4>
+                <h4>Estado Nutricional</h4>
                 <small class="text-muted">Evaluación completa de la alimentación y reservas nutricionales de la colmena</small>
               </div>
               <div class="step-badge">

@@ -26,7 +26,6 @@
         </a>
 
         <h1 class="fade-in-up">
-            <span>Sistema de Gestión Apícola</span>
             Agregar Nuevo Apiario
         </h1>
 
@@ -63,7 +62,7 @@
                 </div>
                 <div class="form-group col-md-6">
                     <label for="registro_sag">
-                        <i class="fas fa-id-card fa-fw"></i> N° Registro SAG (FRADA)
+                        <i class="fas fa-id-card fa-fw"></i> N° Registro SAG (SIPEC Apícola)
                     </label>
                     <input type="text" name="registro_sag" id="registro_sag" class="form-control"
                         placeholder="Ej: FJ-001, TR-002" value="{{ old('registro_sag') }}" required maxlength="50">
@@ -103,18 +102,37 @@
                     <label for="tipo_manejo">
                         <i class="fas fa-cogs fa-fw"></i> Tipo de Manejo
                     </label>
-                    <input type="text" name="tipo_manejo" id="tipo_manejo" class="form-control"
-                        placeholder="Convencional, Orgánico..." value="{{ old('tipo_manejo') }}" required maxlength="150">
+                    <select name="tipo_manejo" id="tipo_manejo" class="form-control" required>
+                        <option value="">Seleccione una opción</option>
+                        <option value="Convencional" {{ old('tipo_manejo') == 'Convencional' ? 'selected' : '' }}>
+                            Convencional
+                        </option>
+                        <option value="Orgánico" {{ old('tipo_manejo') == 'Orgánico' ? 'selected' : '' }}>
+                            Orgánico
+                        </option>
+                    </select>
                     <div class="custom-tooltip" data-tooltip-for="tipo_manejo">Define el método de manejo que utilizas en
                         este apiario.</div>
                 </div>
                 <div class="form-group col-md-6">
                     <label for="objetivo_produccion">
-                        <i class="fas fa-bullseye fa-fw"></i> Objetivo de Producción
+                        <i class="fas fa-bullseye fa-fw"></i> Actividad del Apiario
                     </label>
-                    <input type="text" name="objetivo_produccion" id="objetivo_produccion" class="form-control"
-                        placeholder="Producción, Polinización..." value="{{ old('objetivo_produccion') }}" required
-                        maxlength="150">
+                    <select name="objetivo_produccion" id="objetivo_produccion" class="form-control" required>
+                        <option value="">Seleccione una opción</option>
+                        <option value="Producción" {{ old('objetivo_produccion') == 'Producción' ? 'selected' : '' }}>
+                            Producción (miel, polen, propóleo, jalea real, cera de abeja)
+                        </option>
+                        <option value="Material biológico" {{ old('objetivo_produccion') == 'Material biológico' ? 'selected' : '' }}>
+                            Material biológico
+                        </option>
+                        <option value="Polinización" {{ old('objetivo_produccion') == 'Polinización' ? 'selected' : '' }}>
+                            Polinización
+                        </option>
+                        <option value="Otras" {{ old('objetivo_produccion') == 'Otras' ? 'selected' : '' }}>
+                            Otras (apiterapia, autoconsumo o investigación y educación)
+                        </option>
+                    </select>
                     <div class="custom-tooltip" data-tooltip-for="objetivo_produccion">Indica los productos principales que
                         esperas obtener de este apiario.</div>
                 </div>
@@ -145,11 +163,12 @@
                     <div class="custom-tooltip" data-tooltip-for="comuna">Selecciona la comuna específica donde se encuentra
                         el apiario.</div>
                 </div>
-                <div class="form-group">
+                <!--<div class="form-group">
                     <label for="localizacion">Localización (dirección o referencia)</label>
                     <input type="text" name="localizacion" id="localizacion" class="form-control"
                         placeholder="Ej: Camino a…" value="{{ old('localizacion') }}">
                 </div>
+-->
             </div>
 
             <!-- Mapa y coordenadas -->

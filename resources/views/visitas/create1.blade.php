@@ -106,9 +106,21 @@
                             </span>
                             Motivo de la Visita
                         </label>
-                        <input type="text" id="motivo" name="motivo" class="field-input text-input"
-                            placeholder="Ej: Inspección rutinaria, mantenimiento, cosecha, etc." value="{{ old('motivo', $visitaGeneral->motivo ?? '') }}"
-                            required>
+                        <select id="motivo" name="motivo" class="field-input text-input" required>
+                            <option value="">Seleccione una opción</option>
+                            <option value="Inspección de rutina" {{ old('motivo', $visitaGeneral->motivo ?? '') == 'Inspección de rutina' ? 'selected' : '' }}>
+                                Inspección de rutina
+                            </option>
+                            <option value="Inspección sanitaria" {{ old('motivo', $visitaGeneral->motivo ?? '') == 'Inspección sanitaria' ? 'selected' : '' }}>
+                                Inspección sanitaria
+                            </option>
+                            <option value="Mantenimiento" {{ old('motivo', $visitaGeneral->motivo ?? '') == 'Mantenimiento' ? 'selected' : '' }}>
+                                Mantenimiento
+                            </option>
+                            <option value="Otros" {{ old('motivo', $visitaGeneral->motivo ?? '') == 'Otros' ? 'selected' : '' }}>
+                                Otros
+                            </option>
+                        </select>
                         <span class="field-helper">Describa brevemente el propósito de su visita</span>
                     </div>
                 </div>
@@ -148,8 +160,8 @@
                                     </span>
                                     Nombres
                                 </label>
-                                <input type="text" class="field-input readonly-input" value="{{ auth()->user()->name }}"
-                                    readonly>
+                                <input type="text" name="nombres" class="field-input"
+                                    value="{{ old('nombres', auth()->user()->name) }}" required>
                             </div>
 
                             <div class="form-field">
@@ -162,8 +174,8 @@
                                     </span>
                                     Apellidos
                                 </label>
-                                <input type="text" class="field-input readonly-input"
-                                    value="{{ auth()->user()->last_name }}" readonly>
+                                <input type="text" name="apellidos" class="field-input"
+                                    value="{{ old('apellidos', auth()->user()->last_name) }}" required>
                             </div>
 
                             <div class="form-field">
@@ -179,8 +191,8 @@
                                     </span>
                                     RUT
                                 </label>
-                                <input type="text" class="field-input readonly-input" value="{{ auth()->user()->rut }}"
-                                    readonly>
+                                <input type="text" name="rut" class="field-input"
+                                    value="{{ old('rut', auth()->user()->rut) }}" required>
                             </div>
                         </div>
                     </div>
@@ -193,7 +205,7 @@
                                         d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
                                 </svg>
                             </div>
-                            <span class="card-title">Contacto & Firma</span>
+                            <span class="card-title">Contacto</span>
                         </div>
                         <div class="field-group">
                             <div class="form-field">
@@ -206,23 +218,11 @@
                                     </span>
                                     Teléfono
                                 </label>
-                                <input type="text" class="field-input readonly-input" value="{{ auth()->user()->telefono }}"
-                                    readonly>
+                                <input type="text" name="telefono" class="field-input"
+                                    value="{{ old('telefono', auth()->user()->telefono) }}" required>
                             </div>
 
-                            <div class="form-field">
-                                <label class="field-label">
-                                    <span class="label-icon">
-                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                            <path d="M3 15v4c0 1.1.9 2 2 2h14a2 2 0 0 0 2-2v-4M17 9l-5 5-5-5M12 12.8V2.5" />
-                                        </svg>
-                                    </span>
-                                    Firma Digital
-                                </label>
-                                <input type="text" class="field-input readonly-input" value="{{ auth()->user()->firma }}"
-                                    readonly>
-                                <span class="field-helper">Su firma digital registrada en el sistema</span>
-                            </div>
+                            
                         </div>
                     </div>
                 </div>

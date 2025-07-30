@@ -6,7 +6,7 @@
                 <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 15h2v-6h-2v6zm0-8h2V7h-2v2z"/>
             </svg>
         </div>
-        <h2 class="section-title">PCC5 - Presencia de Nosemosis</h2>
+        <h2 class="section-title">Presencia de Nosemosis</h2>
         <div class="section-decoration"></div>
     </div>
     <div class="field-group">

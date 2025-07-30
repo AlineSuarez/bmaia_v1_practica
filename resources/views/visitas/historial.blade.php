@@ -187,7 +187,6 @@
                                                         <th><i class="fas fa-id-card me-1"></i> RUT</th>
                                                         <th><i class="fas fa-comment me-1"></i> Motivo</th>
                                                         <th><i class="fas fa-phone me-1"></i> Teléfono</th>
-                                                        <th><i class="fas fa-signature me-1"></i> Firma</th>
                                                         <th><i class="fas fa-clock me-1"></i> Duración</th>
                                                         <th><i class="fas fa-clipboard me-1"></i> Acciones</th>
                                                     </tr>
@@ -209,7 +208,6 @@
                                                             <td class="rut-cell">{{ $visita->visitaGeneral->rut ?? '---' }}</td>
                                                             <td class="motivo-cell">{{ $visita->visitaGeneral->motivo ?? '---' }}</td>
                                                             <td class="phone-cell">{{ $visita->visitaGeneral->telefono ?? '---' }}</td>
-                                                            <td class="signature-cell">{{ $visita->visitaGeneral->firma ?? '---' }}</td>
                                                             <td class="duration-cell">
                                                                 <span class="duration-badge">{{ $visita->duracion_visita ?? 'No especificado' }}</span>
                                                             </td>

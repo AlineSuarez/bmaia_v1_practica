@@ -411,8 +411,12 @@ class VisitaController extends Controller
     public function storeGeneral(Request $request, Apiario $apiario)
     {
         $data = $request->validate([
-            'fecha'  => 'required|date',
-            'motivo' => 'required|string',
+            'fecha'    => 'required|date',
+            'motivo'   => 'required|string|max:255',
+            'nombres'  => 'required|string|max:255',
+            'apellidos'=> 'required|string|max:255',
+            'rut'      => 'required|string|max:20',
+            'telefono' => 'required|string|max:20',
         ]);
 
         $user = auth()->user();
@@ -425,13 +429,11 @@ class VisitaController extends Controller
         ];
 
         $fieldsGeneral = [
-            'motivo'                    => $data['motivo'],
-            'nombres'                   => $user->name,
-            'apellidos'                 => $user->last_name,
-            'rut'                       => $user->rut,
-            'telefono'                  => $user->telefono,
-            'firma'                     => $user->firma,
-            'observacion_primera_visita' => $request->input('observacion_primera_visita'),
+            'motivo'                     => $data['motivo'],
+            'nombres'                    => $data['nombres'],
+            'apellidos'                  => $data['apellidos'],
+            'rut'                        => $data['rut'],
+            'telefono'                   => $data['telefono'],
         ];
 
         if ($request->filled('visita_id')) {
