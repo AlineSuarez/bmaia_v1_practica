@@ -1,7 +1,7 @@
 
 @extends('layouts.app')
 
-@section('title', 'Tareas Archivadas - B-MaiA')
+@section('title', 'Tareas Descartadas - B-MaiA')
 
 @section('content')
     <head>
@@ -16,9 +16,9 @@
                     <div class="header-left">
                         <h1 class="header-title">
                             <i class="fa fa-archive"></i>
-                            <span>Tareas Archivadas</span>
+                            <span>Tareas Descartadas</span>
                         </h1>
-                        <p class="header-subtitle">Restaura tus tareas archivadas cuando las necesites nuevamente</p>
+                        <p class="header-subtitle">Restaura tus tareas descartadas cuando las necesites nuevamente</p>
                     </div>
                     <div class="header-actions">
                         <a href="{{ route('tareas') }}" class="btn-volver" title="Volver a mis tareas">

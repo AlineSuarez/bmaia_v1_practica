@@ -55,7 +55,7 @@
         <!-- Mapa con controles mejorados -->
         <div class="map-section">
             <div class="section-header">
-                <h2 class="section-title"><i class="fa-solid fa-map"></i> Mapa de Apiarios</h2>
+                <h2 class="section-title"><i class="fa-solid fa-map"></i>Localización de Apiarios</h2>
                 <div class="map-controls">
                     <div class="map-filter">
                         <label class="toggle-switch">
@@ -223,7 +223,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap">
-    <!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.min.css"> -->
     <link rel="stylesheet" href="{{ asset('css/components/home-user/zonificacion.css') }}">
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>

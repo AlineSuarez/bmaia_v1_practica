@@ -477,9 +477,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
         const map = L.map("map").setView([-33.4489, -70.6693], 6);
         const beeIcon = L.icon({
-            iconUrl: "/img/bee_icon.svg",
-            iconSize: [52, 52],
-            iconAnchor: [26, 26],
+            iconUrl: "/img/apiario.webp",
+            iconSize: [38, 38],
+            iconAnchor: [20, 20],
             popupAnchor: [0, -32],
         });
 

@@ -194,9 +194,6 @@ function actualizarLista(tareasGenerales) {
                             <option value="Completada" ${
                                 task.estado === "Completada" ? "selected" : ""
                             }>Completada</option>
-                            <option value="Vencida" ${
-                                task.estado === "Vencida" ? "selected" : ""
-                            }>Vencida</option>
                         </select>
                     </td>
                     <td>

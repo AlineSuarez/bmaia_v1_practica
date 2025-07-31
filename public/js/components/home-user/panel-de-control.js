@@ -132,6 +132,17 @@ document.addEventListener("DOMContentLoaded", function () {
         "En 5 días",
     ];
 
+    // Cambia el array de días por los nombres de los días de la semana en español
+    const diasSemana = [
+        "Domingo",
+        "Lunes",
+        "Martes",
+        "Miércoles",
+        "Jueves",
+        "Viernes",
+        "Sábado",
+    ];
+
     function reverseGeocode(lat, lon, callback) {
         fetch(`/reverse-geocode?lat=${lat}&lon=${lon}`)
             .then((res) => res.json())
@@ -164,15 +175,27 @@ document.addEventListener("DOMContentLoaded", function () {
     let dayKeys = [];
     let daysArray = [];
 
+    function formatFecha(fechaISO) {
+        const fecha = new Date(fechaISO);
+        const dia = String(fecha.getDate()).padStart(2, "0");
+        const mes = String(fecha.getMonth() + 1).padStart(2, "0");
+        const anio = fecha.getFullYear();
+        return `${dia}/${mes}/${anio}`;
+    }
+
     function renderMainCards() {
         let html = "";
         for (let i = 0; i < 6; i++) {
             if (!daysArray[i]) {
                 // Si no hay datos para este día, muestra tarjeta vacía
+                let fechaFormateada = dayKeys[i] ? formatFecha(dayKeys[i]) : "";
+                let nombreDia = dayKeys[i]
+                    ? diasSemana[new Date(dayKeys[i]).getDay()]
+                    : "";
                 html += `<div class="weather-card${i === 0 ? " today" : ""}">
       <div class="weather-header">
-      <div class="weather-day">${dias[i]}</div>
-      <div class="weather-date">${dayKeys[i] || ""}</div>
+      <div class="weather-day">${nombreDia}</div>
+      <div class="weather-date">${fechaFormateada}</div>
       </div>
       <div class="weather-icon">
       <i class="fas fa-question" style="color:#ccc;font-size:2.2em"></i>
@@ -187,10 +210,12 @@ document.addEventListener("DOMContentLoaded", function () {
             const day = daysArray[i];
             const main = day.weather[0].main;
             const color = iconColors[main] || "#FFD600";
+            let fechaFormateada = formatFecha(dayKeys[i]);
+            let nombreDia = diasSemana[new Date(dayKeys[i]).getDay()];
             html += `<div class="weather-card${i === 0 ? " today" : ""}">
       <div class="weather-header">
-      <div class="weather-day">${dias[i]}</div>
-      <div class="weather-date">${dayKeys[i]}</div>
+      <div class="weather-day">${nombreDia}</div>
+      <div class="weather-date">${fechaFormateada}</div>
       </div>
       <div class="weather-icon">
       <i class="fas ${
@@ -219,11 +244,13 @@ document.addEventListener("DOMContentLoaded", function () {
     function renderSelectedDay(dateStr) {
         const idx = dayKeys.indexOf(dateStr);
         let html = "";
+        let fechaFormateada = formatFecha(dateStr);
+        let nombreDia = diasSemana[new Date(dateStr).getDay()];
         if (idx === -1) {
             html = `<div class="weather-card">
       <div class="weather-header">
-      <div class="weather-day">Sin datos</div>
-      <div class="weather-date">${dateStr}</div>
+      <div class="weather-day">${nombreDia}</div>
+      <div class="weather-date">${fechaFormateada}</div>
       </div>
       <div class="weather-icon">
       <i class="fas fa-question" style="color:#ccc;font-size:2.2em"></i>
@@ -239,8 +266,8 @@ document.addEventListener("DOMContentLoaded", function () {
             const color = iconColors[main] || "#FFD600";
             html = `<div class="weather-card">
       <div class="weather-header">
-      <div class="weather-day">Seleccionado</div>
-      <div class="weather-date">${dayKeys[idx]}</div>
+      <div class="weather-day">${nombreDia}</div>
+      <div class="weather-date">${fechaFormateada}</div>
       </div>
       <div class="weather-icon">
       <i class="fas ${

@@ -39,17 +39,13 @@
 
                 <!-- Nuevos botones separados -->
                 <div class="admin-controls">
-                    <!-- <button id="btn-tareas-predefinidas" class="btn-miel" data-bs-toggle="modal"
-                                        data-bs-target="#tareasPredefinidasModal" title="Agregar tareas predefinidas">
-                                        <i class="fa fa-list-check"></i> Tareas Predefinidas
-                                    </button> -->
                     <button id="btn-crear-tareas" class="btn-miel" data-bs-toggle="modal" data-bs-target="#crearTareasModal"
                         title="Crear tareas personalizadas">
                         <i class="fa fa-plus-circle"></i> Crear Tareas
                     </button>
                     <button id="btn-ver-archivadas" class="btn-miel" type="button" title="Ver tareas archivadas"
                         data-url="{{ route('tareas.archivadas') }}">
-                        <i class="fa fa-archive"></i> Ver Archivadas
+                        <i class="fa fa-archive"></i> Ver Tareas Descartadas
                     </button>
                 </div>
             </section>

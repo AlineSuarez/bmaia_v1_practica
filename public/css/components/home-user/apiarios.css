@@ -158,23 +158,23 @@ body {
     flex-direction: column;
     align-items: center;
     padding: var(--space-3) var(--space-4);
-    background: var(--bg-alt);
+    background: #f5a700b7;
     border-radius: var(--radius);
-    border: 1px solid var(--border);
+    border: 2px solid var(--primary);
     min-width: 4rem;
 }
 
 .stat-number {
     font-size: 1.5rem;
     font-weight: 700;
-    color: var(--primary);
+    color: var(--white);
     line-height: 1;
 }
 
 .stat-label {
     font-size: 0.75rem;
     font-weight: 500;
-    color: var(--text-muted);
+    color: var(--white);
     text-transform: uppercase;
     letter-spacing: 0.05em;
     margin-top: var(--space-1);

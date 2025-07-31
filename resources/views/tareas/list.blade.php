@@ -115,7 +115,7 @@
                             <td class="status-cell">
                                 <select class="status-select estado" data-id="{{ $task->id }}"
                                     aria-label="Estado para {{ $task->nombre }}">
-                                    @foreach(['Pendiente', 'En progreso', 'Completada', 'Vencida'] as $estado)
+                                    @foreach(['Pendiente', 'En progreso', 'Completada'] as $estado)
                                         <option value="{{ $estado }}" @selected($task->estado === $estado)>
                                             {{ $estado }}
                                         </option>
@@ -145,17 +145,12 @@
                                         <i class="fa-solid fa-save"></i>
                                     </button>
 
-                                    <!-- <button type="button" class="action-button delete-button eliminar-tarea"
-                                                                        data-id="{{ $task->id }}" title="Eliminar tarea">
-                                                                        <i class="fa-solid fa-trash"></i>
-                                                                    </button> -->
-
                                     <form action="{{ route('tareas.archivar', $task->id) }}" method="POST"
-                                        onsubmit="return confirm('¿Estás seguro de archivar esta tarea?');"
+                                        onsubmit="return confirm('¿Estás seguro que deseas descartar esta tarea?');"
                                         style="display:inline;">
                                         @csrf
-                                        <button type="submit" class="action-button archive-button" title="Archivar tarea">
-                                            <i class="fa fa-archive"></i>
+                                        <button type="submit" class="action-button archive-button" title="Descartar tarea">
+                                            <i class="fa fa-x"></i>
                                         </button>
                                     </form>
 

@@ -39,7 +39,7 @@
         {{-- Tablero con las 4 columnas --}}
         <div class="kanban-board-wrapper">
             <div class="kanban-board">
-                @foreach (['Pendiente', 'En progreso', 'Completada', 'Vencida'] as $estado)
+                @foreach (['Pendiente', 'En progreso', 'Completada'] as $estado)
                     <div class="kanban-column" data-status="{{ $estado }}">
 
                         {{-- Header de la columna --}}
@@ -156,7 +156,6 @@
                             <option value="Pendiente">Pendiente</option>
                             <option value="En progreso">En progreso</option>
                             <option value="Completada">Completada</option>
-                            <option value="Vencida">Vencida</option>
                         </select>
                     </div>
                 </div>

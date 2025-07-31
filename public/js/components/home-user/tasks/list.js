@@ -394,7 +394,6 @@ function formatStatusOption(option) {
         Pendiente: '<i class="fa fa-hourglass-start text-secondary"></i>',
         "En progreso": '<i class="fa fa-spinner text-primary"></i>',
         Completada: '<i class="fa fa-check-circle text-success"></i>',
-        Vencida: '<i class="fa fa-exclamation-circle text-danger"></i>',
     };
 
     return $(`<span>${icons[option.id] || ""} ${option.text}</span>`);
@@ -615,7 +614,7 @@ function generarOpcionesPrioridad(prioridadSeleccionada) {
 }
 
 function generarOpcionesEstado(estadoSeleccionado) {
-    const estados = ["Pendiente", "En progreso", "Completada", "Vencida"];
+    const estados = ["Pendiente", "En progreso", "Completada"];
     return estados
         .map(
             (estado) =>

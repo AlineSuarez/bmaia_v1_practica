@@ -529,12 +529,12 @@ body {
 }
 
 .archive-button {
-    background: var(--gradient-info);
+    background: var(--danger-500);
     color: #fff;
-    transition: background 0.2s;
+    transition: background 0.2s; 
 }
 .archive-button:hover {
-    background: linear-gradient(135deg, var(--info-600), var(--info-700));
+    background: var(--danger-700);
     color: #fff;
     transform: translateY(-1px);
     box-shadow: var(--shadow-sm);

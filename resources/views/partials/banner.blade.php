@@ -17,23 +17,21 @@
                 <a href="#inicio" style="color: rgb(212, 159, 0); font-weight: bold;" class="nav-link active">Inicio</a>
             </li>
             <li class="nav-item">
-                <a href="#maia" style="color: rgb(212, 159, 0); font-weight: bold;" class="nav-link">Sobre B-MaiA</a>
+                <a href="#mision" style="color: rgb(212, 159, 0); font-weight: bold;" class="nav-link">Nuestra
+                    Misión</a>
             </li>
             <li class="nav-item">
                 <a href="#herramientas" style="color: rgb(212, 159, 0); font-weight: bold;"
                     class="nav-link">Herramientas</a>
             </li>
-            <!-- <li class="nav-item">
-                <a href="#descarga" style="color: rgb(212, 159, 0); font-weight: bold;" class="nav-link">Descarga</a>
-            </li> -->
             <li class="nav-item">
                 <a href="#como-funciona" style="color: rgb(212, 159, 0); font-weight: bold;" class="nav-link">Cómo
                     funciona</a>
             </li>
-            <!-- <li class="nav-item">
-                <a href="#testimonios" style="color: rgb(212, 159, 0); font-weight: bold;"
-                    class="nav-link">Testimonios</a>
-            </li> -->
+            <li class="nav-item">
+                <a href="#logros" style="color: rgb(212, 159, 0); font-weight: bold;"
+                    class="nav-link">Logros</a>
+            </li>
             <li class="nav-item">
                 <a href="#contacto" style="color: rgb(212, 159, 0); font-weight: bold;" class="nav-link">Contacto</a>
             </li>

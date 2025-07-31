@@ -7,11 +7,8 @@
   <head>
     <link href="{{ asset('./css/components/home-user/dashboard.css') }}" rel="stylesheet">
   </head>
-  <!-- Verificar carga del middleware 
-    <p>Formato en config: {{ config('app.date_format') }}</p>
-    <p>Hoy es: @date(now())</p> -->
 
-  <!-- Loader con animación de panal (fuera del contenedor principal) -->
+  <!-- Loader con animación de panal -->
   <div id="dashboard-loader">
     <div class="loader-container">
     <div class="honeycomb-loader">
@@ -38,6 +35,7 @@
   <div id="dashboard-container">
     <!-- Contenido del Dashboard -->
     <div class="dashboard-wrapper" id="main-contenload" style="display: none;">
+
     <!-- Header del Dashboard -->
     <header class="dashboard-header">
       <div class="header-content">
@@ -77,6 +75,7 @@
     <!-- Grid de Métricas Principales -->
     <div class="metrics-container">
       <div class="metrics-grid">
+
       <!-- 1. Apiarios Card -->
       <div class="metric-card apiarios">
         <a href="{{ route('apiarios') }}" class="metric-link">
@@ -163,7 +162,7 @@
         </div>
         <div class="metric-content">
           <div class="metric-title">Zonificación</div>
-          <div class="metric-value">Distribución de Colmenas</div>
+          <div class="metric-value">Localización de apiarios</div>
           <div class="metric-progress">
           <div class="progress-bar" style="width: 85%"></div>
           </div>
@@ -174,28 +173,7 @@
         </a>
       </div>
 
-      <!-- 5. Sistema Experto Card -->
-      <!-- <div class="metric-card sistema-experto">
-    <a href="{{ route('sistemaexperto.index') }}" class="metric-link">
-    <div class="metric-header">
-    <div class="metric-icon">
-    <i class="fas fa-brain"></i>
-    </div>
-    </div>
-    <div class="metric-content">
-    <div class="metric-title">Sistema Experto</div>
-    <div class="metric-value">IA</div>
-    <div class="metric-progress">
-    <div class="progress-bar" style="width: 80%"></div>
-    </div>
-    <div class="metric-detail">
-    Asistencia inteligente para decisiones
-    </div>
-    </div>
-    </a>
-    </div> -->
-
-      <!-- 6. Dashboard Analytics Card -->
+      <!-- 5. Dashboard Analytics Card -->
       <div class="metric-card dashboard-analytics">
         <a href="{{ route('dashboard') }}" class="metric-link">
         <div class="metric-header">
@@ -215,142 +193,14 @@
         </div>
         </a>
       </div>
+
       </div>
     </div>
-
-    <!-- Secciones del Dashboard -->
-    <!-- <div class="dashboard-sections">
-    <div class="section-row">
-    <!-- Actividad Reciente
-    <div class="dashboard-section">
-    <div class="section-header">
-    <h2>Actividad Reciente</h2>
-    <div class="section-actions">
-    <div class="dashboard-dropdown">
-    <button class="btn-filter">
-    <i class="fas fa-filter"></i>
-    <span>Filtrar</span>
-    </button>
-    <div class="dashboard-dropdown-menu">
-    <a href="#" class="dashboard-dropdown-item active">Todas</a>
-    <a href="#" class="dashboard-dropdown-item">Inspecciones</a>
-    <a href="#" class="dashboard-dropdown-item">Tareas</a>
-    <a href="#" class="dashboard-dropdown-item">Sistema</a>
-    </div>
-    </div>
-    </div>
-    </div>
-    <div class="section-content">
-    <div class="activity-list">
-    @if(isset($actividades) && count($actividades) > 0)
-    @foreach($actividades as $actividad)
-    <div class="activity-item">
-    <div class="activity-time-line">
-    <div class="activity-time">{{ $actividad->fecha ?? '10:30 AM' }}</div>
-    <div class="activity-line"></div>
-    </div>
-    <div class="activity-content">
-    <div class="activity-icon {{ $actividad->tipo ?? 'inspeccion' }}">
-    <i
-    class="fas fa-{{ $actividad->tipo == 'tarea' ? 'tasks' : ($actividad->tipo == 'sistema' ? 'cog' : 'clipboard-check') }}"></i>
-    </div>
-    <div class="activity-details">
-    <div class="activity-text">{{ $actividad->descripcion ?? 'Inspección completada en Apiario Norte' }}
-    </div>
-    <div class="activity-meta">
-    <span class="activity-type">{{ ucfirst($actividad->tipo ?? 'Inspección') }}</span>
-    <span class="activity-user">{{ $actividad->usuario ?? 'Juan Pérez' }}</span>
-    </div>
-    </div>
-    </div>
-    </div>
-    @endforeach
-    @else
-    <div class="empty-state">
-    <div class="empty-icon">
-    <i class="fas fa-clipboard-list"></i>
-    </div>
-    <p>No hay actividades recientes</p>
-    <button class="btn-action">Crear actividad</button>
-    </div>
-    @endif
-    </div>
-    </div>
-    </div>
-
-    Próximas Tareas
-    <div class="dashboard-section">
-    <div class="section-header">
-    <h2>Próximas Tareas</h2>
-    <div class="section-actions">
-    <button class="btn-add">
-    <i class="fas fa-plus"></i>
-    <span>Nueva tarea</span>
-    </button>
-    <a href="{{ route('tareas') }}" class="btn-view-all">Ver todas</a>
-    </div>
-    </div>
-    <div class="section-content">
-    <div class="tasks-list">
-    @if(isset($proximasTareas) && count($proximasTareas) > 0)
-    @foreach($proximasTareas as $tarea)
-    <div class="task-item priority-{{ $tarea->prioridad ?? 'media' }}">
-    <div class="task-content">
-    <div class="task-header">
-    <div class="task-priority">
-    <span class="priority-indicator"></span>
-    <span class="priority-text">{{ ucfirst($tarea->prioridad ?? 'Media') }}</span>
-    </div>
-    <div class="task-date">
-    <i class="far fa-calendar-alt"></i>
-    <span>{{ $tarea->fecha_limite ?? 'Mañana' }}</span>
-    </div>
-    </div>
-    <div class="task-body">
-    <h3 class="task-title">{{ $tarea->titulo ?? 'Inspección de colmenas' }}</h3>
-    <p class="task-description">
-    {{ $tarea->descripcion ?? 'Revisar estado de las colmenas en el apiario principal' }}
-    </p>
-    </div>
-    <div class="task-footer">
-    <div class="task-status">
-    <span
-    class="status-badge {{ $tarea->estado ?? 'pendiente' }}">{{ ucfirst($tarea->estado ?? 'Pendiente') }}</span>
-    </div>
-    <div class="task-actions">
-    <button class="task-action-btn">
-    <i class="fas fa-check-circle"></i>
-    </button>
-    <button class="task-action-btn">
-    <i class="fas fa-edit"></i>
-    </button>
-    </div>
-    </div>
-    </div>
-    </div>
-    @endforeach
-    @else
-    <div class="empty-state">
-    <div class="empty-icon">
-    <i class="fas fa-check-circle"></i>
-    </div>
-    <p>No hay tareas pendientes</p>
-    <button class="btn-action">Crear tarea</button>
-    </div>
-    @endif
-    </div>
-    </div>
-    </div>
-    </div>
-    </div> -->
 
     <!-- Sección de Clima y Condiciones -->
     <div class="weather-section">
       <div class="section-header">
       <h2 id="weather-title-js"></h2>
-      <!--<div class="section-actions" style="display: flex; align-items: center;">
-        <input type="date" id="weather-date-picker" style="margin-right:10px;">
-      </div> -->
       </div>
       <div id="weather-cards-js" class="weather-cards">
       <div class="weather-card">
@@ -369,6 +219,7 @@
       </div>
       </div>
     </div>
+
     </div>
   </div>
 

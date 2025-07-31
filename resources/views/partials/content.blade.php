@@ -7,11 +7,11 @@
 
 <button id="back-to-top"><span class="fa fa-arrow-up"></span></button>
 
-<!-- Modal de sitio en desarrollo -->
-<div id="development-modal" class="development-modal">
+<!-- Modal de bienvenida al ecosistema -->
+<div id="development-modal" class="development-modal" style="display:none;">
   <div class="development-modal-content">
     <div class="development-modal-header">
-      <h2>Muy pronto</h2>
+      <h2>¡Bienvenido al ecosistema B-MaiA!</h2>
     </div>
     <div class="development-modal-body">
       <div class="hexagon-pattern"></div>
@@ -24,16 +24,15 @@
       <div class="development-icon">
         <img src="{{ asset('img/abeja.png') }}" width="160px" height="130px" alt="Fondo apícola">
       </div>
-      <p>¡Bienvenido a B-Ma<span class="highlight">iA</span>!</p>
-      <p>Presentamos B-MaiA: el nuevo sistema de gestión apícola al servicio de la Apicultura Chilena
-        <i style="font-weight:bold;">(versión
-          Beta)</i>
-      </p>
-      <p>En Bee Fractal estamos desarrollando una plataforma que te ayudará a gestionar tus colmenas de forma más
-        eficiente.
-      </p>
-      <p style="font-weight:bold;">¡Mantente informado y sé el primero en probarlo!</p>
-
+      <p>¡Descubre B-Ma<span class="highlight">iA</span>!</p>
+      <p>El nuevo ecosistema apícola al servicio de la Apicultura Chilena.</p>
+      <p>En Bee Fractal hemos desarrollado una plataforma que te ayudará a gestionar tus colmenas de forma más
+        eficiente, sencilla y práctica.</p>
+      <p style="font-weight:bold;">¡Mantente informado y aprovecha todas las herramientas que tenemos para ti!</p>
+      <div style="margin-top: 20px;">
+        <input type="checkbox" id="dont-show-again">
+        <label for="dont-show-again" style="font-size: 0.95rem;">No volver a mostrar</label>
+      </div>
     </div>
     <div class="development-modal-footer">
       <button id="close-modal-btn">Entendido</button>
@@ -46,7 +45,6 @@
     <!-- Imagen de fondo -->
     <img src="{{ asset('img/home/home_panel.jpg') }}" alt="Fondo Apícola" class="background-image">
 
-    <!-- Overlay gradient for depth -->
     <div class="premium-overlay"></div>
 
     <div class="content-wrapper">
@@ -61,422 +59,36 @@
   </div>
 </section>
 
-<section id="maia-ecosystem" class="maia-section">
+<section id="mision" class="maia-section" style="padding-top: 80px; padding-bottom: 80px;">
   <div class="maia-container">
-    <!-- Section 1: Sobre B-MaiA -->
-    <div class="maia-content-section">
-      <h1 class="section-title">Sobre B-Ma<span class="highlight">iA</span></h1>
-      <div class="maia-content-row">
-        <div class="maia-text">
-          <p>
-            Imagina tener un sistema disponible las 24 horas para ayudarte con tus colmenas.
-          </p>
-          <p>
-            B-MaiA es un sistema de gestión apícola diseñado pensando en los apicultores chilenos. B-MaiA
-            entiende
-            los desafíos
-            de los productores y está listo para responder tus consultas técnicas, ayudarte a llevar registros por voz
-            sin importar
-            dónde estés, y simplificar la gestión de tu apiario de forma rápida y sencilla.
-          </p>
-          <p>
-            Con B-MaiA, olvídate de las dudas y el papeleo. Pregúntale sobre los primeros signos de una enfermedad y
-            obtén
-            información
-            al instante. Dedica más tiempo a tus abejas y deja que B-MaiA te facilite el día a día en tu negocio.
-          </p>
-        </div>
-        <div class="maia-video-container">
-          <div class="video-showcase">
-            <div class="device smartphone">
-              <div class="smartphone-frame">
-                <div class="smartphone-screen">
-                  <video class="feature-video" autoplay loop muted playsinline
-                    poster="https://files.cdn-files-a.com/uploads/10098964/800_6761a84cd11e2-thumbnail.jpg">
-                    <source type="video/mp4"
-                      src="https://cdn-media.f-static.net/uploads/10098964/normal_6761a84cd11e2.mp4">
-                  </video>
-                </div>
-              </div>
-            </div>
-            <div class="glow-effect"></div>
-            <!-- Enhanced decorative elements -->
-            <div class="floating-hexagon floating-hexagon-lg" style="top: -40px; right: 20px;"></div>
-            <div class="floating-hexagon floating-hexagon-sm" style="bottom: 30px; left: -20px;"></div>
-            <div class="floating-hexagon floating-hexagon-md" style="top: 50%; right: -30px;"></div>
-            <div class="floating-particle" style="top: 20%; left: 10%;"></div>
-            <div class="floating-particle" style="bottom: 30%; right: 15%;"></div>
-          </div>
-        </div>
-      </div>
-      <!-- Animated line -->
-      <div class="animated-line"></div>
+    <h2 class="section-title">Nuestra Misión</h2>
+    <div class="intro-text">
+      <p>
+        En B-MaiA, creemos que la apicultura es una actividad fundamental para el desarrollo sostenible, la
+        biodiversidad y la seguridad alimentaria de Chile. Nuestra misión es <strong>simplificar la vida de los
+          apicultores y apicultoras de Chile</strong>, entregando herramientas tecnológicas que permitan gestionar
+        sus colmenas de manera más eficiente, segura y rentable.
+      </p>
+      <p>
+        Nos inspira el trabajo diario de quienes cuidan las abejas y el entorno natural. Por eso, desarrollamos
+        soluciones digitales que se adaptan a la realidad de la apicultura chilena, integrando innovación,
+        conocimiento técnico y una profunda vocación de servicio.
+      </p>
+      <p>
+        Aspiramos a que cada apicultor y apicultora, sin importar el tamaño de su operación, pueda acceder a
+        información clara, recomendaciones personalizadas y procesos automatizados que faciliten la toma de
+        decisiones y mejoren la productividad, la salud de las colmenas y la calidad de vida en el campo.
+      </p>
+      <p>
+        Trabajamos para que la tecnología sea una aliada cercana, intuitiva y confiable, que permita a la apicultura
+        nacional avanzar hacia un futuro más sustentable, resiliente y conectado.
+      </p>
     </div>
-
-    <!-- Section 2: + Simple -->
-    <div class="maia-content-section">
-      <h1 class="section-title"><i class="fas fa-plus" style="font-weight: 800; font-size:2.2rem; color:#ffd54f;"></i>
-        Simple</h1>
-      <div class="maia-content-row">
-        <div class="maia-text">
-          <p>
-            Registra datos por voz, en tiempo real y sin necesidad de internet. Nuestra plataforma todo en uno, 100%
-            digital está
-            siempre contigo, accesible desde cualquier dispositivo.
-          </p>
-          <!-- Enhanced benefits list -->
-          <div class="benefits-container">
-            <h3 class="benefits-title">Nuestro distintivo:</h3>
-            <ul class="benefits-list">
-              <li>
-                <span class="benefit-check">✓</span>
-                Registro de datos por voz
-              </li>
-              <li>
-                <span class="benefit-check">✓</span>
-                Funciona en lugares sin conexión a internet
-              </li>
-              <li>
-                <span class="benefit-check">✓</span>
-                Interfaz intuitiva diseñada para apicultores
-              </li>
-              <li>
-                <span class="benefit-check">✓</span>
-                Sincronización automática
-              </li>
-              <li>
-                <span class="benefit-check">✓</span>
-                Fácil de usar
-              </li>
-              <li>
-                <span class="benefit-check">✓</span>
-                Conexión por Bluetooth con otros dispositivos
-              </li>
-              <li>
-                <span class="benefit-check">✓</span>
-                Aplicación multiplataforma
-              </li>
-            </ul>
-          </div>
-          <p style="margin-top: 20px;">
-            ¿Quieres simplificar la gestión de tu apiario y aumentar tu producción?
-          </p>
-          <p style="margin-top: 20px;">
-            Prueba B-MaiA gratis por 16 días y vive la experiencia!
-          </p>
-          <div class="cta-buttons">
-            <a onclick="openModal('register-modal')" class="cta-button primary" style="cursor: pointer;">Comienza tu
-              prueba gratis</a>
-          </div>
-        </div>
-        <div class="maia-video-container">
-          <div class="video-showcase">
-            <!-- Monitor completo con soporte y base -->
-            <div class="device macbook">
-              <div class="macbook-lid">
-                <div class="macbook-screen">
-                  <video class="feature-video" autoplay loop muted playsinline
-                    poster="https://files.cdn-files-a.com/uploads/10098964/800_6761a23826d13-thumbnail.jpg">
-                    <source type="video/mp4"
-                      src="https://cdn-media.f-static.net/uploads/10098964/normal_6761a23826d13.mp4">
-                  </video>
-                </div>
-              </div>
-              <div class="macbook-stand"></div>
-              <div class="macbook-base"></div>
-            </div>
-            <div class="glow-effect glow-effect-alt"></div>
-            <!-- Enhanced decorative elements -->
-            <div class="floating-hexagon floating-hexagon-sm" style="top: -30px; left: 20px;"></div>
-            <div class="floating-hexagon floating-hexagon-lg" style="bottom: 20px; right: -15px;"></div>
-            <div class="floating-hexagon floating-hexagon-md" style="top: 40%; left: -25px;"></div>
-            <div class="floating-particle" style="top: 25%; right: 10%;"></div>
-            <div class="floating-particle" style="bottom: 40%; left: 5%;"></div>
-          </div>
-        </div>
-      </div>
-      <!-- Animated line -->
-      <div class="animated-line"></div>
-    </div>
-
-    <!-- Section 3: + Sostenible -->
-    <div class="maia-content-section">
-      <h1 class="section-title"><i class="fas fa-plus" style="font-weight: 800; font-size:2.2rem; color:#ffd54f;"></i>
-        Sostenible</h1>
-      <div class="maia-content-row">
-        <div class="maia-text">
-          <p>
-            B-MaiA te ayuda a mejorar la sostenibilidad ambiental, disminuyendo la mortandad de abejas por varroa y
-            nosema, y la
-            pérdida por enjambres. Además te ayuda a reducir el número de viajes, el gasto de combustible y las
-            emisiones de CO2.
-          </p>
-          <!-- Enhanced sustainability metrics -->
-          <div class="metrics-container">
-            <div class="metric-item">
-              <div class="metric-value">-10%</div>
-              <div class="metric-label">Reducción de viajes, uso de combustible y emisiones de CO2</div>
-            </div>
-            <div class="metric-item">
-              <div class="metric-value">-30%</div>
-              <div class="metric-label">Reducción en mortandad de abejas</div>
-            </div>
-            <div class="metric-item">
-              <div class="metric-value">-40%</div>
-              <div class="metric-label">Previene la formación y pérdida de enjambres</div>
-            </div>
-          </div>
-          <p class="sustainability-note">
-            Nuestro sistema contribuye activamente a la preservación de las abejas, esenciales para la polinización y la
-            biodiversidad. ¿Quieres mejorar la salud de tus colmenas?
-          </p>
-          <!-- <div class="cta-buttons">
-            <a href="#descarga" class="cta-button primary">¡Descarga la App y descubre la diferencia!</a>
-          </div> -->
-        </div>
-        <div class="maia-video-container">
-          <div class="video-showcase">
-            <!-- iPad mejorado con cámara centrada y sin botón home -->
-            <div class="device ipad">
-              <div class="ipad-frame">
-                <div class="ipad-screen">
-                  <video class="feature-video" autoplay loop muted playsinline
-                    poster="https://files.cdn-files-a.com/uploads/10098964/800_6761de379c2f5-thumbnail.jpg">
-                    <source type="video/mp4"
-                      src="https://cdn-media.f-static.net/uploads/10098964/normal_6761de379c2f5.mp4">
-                  </video>
-                </div>
-              </div>
-            </div>
-            <div class="glow-effect glow-effect-sustainable"></div>
-            <!-- Enhanced decorative elements -->
-            <div class="floating-hexagon floating-hexagon-lg" style="top: -35px; right: 30px;"></div>
-            <div class="floating-hexagon floating-hexagon-md" style="bottom: 25px; left: -10px;"></div>
-            <div class="floating-hexagon floating-hexagon-sm" style="top: 30%; right: -20px;"></div>
-            <div class="floating-particle" style="top: 15%; left: 20%;"></div>
-            <div class="floating-particle" style="bottom: 20%; right: 25%;"></div>
-          </div>
-        </div>
-      </div>
-      <!-- Animated line -->
-      <div class="animated-line"></div>
-    </div>
-
-    <!-- NEW SECTION: Eficiencia y Productividad -->
-    <div class="maia-content-section">
-      <h1 class="section-title"><i class="fas fa-plus" style="font-weight: 800; font-size:2.2rem; color:#ffd54f;"></i>
-        Práctico</h1>
-      <div class="maia-content-row">
-        <div class="maia-text">
-          <p>
-            Gana tiempo y enfócate en tus abejas. B-MaiA te ayuda a optimizar tu trabajo, reduciendo tareas
-            administrativas para que
-            dediques tu energía a lo que realmente importa: el cuidado de tus colmenas y la producción de miel.
-          </p>
-          <p>
-            Con B-MaiA registra tus observaciones en menos de 10 segundos!
-          </p>
-
-          <div class="impact-cards">
-            <div class="impact-card">
-              <div class="impact-header">
-                <div class="impact-icon">
-                  <i class="fas fa-clock"></i>
-                </div>
-                <h4>Tiempo en Campo</h4>
-              </div>
-
-              <div class="impact-visual">
-                <div class="clock-comparison">
-                  <div class="clock-before">
-                    <div class="clock-face">
-                      <div class="clock-hand" style="transform: rotate(360deg);"></div>
-                    </div>
-                    <span class="clock-label">Día completo antes</span>
-                  </div>
-
-                  <div class="transformation-arrow">
-                    <i class="fas fa-magic"></i>
-                  </div>
-
-                  <div class="clock-after">
-                    <div class="clock-face optimized">
-                      <div class="clock-hand" style="transform: rotate(234deg);"></div>
-                      <div class="free-time-indicator"></div>
-                    </div>
-                    <span class="clock-label">5h trabajo + 3h libres</span>
-                  </div>
-                </div>
-              </div>
-
-              <div class="impact-benefit">
-                <div class="benefit-highlight">
-                  <i class="fas fa-gift"></i>
-                  <span>35% más tiempo libre</span>
-                </div>
-              </div>
-            </div>
-
-            <div class="impact-card">
-              <div class="impact-header">
-                <div class="impact-icon">
-                  <i class="fas fa-file-alt"></i>
-                </div>
-                <h4>Documentación</h4>
-              </div>
-
-              <div class="impact-visual">
-                <div class="document-stack">
-                  <div class="documents-before">
-                    <div class="document-pile">
-                      <div class="document"></div>
-                      <div class="document"></div>
-                      <div class="document"></div>
-                      <div class="document"></div>
-                      <div class="document"></div>
-                    </div>
-                    <span class="doc-label">5 horas de papeleo</span>
-                  </div>
-
-                  <div class="transformation-arrow">
-                    <i class="fas fa-robot"></i>
-                  </div>
-
-                  <div class="documents-after">
-                    <div class="smart-document">
-                      <i class="fas fa-microphone"></i>
-                      <div class="voice-waves">
-                        <div class="wave"></div>
-                        <div class="wave"></div>
-                        <div class="wave"></div>
-                      </div>
-                    </div>
-                    <span class="doc-label">Registro por voz</span>
-                  </div>
-                </div>
-              </div>
-
-              <div class="impact-benefit">
-                <div class="benefit-highlight">
-                  <i class="fas fa-lightning-bolt"></i>
-                  <span>60% menos tiempo</span>
-                </div>
-              </div>
-            </div>
-
-            <div class="impact-card">
-              <div class="impact-header">
-                <div class="impact-icon">
-                  <i class="fas fa-search-plus"></i>
-                </div>
-                <h4>Detección de Problemas</h4>
-              </div>
-
-              <div class="impact-visual">
-                <div class="detection-comparison">
-                  <div class="detection-before">
-                    <div class="problem-indicators">
-                      <div class="indicator missed"></div>
-                      <div class="indicator missed"></div>
-                      <div class="indicator detected"></div>
-                      <div class="indicator detected"></div>
-                      <div class="indicator detected"></div>
-                    </div>
-                    <span class="detection-rate">60% detectados</span>
-                  </div>
-
-                  <div class="transformation-arrow">
-                    <i class="fas fa-brain"></i>
-                  </div>
-
-                  <div class="detection-after">
-                    <div class="problem-indicators enhanced">
-                      <div class="indicator detected"></div>
-                      <div class="indicator detected"></div>
-                      <div class="indicator detected"></div>
-                      <div class="indicator detected"></div>
-                      <div class="indicator early-detected"></div>
-                    </div>
-                    <span class="detection-rate">95% detectados temprano</span>
-                  </div>
-                </div>
-              </div>
-
-              <div class="impact-benefit">
-                <div class="benefit-highlight">
-                  <i class="fas fa-shield-alt"></i>
-                  <span>35% más efectivo</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="maia-video-container">
-          <div class="efficiency-showcase">
-            <div class="device smartphone smartphone-dark">
-
-              <div class="device ipad">
-                <div class="ipad-frame" style="background: linear-gradient(to bottom,rgb(0, 0, 0),rgb(0, 0, 0));">
-                  <div class="ipad-screen">
-                    <video class="feature-video" autoplay loop muted playsinline
-                      poster="https://files.cdn-files-a.com/uploads/10098964/800_6761de379c2f5-thumbnail.jpg">
-                      <source type="video/mp4" src="/img/Bee.mp4">
-                    </video>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="glow-effect glow-effect-efficiency"></div>
-            <!-- Enhanced decorative elements -->
-            <div class="floating-hexagon floating-hexagon-lg" style="top: -25px; left: 20px;"></div>
-            <div class="floating-hexagon floating-hexagon-sm" style="bottom: 15px; right: -10px;"></div>
-            <div class="floating-hexagon floating-hexagon-md" style="top: 60%; left: -15px;"></div>
-            <div class="floating-particle" style="top: 30%; right: 20%;"></div>
-            <div class="floating-particle" style="bottom: 25%; left: 15%;"></div>
-          </div>
-        </div>
-      </div>
-      <!-- Animated line -->
-      <div class="animated-line"></div>
-    </div>
-
-    <!-- Call to Action -->
-    <div class="maia-content-section">
-      <div class="cta-container">
-        <h2 class="cta-title">Súmate a la transformación digital</h2>
-        <p class="cta-description">
-          Únete a nuestra comunidad de apicultores y mejora la gestión de tus colmenas. Ahorra tiempo y dinero,
-          reduciendo costos
-          operacionales y aumentando la rentabilidad de tu negocio.
-        </p>
-        <p class="cta-description">
-          Prueba B-MaiA gratis por 16 días y transforma la gestión de tus colmenas!
-        </p>
-        <!-- <div class="cta-buttons">
-          <a href="#descarga" class="cta-button primary">¡Descarga la app ahora!</a>
-        </div> -->
-
-        <!-- Enhanced honeycomb background for CTA -->
-        <div class="cta-honeycomb-bg">
-          <div class="honeycomb-cell"></div>
-          <div class="honeycomb-cell"></div>
-          <div class="honeycomb-cell"></div>
-          <div class="honeycomb-cell"></div>
-          <div class="honeycomb-cell"></div>
-          <div class="honeycomb-cell"></div>
-          <div class="honeycomb-cell"></div>
-          <div class="honeycomb-cell"></div>
-          <div class="honeycomb-cell"></div>
-        </div>
-      </div>
+    <div style="text-align: center; margin-top: 40px;">
+      <img src="{{ asset('img/mision.png') }}" alt="Nuestra Misión B-MaiA"
+        style="max-width: 300px; height: auto; border-radius: 18px;">
     </div>
   </div>
-
-  <!-- Enhanced background elements -->
-  <div class="bg-honeycomb bg-honeycomb-1"></div>
-  <div class="bg-honeycomb bg-honeycomb-2"></div>
-  <div class="bg-honeycomb bg-honeycomb-3"></div>
 </section>
 
 <!-- Estructura HTML actualizada con nuevas partículas -->
@@ -518,168 +130,421 @@
       <p>Plataforma todo en uno, 100% digital, que integra herramientas avanzadas para gestionar tus colmenas de
         manera más
         fácil y rápida, adaptándose a las particularidades de la apicultura chilena.</p>
-      <div class="cta-buttons">
-        <a href="#contacto" class="cta-button primary">Comienza tu prueba gratis</a>
+    </div>
+
+    <!-- Sección de B-MAIA Estándar -->
+
+    <div class="herramientas-grid-container">
+      <!-- Sección Superior: Imagen, Título y Botón -->
+      <div class="herramientas-header-section">
+        <div class="header-left">
+          <div class="platform-image-container">
+            <img src="{{ asset('img/logo-2.png') }}" alt="Plataforma de Gestión Apícola" class="platform-image">
+          </div>
+          <div class="title-button-row">
+            <h2 class="platform-title">Plataforma de Gestión Apícola</h2>
+            <div class="cta-buttons">
+              <a href="javascript:void(0);" class="cta-button primary" id="open-register-btn">Comienza tu prueba
+                gratis</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Grid de Herramientas -->
+      <div class="herramientas-grid-wrapper">
+        <ul class="herramientas-grid">
+
+          <!-- Trazabilidad de Colmenas -->
+          <li class="herramienta-card">
+            <div class="herramienta-header">
+              <div class="herramienta-icon">
+                <i class="fa-solid fa-boxes-stacked"></i>
+              </div>
+              <h3>Trazabilidad de colmenas</h3>
+            </div>
+            <div class="herramienta-body">
+              <p>Garantiza la calidad y autenticidad de tu miel. Podrás registrar todos los apiarios que necesites
+                durante la temporada,
+                manteniendo la trazabilidad individual de cada colmena.
+              </p>
+              <div class="herramienta-stat">
+                <span class="stat-value">100%</span>
+                <span class="stat-label">Trazabilidad de colmenas</span>
+              </div>
+            </div>
+          </li>
+          <!-- Cuaderno de Campo -->
+          <li class="herramienta-card">
+            <div class="herramienta-header">
+              <div class="herramienta-icon">
+                <i class="fa-solid fa-file-alt"></i>
+              </div>
+              <h3>Cuaderno de Campo</h3>
+            </div>
+            <div class="herramienta-body">
+              <p>Completa y descarga el cuaderno de campo y registro de movimiento de colmenas fiscalizado por el SAG.
+                Cumple con los
+                requisitos regulatorios, generando documentación oficial a partir de los datos que registras. Evita
+                multas, solo tienes
+                que imprimir y firmar.
+              </p>
+              <div class="herramienta-stat">
+                <span class="stat-value">100%</span>
+                <span class="stat-label">Más Práctico</span>
+              </div>
+            </div>
+          </li>
+
+          <!-- Plan de trabajo Anual -->
+          <li class="herramienta-card">
+            <div class="herramienta-header">
+              <div class="herramienta-icon">
+                <i class="fa-solid fa-calendar-check"></i>
+              </div>
+              <h3>Plan de trabajo Anual</h3>
+            </div>
+            <div class="herramienta-body">
+              <p>Planifica y organiza tus inspecciones y tareas de manera eficiente, asegurando un monitoreo constante
+                de tu progreso.
+                Recibe notificaciones sobre tareas pendientes y alertas inmediatas ante eventos críticos, lo que te
+                permitirá tomar
+                decisiones rápidas y mejorar la gestión de tu plan de trabajo.
+              </p>
+              <div class="herramienta-stat">
+                <span class="stat-value">50%</span>
+                <span class="stat-label">Ahorro de tiempo</span>
+              </div>
+            </div>
+          </li>
+
+          <!-- Control Sanitario -->
+          <li class="herramienta-card">
+            <div class="herramienta-header">
+              <div class="herramienta-icon">
+                <i class="fa-solid fa-chart-line"></i>
+              </div>
+              <h3>Indicadores</h3>
+            </div>
+            <div class="herramienta-body">
+              <p>Visualiza en tiempo real los indicadores de tu producción, desde el rendimiento de miel hasta la
+                cantidad de tratamientos aplicados en tus apiarios y colmenas. Podrás optimizar tus decisiones y
+                maximizar la eficiencia de tus manejos productivos.
+              </p>
+              <div class="herramienta-stat">
+                <span class="stat-value">30%</span>
+                <span class="stat-label">Reducción de mortandad</span>
+              </div>
+            </div>
+          </li>
+
+          <!-- Clima y Geolocalización -->
+          <li class="herramienta-card">
+            <div class="herramienta-header">
+              <div class="herramienta-icon">
+                <i class="fa-solid fa-cloud-sun"></i>
+              </div>
+              <h3>Clima y Geolocalización</h3>
+            </div>
+            <div class="herramienta-body">
+              <p>Monitorea las condiciones climáticas y geográficas de tus lugares de producción. Podrás planificar y
+                organizar la
+                ubicación de tus colmenas con mayor precisión.</p>
+              <div class="herramienta-stat">
+                <span class="stat-value">85%</span>
+                <span class="stat-label">Precisión de monitoreo</span>
+              </div>
+            </div>
+          </li>
+
+          <!-- Imagen lateral junto a la última tarjeta -->
+          <li class="herramienta-image-showcase">
+            <div class="showcase-image-container">
+              <img src="{{ asset('img/apicultura.jpg') }}" alt="Acompañamiento B-MaiA" class="showcase-image">
+              <div class="image-overlay">
+                <div class="overlay-content">
+                  <h4>Te acompañamos en tu gestión</h4>
+                  <p>
+                    En B-MaiA, te apoyamos con herramientas inteligentes y modelos de simulación para que tomes siempre
+                    las mejores
+                    decisiones para tus colmenas. ¡Cuenta con nosotros en cada etapa de tu producción apícola!
+                  </p>
+                </div>
+              </div>
+            </div>
+          </li>
+        </ul>
       </div>
     </div>
 
-    <div class="herramientas-grid-container">
-      <ul class="herramientas-grid">
-        <!-- Sistema Experto -->
-        <!-- <li class="herramienta-card">
-          <div class="herramienta-header">
-            <div class="herramienta-icon">
-              <i class="fa-solid fa-brain"></i>
-            </div>
-            <h3>Sistema Experto</h3>
-          </div>
-          <div class="herramienta-body">
-            <p>Realiza consultas técnicas y obtén respuestas precisas, basadas en la información
-              de
-              tu apiario y nuestra base de conocimiento. Tendrás un asesor disponible las 24 horas del día, 365 días del
-              año.
-            </p>
-            <div class="herramienta-stat">
-              <span class="stat-value">99%</span>
-              <span class="stat-label">Precisión de respuestas</span>
-            </div>
-          </div>
-        </li> -->
+    <div class="bmaia-plan">
+      <div class="decoration-hexagon"></div>
+      <div class="decoration-hexagon"></div>
+      <div class="decoration-hexagon"></div>
+      <div class="shine-effect"></div>
 
-        <!-- Cuaderno de Campo -->
-        <li class="herramienta-card">
-          <div class="herramienta-header">
-            <div class="herramienta-icon">
-              <i class="fa-solid fa-file-download"></i>
-            </div>
-            <h3>Cuaderno de Campo</h3>
-          </div>
-          <div class="herramienta-body">
-            <p>Completa y descarga automáticamente el Cuaderno de Campo del SAG. Cumple con los requisitos regulatorios
-              sin
-              esfuerzo, generando documentación oficial a partir de los datos que registras, mediante comando de voz.
-              Solo
-              tienes que imprimir y firmar.</p>
-            <div class="herramienta-stat">
-              <span class="stat-value">100%</span>
-              <span class="stat-label">Más Práctico</span>
-            </div>
-          </div>
-        </li>
-
-        <!-- Agenda de Tareas -->
-        <li class="herramienta-card">
-          <div class="herramienta-header">
-            <div class="herramienta-icon">
-              <i class="fa-solid fa-calendar-check"></i>
-            </div>
-            <h3>Agenda de Tareas</h3>
-          </div>
-          <div class="herramienta-body">
-            <p>Planifica y organiza tus inspecciones y tareas de manera eficiente. Podrás recibir notificaciones de
-              tareas
-              pendientes y alertas de eventos críticos.</p>
-            <div class="herramienta-stat">
-              <span class="stat-value">50%</span>
-              <span class="stat-label">Ahorro de tiempo</span>
-            </div>
-          </div>
-        </li>
-
-        <!-- Trazabilidad de Colmenas -->
-        <li class="herramienta-card">
-          <div class="herramienta-header">
-            <div class="herramienta-icon">
-              <i class="fa-solid fa-boxes-stacked"></i>
-            </div>
-            <h3>Trazabilidad de colmenas</h3>
-          </div>
-          <div class="herramienta-body">
-            <p>Garantiza la calidad y autenticidad de tu miel. Podrás crear todos los apiarios que necesites durante la
-              temporada, manteniendo el registro y trazabilidad individual de cada colmena.</p>
-            <div class="herramienta-stat">
-              <span class="stat-value">100%</span>
-              <span class="stat-label">Trazabilidad de colmenas</span>
-            </div>
-          </div>
-        </li>
-
-        <!-- Control Sanitario -->
-        <li class="herramienta-card">
-          <div class="herramienta-header">
-            <div class="herramienta-icon">
-              <i class="fa-solid fa-virus"></i>
-            </div>
-            <h3>Control Sanitario</h3>
-          </div>
-          <div class="herramienta-body">
-            <p>Vigila y controla la presencia de varroa y nosema. Nuestro sistema de detección temprana te ayuda a
-              identificar problemas sanitarios antes de que se conviertan en un problema fuera de control.</p>
-            <div class="herramienta-stat">
-              <span class="stat-value">30%</span>
-              <span class="stat-label">Reducción de mortandad</span>
-            </div>
-          </div>
-        </li>
-
-        <!-- Clima y Vegetación -->
-        <li class="herramienta-card">
-          <div class="herramienta-header">
-            <div class="herramienta-icon">
-              <i class="fa-solid fa-cloud-sun"></i>
-            </div>
-            <h3>Clima y Vegetación</h3>
-          </div>
-          <div class="herramienta-body">
-            <p>Monitorea las condiciones del clima y vegetación. Descubre las zonas ideales para ubicar tus colmenas,
-              considerando la flora local, los calendarios de floración y los riesgos ambientales. Maximiza el potencial
-              de
-              cada apiario.</p>
-            <div class="herramienta-stat">
-              <span class="stat-value">85%</span>
-              <span class="stat-label">Precisión de monitoreo</span>
-            </div>
-          </div>
-        </li>
-
-        <!-- Simulador de Rendimiento -->
-        <li class="herramienta-card">
-          <div class="herramienta-header">
-            <div class="herramienta-icon">
-              <i class="fa-solid fa-chart-line"></i>
-            </div>
-            <h3>Simulador de Rendimiento</h3>
-          </div>
-          <div class="herramienta-body">
-            <p>Usa modelos de predicción de floraciones y simulación de rendimiento. Nuestros algoritmos analizan datos
-              históricos y actuales, que te ayudarán a predecir flujos de néctar, proyectar rendimientos y ajustar tus
-              prácticas de manejo para obtener el máximo potencial.</p>
-            <div class="herramienta-stat">
-              <span class="stat-value">85%</span>
-              <span class="stat-label">Precisión en predicción</span>
-            </div>
-          </div>
-        </li>
-
-        <!-- Calculadoras -->
-        <li class="herramienta-card">
-          <div class="herramienta-header">
-            <div class="herramienta-icon">
-              <i class="fa-solid fa-calculator"></i>
-            </div>
-            <h3>Calculadoras</h3>
-          </div>
-          <div class="herramienta-body">
-            <p>Usa calculadoras de nutrición y tratamientos sanitarios. Determina dosis exactas de medicamentos y
-              alimentación suplementaria, según el tamaño y estado de desarrollo de tus colmenas.</p>
-            <div class="herramienta-stat">
-              <span class="stat-value">100%</span>
-              <span class="stat-label">Más exacto</span>
-            </div>
-          </div>
-        </li>
-      </ul>
+      <h2>¿Qué es B-MAIA Estándar?</h2>
+      <p>B-MAIA Estándar es nuestra solución básica, diseñada para apicultores que buscan una gestión eficiente de sus
+        colmenas sin complicaciones. Incluye herramientas esenciales para el monitoreo y la gestión de apiarios.</p>
     </div>
+
+    <!-- Sección de B-MAIA Plus -->
+
+    <div class="herramientas-grid-container">
+      <!-- Sección Superior: Imagen, Título y Botón -->
+      <div class="herramientas-header-section">
+        <div class="header-left">
+          <div class="platform-image-container">
+            <img src="{{ asset('img/logo-3.png') }}" alt="Plataforma de Gestión Apícola" class="platform-image">
+          </div>
+          <div class="title-button-row">
+            <h2 class="platform-title">Plataforma de Gestión Apícola</h2>
+            <div class="cta-buttons">
+              <a class="cta-button primary disabled">Próximamente</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Grid de Herramientas: 5 tarjetas + imagen -->
+      <div class="herramientas-grid-wrapper">
+        <ul class="herramientas-grid">
+          <!-- Mapa Apibotánico -->
+          <li class="herramienta-card">
+            <div class="herramienta-header">
+              <div class="herramienta-icon">
+                <i class="fa-solid fa-map"></i>
+              </div>
+              <h3>Mapa Apibotánico</h3>
+            </div>
+            <div class="herramienta-body">
+              <p>Explora el mapa apibotánico, una herramienta visual que te permite identificar las mejores zonas para
+                ubicar tus
+                colmenas. Basado en datos geoespaciales y factores ambientales, este mapa te ayudará a seleccionar áreas
+                óptimas para
+                maximizar tu producción.
+              </p>
+            </div>
+          </li>
+
+          <!-- Predicción de Rendimiento -->
+          <li class="herramienta-card">
+            <div class="herramienta-header">
+              <div class="herramienta-icon">
+                <i class="fa-solid fa-chart-line"></i>
+              </div>
+              <h3>Predicción de Rendimiento</h3>
+            </div>
+            <div class="herramienta-body">
+              <p>Consulta el modelo de predicción de rendimiento de miel, que integra datos históricos, ambientales y
+                productivos para
+                estimar el potencial melífero por zona. Visualiza de forma clara y georreferenciada las áreas de mayor
+                productividad, y
+                maximiza el retorno de cada temporada.</p>
+            </div>
+          </li>
+
+          <!-- Mapa Frutícola -->
+          <li class="herramienta-card">
+            <div class="herramienta-header">
+              <div class="herramienta-icon">
+                <i class="fa-solid fa-apple-alt"></i>
+              </div>
+              <h3>Mapa Frutícola</h3>
+            </div>
+            <div class="herramienta-body">
+              <p>Accede al mapa del catastro frutícola que muestra la distribución georreferenciada de cultivos que
+                requieren servicios
+                de polinización. Esta herramienta te permite planificar las rutas de polinización y optimizar la
+                coordinación con
+                agricultores.</p>
+            </div>
+          </li>
+
+          <!-- Flora Melífera -->
+          <li class="herramienta-card">
+            <div class="herramienta-header">
+              <div class="herramienta-icon">
+                <i class="fa-solid fa-leaf"></i>
+              </div>
+              <h3>Flora Melífera</h3>
+            </div>
+            <div class="herramienta-body">
+              <p>Consulta la base de datos de flora melífera, con información detallada sobre las especies que
+                contribuyen a la
+                producción apícola. Cada ficha incluye su valor de néctar o polen, características botánicas y un
+                calendario fenológico
+                que indica los periodos de floración.
+              </p>
+            </div>
+          </li>
+
+          <!-- Predicción de Floraciones -->
+          <li class="herramienta-card">
+            <div class="herramienta-header">
+              <div class="herramienta-icon">
+                <i class="fa-solid fa-chart-simple"></i>
+              </div>
+              <h3>Predicción de Floraciones</h3>
+            </div>
+            <div class="herramienta-body">
+              <p>Utiliza el modelo de predicción de floraciones para Tevo, Quillay, Avellano, Corontillo, Litre, Peumo y
+                Tralhuén. El
+                algoritmo integra datos ambientales históricos y en condiciones actuales. Podrás anticipar los flujos de
+                néctar, y
+                planificar con precisión las ventanas productivas de cada zona, maximizando así el potencial de tu
+                producción.</p>
+            </div>
+          </li>
+
+          <!-- Imagen lateral junto a la última tarjeta -->
+          <li class="herramienta-image-showcase">
+            <div class="showcase-image-container">
+              <img src="{{ asset('img/apicultura-2.jpg') }}" alt="Acompañamiento B-MaiA Plus" class="showcase-image">
+              <div class="image-overlay">
+                <div class="overlay-content">
+                  <h4>Te acompañamos en tu crecimiento</h4>
+                  <p>
+                    Con B-MaiA Plus, no solo accedes a herramientas avanzadas, sino también a nuestro acompañamiento
+                    experto en
+                    cada etapa de tu producción. ¡Estamos contigo en cada decisión importante!
+                  </p>
+                </div>
+              </div>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="bmaia-plan">
+      <div class="decoration-hexagon"></div>
+      <div class="decoration-hexagon"></div>
+      <div class="decoration-hexagon"></div>
+      <div class="shine-effect"></div>
+
+      <h2>¿Qué es B-MAIA Plus?</h2>
+      <p>
+        B-MAIA Plus es nuestra solución avanzada para apicultores que buscan ir más allá en la gestión de sus colmenas.
+        No solo accedes a herramientas inteligentes y modelos predictivos, sino también a nuestro acompañamiento experto
+        en
+        cada etapa de tu producción.
+        Recibe recomendaciones personalizadas, soporte dedicado y maximiza el potencial de tu apiario con tecnología de
+        vanguardia.
+        ¡Estamos contigo en cada decisión importante!
+      </p>
+    </div>
+
+    <!-- Sección de B-MAIA PRO -->
+
+    <div class="herramientas-grid-container">
+      <!-- Sección Superior: Imagen, Título y Botón -->
+      <div class="herramientas-header-section">
+        <div class="header-left">
+          <div class="platform-image-container">
+            <img src="{{ asset('img/logo-4.png') }}" alt="Agente de Inteligencia Artificial" class="platform-image">
+          </div>
+          <div class="title-button-row">
+            <h2 class="platform-title">Agente de Inteligencia Artificial</h2>
+            <div class="cta-buttons">
+              <a class="cta-button primary">En fase de desarrollo</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Grid de Herramientas: 5 tarjetas + imagen -->
+      <div class="herramientas-grid-wrapper">
+        <ul class="herramientas-grid">
+          <!-- Registros por Voz -->
+          <li class="herramienta-card">
+            <div class="herramienta-header">
+              <div class="herramienta-icon">
+                <i class="fa-solid fa-microphone"></i>
+              </div>
+              <h3>Registros por Voz</h3>
+            </div>
+            <div class="herramienta-body">
+              <p>A través de nuestra aplicación móvil registra conversaciones, agenda tareas, agrega información de los
+                manejos aplicados
+                y registra observaciones de tus visitas de inspección, todo mediante comandos de voz. Utiliza la función
+                de inspección
+                guiada para principiantes y profesionales
+              </p>
+            </div>
+          </li>
+
+          <!-- Sistema Experto -->
+          <li class="herramienta-card">
+            <div class="herramienta-header">
+              <div class="herramienta-icon">
+                <i class="fa-solid fa-brain"></i>
+              </div>
+              <h3>Sistema Experto</h3>
+            </div>
+            <div class="herramienta-body">
+              <p>Realiza consultas técnicas a nuestro Sistema Experto y Agente de IA, y obtén respuestas precisas,
+                basadas en la
+                información de tu apiario y nuestra base de conocimiento. Tendrás un asesor experto las 24 horas del
+                día, 365 días del
+                año.</p>
+            </div>
+          </li>
+
+          <!-- Monitoreo por Imágenes -->
+          <li class="herramienta-card">
+            <div class="herramienta-header">
+              <div class="herramienta-icon">
+                <i class="fa-solid fa-camera"></i>
+              </div>
+              <h3>Monitoreo por Imágenes</h3>
+            </div>
+            <div class="herramienta-body">
+              <p>Monitorea tus colmenas de forma inteligente con nuestra app equipada con tecnología de reconocimiento
+                de imágenes.
+                Captura fotos en terreno y recibe un análisis automático sobre el estado sanitario y posibles anomalías.
+                La app
+                transforma tus registros visuales en datos útiles para apoyar tus decisiones.</p>
+            </div>
+          </li>
+
+          <!-- Imagen lateral junto a la última tarjeta -->
+          <li class="herramienta-image-showcase">
+            <div class="showcase-image-container">
+              <img src="{{ asset('img/apicultura-3.png') }}" alt="Acompañamiento B-MaiA PRO" class="showcase-image">
+              <div class="image-overlay">
+                <div class="overlay-content">
+                  <h4>Te acompañamos a nivel profesional</h4>
+                  <p>
+                    Con B-MaiA PRO, cuentas con el respaldo de inteligencia artificial y asesoría experta para llevar tu
+                    apicultura al siguiente nivel.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="bmaia-plan">
+      <div class="decoration-hexagon"></div>
+      <div class="decoration-hexagon"></div>
+      <div class="decoration-hexagon"></div>
+      <div class="shine-effect"></div>
+
+      <h2>¿Qué es B-MAIA PRO?</h2>
+      <p>
+        B-MAIA PRO es nuestra solución más avanzada, pensada para apicultores profesionales que buscan llevar su
+        producción
+        al siguiente nivel.
+        Integra inteligencia artificial, análisis avanzados y asesoría experta para optimizar cada aspecto de tu gestión
+        apícola.
+        Recibe soporte personalizado, recomendaciones técnicas y acceso a herramientas innovadoras que te permitirán
+        enfrentar cualquier desafío profesional con confianza y eficiencia.
+      </p>
+    </div>
+
     <!-- Nota informativa final -->
     <div class="info-footer">
       <div class="info-icon">
@@ -691,147 +556,6 @@
     </div>
   </div>
 </section>
-
-<!-- Sección de Descarga de la App -->
-<!-- <section id="descarga" class="descarga-section">
-  <div class="particles-container">
-    <div class="particle particle-1"></div>
-    <div class="particle particle-2"></div>
-    <div class="particle particle-3"></div>
-    <div class="particle particle-4"></div>
-    <div class="particle particle-5"></div>
-    <div class="particle particle-6"></div>
-  </div>
-
-  <div class="container">
-    <div class="descarga-content">
-      <div class="descarga-text">
-        <h2 class="section-title">Descarga la App</h2>
-        <p class="section-description" style="text-align: center;">Prueba B-MaiA gratis por 16 días, la forma más
-          inteligente de gestionar tus
-          colmenas</p>
-
-        <div class="app-features">
-          <div class="feature">
-            <div class="feature-icon">
-              <i class="fa-solid fa-mobile-screen-button"></i>
-            </div>
-            <div class="feature-text">
-              <h3>Interfaz intuitiva</h3>
-              <p>Diseñada para apicultores, fácil de usar por comandos de voz</p>
-            </div>
-          </div>
-
-          <div class="feature">
-            <div class="feature-icon">
-              <i class="fa-solid fa-wifi"></i>
-            </div>
-            <div class="feature-text">
-              <h3>Modo offline</h3>
-              <p>Funciona en lugares sin la necesidad conexión a internet</p>
-            </div>
-          </div>
-
-          <div class="feature">
-            <div class="feature-icon">
-              <i class="fa-solid fa-bell"></i>
-            </div>
-            <div class="feature-text">
-              <h3>Notificaciones</h3>
-              <p>Recibe notificaciones de tareas pendientes y alertas de eventos críticos</p>
-            </div>
-          </div>
-
-          <div class="feature">
-            <div class="feature-icon">
-              <i class="fa-solid fa-infinity"></i>
-            </div>
-            <div class="feature-text">
-              <h3>Apiarios ilimitados</h3>
-              <p>Crea y gestiona tantos apiarios como quieras, sin perder los registros y trazabilidad de tus colmenas
-                individuales</p>
-            </div>
-          </div>
-
-          <div class="feature">
-            <div class="feature-icon">
-              <i class="fa-solid fa-qrcode"></i>
-            </div>
-            <div class="feature-text">
-              <h3>Código QR</h3>
-              <p>Identifica tus colmenas con códigos QR y visualiza toda su información de forma rápida y organizada</p>
-            </div>
-          </div>
-
-          <div class="feature">
-            <div class="feature-icon">
-              <i class="fa-solid fa-cloud"></i>
-            </div>
-            <div class="feature-text">
-              <h3>Datos seguros</h3>
-              <p>Accede a la información de tus colmenas desde cualquier lugar con la seguridad de que tus datos están
-                siempre
-                actualizados y protegidos en la nube</p>
-            </div>
-          </div>
-        </div>
-
-        <div class="download-buttons" style="justify-content: center;">
-          <a href="#" class="download-btn android-btn">
-            <div class="btn-icon">
-              <i class="fa-brands fa-android"></i>
-            </div>
-            <div class="btn-text">
-              <span class="btn-small-text">Disponible en</span>
-              <span class="btn-large-text">Google Play</span>
-            </div>
-          </a>
-
-          <a href="#" class="download-btn ios-btn">
-            <div class="btn-icon">
-              <i class="fa-brands fa-apple"></i>
-            </div>
-            <div class="btn-text">
-              <span class="btn-small-text">Descarga en</span>
-              <span class="btn-large-text">App Store</span>
-            </div>
-          </a>
-        </div>
-
-        <div class="app-rating" style="justify-content: center; margin-bottom: 10px;">
-          <div class="stars">
-            <i class="fa-solid fa-star"></i>
-            <i class="fa-solid fa-star"></i>
-            <i class="fa-solid fa-star"></i>
-            <i class="fa-solid fa-star"></i>
-            <i class="fa-solid fa-star-half-stroke"></i>
-          </div>
-        </div>
-        <p style="text-align:center;">4.8 de 5 estrellas basado en más de 200 reseñas</p>
-      </div>
-
-      <div class="app-mockup">
-        <div class="phone-frame">
-          <div class="phone-screen">
-            <img src="{{ asset('img/home/MaiA - App final-01.png') }}" alt="MaiA App" class="app-screenshot" />
-          </div>
-          <div class="phone-notch"></div>
-          <div class="phone-reflection"></div>
-        </div>
-        <div class="floating-screens">
-          <div class="floating-screen screen-1">
-            <img src="{{ asset('img/home/MaiA - App final-02.png') }}" alt="Pantalla de estadísticas" />
-          </div>
-          <div class="floating-screen screen-2">
-            <img src="{{ asset('img/home/MaiA - App final-10.png') }}" alt="Pantalla de colmenas" />
-          </div>
-        </div>
-        <div class="mockup-shadow"></div>
-        <div class="mockup-decoration"></div>
-      </div>
-    </div>
-  </div>
-</section> -->
 
 <!-- Sección de Cómo Funciona -->
 <section id="como-funciona" class="como-funciona-section">
@@ -916,7 +640,7 @@
               <i class="fa-solid fa-microphone-lines"></i>
             </div>
             <div class="step-content">
-              <h3>Registro por voz</h3>
+              <h3>Registro por voz <span class="proximamente-pro">(próximamente en B-MAIA PRO)</span></h3>
               <p>A través de la App registra conversaciones, agenda tareas, agrega información de tus manejos y registra
                 observaciones de
                 tus visitas de inspección, todo mediante comandos de voz.</p>
@@ -962,7 +686,7 @@
               <i class="fa-solid fa-brain"></i>
             </div>
             <div class="step-content">
-              <h3>Análisis avanzado</h3>
+              <h3>Análisis avanzado <span class="proximamente-pro">(próximamente en B-MAIA PRO)</span></h3>
               <p>B-MaiA integra y analiza los datos registrados, correlacionando el estado de desarrollo de las
                 colmenas,
                 las
@@ -995,7 +719,7 @@
               <i class="fa-solid fa-mobile-screen-button"></i>
             </div>
             <div class="step-content">
-              <h3>Información accionable</h3>
+              <h3>Información accionable <span class="proximamente-pro">(próximamente en B-MAIA PRO)</span></h3>
               <p>Recibe notificaciones de tareas pendientes, alertas de eventos críticos y recomendaciones
                 personalizadas
                 en
@@ -1015,55 +739,6 @@
               </div>
             </div>
           </div>
-
-          <!-- <div class="process-connector"></div> -->
-
-          <!-- <div class="process-step">
-            <div class="step-number">6</div>
-            <div class="step-icon">
-              <i class="fa-solid fa-robot"></i>
-            </div>
-            <div class="step-content">
-              <h3>Consulta al Sistema Experto</h3>
-              <p>Realiza consultas técnicas y obtén respuestas precisas, basadas en la
-                información
-                de tu propio
-                apiario. Tendrás un asesor disponible las 24 horas del día, durante 365 días del año.</p>
-              <div class="step-illustration">
-                <div class="ai-assistant-animation">
-                  <div class="chat-container-horizontal">
-                    <div class="chat-sequence">
-                      <div class="chat-item user-query">
-                        <i class="fa-solid fa-user-circle"></i>
-                        <div class="query-bubble">¿Varroa?</div>
-                      </div>
-                      <div class="chat-arrow">
-                        <i class="fa-solid fa-chevron-right"></i>
-                      </div>
-                      <div class="chat-item ai-thinking">
-                        <i class="fa-solid fa-brain"></i>
-                        <div class="thinking-dots">
-                          <span class="dot"></span>
-                          <span class="dot"></span>
-                          <span class="dot"></span>
-                        </div>
-                      </div>
-                      <div class="chat-arrow">
-                        <i class="fa-solid fa-chevron-right"></i>
-                      </div>
-                      <div class="chat-item ai-response">
-                        <i class="fa-solid fa-robot"></i>
-                        <div class="response-bubble">
-                          <i class="fa-solid fa-check-circle"></i>
-                          <span>Tratamiento recomendado</span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div> -->
 
           <div class="process-connector"></div>
 
@@ -1182,10 +857,6 @@
             <i class="fa-solid fa-shield-virus" style="font-size: 24px; color: #ff8f00; margin-bottom: 8px;"></i>
             <span style="font-size: 0.8rem; color: #666;">Salud</span>
           </div>
-          <!-- <div class="preview-icon" style="display: flex; flex-direction: column; align-items: center;">
-            <i class="fa-solid fa-robot" style="font-size: 24px; color: #ff8f00; margin-bottom: 8px;"></i>
-            <span style="font-size: 0.8rem; color: #666;">IA Experto</span>
-          </div> -->
           <div class="preview-icon" style="display: flex; flex-direction: column; align-items: center;">
             <i class="fa-solid fa-mobile-alt" style="font-size: 24px; color: #ff8f00; margin-bottom: 8px;"></i>
             <span style="font-size: 0.8rem; color: #666;">Accesibilidad</span>
@@ -1261,13 +932,6 @@
         <div class="benefits-category">
           <h3 class="category-title">Gestión de Datos e Información</h3>
           <div class="benefits-row">
-            <!-- <div class="benefit-item"
-              data-tooltip="Realiza consultas técnicas y obtén respuestas precisas y contextualizadas basadas en la información de tu propio apiario.">
-              <div class="benefit-icon">
-                <i class="fas fa-robot"></i>
-              </div>
-              <span class="benefit-label">Sistema Experto</span>
-            </div> -->
 
             <div class="benefit-item"
               data-tooltip="Visualiza la información de tus apiarios de un vistazo y toma decisiones basadas en datos concretos.">
@@ -1298,10 +962,10 @@
     </div>
 </section>
 
-<!-- Sección de Testimonios 
-<section id="testimonios" class="testimonios-section">
-  <div class="container"></div>
-  <div class="particles-container">
+<!-- Sección de Logros -->
+<section id="logros" class="logros-section">
+  <!-- Partículas decorativas de fondo -->
+  <div class="logros-particles">
     <div class="particle particle-1"></div>
     <div class="particle particle-2"></div>
     <div class="particle particle-3"></div>
@@ -1310,133 +974,82 @@
     <div class="particle particle-6"></div>
   </div>
 
-  <div class="container">
-    <div class="section-header">
-      <h2 class="section-title">Testimonios</h2>
-      <p class="section-description">
-        Lo que nuestros clientes dicen sobre B-MaiA
+  <div class="logros-container">
+    <div class="logros-header">
+      <div class="award-icon">
+        <i class="fa-solid fa-trophy"></i>
+        <div class="award-glow"></div>
+      </div>
+
+      <h2 class="section-title">¡Orgullosos de nuestros logros!</h2>
+
+      <div class="achievement-badge-header">
+        <span class="badge-year">2024</span>
+        <span class="badge-program">Primera Generación</span>
+      </div>
+
+      <p class="logros-description">
+        Nuestro Ecosistema de Apicultura Inteligente fue seleccionado para formar parte de la Primera Generación del
+        Programa de Incubación Polo Maule Innova Agro 4.0 - 2024. Este programa, ejecutado por Fundación Innova con el
+        respaldo del Gobierno Regional del Maule, nos permitió desarrollar y validar nuestra propuesta tecnológica para
+        la apicultura chilena.
       </p>
     </div>
 
-    <div class="testimonios-grid">
-      <div class="testimonio-card">
-        <div class="testimonio-inner">
-          <div class="testimonio-header">
-            <div class="testimonio-image-wrapper">
-              <img src="https://files.cdn-files-a.com/uploads/10098964/400_6760f4f53c71b.jpg" alt="Foto de Carlos"
-                class="testimonio-image" />
-              <div class="image-decoration"></div>
-            </div>
-            <div class="testimonio-meta">
-              <h3 class="testimonio-name">Carlos Correa</h3>
-              <p class="testimonio-role">Apicultor y Asesor Apícola</p>
-              <div class="experience-badge">
-                <span class="experience-years">15</span>
-                <span class="experience-text">años</span>
-              </div>
-            </div>
-          </div>
+    <div class="logros-content-wrapper">
+      <!-- Línea decorativa conectora -->
+      <div class="connection-line"></div>
 
-          <div class="rating">
-            <i class="fa-solid fa-star"></i>
-            <i class="fa-solid fa-star"></i>
-            <i class="fa-solid fa-star"></i>
-            <i class="fa-solid fa-star"></i>
-            <i class="fa-solid fa-star"></i>
+      <div class="logros-images-container">
+        <div class="logro-image-wrapper">
+          <div class="image-frame">
+            <img src="{{ asset('img/logro-1.png') }}" alt="Gobierno Regional del Maule" class="logro-image">
+            <div class="image-shine"></div>
           </div>
-
-          <div class="testimonio-content">
-            <div class="testimonio-quote-icon">
-              <i class="fa-solid fa-quote-left"></i>
-            </div>
-            <p class="testimonio-text">
-              "La plataforma B-MaiA facilita enormemente el monitoreo y gestión de mis colmenas, algo que antes era muy
-              laborioso. Desde que la utilizo, he reducido el tiempo de inspección en un 40% y he podido detectar
-              problemas antes de que se conviertan en situaciones críticas."
-            </p>
-          </div>
+          <div class="logo-label">Gobierno Regional del Maule</div>
         </div>
-      </div>
 
-      <div class="testimonio-card">
-        <div class="testimonio-inner">
-          <div class="testimonio-header">
-            <div class="testimonio-image-wrapper">
-              <img src="https://files.cdn-files-a.com/uploads/10098964/400_6760f46d02078.jpg" alt="Foto de Felipe"
-                class="testimonio-image" />
-              <div class="image-decoration"></div>
-            </div>
-            <div class="testimonio-meta">
-              <h3 class="testimonio-name">Felipe Albornoz</h3>
-              <p class="testimonio-role">Apicultor Profesional</p>
-              <div class="experience-badge">
-                <span class="experience-years">10</span>
-                <span class="experience-text">años</span>
-              </div>
-            </div>
+        <div class="logro-image-wrapper">
+          <div class="image-frame">
+            <img src="{{ asset('img/logro-2.png') }}" alt="Fundación Innova" class="logro-image">
+            <div class="image-shine"></div>
           </div>
+          <div class="logo-label">Fundación Innova</div>
+        </div>
 
-          <div class="rating">
-            <i class="fa-solid fa-star"></i>
-            <i class="fa-solid fa-star"></i>
-            <i class="fa-solid fa-star"></i>
-            <i class="fa-solid fa-star"></i>
-            <i class="fa-solid fa-star"></i>
+        <div class="logro-image-wrapper">
+          <div class="image-frame">
+            <img src="{{ asset('img/logro-3.png') }}" alt="Maule Agro Futuro" class="logro-image">
+            <div class="image-shine"></div>
           </div>
+          <div class="logo-label">Maule Agro Futuro</div>
+        </div>
 
-          <div class="testimonio-content">
-            <div class="testimonio-quote-icon">
-              <i class="fa-solid fa-quote-left"></i>
-            </div>
-            <p class="testimonio-text">
-              "Gracias a B-MaiA, he podido mejorar significativamente la salud de mis colmenas y aumentar la producción de
-              miel en un 30%. La aplicación me alerta sobre posibles problemas y me ofrece recomendaciones precisas que
-              han sido fundamentales para optimizar mi operación apícola."
-            </p>
+        <div class="logro-image-wrapper">
+          <div class="image-frame">
+            <img src="{{ asset('img/logro-4.png') }}" alt="Polo Maule Innova" class="logro-image">
+            <div class="image-shine"></div>
           </div>
+          <div class="logo-label">Polo Maule Innova</div>
         </div>
       </div>
     </div>
 
-    <div class="testimonios-stats">
-      <div class="stat-item">
-        <div class="stat-icon">
-          <img src="/img/apicultor.png" width="50px" height="50px" alt="Eficiencia apícola con B-MaiA">
-        </div>
-        <div class="stat-number">+500</div>
-        <div class="stat-label">Apicultores satisfechos</div>
+    <div class="logros-footer">
+      <div class="footer-decoration">
+        <div class="hex-decoration hex-left"></div>
+        <div class="hex-decoration hex-right"></div>
       </div>
-      <div class="stat-item">
-        <div class="stat-icon">
-          <i class="fa-solid fa-pen-nib"></i>
-        </div>
-        <div class="stat-number">+1.000</div>
-        <div class="stat-label">Apiarios registrados</div>
-      </div>
-      <div class="stat-item">
-        <div class="stat-icon">
-          <i class="fa-solid fa-chart-line"></i>
-        </div>
-        <div class="stat-number">+150.000</div>
-        <div class="stat-label">Colmenas con trazabilidad</div>
-      </div>
-      <div class="stat-item">
-        <div class="stat-icon">
-          <i class="fa-solid fa-seedling"></i>
-        </div>
-        <div class="stat-number">+5.000</div>
-        <div class="stat-label">Hectáreas polinizadas</div>
-      </div>
-      <div class="stat-item">
-        <div class="stat-icon">
-          <i class="fa-solid fa-map"></i>
-        </div>
-        <div class="stat-number">7</div>
-        <div class="stat-label">Regiones de Chile con presencia de B-MaiA</div>
+      <p>Este reconocimiento valida nuestro compromiso con la innovación y el desarrollo tecnológico al servicio de la
+        apicultura nacional.</p>
+
+      <div class="validation-stamp">
+        <i class="fa-solid fa-certificate"></i>
+        <span>Validado oficialmente</span>
       </div>
     </div>
   </div>
-</section> -->
+</section>
 
 <!-- Sección de Contacto -->
 <section id="contacto" class="contacto-section">
@@ -1489,7 +1102,7 @@
       <div class="contacto-buttons">
         <a href="https://wa.me/56933479555" target="_blank" class="contacto-btn whatsapp-btn">
           <div class="btn-icon">
-            <i class="fa-brands fa-whatsapp"></i>
+            <i class="fa-brands fa-whatsapp" style="font-size: 1em !important;"></i>
           </div>
           <div class="btn-text">
             <span class="btn-label">Contáctanos por WhatsApp</span>
@@ -1502,7 +1115,7 @@
 
         <a href="mailto:contacto@apicheck.cl" class="contacto-btn email-btn">
           <div class="btn-icon">
-            <i class="fa-solid fa-envelope"></i>
+            <i class="fa-solid fa-envelope" style="font-size: 1em !important;"></i>
           </div>
           <div class="btn-text">
             <span class="btn-label">contacto@apicheck.cl</span>
@@ -1529,13 +1142,6 @@
 </section>
 
 <footer>
-  <!-- Decoraciones hexagonales -->
-  <div class="footer-decoration footer-hex-1"></div>
-  <div class="footer-decoration footer-hex-2"></div>
-  <div class="footer-decoration footer-hex-3"></div>
-  <div class="footer-decoration footer-hex-4"></div>
-  <div class="footer-decoration footer-hex-5"></div>
-
   <!-- Efecto de luz radial -->
   <div class="footer-light"></div>
 
@@ -1637,22 +1243,6 @@
 
 <script>
   document.addEventListener('DOMContentLoaded', function () {
-    var modal = document.getElementById('development-modal');
-    modal.style.display = "block";
-
-    var closeModalBtn = document.getElementById('close-modal-btn');
-    closeModalBtn.onclick = function () {
-      modal.style.display = "none";
-    }
-
-    window.onclick = function (event) {
-      if (event.target == modal) {
-        modal.style.display = "none";
-      }
-    }
-  });
-
-  document.addEventListener('DOMContentLoaded', function () {
     const benefitItems = document.querySelectorAll('.benefit-item');
 
     benefitItems.forEach(item => {
@@ -1742,5 +1332,40 @@
     if (firstCollapsible) {
       firstCollapsible.classList.remove('active');
     }
+  });
+
+  document.addEventListener('DOMContentLoaded', function () {
+    var modal = document.getElementById('development-modal');
+    var closeModalBtn = document.getElementById('close-modal-btn');
+    var dontShowAgain = document.getElementById('dont-show-again');
+
+    // Mostrar solo si no está marcado en localStorage
+    if (!localStorage.getItem('hideWelcomeModal')) {
+      modal.style.display = "block";
+    }
+
+    closeModalBtn.onclick = function () {
+      if (dontShowAgain.checked) {
+        localStorage.setItem('hideWelcomeModal', '1');
+      }
+      modal.style.display = "none";
+    }
+
+    window.onclick = function (event) {
+      if (event.target == modal) {
+        if (dontShowAgain.checked) {
+          localStorage.setItem('hideWelcomeModal', '1');
+        }
+        modal.style.display = "none";
+      }
+    }
+  });
+
+  document.addEventListener('DOMContentLoaded', function () {
+    var btn = document.getElementById('open-register-btn');
+    btn.addEventListener('click', function () {
+      // Reemplaza 'register-modal' por el id real de tu modal de registro
+      document.getElementById('register-modal').style.display = 'block';
+    });
   });
 </script>
