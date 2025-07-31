@@ -295,10 +295,11 @@
       <div class="herramientas-header-section">
         <div class="header-left">
           <div class="platform-image-container">
-            <img src="{{ asset('img/logo-3.png') }}" alt="Plataforma de Gestión Apícola" class="platform-image">
+            <img src="{{ asset('img/logo-3.png') }}" alt="Atlas de Flora Melífera y Polinización"
+              class="platform-image">
           </div>
           <div class="title-button-row">
-            <h2 class="platform-title">Plataforma de Gestión Apícola</h2>
+            <h2 class="platform-title">Atlas de Flora Melífera y Polinización</h2>
             <div class="cta-buttons">
               <a class="cta-button primary disabled">Próximamente</a>
             </div>
