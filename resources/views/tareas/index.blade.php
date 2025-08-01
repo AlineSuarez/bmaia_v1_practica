@@ -33,8 +33,6 @@
                         title="Ver en formato tablero">Tablero</button>
                     <button class="btn-panal view-toggler" data-view="timeline" title="Ver en línea temporal">Línea de
                         Tiempo</button>
-                    <button class="btn-panal view-toggler" data-view="calendar"
-                        title="Ver en calendario">Calendario</button>
                 </div>
 
                 <!-- Nuevos botones separados -->
@@ -70,11 +68,6 @@
                 <!-- Vista Timeline -->
                 <div class="view timeline">
                     @include('tareas.timeline')
-                </div>
-
-                <!-- Vista Calendario -->
-                <div class="view calendar">
-                    @include('tareas.calendario')
                 </div>
 
                 <!-- Consejo final -->
