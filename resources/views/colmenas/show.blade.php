@@ -427,42 +427,49 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
                     </div>
                     <div class="modal-body">
-                        <div class="form-group mb-3">
-                            <label for="color_etiqueta" class="form-label">Color etiqueta</label>
-                            <select name="color_etiqueta" id="color_etiqueta" class="form-control mb-2">
-                                @php
-                                    $colores = [
-                                        '' => 'Sin color',
-                                        '#ffc107' => 'Amarillo',
-                                        '#007bff' => 'Azul',
-                                        '#28a745' => 'Verde',
-                                        '#17a2b8' => 'Celeste',
-                                        '#dc3545' => 'Rojo',
-                                        '#6f42c1' => 'Morado',
-                                        '#343a40' => 'Negro',
-                                    ];
-                                @endphp
-                                <option value="" {{ ($colmena->color_etiqueta === null || $colmena->color_etiqueta === '') ? 'selected' : '' }}>
-                                    Sin color (color por defecto)
-                                </option>
-                                @foreach ($colores as $hex => $nombre)
-                                    @if($hex !== '')
-                                        <option value="{{ $hex }}" {{ ($colmena->color_etiqueta ?? '') == $hex ? 'selected' : '' }}>
-                                            {{ $nombre }}
-                                        </option>
-                                    @endif
-                                @endforeach
-                                <option value="personalizado" {{ (!empty($colmena->color_etiqueta) && !in_array($colmena->color_etiqueta, array_keys($colores))) ? 'selected' : '' }}>
-                                    Personalizado
-                                </option>
-                            </select>
-                            <div id="colorPersonalizadoDiv" class="mt-2" style="display: none;">
-                                <label for="color_personalizado" class="form-label">Selecciona tu color:</label>
-                                <input type="color" name="color_personalizado" id="color_personalizado"
-                                    value="{{ (!in_array($colmena->color_etiqueta ?? '', array_keys($colores)) && !empty($colmena->color_etiqueta)) ? $colmena->color_etiqueta : '#ffc107' }}"
-                                    class="form-control form-control-color"
-                                    style="width: 100%; height: 40px; border: none;">
-                            </div>
+                        {{-- Paleta de colores --}}
+                        @php
+                            $colores = [
+                                '#ffc107' => 'Amarillo',
+                                '#007bff' => 'Azul',
+                                '#28a745' => 'Verde',
+                                '#17a2b8' => 'Celeste',
+                                '#dc3545' => 'Rojo',
+                                '#6f42c1' => 'Morado',
+                                '#343a40' => 'Negro',
+                            ];
+                            $colorSeleccionado = $colmena->color_etiqueta ?? '';
+                            $esPersonalizado = $colorSeleccionado && !in_array($colorSeleccionado, array_keys($colores));
+                        @endphp
+
+                        <div class="color-palette">
+                            @foreach ($colores as $hex => $nombre)
+                                <label class="color-circle-label" title="{{ $nombre }}">
+                                    <input type="radio" name="color_etiqueta" value="{{ $hex }}"
+                                        {{ $colorSeleccionado == $hex ? 'checked' : '' }} style="display:none;">
+                                    <span class="color-circle" style="background: {{ $hex }}">
+                                        @if($colorSeleccionado == $hex)
+                                            <span class="color-check">&#10003;</span>
+                                        @endif
+                                    </span>
+                                </label>
+                            @endforeach
+
+                            {{-- Opción personalizado --}}
+                        <label class="color-circle-label" title="Personalizado">
+                            <input type="radio" name="color_etiqueta" value="personalizado"
+                                {{ $esPersonalizado ? 'checked' : '' }} style="display:none;">
+                            <span class="color-circle" style="background: {{ $esPersonalizado ? $colorSeleccionado : '#ffc107' }}; position: relative;">
+                                <span class="color-custom-icon">&#9998;</span>
+                            </span>
+                        </label>
+                        </div>
+                        <div id="colorPersonalizadoDiv" class="mt-2" style="display: {{ $esPersonalizado ? 'block' : 'none' }};">
+                            <label for="color_personalizado" class="form-label">Selecciona tu color:</label>
+                            <input type="color" name="color_personalizado" id="color_personalizado"
+                                value="{{ $esPersonalizado ? $colorSeleccionado : '#ffc107' }}"
+                                class="form-control form-control-color"
+                                style="width: 100%; height: 40px; border: none;">
                         </div>
 
                         <!-- Vista previa dinámica del color de la colmena -->
@@ -506,18 +513,6 @@
     </div>
 
     <script>
-        function toggleColorPersonalizado() {
-            const select = document.getElementById('color_etiqueta');
-            const div = document.getElementById('colorPersonalizadoDiv');
-            if (select.value === 'personalizado') {
-                div.style.display = 'block';
-            } else {
-                div.style.display = 'none';
-            }
-        }
-        document.getElementById('color_etiqueta').addEventListener('change', toggleColorPersonalizado);
-        window.addEventListener('DOMContentLoaded', toggleColorPersonalizado);
-
         function hexToRgba(hex, alpha = 0.47) {
             hex = hex.replace('#', '');
             if (hex.length === 3) {
@@ -531,15 +526,20 @@
         }
 
         function updateColmenaPreview() {
-            const select = document.getElementById('color_etiqueta');
+            const radios = document.querySelectorAll('input[name="color_etiqueta"]');
             const colorInput = document.getElementById('color_personalizado');
             const preview = document.getElementById('colmenaPreview');
-            let color = select.value;
+            let color = null;
+
+            radios.forEach(function(radio) {
+                if (radio.checked) {
+                    color = radio.value;
+                }
+            });
 
             if (color === 'personalizado' && colorInput) {
                 color = colorInput.value;
             }
-            // Si no hay color seleccionado, muestra el color original y borde gris
             if (!color || color === '') {
                 preview.style.backgroundColor = 'transparent';
                 preview.style.borderColor = '#ccc';
@@ -552,15 +552,26 @@
             }
         }
 
-        document.getElementById('color_etiqueta').addEventListener('change', function () {
-            toggleColorPersonalizado();
-            updateColmenaPreview();
+        document.querySelectorAll('input[name="color_etiqueta"]').forEach(function(radio) {
+            radio.addEventListener('change', function() {
+                if (this.value === 'personalizado') {
+                    document.getElementById('colorPersonalizadoDiv').style.display = 'block';
+                } else {
+                    document.getElementById('colorPersonalizadoDiv').style.display = 'none';
+                }
+                updateColmenaPreview();
+            });
         });
 
-        document.getElementById('color_personalizado').addEventListener('input', updateColmenaPreview);
+        const colorInput = document.getElementById('color_personalizado');
+        if (colorInput) {
+            colorInput.addEventListener('input', function() {
+                document.querySelector('input[name="color_etiqueta"][value="personalizado"]').checked = true;
+                updateColmenaPreview();
+            });
+        }
 
         window.addEventListener('DOMContentLoaded', function () {
-            toggleColorPersonalizado();
             updateColmenaPreview();
         });
     </script>

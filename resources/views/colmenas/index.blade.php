@@ -20,7 +20,7 @@
                         </a>
                     </div>
                 </div>
-                <div class="apiario-info">{{ $apiario->nombre }}</div>
+                <div class="apiario-info">Apiario: {{ $apiario->nombre }}</div>
                 <div class="apiario-stats">
                     <div class="stat-item">
                         <div class="stat-icon"><i class="fas fa-cube"></i></div>

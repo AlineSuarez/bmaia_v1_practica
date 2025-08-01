@@ -1396,6 +1396,7 @@ html {
     position: relative;
     overflow: hidden;
     cursor: default;
+    margin-top: 1.5rem;
 }
 
 #modalColorColmena .colmena-card::before {
@@ -1520,4 +1521,65 @@ html {
         width: 100%;
         height: 45px;
     }
+}
+
+.color-palette {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-bottom: 1rem;
+    justify-content: flex-start;
+}
+
+.color-circle-label {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+}
+
+.color-circle {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: 2px solid #ccc;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    transition: border 0.2s;
+}
+
+.color-circle-label input:checked + .color-circle,
+.color-circle-label .color-circle:has(.color-check) {
+    border: 3px solid #f59e0b;
+}
+
+.color-check {
+    color: #fff;
+    font-size: 1.3rem;
+    font-weight: bold;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-shadow: 0 1px 2px #0008;
+    pointer-events: none;
+}
+
+.color-custom-icon {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    color: #333;
+    background: rgba(255, 255, 255, 0.842);
+    border-radius: 50%;
+    pointer-events: none;
 }

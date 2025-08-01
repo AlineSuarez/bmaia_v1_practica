@@ -1,13 +1,7 @@
-/* ========================================
-   APICHECK - SISTEMA DE GESTIÓN APÍCOLA
-   CSS Premium Edition v2.0 - Basado en estructura existente
-   Diseño inspirado en la naturaleza de las abejas
-   ======================================== */
-
 @import url("https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800&family=Poppins:wght@300;400;500;600;700;800&family=Roboto+Mono:wght@400;500&display=swap");
 
 /* ==================
-      VARIABLES GLOBALES MEJORADAS
+      VARIABLES GLOBALES
       ================== */
 :root {
     /* === Paleta de colores principal === */
@@ -239,8 +233,7 @@ body::before {
       TÍTULOS MEJORADOS
       ================== */
 h1 {
-    font-family: var(--font-heading);
-    font-size: clamp(2.5rem, 5vw, 3.2rem);
+    font-size: clamp(1.5rem, 5vw, 1.7rem)!important;
     font-weight: 800;
     margin-bottom: 3.5rem;
     color: var(--color-propolis);
