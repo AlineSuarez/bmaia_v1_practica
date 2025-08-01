@@ -63,7 +63,7 @@
                                 </div>
                             </div>
 
-                            <div class="mb-4 flex gap-3">
+                            <div class="mb-4 flex-2-cols gap-3">
                                 <a href="{{ route('colmenas.qr-pdf', [$apiario->id, $colmena->id]) }}"
                                     class="btn btn-secondary btn-sm">
                                     <i class="fas fa-print"></i> Imprimir QR
