@@ -1086,5 +1086,56 @@ document.addEventListener("DOMContentLoaded", function () {
                 }
             });
         });
+
+        // Añadir esto antes de crear los círculos (dentro del foreach de apiariosFijos y apiariosBase)
+        function getRadioConfig(apiario) {
+            // Radio en metros y color según tipo
+            if (apiario.tipo_apiario === "trashumante") {
+                if (apiario.es_temporal) {
+                    return { radius: 2000, color: "#27ae60" }; // Temporales: 2km, verde
+                } else {
+                    return { radius: 4000, color: "#3498db" }; // Base: 4km, azul
+                }
+            }
+            return { radius: 3000, color: "#f0941b" }; // Fijos: 3km, naranja
+        }
+
+        // Crear círculos para radios de apiarios fijos y base
+        [...apiariosFijos, ...apiariosBase].forEach((apiario) => {
+            if (apiario.latitud && apiario.longitud) {
+                const { radius, color } = getRadioConfig(apiario);
+
+                // Crear círculo mejorado
+                const circle = L.circle([apiario.latitud, apiario.longitud], {
+                    color: color,
+                    weight: 2.5,
+                    fillColor: color,
+                    fillOpacity: 0.07, // Más visible pero suave
+                    radius: radius,
+                    interactive: true, // Para tooltip
+                    className: "apiary-radius-circle",
+                }).bindTooltip(
+                    `<b>${apiario.nombre}</b><br>Radio: ${(
+                        radius / 1000
+                    ).toFixed(1)} km`,
+                    { direction: "top", sticky: true }
+                );
+                radioMap.set(apiario.id, circle);
+            }
+        });
+
+        // Añade animación de pulso por CSS (agrega esto al final del archivo JS para inyectar el estilo)
+        const style = document.createElement("style");
+        style.innerHTML = `
+            .leaflet-interactive.apiary-radius-circle {
+                animation: apiaryPulse 2.5s infinite;
+            }
+            @keyframes apiaryPulse {
+                0% { filter: drop-shadow(0 0 0px #fff); }
+                50% { filter: drop-shadow(0 0 12px #fff8); }
+                100% { filter: drop-shadow(0 0 0px #fff); }
+            }
+            `;
+        document.head.appendChild(style);
     };
 });
