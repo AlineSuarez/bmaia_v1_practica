@@ -341,93 +341,100 @@
                                     $otros     = $meds->diff($conDetalle);
                                 @endphp
 
-                                {{-- sección Varroa/Nosemosis --}}
-                                @if($conDetalle->isNotEmpty())
-                                <h5>Uso de Medicamentos ({{ $conDetalle->count() }} con detalle)</h5>
-                                <table class="custom-table">
-                                    <thead>
-                                    <tr>
-                                        <th>Fecha</th>
-                                        <th>Motivo</th>
-                                        <th>Nombre Comercial</th>
-                                        <th>Principio Activo</th>
-                                        <th>Presencia</th>
-                                        <th>Periodo Resguardo</th>
-                                        <th>Responsable</th>
-                                        <th>Observaciones</th>
-                                        <th>Acciones</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    @foreach($conDetalle->sortByDesc('fecha_visita') as $v)
-                                        @php
-                                        $mot   = strtolower($v->motivo);
-                                        $med   = $mot==='varroa' ? $v->presenciaVarroa : $v->presenciaNosemosis;
-                                        @endphp
+                                @if($meds->isEmpty())
+                                    <div class="no-data-message">
+                                        <i class="fas fa-info-circle me-2"></i>
+                                        No hay registros de medicamentos.
+                                    </div>
+                                @else
+                                    {{-- sección Varroa/Nosemosis --}}
+                                    @if($conDetalle->isNotEmpty())
+                                    <h5>Uso de Medicamentos ({{ $conDetalle->count() }} con detalle)</h5>
+                                    <table class="custom-table">
+                                        <thead>
                                         <tr>
-                                        <td>{{ \Carbon\Carbon::parse($v->fecha_visita)->format('d/m/Y') }}</td>
-                                        <td>{{ ucfirst($mot) }}</td>
-                                        <td>{{ $med->producto_comercial ?? '-' }}</td>
-                                        <td>{{ $med->ingrediente_activo   ?? '-' }}</td>
-                                        <td>{{ $med
-                                                ? ($mot==='varroa'
-                                                        ? $med->diagnostico_visual
-                                                        : $med->signos_clinicos)
-                                                : '-' }}</td>
-                                        <td>{{ $v->periodo_resguardo ?: 'No especificado' }}</td>
-                                        <td>{{ $v->responsable }}</td>
-                                        <td>{{ $v->observaciones }}</td>
-                                        <td class="actions-cell">
-                                                <a href="{{ route('generate.document.medicamentos', $apiario->id) }}"
-                                                class="btn btn-outline-secondary btn-sm" title="Generar PDF" target="_blank">
-                                                    <i class="fas fa-file-pdf"></i>
-                                                </a>
-                                                <a href="{{ route('apiarios.medicamentos-registro.edit', [$apiario->id, $v->id]) }}"
-                                                class="btn btn-outline-primary btn-sm">
-                                                    <i class="fas fa-edit"></i>
-                                                </a>
-                                            </td>
+                                            <th>Fecha</th>
+                                            <th>Motivo</th>
+                                            <th>Nombre Comercial</th>
+                                            <th>Principio Activo</th>
+                                            <th>Presencia</th>
+                                            <th>Periodo Resguardo</th>
+                                            <th>Responsable</th>
+                                            <th>Observaciones</th>
+                                            <th>Acciones</th>
                                         </tr>
-                                    @endforeach
-                                    </tbody>
-                                </table>
-                                @endif
+                                        </thead>
+                                        <tbody>
+                                        @foreach($conDetalle->sortByDesc('fecha_visita') as $v)
+                                            @php
+                                            $mot   = strtolower($v->motivo);
+                                            $med   = $mot==='varroa' ? $v->presenciaVarroa : $v->presenciaNosemosis;
+                                            @endphp
+                                            <tr>
+                                            <td>{{ \Carbon\Carbon::parse($v->fecha_visita)->format('d/m/Y') }}</td>
+                                            <td>{{ ucfirst($mot) }}</td>
+                                            <td>{{ $med->producto_comercial ?? '-' }}</td>
+                                            <td>{{ $med->ingrediente_activo   ?? '-' }}</td>
+                                            <td>{{ $med
+                                                    ? ($mot==='varroa'
+                                                            ? $med->diagnostico_visual
+                                                            : $med->signos_clinicos)
+                                                    : '-' }}</td>
+                                            <td>{{ $v->periodo_resguardo ?: 'No especificado' }}</td>
+                                            <td>{{ $v->responsable }}</td>
+                                            <td>{{ $v->observaciones }}</td>
+                                            <td class="actions-cell">
+                                                    <a href="{{ route('generate.document.medicamentos', $apiario->id) }}"
+                                                    class="btn btn-outline-secondary btn-sm" title="Generar PDF" target="_blank">
+                                                        <i class="fas fa-file-pdf"></i>
+                                                    </a>
+                                                    <a href="{{ route('apiarios.medicamentos-registro.edit', [$apiario->id, $v->id]) }}"
+                                                    class="btn btn-outline-primary btn-sm">
+                                                        <i class="fas fa-edit"></i>
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                        </tbody>
+                                    </table>
+                                    @endif
 
-                                {{-- sección Otros motivos --}}
-                                @if($otros->isNotEmpty())
-                                <h5>Uso de Medicamentos – Otros Motivos ({{ $otros->count() }})</h5>
-                                <table class="custom-table">
-                                    <thead>
-                                    <tr>
-                                        <th>Fecha</th>
-                                        <th>Motivo</th>
-                                        <th>Responsable</th>
-                                        <th>Observaciones</th>
-                                        <th>Acciones</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    @foreach($otros->sortByDesc('fecha_visita') as $v)
+                                    {{-- sección Otros motivos --}}
+                                    @if($otros->isNotEmpty())
+                                    <h5>Uso de Medicamentos – Otros Motivos ({{ $otros->count() }})</h5>
+                                    <table class="custom-table">
+                                        <thead>
                                         <tr>
-                                        <td>{{ \Carbon\Carbon::parse($v->fecha_visita)->format('d/m/Y') }}</td>
-                                        <td>{{ ucfirst($v->motivo) }}</td>
-                                        <td>{{ $v->responsable }}</td>
-                                        <td>{{ $v->observaciones }}</td>
-                                        <td class="actions-cell">
-                                                <a href="{{ route('generate.document.medicamentos', $apiario->id) }}"
-                                                class="btn btn-outline-secondary btn-sm" title="Generar PDF" target="_blank">
-                                                    <i class="fas fa-file-pdf"></i>
-                                                </a>
-                                                <a href="{{ route('apiarios.medicamentos-registro.edit', [$apiario->id, $v->id]) }}"
-                                                class="btn btn-outline-primary btn-sm">
-                                                    <i class="fas fa-edit"></i>
-                                                </a>
-                                            </td>
+                                            <th>Fecha</th>
+                                            <th>Motivo</th>
+                                            <th>Responsable</th>
+                                            <th>Observaciones</th>
+                                            <th>Acciones</th>
                                         </tr>
-                                        </tr>
-                                    @endforeach
-                                    </tbody>
-                                </table>
+                                        </thead>
+                                        <tbody>
+                                        @foreach($otros->sortByDesc('fecha_visita') as $v)
+                                            <tr>
+                                            <td>{{ \Carbon\Carbon::parse($v->fecha_visita)->format('d/m/Y') }}</td>
+                                            <td>{{ ucfirst($v->motivo) }}</td>
+                                            <td>{{ $v->responsable }}</td>
+                                            <td>{{ $v->observaciones }}</td>
+                                            <td class="actions-cell">
+                                                    <a href="{{ route('generate.document.medicamentos', $apiario->id) }}"
+                                                    class="btn btn-outline-secondary btn-sm" title="Generar PDF" target="_blank">
+                                                        <i class="fas fa-file-pdf"></i>
+                                                    </a>
+                                                    <a href="{{ route('apiarios.medicamentos-registro.edit', [$apiario->id, $v->id]) }}"
+                                                    class="btn btn-outline-primary btn-sm">
+                                                        <i class="fas fa-edit"></i>
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                            </tr>
+                                        @endforeach
+                                        </tbody>
+                                    </table>
+                                    @endif
                                 @endif
                             </div>
 
