@@ -14,6 +14,7 @@ use Illuminate\Support\Str;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
 
 class ColmenaController extends Controller
 {
@@ -68,9 +69,6 @@ class ColmenaController extends Controller
         $data['apiario_id'] = $apiario->id;
 
         $colmena = Colmena::create($data);
-
-        // QR gratuito vía API externa
-        // (se muestra en tooltip en el index, no se guarda en disco)
 
         return redirect()->route('colmenas.index', $apiario->id)
             ->with('success', 'Colmena creada correctamente.');
@@ -167,15 +165,10 @@ class ColmenaController extends Controller
     public function update(Request $request, Apiario $apiario, Colmena $colmena)
     {
         $data = $request->validate([
-            'color_etiqueta' => 'required|string',
-            'numero' => 'required|string',
-            'estado_inicial' => 'nullable|string',
-            'numero_marcos' => 'nullable|integer',
-            'observaciones' => 'nullable|string',
+            'nombre' => 'nullable|string|max:255',
+            'numero' => 'nullable|string',
         ]);
-
         $colmena->update($data);
-
         return redirect()->route('colmenas.show', [$apiario->id, $colmena->id])->with('success', 'Colmena actualizada.');
     }
 
@@ -196,7 +189,7 @@ class ColmenaController extends Controller
         // Estadísticas (igual que en historial web)
         $apiariosVisitados = $movimientos->pluck('apiarioDestino.nombre')->unique()->filter()->count();
         $tiempoEnActual = $movimientos->isNotEmpty() ?
-            \Carbon\Carbon::parse($movimientos->first()->fecha_movimiento)->diffForHumans(null, false, false, 2) : 'N/A';
+            Carbon::parse($movimientos->first()->fecha_movimiento)->diffForHumans(null, false, false, 2) : 'N/A';
 
         // Convertir a español (igual que en historial web)
         $tiempoEnActual = str_replace([
@@ -262,7 +255,7 @@ class ColmenaController extends Controller
                 'visitas' => $group->count(),
                 'primera_visita' => $primer->fecha_movimiento,
                 'ultima_visita' => $ultimo->fecha_movimiento,
-                'tiempo_total' => abs((int) \Carbon\Carbon::parse($primer->fecha_movimiento)->diffInDays(\Carbon\Carbon::parse($ultimo->fecha_movimiento)))
+                'tiempo_total' => abs((int) Carbon::parse($primer->fecha_movimiento)->diffInDays(Carbon::parse($ultimo->fecha_movimiento)))
             ];
         });
 
@@ -274,7 +267,7 @@ class ColmenaController extends Controller
             'tiempoEnActual' => $tiempoEnActual,
             'apiarioBase' => $apiarioBase,
             'ubicacionesConTiempo' => $ubicacionesConTiempo,
-            'fechaGeneracion' => now()->format('d/m/Y H:i')
+            'fechaGeneracion' => $this->obtenerFechaHoraLocal()
         ];
 
         $pdf = Pdf::loadView('documents.movimiento-colmenas', $data);
@@ -374,54 +367,6 @@ class ColmenaController extends Controller
         return view('colmenas.historicas', compact('apiario', 'colmenasPorOrigen'));
     }
 
-    /*
-    public function exportHistoricas(Apiario $apiario)
-    {
-        $movimientos = MovimientoColmena::where('apiario_destino_id', $apiario->id)
-            ->orWhere('apiario_origen_id', $apiario->id)
-            ->with(['apiarioOrigen', 'apiarioDestino', 'colmena'])
-            ->orderByDesc('fecha_movimiento')
-            ->get();
-
-        $colmenas = $movimientos
-            ->groupBy(fn($mov) => $mov->colmena->id)
-            ->map(function ($movs) {
-                $col = $movs->first()->colmena;
-                $col->movimientos_list = $movs;
-                return $col;
-            })
-            ->sortBy('numero')
-            ->values();
-
-        // 🧩 Tomamos datos del primer movimiento
-        $mov = $movimientos->first();
-
-        $pdf = Pdf::loadView('documents.historial-apiario', [
-            'apiario' => $apiario,
-            'colmenas' => $colmenas,
-            'fechaGeneracion' => now()->format('d/m/Y H:i'),
-            // NUEVOS CAMPOS:
-            'tipo_movimiento' => $mov->tipo_movimiento ?? 'traslado',
-            'fecha_inicio_mov' => $mov->fecha_inicio_mov ?? $mov->fecha_movimiento,
-            'fecha_termino_mov' => $mov->fecha_termino_mov ?? $mov->fecha_movimiento,
-            'motivo_movimiento' => $mov->motivo_movimiento ?? null,
-            'transportista' => $mov->transportista ?? '—',
-            'vehiculo' => $mov->vehiculo ?? '—',
-            'cultivo' => $mov->cultivo ?? null,
-            'periodo_floracion' => $mov->periodo_floracion ?? null,
-            'hectareas' => $mov->hectareas ?? null,
-            'region_destino' => optional($apiario->comuna->region)->nombre ?? '—',
-            'comuna_destino' => optional($apiario->comuna)->nombre ?? '—',
-            'coordenadas_destino' => $apiario->latitud . ', ' . $apiario->longitud,
-            'apicultor_nombre' => Auth::user()->name,
-            'apicultor_rut' => Auth::user()->rut ?? '—',
-            'registro_nacional' => Auth::user()->numero_registro ?? '—',
-        ]);
-
-        $filename = "historial_apiario_{$apiario->nombre}_" . now()->format('Y-m-d') . ".pdf";
-        return $pdf->download($filename);
-    }
-    */
     private function getBeekeeperData()
         {
             $user = Auth::user();
@@ -504,17 +449,17 @@ class ColmenaController extends Controller
 
         $mov = $movimientos->first();
 
-        // ✅ Datos del apiario (ubicación, número, tipo, foto, etc.)
+        // Datos del apiario (ubicación, número, tipo, foto, etc.)
         $apiarioData = $this->getApiaryData($apiario);
 
-        // ✅ Datos del apicultor (nombre, rut, firma, comuna, etc.)
+        // Datos del apicultor (nombre, rut, firma, comuna, etc.)
         $beekeeper = $this->getBeekeeperData();
 
-        // ✅ Render del PDF
+        // Render del PDF
         $pdf = Pdf::loadView('documents.historial-apiario', [
             'apiario' => $apiario,
             'colmenas' => $colmenas,
-            'fechaGeneracion' => now()->format('d/m/Y H:i'),
+            'fechaGeneracion' => $this->obtenerFechaHoraLocal(),
 
             // Datos del movimiento
             'tipo_movimiento' => $mov->tipo_movimiento ?? 'traslado',
@@ -564,4 +509,9 @@ class ColmenaController extends Controller
             ->with('success', 'Color actualizado correctamente');
     }
 
+    private function obtenerFechaHoraLocal()
+    {
+        // Ajusta según la diferencia horaria real del servidor (puedes probar con 4 o 5)
+        return Carbon::now()->subHours(4)->format('d/m/Y H:i');
+    }
 }

@@ -121,35 +121,6 @@
                                     </div>
                                 @endif
                             </div>
-
-                            <!-- Estadísticas 
-                            <div class="stats-section">
-                                <h6
-                                    style="margin: 0; font-weight: 700; font-size: var(--font-base); display: flex; align-items: center; gap: var(--spacing-2);">
-                                    <i class="fas fa-chart-bar"></i> Estadísticas
-                                </h6>
-
-                                <div class="stats-grid">
-                                    <div class="stat-item">
-                                        <div class="stat-value">{{ $pccCount }}</div>
-                                        <div class="stat-label">Evaluaciones PCC</div>
-                                    </div>
-                                    @php
-                                        // diffInDays() YA devuelve un entero, pero por si acaso lo casteamos
-                                        $dias = $lastFecha
-                                            ? (int) \Carbon\Carbon::parse($lastFecha)->diffInDays()
-                                            : 0;
-                                    @endphp
-                                    <div class="stat-item">
-                                        <div class="stat-value">
-                                            {{ $dias }}
-                                        </div>
-                                        <div class="stat-label">Días desde última evaluación</div>
-                                    </div>
-                                </div>
-                            </div> 
-                            -->
-                            
                         </div>
                     </div>
                 </div>
@@ -248,23 +219,18 @@
                                 <div class="pcc-content">
                                     @if($pcc2)
                                         <ul class="pcc-list">
-                                                <li class="pcc-list-item">
-                                                    <span class="pcc-list-label">Postura reina:</span>
-                                                    <span class="pcc-list-value">{{ $pcc2->postura_reina }}</span>
-                                                </li>
-                                                <li class="pcc-list-item">
-                                                    <span class="pcc-list-label">Estado cría:</span>
-                                                    <span class="pcc-list-value">{{ $pcc2->estado_cria }}</span>
-                                                </li>
-                                                @if($pcc2->fecha_introduccion)
-                                                    <li class="pcc-list-item">
-                                                        <span class="pcc-list-label">Fecha introducción:</span>
-                                                        <span class="pcc-list-value">
-                                                            {{ \Carbon\Carbon::parse($pcc2->fecha_introduccion)->format('d/m/Y') }}
-                                                        </span>
-                                                    </li>
-                                                @endif
-                                            </ul>
+                                            <li class="pcc-list-item"><span class="pcc-list-label">Postura reina:</span><span class="pcc-list-value">{{ $pcc2->postura_reina }}</span></li>
+                                            <li class="pcc-list-item"><span class="pcc-list-label">Estado cría:</span><span class="pcc-list-value">{{ $pcc2->estado_cria }}</span></li>
+                                            <li class="pcc-list-item"><span class="pcc-list-label">Postura zánganos:</span><span class="pcc-list-value">{{ $pcc2->postura_zanganos }}</span></li>
+                                            <li class="pcc-list-item"><span class="pcc-list-label">Origen reina:</span><span class="pcc-list-value">{{ $pcc2->origen_reina }}</span></li>
+                                            <li class="pcc-list-item"><span class="pcc-list-label">Raza:</span><span class="pcc-list-value">{{ $pcc2->raza }}</span></li>
+                                            <li class="pcc-list-item"><span class="pcc-list-label">Línea genética:</span><span class="pcc-list-value">{{ $pcc2->linea_genetica }}</span></li>
+                                            <li class="pcc-list-item"><span class="pcc-list-label">Estado actual:</span><span class="pcc-list-value">{{ $pcc2->estado_actual }}</span></li>
+                                            <li class="pcc-list-item"><span class="pcc-list-label">Reemplazos realizados:</span><span class="pcc-list-value">{{ $pcc2->reemplazos_realizados }}</span></li>
+                                            @if($pcc2->fecha_introduccion)
+                                                <li class="pcc-list-item"><span class="pcc-list-label">Fecha introducción:</span><span class="pcc-list-value">{{ \Carbon\Carbon::parse($pcc2->fecha_introduccion)->format('d/m/Y') }}</span></li>
+                                            @endif
+                                        </ul>
                                         @else
                                             <p class="small mb-0">No hay datos registrados.</p>
                                         @endif
@@ -282,19 +248,13 @@
                                 <div class="pcc-content">
                                     @if($pcc3)
                                         <ul class="pcc-list">
-                                                <li class="pcc-list-item">
-                                                    <span class="pcc-list-label">Objetivo:</span>
-                                                    <span class="pcc-list-value">{{ $pcc3->objetivo }}</span>
-                                                </li>
-                                                <li class="pcc-list-item">
-                                                    <span class="pcc-list-label">Tipo alimentación:</span>
-                                                    <span class="pcc-list-value">{{ $pcc3->tipo_alimentacion }}</span>
-                                                </li>
-                                                <li class="pcc-list-item">
-                                                    <span class="pcc-list-label">Insumo utilizado:</span>
-                                                    <span class="pcc-list-value">{{ $pcc3->insumo_utilizado }}</span>
-                                                </li>
-                                            </ul>
+                                            <li class="pcc-list-item"><span class="pcc-list-label">Tipo alimentación:</span><span class="pcc-list-value">{{ $pcc3->tipo_alimentacion }}</span></li>
+                                            <li class="pcc-list-item"><span class="pcc-list-label">Fecha aplicación:</span><span class="pcc-list-value">{{ \Carbon\Carbon::parse($pcc3->fecha_aplicacion)->format('d/m/Y') }}</span></li>
+                                            <li class="pcc-list-item"><span class="pcc-list-label">Insumo utilizado:</span><span class="pcc-list-value">{{ $pcc3->insumo_utilizado }}</span></li>
+                                            <li class="pcc-list-item"><span class="pcc-list-label">Objetivo:</span><span class="pcc-list-value">{{ $pcc3->objetivo }}</span></li>
+                                            <li class="pcc-list-item"><span class="pcc-list-label">Dosificación:</span><span class="pcc-list-value">{{ $pcc3->dosifiacion }}</span></li>
+                                            <li class="pcc-list-item"><span class="pcc-list-label">Método utilizado:</span><span class="pcc-list-value">{{ $pcc3->metodo_utilizado }}</span></li>
+                                        </ul>
                                         @else
                                             <p class="small mb-0">No hay datos registrados.</p>
                                         @endif
@@ -311,31 +271,17 @@
                                 </div>
                                 <div class="pcc-content">
                                     @if($pcc4)
-                                            <ul class="pcc-list">
-                                                <li class="pcc-list-item">
-                                                    <span class="pcc-list-label">Diagnóstico visual:</span>
-                                                    <span class="pcc-list-value">{{ $pcc4->diagnostico_visual }}</span>
-                                                </li>
-                                                <li class="pcc-list-item">
-                                                    <span class="pcc-list-label">Método diagnóstico:</span>
-                                                    <span class="pcc-list-value">{{ $pcc4->metodo_diagnostico }}</span>
-                                                </li>
-                                                <li class="pcc-list-item">
-                                                    <span class="pcc-list-label">Tratamiento:</span>
-                                                    <span class="pcc-list-value">{{ $pcc4->tratamiento }}</span>
-                                                </li>
-                                                @if($pcc4->fecha_aplicacion)
-                                                    <li class="pcc-list-item">
-                                                    <span class="pcc-list-label">Fecha aplicación:</span>
-                                                    <span class="pcc-list-value">
-                                                        {{ \Carbon\Carbon::parse($pcc4->fecha_aplicacion)->format('d/m/Y') }}
-                                                    </span>
-                                                    </li>
-                                                @endif
-                                            </ul>
-                                        @else
-                                            <p class="small mb-0">No hay datos registrados.</p>
-                                        @endif
+                                        <ul class="pcc-list">
+                                            <li class="pcc-list-item"><span class="pcc-list-label">Método diagnóstico:</span><span class="pcc-list-value">{{ $pcc4->metodo_diagnostico }}</span></li>
+                                            <li class="pcc-list-item"><span class="pcc-list-label">Tratamiento:</span><span class="pcc-list-value">{{ $pcc4->tratamiento }}</span></li>
+                                            <li class="pcc-list-item"><span class="pcc-list-label">Fecha monitoreo:</span><span class="pcc-list-value">{{ \Carbon\Carbon::parse($pcc4->fecha_monitoreo_varroa)->format('d/m/Y') }}</span></li>
+                                            <li class="pcc-list-item"><span class="pcc-list-label">Producto comercial:</span><span class="pcc-list-value">{{ $pcc4->producto_comercial }}</span></li>
+                                            <li class="pcc-list-item"><span class="pcc-list-label">Ingrediente activo:</span><span class="pcc-list-value">{{ $pcc4->ingrediente_activo }}</span></li>
+                                            <li class="pcc-list-item"><span class="pcc-list-label">Período de carencia:</span><span class="pcc-list-value">{{ $pcc4->periodo_carencia }}</span></li>
+                                        </ul>
+                                    @else
+                                        <p class="small mb-0">No hay datos registrados.</p>
+                                    @endif
                                 </div>
                             </div>
 
@@ -349,24 +295,15 @@
                                 </div>
                                 <div class="pcc-content">
                                     @if($pcc5)
-                                            <ul class="pcc-list">
-                                                <li class="pcc-list-item">
-                                                    <span class="pcc-list-label">Signos clínicos:</span>
-                                                    <span class="pcc-list-value">{{ $pcc5->signos_clinicos }}</span>
-                                                </li>
-                                                <li class="pcc-list-item">
-                                                    <span class="pcc-list-label">Método diagnóstico lab.:</span>
-                                                    <span class="pcc-list-value">{{ $pcc5->metodo_diagnostico_laboratorio }}</span>
-                                                </li>
-                                                @if($pcc5->fecha_aplicacion)
-                                                    <li class="pcc-list-item">
-                                                    <span class="pcc-list-label">Fecha aplicación:</span>
-                                                    <span class="pcc-list-value">
-                                                        {{ \Carbon\Carbon::parse($pcc5->fecha_aplicacion)->format('d/m/Y') }}
-                                                    </span>
-                                                    </li>
-                                                @endif
-                                            </ul>
+                                        <ul class="pcc-list">
+                                            <li class="pcc-list-item"><span class="pcc-list-label">Método diagnóstico laboratorio:</span><span class="pcc-list-value">{{ $pcc5->metodo_diagnostico_laboratorio }}</span></li>
+                                            <li class="pcc-list-item"><span class="pcc-list-label">Fecha aplicación:</span><span class="pcc-list-value">{{ \Carbon\Carbon::parse($pcc5->fecha_aplicacion)->format('d/m/Y') }}</span></li>
+                                            <li class="pcc-list-item"><span class="pcc-list-label">Dosificación:</span><span class="pcc-list-value">{{ $pcc5->dosificacion }}</span></li>
+                                            <li class="pcc-list-item"><span class="pcc-list-label">Método aplicación:</span><span class="pcc-list-value">{{ $pcc5->metodo_aplicacion }}</span></li>
+                                            <li class="pcc-list-item"><span class="pcc-list-label">Fecha monitoreo:</span><span class="pcc-list-value">{{ \Carbon\Carbon::parse($pcc5->fecha_monitoreo_nosema)->format('d/m/Y') }}</span></li>
+                                            <li class="pcc-list-item"><span class="pcc-list-label">Producto comercial:</span><span class="pcc-list-value">{{ $pcc5->producto_comercial }}</span></li>
+                                            <li class="pcc-list-item"><span class="pcc-list-label">Ingrediente activo:</span><span class="pcc-list-value">{{ $pcc5->ingrediente_activo }}</span></li>
+                                        </ul>
                                         @else
                                             <p class="small mb-0">No hay datos registrados.</p>
                                         @endif
@@ -383,19 +320,14 @@
                                 </div>
                                 <div class="pcc-content">
                                     @if($pcc6)
-                                            <ul class="pcc-list">
-                                                <li class="pcc-list-item">
-                                                    <span class="pcc-list-label">Madurez miel:</span>
-                                                    <span class="pcc-list-value">{{ $pcc6->madurez_miel }}</span>
-                                                </li>
-                                                <li class="pcc-list-item">
-                                                    <span class="pcc-list-label">Alzas promedio:</span>
-                                                    <span class="pcc-list-value">{{ $pcc6->num_alzadas }}</span>
-                                                </li>
-                                            </ul>
-                                        @else
-                                            <p class="small mb-0">No hay datos registrados.</p>
-                                        @endif
+                                        <ul class="pcc-list">
+                                            <li class="pcc-list-item"><span class="pcc-list-label">Madurez miel:</span><span class="pcc-list-value">{{ $pcc6->madurez_miel }}</span></li>
+                                            <li class="pcc-list-item"><span class="pcc-list-label">Número alzadas:</span><span class="pcc-list-value">{{ $pcc6->num_alzadas }}</span></li>
+                                            <li class="pcc-list-item"><span class="pcc-list-label">Marcos miel:</span><span class="pcc-list-value">{{ $pcc6->marcos_miel }}</span></li>
+                                        </ul>
+                                    @else
+                                        <p class="small mb-0">No hay datos registrados.</p>
+                                    @endif
                                 </div>
                             </div>
 
@@ -409,37 +341,19 @@
                                 </div>
                                 <div class="pcc-content">
                                     @if($pcc7)
-                                            <ul class="pcc-list">
-                                                @if($pcc7->fecha_cierre_temporada)
-                                                    <li class="pcc-list-item">
-                                                    <span class="pcc-list-label">Fecha cierre temporada:</span>
-                                                    <span class="pcc-list-value">
-                                                        {{ \Carbon\Carbon::parse($pcc7->fecha_cierre_temporada)->format('d/m/Y') }}
-                                                    </span>
-                                                    </li>
-                                                @endif
-                                                @if($pcc7->fecha_ultima_revision_previa_receso)
-                                                    <li class="pcc-list-item">
-                                                        <span class="pcc-list-label">Última revisión previa receso:</span>
-                                                        <span class="pcc-list-value">
-                                                        {{ \Carbon\Carbon::parse($pcc7->fecha_ultima_revision_previa_receso)->format('d/m/Y') }}
-                                                        </span>
-                                                    </li>
-                                                @endif
-                                                <li class="pcc-list-item">
-                                                    <span class="pcc-list-label">Signos enfermedades:</span>
-                                                    <span class="pcc-list-value">{{ $pcc7->signos_enfermedades_visibles ?? 'N/A' }}</span>
-                                                </li>
-                                                <li class="pcc-list-item">
-                                                    <span class="pcc-list-label">Reina presente:</span>
-                                                    <span class="badge {{ $pcc7->presencia_reina ? 'badge-success' : 'badge-danger' }}">
-                                                        {{ $pcc7->presencia_reina ? 'Sí' : 'No' }}
-                                                    </span>
-                                                </li>
-                                            </ul>
-                                        @else
-                                            <p class="small mb-0">No hay datos registrados.</p>
-                                        @endif
+                                        <ul class="pcc-list">
+                                            <li class="pcc-list-item"><span class="pcc-list-label">Marcos con abejas:</span><span class="pcc-list-value">{{ $pcc7->cantidad_marcos_cubiertos_abejas }}</span></li>
+                                            <li class="pcc-list-item"><span class="pcc-list-label">Marcos con cría:</span><span class="pcc-list-value">{{ $pcc7->cantidad_marcos_cubiertos_cria }}</span></li>
+                                            <li class="pcc-list-item"><span class="pcc-list-label">Marcos reservas miel:</span><span class="pcc-list-value">{{ $pcc7->marcos_reservas_miel }}</span></li>
+                                            <li class="pcc-list-item"><span class="pcc-list-label">Reservas polen:</span><span class="pcc-list-value">{{ $pcc7->presencial_reservas_polen }}</span></li>
+                                            <li class="pcc-list-item"><span class="pcc-list-label">Presencia reina:</span><span class="pcc-list-value">{{ $pcc7->presencia_reina ? 'Sí' : 'No' }}</span></li>
+                                            <li class="pcc-list-item"><span class="pcc-list-label">Infestación varroa:</span><span class="pcc-list-value">{{ $pcc7->nivel_infestacion_varroa }}</span></li>
+                                            <li class="pcc-list-item"><span class="pcc-list-label">Últ. revisión pre-receso:</span><span class="pcc-list-value">{{ \Carbon\Carbon::parse($pcc7->fecha_ultima_revision_previa_receso)->format('d/m/Y') }}</span></li>
+                                            <li class="pcc-list-item"><span class="pcc-list-label">Cierre temporada:</span><span class="pcc-list-value">{{ \Carbon\Carbon::parse($pcc7->fecha_cierre_temporada)->format('d/m/Y') }}</span></li>
+                                        </ul>
+                                    @else
+                                        <p class="small mb-0">No hay datos registrados.</p>
+                                    @endif
                                 </div>
                             </div>
                         </div>

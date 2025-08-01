@@ -52,39 +52,42 @@
 </head>
 <body>
 
-<h1>Listado de todas mis tareas</h1>
+    <h1>Listado de todas mis tareas</h1>
 
-@forelse ($subtareas->groupBy('tareaGeneral.nombre') as $nombreGeneral => $subtareasAgrupadas)
-    <div class="tarea-general">{{ $nombreGeneral }}</div>
-    <table>
-        <thead>
-            <tr>
-                <th>Nombre</th>
-                <th>Fecha Inicio</th>
-                <th>Fecha Límite</th>
-                <th>Prioridad</th>
-                <th>Estado</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach ($subtareasAgrupadas as $tarea)
+    @forelse ($subtareas->groupBy('tareaGeneral.nombre') as $nombreGeneral => $subtareasAgrupadas)
+        <div class="tarea-general">{{ $nombreGeneral }}</div>
+        <table>
+            <thead>
                 <tr>
-                    <td>{{ $tarea->nombre }}</td>
-                    <td>{{ \Carbon\Carbon::parse($tarea->fecha_inicio)->format('d/m/Y') }}</td>
-                    <td>{{ \Carbon\Carbon::parse($tarea->fecha_limite)->format('d/m/Y') }}</td>
-                    <td class="prioridad-{{ strtolower($tarea->prioridad ?? 'media') }}">
-                        {{ ucfirst($tarea->prioridad ?? 'Media') }}
-                    </td>
-                    <td class="estado">
-                        {{ $tarea->completada ? 'Completada' : ($tarea->archivada ? 'Archivada' : 'Pendiente') }}
-                    </td>
+                    <th>Nombre</th>
+                    <th>Fecha Inicio</th>
+                    <th>Fecha Límite</th>
+                    <th>Prioridad</th>
+                    <th>Estado</th>
                 </tr>
-            @endforeach
-        </tbody>
-    </table>
-@empty
-    <p>No se encontraron subtareas para mostrar.</p>
-@endforelse
+            </thead>
+            <tbody>
+                @foreach ($subtareasAgrupadas as $tarea)
+                    <tr>
+                        <td>{{ $tarea->nombre }}</td>
+                        <td>{{ \Carbon\Carbon::parse($tarea->fecha_inicio)->format('d/m/Y') }}</td>
+                        <td>{{ \Carbon\Carbon::parse($tarea->fecha_limite)->format('d/m/Y') }}</td>
+                        <td class="prioridad-{{ strtolower($tarea->prioridad ?? 'media') }}">
+                            {{ ucfirst($tarea->prioridad ?? 'Media') }}
+                        </td>
+                        <td class="estado">
+                            {{ $tarea->completada ? 'Completada' : ($tarea->archivada ? 'Archivada' : 'Pendiente') }}
+                        </td>
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
+    @empty
+        <p>No se encontraron subtareas para mostrar.</p>
+    @endforelse
 
+    <div class="footer">
+      <p><strong>Generado el {{ now()->format('d/m/Y H:i') }}</strong> - Sistema de Gestión Apícola</p>
+    </div>
 </body>
 </html>

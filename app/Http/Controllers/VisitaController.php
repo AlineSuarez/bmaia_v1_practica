@@ -71,7 +71,8 @@ class VisitaController extends Controller
         ));
     }
 
-    public function show(Apiario $apiario)
+    // public function show(Apiario $apiario) -> linea original
+    public function show(Apiario $apiario, Colmena $colmena)
     {
         // 1) PCC de sistema experto
         $pccs = SistemaExperto::where('colmena_id', $colmena->id)
@@ -257,9 +258,6 @@ class VisitaController extends Controller
             'motivo_tratamiento' => 'required|in:varroa,nosema,otro',
             'motivo_otro' => 'nullable|string|required_if:motivo_tratamiento,otro',
             'responsable' => 'required|string',
-            //'nombre_comercial_medicamento' => 'nullable|string',
-            //'principio_activo_medicamento' => 'nullable|string',
-            //'periodo_resguardo' => 'nullable|string',
             'observaciones' => 'nullable|string',
         ]);
 
@@ -267,7 +265,7 @@ class VisitaController extends Controller
         $pccRules = [];
         if ($commonData['motivo_tratamiento'] === 'varroa') {
             $pccRules = [
-                'varroa_metodo_diagnostico'            => 'required|string',
+                'varroa_metodo_diagnostico'            => 'nullable|string',
                 'varroa_diagnostico_visual'            => 'nullable|string',
                 'varroa_muestreo_abejas_adultas'       => 'nullable|string',
                 'varroa_muestreo_cria_operculada'      => 'nullable|string',
@@ -282,7 +280,7 @@ class VisitaController extends Controller
             ];
         } elseif ($commonData['motivo_tratamiento'] === 'nosema') {
             $pccRules = [
-                'nosemosis_metodo_diagnostico_laboratorio' => 'required|string',
+                'nosemosis_metodo_diagnostico_laboratorio' => 'nullable|string',
                 'nosemosis_signos_clinicos'                => 'nullable|string',
                 'nosemosis_muestreo_laboratorio'           => 'nullable|string',
                 'nosemosis_tratamiento'                    => 'nullable|string',
@@ -308,9 +306,6 @@ class VisitaController extends Controller
                     'motivo'                       => $data['motivo_tratamiento']==='otro'
                                                     ? $data['motivo_otro']
                                                     : $data['motivo_tratamiento'],
-                    //'nombre_comercial_medicamento' => $data['nombre_comercial_medicamento'],
-                    //'principio_activo_medicamento' => $data['principio_activo_medicamento'],
-                    //'periodo_resguardo'            => $data['periodo_resguardo'],
                     'responsable'                  => $data['responsable'],
                     'observaciones'                => $data['observaciones'] ?? null,
                 ]);
@@ -324,9 +319,6 @@ class VisitaController extends Controller
                     'motivo'                       => $data['motivo_tratamiento']==='otro'
                                                     ? $data['motivo_otro']
                                                     : $data['motivo_tratamiento'],
-                    //'nombre_comercial_medicamento' => $data['nombre_comercial_medicamento'],
-                    //'principio_activo_medicamento' => $data['principio_activo_medicamento'],
-                    //'periodo_resguardo'            => $data['periodo_resguardo'],
                     'responsable'                  => $data['responsable'],
                     'observaciones'                => $data['observaciones'] ?? null,
                 ]);
@@ -339,8 +331,6 @@ class VisitaController extends Controller
                     $pv = PresenciaVarroa::updateOrCreate(
                         ['visita_id'=>$visita->id, 'colmena_id'=>$col->id],
                         array_merge($pcc4Defaults = [
-                            'n_colmenas_tratadas'=>1
-                        ], [
                             'metodo_diagnostico'      => $data['varroa_metodo_diagnostico'],
                             'diagnostico_visual'      => $data['varroa_diagnostico_visual'] ?? null,
                             'muestreo_abejas_adultas' => $data['varroa_muestreo_abejas_adultas'] ?? null,
@@ -496,7 +486,6 @@ class VisitaController extends Controller
                         'insumo_utilizado'    => $data['insumo_utilizado'],
                         'dosifiacion'         => $data['dosificacion'],
                         'metodo_utilizado'    => $data['metodo_utilizado'],
-                        'n_colmenas_tratadas' => 1,
                     ]
                 );
                 $firstId = $firstId ?? $en->id;

@@ -132,7 +132,7 @@
   @endif
 
   <div class="footer">
-    Generado el: {{ \Carbon\Carbon::now()->format('d/m/Y H:i') }}
-  </div>
+      <p><strong>Generado el {{ now()->format('d/m/Y H:i') }}</strong> - Sistema de Gestión Apícola</p>
+    </div>
 </body>
 </html>

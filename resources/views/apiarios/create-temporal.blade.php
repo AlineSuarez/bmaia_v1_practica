@@ -180,7 +180,7 @@
                                                 <label>Coordenadas Destino</label>
                                                 <input type="text" class="form-input" name="coordenadas_destino"
                                                     value="{{ old('coordenadas_destino', '-33.0472, -71.4419') }}"
-                                                    placeholder="Lat, Lng" required>
+                                                    placeholder="Lat, Lng" readonly required>
                                             </div>
                                         </div>
                                     </div>
@@ -325,7 +325,6 @@
                                         </div>
                                     </button>
 
-                                    <button type="submit" class="nav-btn nav-btn-submit" id="submitBtn"
                                     <button type="submit" class="nav-btn nav-btn-submit" id="submitBtn"
                                         style="display: none;">
                                         <div class="btn-icon">
@@ -1265,6 +1264,33 @@
                         });
                 });
             }
+
+            if (destinoComuna) {
+                destinoComuna.addEventListener('change', function () {
+                    const comunaId = this.value;
+                    const coordenadasInput = document.querySelector('input[name="coordenadas_destino"]');
+
+                    if (!comunaId) {
+                        coordenadasInput.value = '';
+                        return;
+                    }
+
+                    fetch(`/comuna-coordenadas/${comunaId}`)
+                        .then(res => res.json())
+                        .then(data => {
+                            if (data.lat && data.lon) {
+                                coordenadasInput.value = `${data.lat}, ${data.lon}`;
+                            } else {
+                                coordenadasInput.value = '';
+                            }
+                        })
+                        .catch(() => {
+                            alert('Error al obtener las coordenadas de la comuna.');
+                            coordenadasInput.value = '';
+                        });
+                });
+            }
+
 
             // ===== INICIALIZACIÓN =====
 

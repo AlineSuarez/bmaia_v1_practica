@@ -18,8 +18,6 @@ class EstadoNutricional extends Model
         'insumo_utilizado',
         'dosifiacion',
         'metodo_utilizado',
-        // nuevo
-        'n_colmenas_tratadas',
         'objetivo',
         
     ];

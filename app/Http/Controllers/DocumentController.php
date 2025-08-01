@@ -13,9 +13,16 @@ use App\Models\Region;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use App\Models\SubTarea;
+use Carbon\Carbon;
 
 class DocumentController extends Controller
 {
+    private function obtenerFechaHoraLocal()
+    {
+        // Ajusta según la diferencia horaria real del servidor (puedes probar con 4 o 5)
+        return Carbon::now()->setTimezone('America/Santiago')->format('d/m/Y H:i');
+    }
+
     // Verificar si GD está disponible
     private function isGdAvailable()
     {
@@ -317,7 +324,8 @@ class DocumentController extends Controller
             $data = array_merge(
                 $beekeeperData,
                 $apiaryData,
-                ['visits' => $visitas]
+                ['visits' => $visitas,
+                'fechaGeneracion' => $this->obtenerFechaHoraLocal()]
             );
 
             // Log para debugging
@@ -360,7 +368,7 @@ class DocumentController extends Controller
             $beekeeperData = $this->getBeekeeperData();
             $apiaryData = $this->getApiaryData($apiario);
 
-            $data = array_merge($beekeeperData, $apiaryData, ['visits' => $visitas]);
+            $data = array_merge($beekeeperData, $apiaryData, ['visits' => $visitas,'fechaGeneracion' => $this->obtenerFechaHoraLocal()]);
 
             $pdf = Pdf::loadView('documents.visit-record', compact('data'));
             $pdf->setPaper('A4', 'portrait');
@@ -391,7 +399,7 @@ class DocumentController extends Controller
             $beekeeperData = $this->getBeekeeperData();
             $apiaryData = $this->getApiaryData($apiario);
 
-            $data = array_merge($beekeeperData, $apiaryData, ['visits' => $inspecciones]);
+            $data = array_merge($beekeeperData, $apiaryData, ['visits' => $inspecciones, 'fechaGeneracion' => $this->obtenerFechaHoraLocal()]);
 
             $pdf = Pdf::loadView('documents.inspection-record', compact('data'));
             $pdf->setPaper('A4', 'portrait');
@@ -424,7 +432,7 @@ class DocumentController extends Controller
             $beekeeperData = $this->getBeekeeperData();
             $apiaryData   = $this->getApiaryData($apiario);
 
-            $data = array_merge($beekeeperData, $apiaryData, ['visits' => $medicamentos]);
+            $data = array_merge($beekeeperData, $apiaryData, ['visits' => $medicamentos, 'fechaGeneracion' => $this->obtenerFechaHoraLocal()]);
 
             $pdf = Pdf::loadView('documents.medicaments-record', compact('data'));
             // … resto inalterado …
@@ -457,7 +465,8 @@ class DocumentController extends Controller
         $data = array_merge(
             $beekeeper,
             $apiaryData,
-            ['visits' => $visitas]
+            ['visits' => $visitas,
+            'fechaGeneracion' => $this->obtenerFechaHoraLocal()]
         );
 
         $pdf = Pdf::loadView('documents.alimentacion-record', compact('data'))
@@ -483,6 +492,7 @@ class DocumentController extends Controller
         $visita   = $calidadReina->visita;
         $apiario  = $visita->apiario;
         $apicultor= $apiario->user;
+        $fechaGeneracion = $this->obtenerFechaHoraLocal();
 
         // 2) Decodifica reemplazos
         $reemplazos = $calidadReina->reemplazos_realizados;
@@ -501,7 +511,8 @@ class DocumentController extends Controller
             'apiario',
             'apicultor',
             'reemplazos',
-            'ultimoReemplazo'
+            'ultimoReemplazo',
+            'fechaGeneracion'
         ))
         ->setPaper('A4','portrait')
         ->setOptions([
@@ -522,10 +533,11 @@ class DocumentController extends Controller
             'apiario' => $apiario->id,
             'colmena' => $colmena->id,
         ]);
+        $fechaGeneracion = $this->obtenerFechaHoraLocal();
         // Generar PDF 
         $pdf = Pdf::setOptions([
             'isRemoteEnabled' => true,
-        ])->loadView('documents.colmena-qr-pdf', compact('url','apiario','colmena'));
+        ])->loadView('documents.colmena-qr-pdf', compact('url','apiario','colmena','fechaGeneracion'));
         // Nombre dinámico
         $filename = "qr_colmena_{$colmena->numero}_{$apiario->nombre}.pdf";
         // Descargar el archivo PDF
@@ -537,8 +549,8 @@ class DocumentController extends Controller
         $subtareas = SubTarea::with('tareaGeneral')
             ->where('archivada', false)
             ->get();
-
-        $pdf = Pdf::loadView('documents.tareas-todas', compact('subtareas'));
+        $fechaGeneracion = $this->obtenerFechaHoraLocal();
+        $pdf = Pdf::loadView('documents.tareas-todas', compact('subtareas','fechaGeneracion'));
         $pdf->setPaper('A4', 'portrait');
         $pdf->setOptions([
             'isHtml5ParserEnabled' => true,
@@ -548,6 +560,37 @@ class DocumentController extends Controller
         ]);
 
         return $pdf->download('Tareas_Activas.pdf');
+    }
+
+    public function pdfPccColmena(Apiario $apiario, Colmena $colmena)
+    {
+        try {
+            $fechaGeneracion = $this->obtenerFechaHoraLocal();
+
+            // Cargar todos los registros PCC de la colmena
+            $pcc2 = $colmena->estadoNutricional()->latest()->first();
+            $pcc3 = $colmena->presenciaVarroa()->latest()->first();
+            $pcc4 = $colmena->presenciaNosemosis()->latest()->first();
+            $pcc5 = $colmena->indiceCosecha()->latest()->first();
+            $pcc6 = $colmena->preparacionInvernada()->latest()->first();
+            $reina = $colmena->calidadReina()->latest()->first();
+
+            $pdf = Pdf::loadView('documents.colmena-pcc-pdf', compact(
+                'apiario', 'colmena', 'pcc2', 'pcc3', 'pcc4', 'pcc5', 'pcc6', 'reina', 'fechaGeneracion'
+            ))->setPaper('A4', 'portrait')->setOptions([
+                'isHtml5ParserEnabled' => true,
+                'isPhpEnabled' => false,
+                'defaultFont' => 'DejaVu Sans',
+                'enable_remote' => false,
+            ]);
+
+            $filename = "PCC_Colmena_{$colmena->numero}_{$apiario->nombre}.pdf";
+            return $pdf->download($filename);
+
+        } catch (\Exception $e) {
+            \Log::error('Error generando PDF PCC colmena: ' . $e->getMessage());
+            return back()->with('error', 'Error al generar el documento de PCC');
+        }
     }
 
 }

@@ -195,6 +195,14 @@ Route::post('apiarios/editar/{id}', [ApiarioController::class, 'update'])->name(
 Route::get('comunas/{region}', [ApiarioController::class, 'getComunas']);
 Route::delete('/apiarios/delete/{apiario}', [ApiarioController::class, 'deleterApiario'])->name('apiarios.destroy');
 Route::get('/apiarios/{id}', [ApiarioController::class, 'show'])->name('apiarios.show');
+// Ruta AJAX para obtener dinamicamente coordenadas de comuna al crear temporal
+Route::get('/comuna-coordenadas/{id}', function ($id) {
+    $comuna = \App\Models\Comuna::find($id);
+    return response()->json([
+        'lat' => $comuna->lat,
+        'lon' => $comuna->lon,
+    ]);
+});
 
 // Colmenas
 Route::prefix('apiarios/{apiario}/colmenas')->name('colmenas.')->group(function () {
@@ -210,6 +218,7 @@ Route::prefix('apiarios/{apiario}/colmenas')->name('colmenas.')->group(function 
     Route::get('/{colmena}/historial', [ColmenaController::class, 'historial'])->name('historial');
     Route::get('/{colmena}/historial/export', [ColmenaController::class, 'exportHistorial'])->name('historial.export');
     Route::get('/{colmena}/qr-pdf', [DocumentController::class, 'qrPdf'])->name('qr-pdf');
+    Route::get('/{colmena}/pcc/pdf', [DocumentController::class, 'pdfPccColmena'])->name('pcc.pdf');
     Route::put('/{colmena}/color', [ColmenaController::class, 'updateColor'])->name('updateColor');
 });
 

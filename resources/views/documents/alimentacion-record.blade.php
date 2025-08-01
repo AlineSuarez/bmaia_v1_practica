@@ -129,5 +129,8 @@
         </tbody>
     </table>
 
+    <div class="footer">
+      <p><strong>Generado el {{ now()->format('d/m/Y H:i') }}</strong> - Sistema de Gestión Apícola</p>
+    </div>
 </body>
 </html>
