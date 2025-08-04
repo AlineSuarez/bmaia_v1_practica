@@ -68,4 +68,14 @@ class Colmena extends Model
     {
         return $this->hasMany(\App\Models\PreparacionInvernada::class);
     }
+
+    public function calidadReina()
+    {
+        return $this->hasOne(CalidadReina::class)->latestOfMany(); // si Laravel >= 8.x
+    }
+    
+    public function desarrolloCria()
+    {
+        return $this->hasOne(\App\Models\DesarrolloCria::class)->latestOfMany();
+    }
 }

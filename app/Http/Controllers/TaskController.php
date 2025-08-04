@@ -209,7 +209,7 @@ class TaskController extends Controller
         $subtarea = Subtarea::where('user_id', $user->id)->findOrFail($id);
         $subtarea->delete();
         /* return redirect()->route('tareas')->with('success', 'Subtarea eliminada exitosamente.'); */
-        return response()->json(['message' => 'Subtarea eliminada exitosamente.'], 200);
+        return redirect()->route('tareas')->with('success', 'Subtarea eliminada exitosamente.');
     }
 
     public function guardarCambios(Request $request, $id)

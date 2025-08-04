@@ -394,8 +394,7 @@
                                     class="btn btn-primary btn-sm">
                                     <i class="fas fa-edit"></i> Editar PCC
                                 </a>
-                                <a href="{{ route('colmenas.pcc.pdf', ['apiario' => $colmena->apiario_id, 'colmena' => $colmena->id]) }}"
-                                    class="btn btn-secondary btn-sm" target="_blank">
+                                <a href="{{ route('colmenas.pcc.pdf', ['apiario' => $colmena->apiario_id, 'colmena' => $colmena->id]) }}" class="btn btn-secondary btn-sm">
                                     <i class="fas fa-print"></i> Imprimir Detalle PCC
                                 </a>
                             @else

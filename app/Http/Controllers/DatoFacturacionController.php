@@ -25,11 +25,11 @@ class DatoFacturacionController extends Controller
             'correo_envio_dte' => 'nullable|email|max:255',
         ]);
 
-        // Buscar o crear registro para el usuario
-        $datos = DatoFacturacion::firstOrNew(['user_id' => $request->user()->id]);
+        $userId = $request->user()->id;
 
-        // Asignar campos individualmente
-        $datos->update([
+        $datos = DatoFacturacion::firstOrNew(['user_id' => $userId]);
+
+        $datos->fill([
             'razon_social' => $request->razon_social,
             'rut' => $request->rut,
             'giro' => $request->giro,
@@ -39,11 +39,14 @@ class DatoFacturacionController extends Controller
             'ciudad' => $request->ciudad,
             'telefono' => $request->telefono,
             'correo' => $request->correo,
-            'correo_envio_dte' => $request->correo_envio_dte,
             'autorizacion_envio_dte' => $request->has('autorizacion_envio_dte'),
-            'user_id' => $request->user()->id,
+            'correo_envio_dte' => $request->correo_envio_dte,
         ]);
+
+        $datos->user_id = $userId; // importante si es nuevo
+        $datos->save();
 
         return back()->with('success', 'Datos de facturación guardados correctamente.');
     }
+
 }

@@ -30,10 +30,8 @@ class CalidadReina extends Model
         'reemplazos_realizados' => 'array',
     ];
 
-    public function visita()
+    public function colmena()
     {
-        return $this->belongsTo(\App\Models\Visita::class);
+        return $this->belongsTo(\App\Models\Colmena::class);
     }
-
-
 }

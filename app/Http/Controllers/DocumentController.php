@@ -481,50 +481,33 @@ class DocumentController extends Controller
         return $pdf->download("Alimentacion_{$apiario->nombre}.pdf");
     }
 
-    public function generateReinaDocument(int $calidadReinaId)
+    public function generateReinaDocument($apiarioId)
     {
-        // 1) Carga la calidad de reina con visita → apiario → user y comuna→región
-        $calidadReina = CalidadReina::with([
-            'visita.apiario.user',
-            'visita.apiario.comuna.region'
-        ])->findOrFail($calidadReinaId);
+        $colmena = Colmena::with(['apiario', 'calidadReina' => function ($q) {
+            $q->latest('updated_at');
+        }])->where('apiario_id', $apiarioId)->first();
 
-        $visita   = $calidadReina->visita;
-        $apiario  = $visita->apiario;
-        $apicultor= $apiario->user;
-        $fechaGeneracion = $this->obtenerFechaHoraLocal();
-
-        // 2) Decodifica reemplazos
-        $reemplazos = $calidadReina->reemplazos_realizados;
-        if (is_string($reemplazos)) {
-            $reemplazos = json_decode($reemplazos, true) ?: [];
+        if (!$colmena || !$colmena->calidadReina) {
+            abort(404, 'Datos no encontrados.');
         }
-        if (! is_array($reemplazos)) {
-            $reemplazos = [];
-        }
-        // Último reemplazo
-        $ultimoReemplazo = ! empty($reemplazos) ? end($reemplazos) : null;
 
-        // 3) Genera el PDF pasando sólo lo que realmente usa la vista
-        $pdf = Pdf::loadView('documents.reina-record', compact(
-            'calidadReina',
+        $apiario = $colmena->apiario; // este será el apiario actual de la colmena
+        $apicultor = $apiario->user; // asumiendo que apiario tiene relación con usuario
+        $calidadReina = $colmena->calidadReina;
+        $reemplazos = $calidadReina->reemplazos ?? [];
+        $ultimoReemplazo = !empty($reemplazos) ? end($reemplazos) : null;
+
+        $pdf = PDF::loadView('documents.reina-record', compact(
             'apiario',
             'apicultor',
+            'calidadReina',
             'reemplazos',
-            'ultimoReemplazo',
-            'fechaGeneracion'
-        ))
-        ->setPaper('A4','portrait')
-        ->setOptions([
-            'isHtml5ParserEnabled'=>true,
-            'isPhpEnabled'=>true,
-            'defaultFont'=>'DejaVu Sans',
-            'enable_remote'=>true,
-            'chroot'=>public_path(),
-        ]);
+            'ultimoReemplazo'
+        ));
 
-        return $pdf->download("Reina_{$apiario->nombre}.pdf");
+        return $pdf->download('registro_reina_' . $apiario->nombre . '.pdf');
     }
+
 
     public function qrPdf(Apiario $apiario, Colmena $colmena)
     {
@@ -560,37 +543,6 @@ class DocumentController extends Controller
         ]);
 
         return $pdf->download('Tareas_Activas.pdf');
-    }
-
-    public function pdfPccColmena(Apiario $apiario, Colmena $colmena)
-    {
-        try {
-            $fechaGeneracion = $this->obtenerFechaHoraLocal();
-
-            // Cargar todos los registros PCC de la colmena
-            $pcc2 = $colmena->estadoNutricional()->latest()->first();
-            $pcc3 = $colmena->presenciaVarroa()->latest()->first();
-            $pcc4 = $colmena->presenciaNosemosis()->latest()->first();
-            $pcc5 = $colmena->indiceCosecha()->latest()->first();
-            $pcc6 = $colmena->preparacionInvernada()->latest()->first();
-            $reina = $colmena->calidadReina()->latest()->first();
-
-            $pdf = Pdf::loadView('documents.colmena-pcc-pdf', compact(
-                'apiario', 'colmena', 'pcc2', 'pcc3', 'pcc4', 'pcc5', 'pcc6', 'reina', 'fechaGeneracion'
-            ))->setPaper('A4', 'portrait')->setOptions([
-                'isHtml5ParserEnabled' => true,
-                'isPhpEnabled' => false,
-                'defaultFont' => 'DejaVu Sans',
-                'enable_remote' => false,
-            ]);
-
-            $filename = "PCC_Colmena_{$colmena->numero}_{$apiario->nombre}.pdf";
-            return $pdf->download($filename);
-
-        } catch (\Exception $e) {
-            \Log::error('Error generando PDF PCC colmena: ' . $e->getMessage());
-            return back()->with('error', 'Error al generar el documento de PCC');
-        }
     }
 
 }

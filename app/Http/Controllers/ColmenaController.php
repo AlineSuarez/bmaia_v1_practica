@@ -514,4 +514,37 @@ class ColmenaController extends Controller
         // Ajusta según la diferencia horaria real del servidor (puedes probar con 4 o 5)
         return Carbon::now()->subHours(4)->format('d/m/Y H:i');
     }
+
+    public function generarPccPdf($apiarioId, $colmenaId)
+    {
+        $colmena = Colmena::with([
+            'apiario',
+            'desarrolloCria',
+            'calidadReina',
+            'alimentaciones',
+            'varroas',
+            'nosemosis',
+            'indiceCosecha',
+            'preparacionInvernada',
+        ])->findOrFail($colmenaId);
+
+        $apiario = $colmena->apiario;
+        $pcc1 = $colmena->desarrolloCria;
+        $pcc2 = $colmena->calidadReina;
+        $pcc3 = $colmena->alimentaciones->sortByDesc('created_at')->first();
+        $pcc4 = $colmena->varroas->sortByDesc('created_at')->first();
+        $pcc5 = $colmena->nosemosis->sortByDesc('created_at')->first();
+        $pcc6 = $colmena->indiceCosecha->sortByDesc('created_at')->first();
+        $pcc7 = $colmena->preparacionInvernada->sortByDesc('created_at')->first();
+
+        $lastFecha = $pcc2->created_at ?? $pcc3->created_at ?? $pcc4->created_at ?? null;
+
+        $pdf = Pdf::loadView('documents.colmena-pcc-pdf', compact(
+            'colmena', 'apiario',
+            'pcc1', 'pcc2', 'pcc3', 'pcc4', 'pcc5', 'pcc6', 'pcc7',
+            'lastFecha'
+        ));
+
+        return $pdf->download('detalle-colmena-' . $colmena->nombre . '-' . $apiario->nombre . '.pdf');
+    }
 }

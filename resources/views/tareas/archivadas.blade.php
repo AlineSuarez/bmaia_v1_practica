@@ -91,13 +91,26 @@
                                     </div>
 
                                     <div class="card-actions">
-                                        <form action="{{ route('tareas.restaurar', $tarea->id) }}" method="POST" class="restore-form">
-                                            @csrf
-                                            <button class="btn-restaurar" type="submit" title="Restaurar tarea">
-                                                <i class="fa fa-rotate-left"></i>
-                                                <span>Restaurar</span>
-                                            </button>
-                                        </form>
+                                        <div class="actions-buttons">
+                                            <!-- Restaurar -->
+                                            <form action="{{ route('tareas.restaurar', $tarea->id) }}" method="POST" class="restore-form">
+                                                @csrf
+                                                <button class="btn-restaurar" type="submit" title="Restaurar tarea">
+                                                    <i class="fa fa-rotate-left"></i>
+                                                    <span>Restaurar</span>
+                                                </button>
+                                            </form>
+
+                                            <!-- Eliminar -->
+                                            <form action="{{ route('tareas.destroy', $tarea->id) }}" method="POST" class="delete-form" onsubmit="return confirm('¿Estás seguro de eliminar esta tarea permanentemente?');">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button class="btn-eliminar" type="submit" title="Eliminar tarea">
+                                                    <i class="fa fa-trash"></i>
+                                                    <span>Eliminar</span>
+                                                </button>
+                                            </form>
+                                        </div>
                                     </div>
                                 </div>
                             @endforeach
