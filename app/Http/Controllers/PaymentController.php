@@ -56,7 +56,12 @@ class PaymentController extends Controller
     {
         $transaction = new Transaction();
         $token = $request->input('token_ws');
-        $response = $transaction->commit($token);
+        try{
+            $response = $transaction->commit($token);
+        }catch(\Exception $e){
+            \Log::error('Error al procesar la transacción: ' . $e->getMessage());
+            return redirect()->route('payment.failed')->with('error', 'Error al procesar la transacción');
+        }
 
         $payment = Payment::where('transaction_id', $token)->first();
 
