@@ -428,37 +428,60 @@
 
             // Cambiar las coordenadas al seleccionar una comuna
             $('#comuna').change(function () {
+                function normalize(str) {
+                    if (!str) return '';
+                    return str
+                        .toLowerCase()
+                        .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+                        .replace(/\s+/g, " ")
+                        .trim();
+                }
+
                 const comunaNombre = $(this).find('option:selected').data('nombre');
-                if (comunasCoordenadas[comunaNombre]) {
-                    const { lat, lon } = comunasCoordenadas[comunaNombre];
-                    map.setView([lat, lon], 13);
-                    marker.setLatLng([lat, lon]);
+                if (!comunaNombre) return; // No hacer nada si no hay comuna seleccionada
 
-                    // Obtener la posición real del marcador después de moverlo
-                    const position = marker.getLatLng();
-                    $('#latitud').val(position.lat.toFixed(6));
-                    $('#longitud').val(position.lng.toFixed(6));
+                const comunaNombreNorm = normalize(comunaNombre);
 
-                    // Actualizar el popup con las nuevas coordenadas
-                    const updatedPopupContent = `
-                                                                    <div class="custom-popup">
-                                                                        <h4><i class="fas fa-map-pin"></i> Comuna: ${comunaNombre}</h4>
-                                                                        <p>Ubicación central de la comuna seleccionada.</p>
-                                                                        <div class="popup-coordinates">
-                                                                            <span><strong>Lat:</strong> ${position.lat.toFixed(6)}</span><br>
-                                                                            <span><strong>Lng:</strong> ${position.lng.toFixed(6)}</span>
-                                                                        </div>
-                                                                    </div>
-                                                                `;
-                    marker.getPopup().setContent(updatedPopupContent);
-                    marker.openPopup();
+                let found = false;
+                for (const key in comunasCoordenadas) {
+                    if (normalize(key) === comunaNombreNorm) {
+                        let { lat, lon } = comunasCoordenadas[key];
 
-                    // Efecto visual para los campos de coordenadas
-                    highlightField('#latitud');
-                    highlightField('#longitud');
+                        // Convertir a número si vienen como string
+                        lat = Number(lat);
+                        lon = Number(lon);
 
-                    showNotification(`Ubicación actualizada a la comuna de ${comunaNombre}`, 'success');
-                } else {
+                        // Validar que sean números válidos
+                        if (isNaN(lat) || isNaN(lon)) {
+                            showNotification('Las coordenadas de la comuna seleccionada no son válidas.', 'error');
+                            found = true;
+                            break;
+                        }
+
+                        map.setView([lat, lon], 13);
+                        marker.setLatLng([lat, lon]);
+                        $('#latitud').val(lat.toFixed(6));
+                        $('#longitud').val(lon.toFixed(6));
+                        const updatedPopupContent = `
+                <div class="custom-popup">
+                    <h4><i class="fas fa-map-pin"></i> Tu Apiario</h4>
+                    <p>Ubicación actualizada correctamente.</p>
+                    <div class="popup-coordinates">
+                        <span><strong>Lat:</strong> ${lat.toFixed(6)}</span><br>
+                        <span><strong>Lng:</strong> ${lon.toFixed(6)}</span>
+                    </div>
+                </div>
+            `;
+                        marker.getPopup().setContent(updatedPopupContent);
+                        marker.openPopup();
+
+                        highlightField('#latitud');
+                        highlightField('#longitud');
+                        found = true;
+                        break;
+                    }
+                }
+                if (!found) {
                     showNotification('No se encontraron las coordenadas de la comuna seleccionada.', 'error');
                 }
             });
@@ -573,6 +596,16 @@
                             comunasPorRegion[regionId].forEach(comuna => {
                                 comunaSelect.append(`<option value="${comuna.id}" data-nombre="${comuna.nombre}" ${comuna.id == {{ $apiario->comuna_id }} ? 'selected' : ''}>${comuna.nombre}</option>`);
                             });
+
+                            // ACTUALIZAR comunasCoordenadas SOLO con las comunas de la región seleccionada
+                            comunasCoordenadas = {};
+                            comunasPorRegion[regionId].forEach(comuna => {
+                                // Si tienes las coordenadas en el objeto original, las copias
+                                if (@json($comunasCoordenadas)[comuna.nombre]) {
+                                    comunasCoordenadas[comuna.nombre] = @json($comunasCoordenadas)[comuna.nombre];
+                                }
+                            });
+
                             hideLoading('comuna');
                             showNotification(`Comunas de ${regionNombre} cargadas correctamente`, 'success');
 

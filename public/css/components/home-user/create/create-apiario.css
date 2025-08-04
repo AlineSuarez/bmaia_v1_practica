@@ -233,7 +233,7 @@ body::before {
       TÍTULOS MEJORADOS
       ================== */
 h1 {
-    font-size: clamp(1.5rem, 5vw, 1.7rem)!important;
+    font-size: clamp(1.5rem, 5vw, 1.7rem) !important;
     font-weight: 800;
     margin-bottom: 3.5rem;
     color: var(--color-propolis);
@@ -1625,4 +1625,11 @@ select:focus-visible {
         border: 1px solid #ddd !important;
         box-shadow: none !important;
     }
+}
+
+select.form-control {
+    min-width: 220px;
+    max-width: 100%;
+    width: 100%;
+    box-sizing: border-box;
 }
