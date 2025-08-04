@@ -6306,7 +6306,6 @@ footer::before {
 }
 
 /* Estilos modernos del modal */
-/* Estilos modernos del modal */
 .development-modal {
     display: none;
     position: fixed;
@@ -11075,6 +11074,30 @@ footer::before {
 
     .logros-images-container {
         margin: var(--spacing-lg) 0;
+    }
+
+    .development-modal-content {
+        margin: 8% auto;
+        padding: 0;
+        max-width: 360px;
+        min-width: 330px;
+        overflow: hidden;
+    }
+
+    .development-modal-body p{
+        margin-bottom: var(--spacing-sm);
+        font-size: 0.9rem;
+        line-height: 1.5;
+    }
+
+    .development-icon-image{
+        width: 110px;
+        height: 95px;
+        object-fit: contain;
+        object-position: center;
+        transition: all var(--transition-slow);
+        padding: var(--spacing-xs);
+        border-radius: var(--border-radius-md);
     }
 }
 

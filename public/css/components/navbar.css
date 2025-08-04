@@ -192,7 +192,6 @@ body {
     left: 0;
     width: 100%;
     height: 100%;
-    background: var(--primary-50);
     border-radius: var(--radius-full);
     transform: scale(0.8);
     opacity: 0;
@@ -200,13 +199,9 @@ body {
     transition: all var(--transition-normal) var(--ease-smooth);
 }
 
-.navbar-logo:hover {
-    transform: translateY(-2px);
-}
-
 .navbar-logo:hover::before {
     transform: scale(1);
-    opacity: 1;
+    opacity: 0.2;
 }
 
 .logo-icon {
@@ -217,11 +212,6 @@ body {
     filter: drop-shadow(0 0 3px var(--primary-300));
     transition: all var(--transition-normal) var(--ease-bounce);
     transform-origin: center;
-}
-
-.navbar-logo:hover .logo-icon {
-    transform: rotate(10deg) scale(1.1);
-    filter: drop-shadow(0 0 8px var(--primary-400));
 }
 
 .logo-text {
@@ -450,7 +440,6 @@ body {
 
 .navbar-toggle:hover {
     transform: scale(1.05);
-    background: var(--primary-50);
 }
 
 .toggle-icon {
@@ -686,7 +675,6 @@ body {
     text-align: center;
 }
 
-/* Estilos para el botón de login */
 .mobile-action-enter {
     background: var(--primary-gradient);
     color: var(--text-light);
@@ -700,19 +688,22 @@ body {
     box-shadow: var(--shadow-primary), var(--shadow-glow);
 }
 
-/* Ocultar botones de acción en la barra de navegación en pantallas pequeñas */
 @media (max-width: 768px) {
     .navbar-actions {
-        display: none; /* Oculta los botones en el navbar */
+        display: none;
+    }
+
+    .mobile-nav-link{
+        font-size: 1.1rem;
+        padding: 0.8rem 1.2rem;
     }
 }
 
-/* Animación para los botones en el menú móvil */
 .mobile-action-button {
     transform: translateY(-30px) scale(0.9);
     opacity: 0;
     transition: all var(--transition-normal) var(--ease-bounce);
-    transition-delay: 0.5s; /* Aparece después de los enlaces del menú */
+    transition-delay: 0.5s;
 }
 
 .mobile-menu.active .mobile-action-button {

@@ -41,10 +41,6 @@ Route::view('/politicas-de-privacidad', 'legal.privacidad')->name('privacidad');
 Route::view('/terminos-de-uso', 'legal.terminos')->name('terminos');
 Route::view('/politica-de-cookies', 'legal.cookies')->name('cookies');
 
-Route::get('/tareas/search', [TaskController::class, 'search'])->name('tareas.search');
-//Route::resource('tareas', TaskController::class);
-Route::get('/tareas/view/{view}', [TaskController::class, 'loadView'])->name('tareas.view');
-
 Route::get('auth/google', [GoogleController::class, 'redirectToGoogle'])->name('auth.google');
 Route::get('auth/google/callback', [GoogleController::class, 'handleGoogleCallback']);
 
@@ -56,123 +52,24 @@ Auth::routes();
 Route::get('login/google', [LoginController::class, 'redirectToGoogle']);
 Route::get('login/google/callback', [LoginController::class, 'handleGoogleCallback']);
 
-// Rutas para apicultores
-Route::middleware(['auth'])->group(function () {
-    //Route::get('/home', [ApiarioController::class, 'home'])->name('home');
-    Route::get('/home', function () {
-        $default = optional(Auth::user()->preference)->default_view ?? 'dashboard';
-        $routes = [
-            'dashboard' => 'dashboard',
-            'apiaries' => 'apiarios',
-            'calendar' => 'tareas.calendario',
-            'reports' => 'dashboard',
-            'home' => 'home',
-            'cuaderno' => 'visitas.index',
-            'tareas' => 'tareas',
-            'zonificacion' => 'zonificacion',
-            'sistemaexperto' => 'sistemaexperto',
-        ];
-        return redirect()->route($routes[$default] ?? 'dashboard');
-    })->middleware(['auth']);
-// web.php
-Route::get('/apiarios-temporales/{apiario}/detalle-movimiento', [ApiarioController::class, 'detalleMovimiento']);
-    Route::get('/apiarios/create-temporal', [ApiarioController::class, 'createTemporal'])->name('apiarios.createTemporal');
-    Route::resource('apiarios', ApiarioController::class);
-
-    // trashumancia - temporal
-    Route::post('/trashumancia/store', [TrashumanciaController::class, 'store'])->name('trashumancia.store');
-    Route::post('/apiarios/{id}/archivar', [TrashumanciaController::class, 'archivar'])->name('apiarios.archivar');
-    Route::post('/apiarios/archivar-multiples', [TrashumanciaController::class, 'archivarMultiples'])->name('apiarios.archivarMultiples');
-
-    // Mostrar el formulario de edición del temporal
-    Route::get('apiarios/{apiario}/edit-temporal', [TrashumanciaController::class, 'editTemporal'])->name('apiarios.editTemporal');
-    // Procesar la actualización
-    Route::patch('apiarios/{apiario}/update-temporal', [TrashumanciaController::class, 'updateTemporal'])->name('apiarios.updateTemporal');
-
-
-    Route::resource('visita', VisitaController::class);
-    Route::get('/visitas', [VisitaController::class, 'index'])->name('visitas.index');
-    Route::get('visitas/create/{id}', [VisitaController::class, 'create'])->name('visitas.create');
-
-    // Rutas para Registro de Inspección de Apiario
-    Route::get('visitas/create/{id}', [VisitaController::class, 'create'])->name('visitas.create');
-    Route::post('apiarios/{apiario}/inspeccion-apiario', [VisitaController::class, 'store'])->name('apiarios.inspeccion-apiario.store');
-    Route::get('/generate-document/inspeccion/{id}', [DocumentController::class, 'generateInspeccionDocument'])->name('generate.document.inspeccion');
-    // Rutas para Registro General de Visitas
-    Route::get('visitas/create1/{id}', [VisitaController::class, 'createGeneral'])->name('visitas.visitas-general');
-    Route::post('apiarios/{apiario}/visitas-general', [VisitaController::class, 'storeGeneral'])->name('apiarios.visitas-general.store');
-    Route::get('/generate-document/visitas/{id}', [DocumentController::class, 'generateVisitasDocument'])->name('generate.document.visitas');
-    //Rutas para registro de uso de medicamentos.
-    Route::get('visitas/create2/{id}', [VisitaController::class, 'createMedicamentos'])->name('visitas.medicamentos-registro');
-    Route::post('apiarios/{apiario}/medicamentos-registro', [VisitaController::class, 'storeMedicamentos'])->name('apiarios.medicamentos-registro.store');
-    Route::get('/generate-document/medicamentos/{apiarioId}', [DocumentController::class, 'generateMedicamentsDocument'])->name('generate.document.medicamentos');
-    Route::get('apiarios/{apiario}/medicamentos-registro/{visita}/edit', [VisitaController::class, 'editMedicamentos'])->name('apiarios.medicamentos-registro.edit');
-    Route::post('/apiarios/massDelete', [ApiarioController::class, 'massDelete'])->name('apiarios.massDelete');
-    // Rutas para registro de Alimentación
-    //Route::get('visitas/create3/{id_apiario}', [VisitaController::class, 'createAlimentacion'])->name('visitas.create3');
-    Route::get('visitas/create3/{apiario}', [VisitaController::class, 'createAlimentacion'])->name('visitas.create3');
-    //Route::post('visitas/store3/{apiario}', [VisitaController::class, 'storeAlimentacion'])->name('visitas.store3');
-    Route::post('visitas/create3/{apiario}', [VisitaController::class, 'storeAlimentacion'])->name('visitas.store3');
-    Route::get('/generate-document/alimentacion-record/{apiarioId}', [DocumentController::class, 'generateAlimentacionDocument'])->name('generate.document.alimentacion');
-    Route::get('visitas/create3/{apiario}/{visita}/edit', [VisitaController::class, 'editAlimentacion'])->name('visitas.alimentacion.edit');
-    // Rutas para registro de Reina
-    Route::get('visitas/create4/{apiario}', [VisitaController::class, 'createReina'])->name('visitas.create4');
-    Route::post('visitas/create4/{apiario}', [VisitaController::class, 'storeReina'])->name('visitas.store4');
-    Route::get('/generate-document/reina-record/{apiarioId}', [DocumentController::class, 'generateReinaDocument'])->name('generate.document.reina');
-    Route::get('visitas/create4/{apiario}/{visita}/edit', [VisitaController::class, 'editReina'])->name('visitas.reina.edit');
-});
-
-
-// pccs para colmenas
-
-Route::middleware('auth')
-    ->prefix('visitas')
-    ->name('visitas.')
-    ->group(function () {
-
-        // listado, etc
-        Route::get('/', [VisitaController::class, 'index'])->name('index');
-        // ...
-    
-        // Crear PCC
-        Route::get('{visita}/pcc/create', [VisitaController::class, 'createPcc'])->name('pcc.create');
-        // Guardar PCC 
-        Route::post('{visita}/pcc', [VisitaController::class, 'storePcc'])->name('pcc.store');
-        // Editar PCC si ya existe
-        Route::get('{visita}/pcc/edit', [VisitaController::class, 'editPcc'])->name('pcc.edit');
-
-        // Guardar (tanto de create como de edit)
-        Route::put('{visita}/pcc', [VisitaController::class, 'updatePcc'])->name('pcc.update');
-    });
-
 // Redirigir a Google para autenticación
 Route::get('login/google', function () {
     return Socialite::driver('google')->redirect();
 });
 
-//chatbot
-//Route::resource('chatbot', ChatbotController::class);
-Route::get('/chatbot', [ChatbotController::class, 'index'])->name('chatbot.index');
-Route::post('/chatbot/send', [ChatbotController::class, 'send'])->name('chatbot.send');
-Route::get('/chatbot/messages', [ChatbotController::class, 'getMessages'])->name('chatbot.messages');
-Route::get('/chatbot/consejos', [ChatbotController::class, 'generarConsejos'])->name('consejos');
-
 // Callback después de la autenticación
 Route::get('login/google/callback', function () {
     $googleUser = Socialite::driver('google')->user();
-    // Aquí puedes encontrar o crear un usuario en tu base de datos
     $user = User::where('email', $googleUser->getEmail())->first();
     if (!$user) {
-        // Crea un nuevo usuario si no existe
         $user = User::create([
             'name' => $googleUser->getName(),
             'email' => $googleUser->getEmail(),
             'password' => bcrypt(\Illuminate\Support\Str::random(16)),
         ]);
     }
-    // Autentica al usuario
     Auth::login($user);
-    return redirect()->intended('home'); // Cambia 'dashboard' por la ruta a la que quieras redirigir al usuario
+    return redirect()->intended('home');
 });
 
 // Ruta de registro
@@ -182,19 +79,7 @@ Route::post('/register', [RegisterController::class, 'register']);
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [LoginController::class, 'login']);
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
-Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-Route::get('/home', [DashboardController::class, 'home'])->name('home');
 
-// Apiarios
-Route::resource('apiarios', ApiarioController::class)->except(['show']);
-Route::get('/apiarios', [ApiarioController::class, 'index'])->name('apiarios');
-Route::get('apiarios/create', [ApiarioController::class, 'create'])->name('apiarios.create');
-Route::post('apiarios/store', [ApiarioController::class, 'store'])->name('apiarios.store');
-Route::get('apiarios/editar/{id}', [ApiarioController::class, 'edit'])->name('apiarios.edit');
-Route::post('apiarios/editar/{id}', [ApiarioController::class, 'update'])->name('apiarios.editar');
-Route::get('comunas/{region}', [ApiarioController::class, 'getComunas']);
-Route::delete('/apiarios/delete/{apiario}', [ApiarioController::class, 'deleterApiario'])->name('apiarios.destroy');
-Route::get('/apiarios/{id}', [ApiarioController::class, 'show'])->name('apiarios.show');
 // Ruta AJAX para obtener dinamicamente coordenadas de comuna al crear temporal
 Route::get('/comuna-coordenadas/{id}', function ($id) {
     $comuna = \App\Models\Comuna::find($id);
@@ -204,97 +89,186 @@ Route::get('/comuna-coordenadas/{id}', function ($id) {
     ]);
 });
 
-// Colmenas
-Route::prefix('apiarios/{apiario}/colmenas')->name('colmenas.')->group(function () {
-    Route::get('/', [ColmenaController::class, 'index'])->name('index');
-    Route::get('/create', [ColmenaController::class, 'create'])->name('create');
-    Route::post('/', [ColmenaController::class, 'store'])->name('store');
-    Route::get('/historicas', [ColmenaController::class, 'historicas'])->name('historicas');
-    Route::get('/historicas/export', [ColmenaController::class, 'exportHistoricas'])->name('historicas.export');
-    Route::get('/{colmena}', [ColmenaController::class, 'show'])->name('show');
-    Route::get('/{colmena}/edit', [ColmenaController::class, 'edit'])->name('edit');
-    Route::put('/{colmena}', [ColmenaController::class, 'update'])->name('update');
-    Route::delete('/{colmena}', [ColmenaController::class, 'destroy'])->name('destroy');
-    Route::get('/{colmena}/historial', [ColmenaController::class, 'historial'])->name('historial');
-    Route::get('/{colmena}/historial/export', [ColmenaController::class, 'exportHistorial'])->name('historial.export');
-    Route::get('/{colmena}/qr-pdf', [DocumentController::class, 'qrPdf'])->name('qr-pdf');
-    Route::get('/{colmena}/pcc/pdf', [DocumentController::class, 'pdfPccColmena'])->name('pcc.pdf');
-    Route::put('/{colmena}/color', [ColmenaController::class, 'updateColor'])->name('updateColor');
-});
-
 Route::get('/colmena-publica/{colmena}', [ColmenaController::class, 'publicView'])->name('colmenas.public');
 
+// AJAX individual: obtener consejo por apiario (simulado)
+Route::get('/apiarios/{apiario}/obtener-consejo', [App\Http\Controllers\ApiarioController::class, 'obtenerConsejo']);
 
+// Documentos y Emails
+Route::get('/generate-document/{id}', [DocumentController::class, 'generateDocument'])->name('generate.document');
+Route::get('/send-email', [MailController::class, 'sendEmail']);
 
-// Historial de visitas de un apiario
-Route::get('apiarios/{apiario}/visitas', [VisitaController::class, 'showHistorial'])->name('visitas.historial');
-
-//Ruta para obtener tareas en formato JSON
-Route::get('/tareas/json', [TaskController::class, 'obtenerEventosJson'])->name('tareas.json');
-
-// Rutas para tareas
-
-Route::post('/tareas/{id}/archivar', [TaskController::class, 'archivar'])->name('tareas.archivar');
-Route::post('/tareas/restaurar/{id}', [TaskController::class, 'restaurar'])->name('tareas.restaurar');
-Route::get('/tareas/archivadas', [TaskController::class, 'verArchivadas'])->name('tareas.archivadas');
-
-
-Route::delete('/tareas/{id}', [TaskController::class, 'destroy'])->name('tareas.destroy');
-Route::get('/tareas', [TaskController::class, 'index'])->name('tareas');
-Route::post('/tareas', [TaskController::class, 'store'])->name('tareas.store');
-Route::post('/tareas/default', [TaskController::class, 'default'])->name('tareas.default');
-Route::patch('/tareas/{id}', [TaskController::class, 'update'])->name('tareas.update');
-Route::patch('/tareas/{id}/update-status', [TaskController::class, 'updateStatus']);
-Route::get('/tareas/{id}', [TaskController::class, 'show'])->name('tareas.show');
-Route::post('/tareas/update/{id}', [TaskController::class, 'guardarCambios']);
-Route::patch('/tareas/{id}/update', [TaskController::class, 'updateTarea']);
-Route::get('/todas-las-tareas/imprimir', [DocumentController::class, 'imprimirTodasSubtareas'])->name('tareas.imprimirTodas');
-Route::get('/datos-subtareas', [TaskController::class, 'obtenerSubtareasJson'])->name('tareas.datos');
-
-// 1) Pantalla del calendario
-Route::get('/tareas/calendario', [TaskController::class, 'calendario'])->name('tareas.calendario');
-// Crear etapa en módulo de Tareas
-Route::post('/tareas-generales', [TaskController::class, 'storeAjax']);
-
-// Visitas
-Route::get('/visitas', [VisitaController::class, 'index'])->name('visitas');
-Route::post('apiarios/{apiario}/visitas', [VisitaController::class, 'store'])->name('visitas.store');
-Route::post('apiarios/{apiario}/visitas1', [VisitaController::class, 'store1'])->name('visitas.store1');
-
-// Grupo de rutas protegidas por el middleware de autenticación y verificación de pago
-//Route::middleware(['auth', 'check.payment'])->group(function () {});
-Route::get('/zonificacion', [ZonificacionController::class, 'index'])->name('zonificacion');
-//Usuarios
+// Pagos (NO PROTEGIDAS POR check.payment)
 Route::middleware(['auth'])->group(function () {
+    Route::post('/payment/initiate', [PaymentController::class, 'initiatePayment'])->name('payment.initiate');
+    Route::get('/payment/response', [PaymentController::class, 'paymentResponse'])->name('payment.response');
+    Route::post('/trial/start', [PaymentController::class, 'startTrial'])->name('trial.start');
+});
+
+Route::get('/payment/success', function () {
+    return view('payment.success');
+})->name('payment.success');
+
+Route::get('/payment/failed', function () {
+    return view('payment.failed');
+})->name('payment.failed');
+
+Route::get('/payment/required', function () {
+    return view('payment.required');
+})->name('payment.required');
+
+Route::middleware(['auth'])->group(function () {
+    Route::post('/payment/initiate', [PaymentController::class, 'initiatePayment'])->name('payment.initiate');
+    Route::get('/payment/response', [PaymentController::class, 'paymentResponse'])->name('payment.response');
+    Route::post('/trial/start', [PaymentController::class, 'startTrial'])->name('trial.start');
+    Route::get('/home', [DashboardController::class, 'home'])->name('home');
+});
+
+// ================================
+// RUTAS PROTEGIDAS POR SISTEMA DE PAGO
+// ================================
+Route::middleware(['auth', 'check.payment'])->group(function () {
+    
+    // Dashboard y Home
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
+    // Apiarios
+    Route::resource('apiarios', ApiarioController::class)->except(['show']);
+    Route::get('/apiarios', [ApiarioController::class, 'index'])->name('apiarios');
+    Route::get('apiarios/create', [ApiarioController::class, 'create'])->name('apiarios.create');
+    Route::post('apiarios/store', [ApiarioController::class, 'store'])->name('apiarios.store');
+    Route::get('apiarios/editar/{id}', [ApiarioController::class, 'edit'])->name('apiarios.edit');
+    Route::post('apiarios/editar/{id}', [ApiarioController::class, 'update'])->name('apiarios.editar');
+    Route::get('comunas/{region}', [ApiarioController::class, 'getComunas']);
+    Route::delete('/apiarios/delete/{apiario}', [ApiarioController::class, 'deleterApiario'])->name('apiarios.destroy');
+    Route::get('/apiarios/{id}', [ApiarioController::class, 'show'])->name('apiarios.show');
+    Route::get('/apiarios-temporales/{apiario}/detalle-movimiento', [ApiarioController::class, 'detalleMovimiento']);
+    Route::get('/apiarios/create-temporal', [ApiarioController::class, 'createTemporal'])->name('apiarios.createTemporal');
+    Route::post('/apiarios/massDelete', [ApiarioController::class, 'massDelete'])->name('apiarios.massDelete');
+
+    // Trashumancia - temporal
+    Route::post('/trashumancia/store', [TrashumanciaController::class, 'store'])->name('trashumancia.store');
+    Route::post('/apiarios/{id}/archivar', [TrashumanciaController::class, 'archivar'])->name('apiarios.archivar');
+    Route::post('/apiarios/archivar-multiples', [TrashumanciaController::class, 'archivarMultiples'])->name('apiarios.archivarMultiples');
+    Route::get('apiarios/{apiario}/edit-temporal', [TrashumanciaController::class, 'editTemporal'])->name('apiarios.editTemporal');
+    Route::patch('apiarios/{apiario}/update-temporal', [TrashumanciaController::class, 'updateTemporal'])->name('apiarios.updateTemporal');
+
+    // Colmenas
+    Route::prefix('apiarios/{apiario}/colmenas')->name('colmenas.')->group(function () {
+        Route::get('/', [ColmenaController::class, 'index'])->name('index');
+        Route::get('/create', [ColmenaController::class, 'create'])->name('create');
+        Route::post('/', [ColmenaController::class, 'store'])->name('store');
+        Route::get('/historicas', [ColmenaController::class, 'historicas'])->name('historicas');
+        Route::get('/historicas/export', [ColmenaController::class, 'exportHistoricas'])->name('historicas.export');
+        Route::get('/{colmena}', [ColmenaController::class, 'show'])->name('show');
+        Route::get('/{colmena}/edit', [ColmenaController::class, 'edit'])->name('edit');
+        Route::put('/{colmena}', [ColmenaController::class, 'update'])->name('update');
+        Route::delete('/{colmena}', [ColmenaController::class, 'destroy'])->name('destroy');
+        Route::get('/{colmena}/historial', [ColmenaController::class, 'historial'])->name('historial');
+        Route::get('/{colmena}/historial/export', [ColmenaController::class, 'exportHistorial'])->name('historial.export');
+        Route::get('/{colmena}/qr-pdf', [DocumentController::class, 'qrPdf'])->name('qr-pdf');
+        Route::get('/{colmena}/pcc/pdf', [DocumentController::class, 'pdfPccColmena'])->name('pcc.pdf');
+        Route::put('/{colmena}/color', [ColmenaController::class, 'updateColor'])->name('updateColor');
+    });
+
+    // Visitas
+    Route::resource('visita', VisitaController::class);
+    Route::get('/visitas', [VisitaController::class, 'index'])->name('visitas');
+    Route::get('visitas/create/{id}', [VisitaController::class, 'create'])->name('visitas.create');
+    Route::post('apiarios/{apiario}/visitas', [VisitaController::class, 'store'])->name('visitas.store');
+    Route::post('apiarios/{apiario}/visitas1', [VisitaController::class, 'store1'])->name('visitas.store1');
+    
+    // Rutas para Registro de Inspección de Apiario
+    Route::post('apiarios/{apiario}/inspeccion-apiario', [VisitaController::class, 'store'])->name('apiarios.inspeccion-apiario.store');
+    Route::get('/generate-document/inspeccion/{id}', [DocumentController::class, 'generateInspeccionDocument'])->name('generate.document.inspeccion');
+    
+    // Rutas para Registro General de Visitas
+    Route::get('visitas/create1/{id}', [VisitaController::class, 'createGeneral'])->name('visitas.visitas-general');
+    Route::post('apiarios/{apiario}/visitas-general', [VisitaController::class, 'storeGeneral'])->name('apiarios.visitas-general.store');
+    Route::get('/generate-document/visitas/{id}', [DocumentController::class, 'generateVisitasDocument'])->name('generate.document.visitas');
+    
+    //Rutas para registro de uso de medicamentos.
+    Route::get('visitas/create2/{id}', [VisitaController::class, 'createMedicamentos'])->name('visitas.medicamentos-registro');
+    Route::post('apiarios/{apiario}/medicamentos-registro', [VisitaController::class, 'storeMedicamentos'])->name('apiarios.medicamentos-registro.store');
+    Route::get('/generate-document/medicamentos/{apiarioId}', [DocumentController::class, 'generateMedicamentsDocument'])->name('generate.document.medicamentos');
+    Route::get('apiarios/{apiario}/medicamentos-registro/{visita}/edit', [VisitaController::class, 'editMedicamentos'])->name('apiarios.medicamentos-registro.edit');
+    
+    // Rutas para registro de Alimentación
+    Route::get('visitas/create3/{apiario}', [VisitaController::class, 'createAlimentacion'])->name('visitas.create3');
+    Route::post('visitas/create3/{apiario}', [VisitaController::class, 'storeAlimentacion'])->name('visitas.store3');
+    Route::get('/generate-document/alimentacion-record/{apiarioId}', [DocumentController::class, 'generateAlimentacionDocument'])->name('generate.document.alimentacion');
+    Route::get('visitas/create3/{apiario}/{visita}/edit', [VisitaController::class, 'editAlimentacion'])->name('visitas.alimentacion.edit');
+    
+    // Rutas para registro de Reina
+    Route::get('visitas/create4/{apiario}', [VisitaController::class, 'createReina'])->name('visitas.create4');
+    Route::post('visitas/create4/{apiario}', [VisitaController::class, 'storeReina'])->name('visitas.store4');
+    Route::get('/generate-document/reina-record/{apiarioId}', [DocumentController::class, 'generateReinaDocument'])->name('generate.document.reina');
+    Route::get('visitas/create4/{apiario}/{visita}/edit', [VisitaController::class, 'editReina'])->name('visitas.reina.edit');
+
+    // PCCs para colmenas
+    Route::prefix('visitas')->name('visitas.')->group(function () {
+        Route::get('{visita}/pcc/create', [VisitaController::class, 'createPcc'])->name('pcc.create');
+        Route::post('{visita}/pcc', [VisitaController::class, 'storePcc'])->name('pcc.store');
+        Route::get('{visita}/pcc/edit', [VisitaController::class, 'editPcc'])->name('pcc.edit');
+        Route::put('{visita}/pcc', [VisitaController::class, 'updatePcc'])->name('pcc.update');
+    });
+
+    // Historial de visitas de un apiario
+    Route::get('apiarios/{apiario}/visitas', [VisitaController::class, 'showHistorial'])->name('visitas.historial');
+
+    // Chatbot
+    Route::get('/chatbot', [ChatbotController::class, 'index'])->name('chatbot.index');
+    Route::post('/chatbot/send', [ChatbotController::class, 'send'])->name('chatbot.send');
+    Route::get('/chatbot/messages', [ChatbotController::class, 'getMessages'])->name('chatbot.messages');
+    Route::get('/chatbot/consejos', [ChatbotController::class, 'generarConsejos'])->name('consejos');
+
+    // Tareas
+    Route::get('/tareas/search', [TaskController::class, 'search'])->name('tareas.search');
+    Route::get('/tareas/view/{view}', [TaskController::class, 'loadView'])->name('tareas.view');
+    Route::get('/tareas/json', [TaskController::class, 'obtenerEventosJson'])->name('tareas.json');
+    Route::post('/tareas/{id}/archivar', [TaskController::class, 'archivar'])->name('tareas.archivar');
+    Route::post('/tareas/restaurar/{id}', [TaskController::class, 'restaurar'])->name('tareas.restaurar');
+    Route::get('/tareas/archivadas', [TaskController::class, 'verArchivadas'])->name('tareas.archivadas');
+    Route::delete('/tareas/{id}', [TaskController::class, 'destroy'])->name('tareas.destroy');
+    Route::get('/tareas', [TaskController::class, 'index'])->name('tareas');
+    Route::post('/tareas', [TaskController::class, 'store'])->name('tareas.store');
+    Route::post('/tareas/default', [TaskController::class, 'default'])->name('tareas.default');
+    Route::patch('/tareas/{id}', [TaskController::class, 'update'])->name('tareas.update');
+    Route::patch('/tareas/{id}/update-status', [TaskController::class, 'updateStatus']);
+    Route::get('/tareas/{id}', [TaskController::class, 'show'])->name('tareas.show');
+    Route::post('/tareas/update/{id}', [TaskController::class, 'guardarCambios']);
+    Route::patch('/tareas/{id}/update', [TaskController::class, 'updateTarea']);
+    Route::get('/todas-las-tareas/imprimir', [DocumentController::class, 'imprimirTodasSubtareas'])->name('tareas.imprimirTodas');
+    Route::get('/datos-subtareas', [TaskController::class, 'obtenerSubtareasJson'])->name('tareas.datos');
+    Route::get('/tareas/calendario', [TaskController::class, 'calendario'])->name('tareas.calendario');
+    Route::post('/tareas-generales', [TaskController::class, 'storeAjax']);
+
+    // Zonificación
+    Route::get('/zonificacion', [ZonificacionController::class, 'index'])->name('zonificacion');
+
+    // Usuarios y configuraciones
     Route::get('/user/settings', [UserController::class, 'settings'])->name('user.settings');
     Route::patch('/user/update-name', [UserController::class, 'updateName'])->name('user.update.name');
-    //Route::patch('/user/update-avatar', [UserController::class, 'updateAvatar'])->name('user.update.avatar');
-    Route::post('/user/avatar', [UserController::class, 'updateAvatar'])
-        ->name('user.updateAvatar')
-        ->middleware('auth');
+    Route::post('/user/avatar', [UserController::class, 'updateAvatar'])->name('user.updateAvatar');
     Route::patch('/user/update-password', [UserController::class, 'updatePassword'])->name('user.update.password');
     Route::post('/user/update-settings', [UserController::class, 'updateSettings'])->name('user.updateSettings');
     Route::post('/user/update-plan', [UserController::class, 'updatePlan'])->name('user.updatePlan');
+    
     // FACTURACION
     Route::post('user/datos-facturacion', [DatoFacturacionController::class, 'store'])->name('datos-facturacion.store');
-    // permisos
+    
+    // Permisos
     Route::get('/user/settings/permissions', [PermissionsController::class, 'index'])->name('permissions.index');
     Route::post('/user/settings/permissions', [PermissionsController::class, 'update'])->name('permissions.update');
     Route::post('/user/settings/permissions/reset', [PermissionsController::class, 'reset'])->name('permissions.reset');
-    // preferencias
+    
+    // Preferencias
     Route::get('/user/settings/preferences', [PreferencesController::class, 'index'])->name('preferences.index');
     Route::post('/user/settings/preferences', [PreferencesController::class, 'update'])->name('preferences.update');
     Route::post('/user/settings/preferences/reset', [PreferencesController::class, 'reset'])->name('preferences.reset');
-
-    // formato global de fechas test
-    Route::get('/user/settings/preferences/demo', [PreferencesController::class, 'dateFormatDemo'])
-        ->name('preferences.demo')
-        ->middleware('auth');
-
-    Route::post('/user/settings/preferences/date-format', [PreferencesController::class, 'updateDateFormat'])
-        ->name('preferences.updateDateFormat')
-        ->middleware('auth');
-
+    Route::get('/user/settings/preferences/demo', [PreferencesController::class, 'dateFormatDemo'])->name('preferences.demo');
+    Route::post('/user/settings/preferences/date-format', [PreferencesController::class, 'updateDateFormat'])->name('preferences.updateDateFormat');
+    
     Route::get('/debug-date', function () {
         return [
             'auth_user' => Auth::check() ? Auth::user()->email : 'no user',
@@ -303,86 +277,41 @@ Route::middleware(['auth'])->group(function () {
         ];
     });
 
-
-    // test cambio idioma
     Route::get('/test-lang', function () {
         return view('apiarios.test-lang');
-    })->middleware(['auth']);
-
-
+    });
 
     // UTILIDADES
-    // utilidades - alertas
+    // Alertas
     Route::get('/user/settings/alerts', [AlertController::class, 'index'])->name('alerts.index');
     Route::post('/user/settings/alerts', [AlertController::class, 'store'])->name('alerts.store');
     Route::put('/user/settings/alerts/{alert}', [AlertController::class, 'update'])->name('alerts.update');
     Route::delete('/user/settings/alerts/{alert}', [AlertController::class, 'destroy'])->name('alerts.destroy');
-    // utilidades - recordatorios
+    
+    // Recordatorios
     Route::get('/user/settings/reminders', [ReminderController::class, 'index'])->name('reminders.index');
     Route::post('/user/settings/reminders', [ReminderController::class, 'store'])->name('reminders.store');
     Route::put('/user/settings/reminders/{reminder}', [ReminderController::class, 'update'])->name('reminders.update');
     Route::delete('/user/settings/reminders/{reminder}', [ReminderController::class, 'destroy'])->name('reminders.destroy');
-    // utilidades - fechas importantes
+    
+    // Fechas importantes
     Route::get('/user/settings/dates', [ImportantDateController::class, 'index'])->name('dates.index');
     Route::post('/user/settings/dates', [ImportantDateController::class, 'store'])->name('dates.store');
     Route::put('/user/settings/dates/{date}', [ImportantDateController::class, 'update'])->name('dates.update');
     Route::delete('/user/settings/dates/{date}', [ImportantDateController::class, 'destroy'])->name('dates.destroy');
-    // utilidades - contactos de emergencia
+    
+    // Contactos de emergencia
     Route::get('/user/settings/contacts', [EmergencyContactController::class, 'index'])->name('contacts.index');
     Route::post('/user/settings/contacts', [EmergencyContactController::class, 'store'])->name('contacts.store');
     Route::put('/user/settings/contacts/{contact}', [EmergencyContactController::class, 'update'])->name('contacts.update');
     Route::delete('/user/settings/contacts/{contact}', [EmergencyContactController::class, 'destroy'])->name('contacts.destroy');
+
+    // Sistema Experto
+    Route::prefix('sistemaexperto')->name('sistemaexperto.')->group(function () {
+        Route::get('/', [SistemaExpertoController::class, 'index'])->name('index');
+        Route::get('{apiario}/create', [SistemaExpertoController::class, 'create'])->name('create');
+        Route::post('{apiario}/store', [SistemaExpertoController::class, 'store'])->name('store');
+        Route::get('colmenas/{colmena}/edit', [SistemaExpertoController::class, 'editPcc'])->name('editpcc');
+        Route::put('sistemaexperto/{sistemaexperto}', [SistemaExpertoController::class, 'update'])->name('update');
+    });
 });
-
-
-//(estas rutas estaban tambien dentro de un midleware de pago)
-// La ruta de sistema experto que lista los apiarios
-//Route::get('/sistemaexperto', [App\Http\Controllers\ApiarioController::class, 'indexSistemaExperto'])->name('sistemaexperto');
-
-// Guardar PCC
-//Route::post('/sistemaexperto/guardar', [App\Http\Controllers\VisitaController::class, 'storeSistemaExperto'])->name('sistemaexperto.store');
-// AJAX individual: obtener consejo por apiario (simulado)
-Route::get('/apiarios/{apiario}/obtener-consejo', [App\Http\Controllers\ApiarioController::class, 'obtenerConsejo']);
-
-
-
-// Nuevas rutas para el sistema experto
-Route::prefix('sistemaexperto')->name('sistemaexperto.')->middleware(['auth'])->group(function () {
-    // Listado de apiarios para sistema experto
-    Route::get('/', [SistemaExpertoController::class, 'index'])->name('index');
-    // Formulario de creación para un apiario
-    Route::get('{apiario}/create', [SistemaExpertoController::class, 'create'])->name('create');
-    // Guarda el PCC (repite en todas las colmenas internamente)
-    Route::post('{apiario}/store', [SistemaExpertoController::class, 'store'])->name('store');
-    // Edita un registro de sistema experto concreto
-    Route::get('colmenas/{colmena}/edit', [SistemaExpertoController::class, 'editPcc'])->name('editpcc');
-    // Actualiza
-    Route::put('sistemaexperto/{sistemaexperto}', [SistemaExpertoController::class, 'update'])->name('update');
-    // Borra
-    //Route::delete('{sistemaexperto}', [SistemaExpertoController::class, 'destroy'])->name('destroy');
-});
-
-
-// Documentos y Emails
-Route::get('/generate-document/{id}', [DocumentController::class, 'generateDocument'])->name('generate.document');
-Route::get('/send-email', [MailController::class, 'sendEmail']);
-
-// Pagos
-Route::middleware(['auth'])->group(function () {
-    Route::post('/payment/initiate', [PaymentController::class, 'initiatePayment'])->name('payment.initiate');
-    Route::get('/payment/response', [PaymentController::class, 'paymentResponse'])->name('payment.response');
-});
-
-// Ruta para la página de pago exitoso
-Route::get('/payment/success', function () {
-    return view('payment.success');
-})->name('payment.success');
-
-// Ruta para la página de pago fallido
-Route::get('/payment/failed', function () {
-    return view('payment.failed');
-})->name('payment.failed');
-
-Route::get('/payment/required', function () {
-    return view('payment.required');
-})->name('payment.required');

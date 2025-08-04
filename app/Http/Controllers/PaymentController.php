@@ -83,4 +83,36 @@ class PaymentController extends Controller
         }
     }
 
+    public function startTrial(Request $request)
+    {
+        $user = Auth::user();
+
+        // Buscar el último registro de prueba gratuita (plan drone)
+        $dronePayment = Payment::where('user_id', $user->id)
+            ->where('plan', 'drone')
+            ->orderByDesc('created_at')
+            ->first();
+
+        // Si ya tiene una prueba activa (menos de 16 días), no permitir otra
+        if ($dronePayment && now()->diffInDays($dronePayment->created_at) < 16) {
+            return redirect()->route('dashboard')->with('error', 'Ya tienes una prueba gratuita activa.');
+        }
+
+        // Si ya usó la prueba y pasaron los 16 días, no permitir otra
+        if ($dronePayment && now()->diffInDays($dronePayment->created_at) >= 16) {
+            return redirect()->route('payment.required')->with('error', 'Ya usaste tu prueba gratuita.');
+        }
+
+        // Crear el registro de prueba gratuita
+        Payment::create([
+            'user_id' => $user->id,
+            'transaction_id' => 'trial-'.uniqid(),
+            'status' => 'paid',
+            'amount' => 0,
+            'plan' => 'drone',
+        ]);
+
+        return redirect()->route('dashboard')->with('success', 'Prueba gratuita activada por 16 días.');
+    }
+
 }

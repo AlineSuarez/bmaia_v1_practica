@@ -22,7 +22,7 @@
       <div class="modal-particle modal-particle-4"></div>
 
       <div class="development-icon">
-        <img src="{{ asset('img/abeja.png') }}" width="160px" height="130px" alt="Fondo apícola">
+        <img src="{{ asset('img/abeja.png') }}" width="160px" height="130px" alt="Fondo apícola" class="development-icon-image">
       </div>
       <p>¡Descubre B-Ma<span class="highlight">iA</span>!</p>
       <p>El nuevo ecosistema apícola al servicio de la Apicultura Chilena.</p>

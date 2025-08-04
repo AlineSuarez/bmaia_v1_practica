@@ -32,7 +32,7 @@
                     <a class="nav-link" id="plans-tab" data-bs-toggle="tab" href="#plans" role="tab" aria-controls="plans"
                         aria-selected="false">Planes</a>
                 </li>
-<!--<li class="nav-item" role="presentation">
+                <!--<li class="nav-item" role="presentation">
                     <a class="nav-link" id="permissions-tab" data-bs-toggle="tab" href="#permissions" role="tab"
                         aria-controls="permissions" aria-selected="false">Permisos</a>
                 </li>
@@ -530,18 +530,24 @@
                                     <span>{{ ucfirst($user->plan ?? 'drone') }}</span>
                                 </div>
                                 <div class="plan-details">
-                                    <p><strong>Fecha de inicio:</strong> {{ $user->plan_start_date ?? 'N/A' }}</p>
-                                    <p><strong>Fecha de vencimiento:</strong> {{ $user->plan_end_date ?? 'N/A' }}</p>
+                                    <p><strong>Fecha de inicio:</strong> {{ $plan_start_date ?? 'N/A' }}</p>
+                                    <p><strong>Fecha de vencimiento:</strong> {{ $plan_end_date ?? 'N/A' }}</p>
                                     <div class="plan-progress">
                                         <div class="progress">
                                             <div class="progress-bar" role="progressbar"
-                                                style="width: {{ $user->plan_progress ?? 0 }}%;"
-                                                aria-valuenow="{{ $user->plan_progress ?? 0 }}" aria-valuemin="0"
+                                                style="width: {{ $plan_progress ?? 0 }}%;"
+                                                aria-valuenow="{{ $plan_progress ?? 0 }}" aria-valuemin="0"
                                                 aria-valuemax="100">
-                                                {{ $user->plan_progress ?? 0 }}%
+                                                {{ $plan_progress ?? 0 }}%
                                             </div>
                                         </div>
-                                        <small>{{ $user->plan_days_left ?? 0 }} días restantes</small>
+                                        <small>
+                                            {{ $plan_days_left }} días
+                                            @if($plan_hours_left > 0)
+                                                y {{ $plan_hours_left }} horas
+                                            @endif
+                                            restantes
+                                        </small>
                                     </div>
                                 </div>
                             </div>

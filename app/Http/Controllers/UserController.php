@@ -31,10 +31,48 @@ class UserController extends Controller
         $user = Auth::user();
         $datosFacturacion = DatoFacturacion::where('user_id', $user->id)->first();
         $regiones = Region::with('comunas')->get();
-        return view('user.settings', compact('user', 'regiones','datosFacturacion'));
+
+        $plan = $user->plan ?? 'drone';
+        $payment = \App\Models\Payment::where('user_id', $user->id)
+            ->where('plan', $plan)
+            ->where('status', 'paid')
+            ->orderByDesc('created_at')
+            ->first();
+
+        if ($plan === 'drone' && $payment) {
+            $start = $payment->created_at;
+            $end = $start->copy()->addDays(16);
+            $totalDays = 16;
+        } elseif ($payment) {
+            $start = $payment->created_at;
+            $end = $payment->expires_at ?? $start->copy()->addYear();
+            $totalDays = $start->diffInDays($end);
+        } else {
+            $start = null;
+            $end = null;
+            $totalDays = 0;
+        }
+
+        $now = now();
+    if ($end && $now < $end) {
+        $totalHours = $now->diffInHours($end);
+        $plan_days_left = intdiv($totalHours, 24);
+        $plan_hours_left = $totalHours % 24;
+    } else {
+        $plan_days_left = 0;
+        $plan_hours_left = 0;
+    }
+        $plan_start_date = $start ? $start->format('d-m-Y') : 'N/A';
+        $plan_end_date = $end ? $end->format('d-m-Y') : 'N/A';
+        $plan_progress = $totalDays > 0 ? round(100 - (($plan_days_left + ($plan_hours_left/24)) / $totalDays * 100)) : 0;
+
+        return view('user.settings', compact(
+            'user', 'regiones', 'datosFacturacion',
+            'plan_start_date', 'plan_end_date', 'plan_days_left', 'plan_hours_left', 'plan_progress'
+        ));
     }
 
-    public function updateProfile()
+    public function updateProfile(Request $request)
     {
         $data = $request->validate([
             'rut' => ['required', 'regex:/^\d{1,2}\.\d{3}\.\d{3}-[0-9Kk]{1}$/'],

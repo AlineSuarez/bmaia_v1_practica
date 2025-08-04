@@ -91,25 +91,22 @@
 <div class="mobile-menu" id="mobile-menu">
     <ul class="mobile-nav-list">
         <li class="mobile-nav-item">
-            <a href="#inicio" class="mobile-nav-link active">Inicio</a>
+            <a href="#inicio" class="mobile-nav-link active" style="font-weight: bold;">Inicio</a>
         </li>
         <li class="mobile-nav-item">
-            <a href="#maia" class="mobile-nav-link">Sobre MaiA</a>
+            <a href="#mision" class="mobile-nav-link" style="font-weight: bold;">Nuestra Misión</a>
         </li>
         <li class="mobile-nav-item">
-            <a href="#herramientas" class="mobile-nav-link">Herramientas</a>
+            <a href="#herramientas" class="mobile-nav-link" style="font-weight: bold;">Herramientas</a>
         </li>
         <li class="mobile-nav-item">
-            <a href="#descarga" class="mobile-nav-link">Descarga</a>
+            <a href="#como-funciona" class="mobile-nav-link" style="font-weight: bold;">Cómo funciona</a>
         </li>
         <li class="mobile-nav-item">
-            <a href="#como-funciona" class="mobile-nav-link">Cómo funciona</a>
+            <a href="#logros" class="mobile-nav-link" style="font-weight: bold;">Logros</a>
         </li>
         <li class="mobile-nav-item">
-            <a href="#testimonios" class="mobile-nav-link">Testimonios</a>
-        </li>
-        <li class="mobile-nav-item">
-            <a href="#contacto" class="mobile-nav-link">Contacto</a>
+            <a href="#contacto" class="mobile-nav-link" style="font-weight: bold;">Contacto</a>
         </li>
     </ul>
 
