@@ -1,5 +1,7 @@
 @extends('layouts.app')
 
+@section('title', 'Historial de Visitas')
+
 @section('content')
 <head>
     <link rel="stylesheet" href="{{ asset('css/components/home-user/record.css') }}">

@@ -39,6 +39,12 @@ class PaymentController extends Controller
                 return redirect()->back()->with('error', 'Plan no válido');
         }
 
+        // DESCUENTO DEL 30% SOLO EN AGOSTO
+        $now = now();
+        if ($now->month == 8) { // Agosto
+            $amount = intval(round($amount * 0.7));
+        }
+
         $response = $transaction->create(
             uniqid(),
             uniqid(),

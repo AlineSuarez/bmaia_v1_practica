@@ -68,7 +68,7 @@
                                     @if($droneActive)
                                         <div class="trial-status active">
                                             <i class="fas fa-clock me-2"></i>
-                                            Tu prueba gratuita está activa - <strong>{{ $daysRemaining }} días restantes</strong>
+                                            Tu prueba gratuita está activa, una vez que finalice, podrás elegir un plan de pago.
                                         </div>
                                         <div class="progress mt-2" style="height: 6px;">
                                             <div class="progress-bar bg-warning" role="progressbar" 
@@ -137,7 +137,21 @@
                                 </div>
                             </div>
                             <div class="plan-pricing">
-                                <div class="price-main">$69.900 + IVA</div>
+                                @php
+                                    $isAugust = now()->month == 8;
+                                    $afcPrice = $isAugust ? intval(round(69900 * 0.7)) : 69900;
+                                    $mePrice = $isAugust ? intval(round(87900 * 0.7)) : 87900;
+                                    $gePrice = $isAugust ? intval(round(150900 * 0.7)) : 150900;
+                                @endphp
+                                <div class="price-main">
+                                    @if($isAugust)
+                                        <span style="text-decoration:line-through; color:#888;">$69.900</span>
+                                        <span style="color:#FF8C00; font-weight:bold;">${{ number_format($afcPrice, 0, ',', '.') }} + IVA</span>
+                                        <span class="badge bg-success ms-2">-30% Agosto</span>
+                                    @else
+                                        $69.900 + IVA
+                                    @endif
+                                </div>
                                 <div class="price-details">
                                     <small>Mensual: $5.825 + IVA</small>
                                     <small>Por colmena: $234/año</small>
@@ -184,7 +198,15 @@
                                 </div>
                             </div>
                             <div class="plan-pricing">
-                                <div class="price-main">$87.900 + IVA</div>
+                                <div class="price-main">
+                                    @if($isAugust)
+                                        <span style="text-decoration:line-through; color:#888;">$87.900</span>
+                                        <span style="color:#FF8C00; font-weight:bold;">${{ number_format($mePrice, 0, ',', '.') }} + IVA</span>
+                                        <span class="badge bg-success ms-2">-30% Agosto</span>
+                                    @else
+                                        $87.900 + IVA
+                                    @endif
+                                </div>
                                 <div class="price-details">
                                     <small>Mensual: $7.325 + IVA</small>
                                     <small>Por colmena: $110/año</small>
@@ -231,7 +253,15 @@
                                 </div>
                             </div>
                             <div class="plan-pricing">
-                                <div class="price-main">$150.900 + IVA</div>
+                                <div class="price-main">
+                                    @if($isAugust)
+                                        <span style="text-decoration:line-through; color:#888;">$150.900</span>
+                                        <span style="color:#FF8C00; font-weight:bold;">${{ number_format($gePrice, 0, ',', '.') }} + IVA</span>
+                                        <span class="badge bg-success ms-2">-30% Agosto</span>
+                                    @else
+                                        $150.900 + IVA
+                                    @endif
+                                </div>
                                 <div class="price-details">
                                     <small>Mensual: $12.575 + IVA</small>
                                     <small>Por colmena: $86/año</small>

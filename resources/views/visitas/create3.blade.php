@@ -1,6 +1,8 @@
 
 @extends('layouts.app')
 
+@section('title', 'Registro de Estado Nutricional')
+
 @section('content')
 
   <head>

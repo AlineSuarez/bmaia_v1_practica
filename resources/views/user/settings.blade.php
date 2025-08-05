@@ -1,5 +1,7 @@
 @extends('layouts.app')
 
+@section('title', 'B-MaiA - Configuración de la Cuenta')
+
 @section('content')
 
     <head>
@@ -564,6 +566,13 @@
                             </div>
                         </div>
 
+                        @php
+                            $isAugust = now()->month == 8;
+                            $afcPrice = $isAugust ? intval(round(69900 * 0.7)) : 69900;
+                            $mePrice = $isAugust ? intval(round(87900 * 0.7)) : 87900;
+                            $gePrice = $isAugust ? intval(round(150900 * 0.7)) : 150900;
+                        @endphp
+
                         <form action="{{ route('payment.initiate') }}" method="POST" class="plans-form">
                             @csrf
 
@@ -617,7 +626,15 @@
                                             </td>
                                             <td>
                                                 <div class="price-info">
-                                                    <div class="main-price">$69.900 + IVA</div>
+                                                    <div class="main-price">
+                                                        @if($isAugust)
+                                                            <span style="text-decoration:line-through; color:#888;">$69.900</span>
+                                                            <span style="color:#FF8C00; font-weight:bold;">${{ number_format($afcPrice, 0, ',', '.') }} + IVA</span>
+                                                            <span class="badge bg-success ms-2">-30% Agosto</span>
+                                                        @else
+                                                            $69.900 + IVA
+                                                        @endif
+                                                    </div>
                                                     <div class="price-details">
                                                         <small>*Costo Mensual: $5.825 + IVA</small>
                                                         <small>*Costo Anual por Colmena: $234</small>
@@ -644,7 +661,15 @@
                                             </td>
                                             <td>
                                                 <div class="price-info">
-                                                    <div class="main-price">$87.900 + IVA</div>
+                                                    <div class="main-price">
+                                                        @if($isAugust)
+                                                            <span style="text-decoration:line-through; color:#888;">$87.900</span>
+                                                            <span style="color:#FF8C00; font-weight:bold;">${{ number_format($mePrice, 0, ',', '.') }} + IVA</span>
+                                                            <span class="badge bg-success ms-2">-30% Agosto</span>
+                                                        @else
+                                                            $87.900 + IVA
+                                                        @endif
+                                                    </div>
                                                     <div class="price-details">
                                                         <small>*Costo Mensual: $7.325 + IVA</small>
                                                         <small>*Costo Anual por Colmena: $110</small>
@@ -672,7 +697,15 @@
                                             </td>
                                             <td>
                                                 <div class="price-info">
-                                                    <div class="main-price">$150.900 + IVA</div>
+                                                    <div class="main-price">
+                                                        @if($isAugust)
+                                                            <span style="text-decoration:line-through; color:#888;">$150.900</span>
+                                                            <span style="color:#FF8C00; font-weight:bold;">${{ number_format($gePrice, 0, ',', '.') }} + IVA</span>
+                                                            <span class="badge bg-success ms-2">-30% Agosto</span>
+                                                        @else
+                                                            $150.900 + IVA
+                                                        @endif
+                                                    </div>
                                                     <div class="price-details">
                                                         <small>*Costo Mensual: $12.575 + IVA</small>
                                                         <small>*Costo Anual por Colmena: $86</small>

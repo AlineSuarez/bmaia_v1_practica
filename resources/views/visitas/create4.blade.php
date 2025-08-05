@@ -1,5 +1,7 @@
 @extends('layouts.app')
 
+@section('title', 'Registro de Calidad de Reina')
+
 @section('content')
     <head>
         <link rel="stylesheet" href="{{ asset('./css/components/home-user/create/queen-quality.css') }}">

@@ -1,5 +1,7 @@
 @extends('layouts.app')
 
+@section('title', 'Registro de Uso de Medicamentos')
+
 @section('content')
     @php
         $visita = $visita ?? null;

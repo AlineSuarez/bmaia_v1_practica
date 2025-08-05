@@ -1,19 +1,19 @@
 @extends('layouts.app')
 
-<head>
-    <link href="{{ asset('./css/components/home-user/create/create-apiario.css') }}" rel="stylesheet">
-</head>
-@section('title', 'Maia - Apiarios')
+@section('title', 'B-Maia - Agregar Nuevo Apiario')
+
 @section('styles')
-    <link
-        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800&family=Poppins:wght@300;400;500;600;700;800&family=Roboto+Mono&display=swap"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800&family=Poppins:wght@300;400;500;600;700;800&family=Roboto+Mono&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="{{ asset('css/apiario-luxury.css') }}">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
 @endsection
 
 @section('content')
+    <head>
+        <link href="{{ asset('./css/components/home-user/create/create-apiario.css') }}" rel="stylesheet">
+    </head>
+
     <div class="container">
         <!-- Efectos de fondo -->
         <div class="blur-effect" style="top: 20%; left: 10%;"></div>
@@ -671,9 +671,12 @@
 
                 document.body.appendChild(notification);
 
+                stackNotifications(); // <-- Apila al crear
+
                 // Mostrar con animación
                 setTimeout(() => {
                     notification.classList.add('show');
+                    stackNotifications(); // <-- Apila después de mostrar (por si cambia el alto)
                 }, 10);
 
                 // Ocultar después de 5 segundos
@@ -681,6 +684,7 @@
                     notification.classList.remove('show');
                     setTimeout(() => {
                         notification.remove();
+                        stackNotifications(); // <-- Apila después de eliminar
                     }, 300);
                 }, 5000);
 
@@ -689,7 +693,21 @@
                     notification.classList.remove('show');
                     setTimeout(() => {
                         notification.remove();
+                        stackNotifications(); // <-- Apila después de eliminar
                     }, 300);
+                });
+            }
+
+            // Función para apilar notificaciones activas
+            function stackNotifications() {
+                const notifications = Array.from(document.querySelectorAll('.notification.show, .notification:not(.show)'));
+                let offset = 30;
+                notifications.forEach((notif) => {
+                    notif.style.top = `${offset}px`;
+                    notif.style.right = '30px';
+                    notif.style.position = 'fixed';
+                    notif.style.zIndex = 9999;
+                    offset += notif.offsetHeight + 16;
                 });
             }
 

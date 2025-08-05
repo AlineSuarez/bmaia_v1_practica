@@ -1,5 +1,7 @@
 @extends('layouts.app')
 
+@section('title', 'Registro de Inspección del Apiario')
+
 @section('content')
     <div class="inspection-container">
         <header class="inspection-header">

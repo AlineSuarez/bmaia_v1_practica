@@ -1,5 +1,7 @@
 @extends('layouts.app')
 
+@section('title', 'Registro de Visitas al Apiario')
+
 @section('content')
     <div class="visit-container">
         <header class="visit-header">
