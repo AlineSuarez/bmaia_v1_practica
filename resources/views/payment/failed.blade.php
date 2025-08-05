@@ -52,7 +52,7 @@
                         <!-- Help Link -->
                         <div class="help-link mt-4">
                             <p class="mb-2">¿Necesitas ayuda?</p>
-                            <a href="#" class="support-link">
+                            <a href="tel:+56977632303" class="support-link">
                                 <i class="fas fa-headset me-2"></i>
                                 Contactar Soporte
                             </a>
