@@ -59,38 +59,6 @@
   </div>
 </section>
 
-<section id="mision" class="maia-section" style="padding-top: 80px; padding-bottom: 80px;">
-  <div class="maia-container">
-    <h2 class="section-title">Nuestra Misión</h2>
-    <div class="intro-text">
-      <p>
-        En B-MaiA, creemos que la apicultura es una actividad fundamental para el desarrollo sostenible, la
-        biodiversidad y la seguridad alimentaria de Chile. Nuestra misión es <strong>simplificar la vida de los
-          apicultores y apicultoras de Chile</strong>, entregando herramientas tecnológicas que permitan gestionar
-        sus colmenas de manera más eficiente, segura y rentable.
-      </p>
-      <p>
-        Nos inspira el trabajo diario de quienes cuidan las abejas y el entorno natural. Por eso, desarrollamos
-        soluciones digitales que se adaptan a la realidad de la apicultura chilena, integrando innovación,
-        conocimiento técnico y una profunda vocación de servicio.
-      </p>
-      <p>
-        Aspiramos a que cada apicultor y apicultora, sin importar el tamaño de su operación, pueda acceder a
-        información clara, recomendaciones personalizadas y procesos automatizados que faciliten la toma de
-        decisiones y mejoren la productividad, la salud de las colmenas y la calidad de vida en el campo.
-      </p>
-      <p>
-        Trabajamos para que la tecnología sea una aliada cercana, intuitiva y confiable, que permita a la apicultura
-        nacional avanzar hacia un futuro más sustentable, resiliente y conectado.
-      </p>
-    </div>
-    <div style="text-align: center; margin-top: 40px;">
-      <img src="{{ asset('img/mision.png') }}" alt="Nuestra Misión B-MaiA"
-        style="max-width: 300px; height: auto; border-radius: 18px;">
-    </div>
-  </div>
-</section>
-
 <!-- Estructura HTML actualizada con nuevas partículas -->
 <section id="herramientas" class="herramientas-section">
   <!-- Nuevas partículas decorativas -->

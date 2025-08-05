@@ -105,17 +105,9 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/trial/start', [PaymentController::class, 'startTrial'])->name('trial.start');
 });
 
-Route::get('/payment/success', function () {
-    return view('payment.success');
-})->name('payment.success');
-
-Route::get('/payment/failed', function () {
-    return view('payment.failed');
-})->name('payment.failed');
-
-Route::get('/payment/required', function () {
-    return view('payment.required');
-})->name('payment.required');
+Route::get('/payment/success', [PaymentController::class, 'showSuccess'])->name('payment.success');
+Route::get('/payment/failed', [PaymentController::class, 'showFailed'])->name('payment.failed');
+Route::get('/payment/required', [PaymentController::class, 'showRequired'])->name('payment.required');
 
 Route::middleware(['auth'])->group(function () {
     Route::post('/payment/initiate', [PaymentController::class, 'initiatePayment'])->name('payment.initiate');

@@ -1,0 +1,433 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body,
+html {
+    height: 100%;
+    overflow-x: hidden;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+        sans-serif;
+}
+
+/* Full Screen Background */
+.payment-failed-container {
+    min-height: 100vh;
+    width: 100vw;
+    background: linear-gradient(
+        135deg,
+        rgba(220, 53, 69, 0.08) 0%,
+        rgba(255, 193, 7, 0.08) 100%
+    );
+    background-attachment: fixed;
+    display: flex;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+}
+
+.payment-failed-container::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(
+            circle at 20% 80%,
+            rgba(220, 53, 69, 0.1) 0%,
+            transparent 50%
+        ),
+        radial-gradient(
+            circle at 80% 20%,
+            rgba(220, 53, 69, 0.1) 0%,
+            transparent 50%
+        ),
+        radial-gradient(
+            circle at 40% 40%,
+            rgba(220, 53, 69, 0.05) 0%,
+            transparent 50%
+        );
+    animation: backgroundFloat 20s ease-in-out infinite;
+    z-index: -1;
+}
+
+@keyframes backgroundFloat {
+    0%,
+    100% {
+        transform: translateY(0px) rotate(0deg);
+        opacity: 1;
+    }
+    50% {
+        transform: translateY(-20px) rotate(1deg);
+        opacity: 0.8;
+    }
+}
+
+/* Error Animation Container */
+.error-animation-wrapper {
+    position: relative;
+    display: inline-block;
+    margin-bottom: 2rem;
+    z-index: 10;
+}
+
+/* Main Error Circle */
+.error-circle {
+    width: 120px;
+    height: 120px;
+    background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    z-index: 10;
+    box-shadow: 0 0 0 4px rgba(220, 53, 69, 0.2),
+        0 0 30px rgba(220, 53, 69, 0.3),
+        inset 0 0 0 2px rgba(255, 255, 255, 0.2);
+    animation: errorBounce 1.5s ease-out;
+    cursor: pointer;
+}
+
+.error-icon {
+    color: white;
+    font-size: 3rem;
+    animation: iconPulse 2s ease-in-out infinite;
+    z-index: 11;
+}
+
+/* Pulse Rings */
+.pulse-ring,
+.pulse-ring-2,
+.pulse-ring-3 {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border: 3px solid rgba(220, 53, 69, 0.4);
+    border-radius: 50%;
+    animation: pulseRing 2s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite;
+    z-index: 5;
+}
+
+.pulse-ring {
+    width: 140px;
+    height: 140px;
+    animation-delay: 0s;
+}
+
+.pulse-ring-2 {
+    width: 160px;
+    height: 160px;
+    animation-delay: 0.3s;
+    border-color: rgba(220, 53, 69, 0.3);
+}
+
+.pulse-ring-3 {
+    width: 180px;
+    height: 180px;
+    animation-delay: 0.6s;
+    border-color: rgba(220, 53, 69, 0.2);
+}
+
+/* Animations */
+@keyframes errorBounce {
+    0% {
+        transform: scale(0) rotate(-180deg);
+        opacity: 0;
+    }
+    20% {
+        transform: scale(1.1) rotate(-10deg);
+        opacity: 1;
+    }
+    40% {
+        transform: scale(0.95) rotate(5deg);
+    }
+    60% {
+        transform: scale(1.02) rotate(-2deg);
+    }
+    80% {
+        transform: scale(0.98) rotate(1deg);
+    }
+    100% {
+        transform: scale(1) rotate(0deg);
+        opacity: 1;
+    }
+}
+
+@keyframes iconPulse {
+    0%,
+    100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.1);
+    }
+}
+
+@keyframes pulseRing {
+    0% {
+        transform: translate(-50%, -50%) scale(0.8);
+        opacity: 1;
+    }
+    100% {
+        transform: translate(-50%, -50%) scale(1.5);
+        opacity: 0;
+    }
+}
+
+/* Content Styling */
+.error-content {
+    animation: fadeInUp 1s ease-out 0.5s both;
+    z-index: 10;
+    position: relative;
+}
+
+.error-title {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: #dc3545;
+    margin-bottom: 0.5rem;
+    text-shadow: 0 2px 4px rgba(220, 53, 69, 0.1);
+}
+
+.error-subtitle {
+    font-size: 1.5rem;
+    color: #6c757d;
+    margin-bottom: 1rem;
+    font-weight: 500;
+}
+
+.error-description {
+    font-size: 1.1rem;
+    color: #6c757d;
+    line-height: 1.6;
+    max-width: 500px;
+    margin: 0 auto 2rem;
+}
+
+.error-details {
+    background: rgba(220, 53, 69, 0.1);
+    border: 1px solid rgba(220, 53, 69, 0.2);
+    border-radius: 10px;
+    padding: 1rem;
+    margin: 1.5rem 0;
+    backdrop-filter: blur(10px);
+}
+
+.error-code {
+    color: #dc3545;
+    font-weight: 500;
+    font-size: 0.95rem;
+}
+
+/* Buttons */
+.action-buttons {
+    animation: fadeInUp 1s ease-out 0.8s both;
+    z-index: 10;
+    position: relative;
+}
+
+.btn {
+    text-decoration: none;
+    display: inline-block;
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
+    z-index: 10;
+    position: relative;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+    color: white;
+    border-radius: 12px;
+    padding: 12px 30px;
+    font-weight: 600;
+    box-shadow: 0 4px 15px rgba(220, 53, 69, 0.2);
+}
+
+.btn-primary:hover {
+    background: linear-gradient(135deg, #c82333 0%, #a71e2a 100%);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(220, 53, 69, 0.3);
+    text-decoration: none;
+}
+
+.btn-outline-secondary {
+    border: 2px solid #6c757d;
+    color: #6c757d;
+    border-radius: 12px;
+    padding: 10px 30px;
+    font-weight: 600;
+    background: transparent;
+}
+
+.btn-outline-secondary:hover {
+    background: #6c757d;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(108, 117, 125, 0.2);
+    text-decoration: none;
+}
+
+.btn-lg {
+    font-size: 1.1rem;
+}
+
+/* Help Link */
+.help-link {
+    animation: fadeInUp 1s ease-out 1s both;
+    z-index: 10;
+    position: relative;
+}
+
+.help-link p {
+    color: #6c757d;
+    margin-bottom: 0.5rem;
+}
+
+.support-link {
+    color: #dc3545;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    padding: 8px 16px;
+    border-radius: 8px;
+    background: rgba(220, 53, 69, 0.1);
+    z-index: 10;
+    position: relative;
+}
+
+.support-link:hover {
+    color: #c82333;
+    background: rgba(220, 53, 69, 0.15);
+    transform: translateY(-1px);
+    text-decoration: none;
+}
+
+/* Fade In Up Animation */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .error-title {
+        font-size: 2rem;
+    }
+
+    .error-subtitle {
+        font-size: 1.25rem;
+    }
+
+    .error-circle {
+        width: 100px;
+        height: 100px;
+    }
+
+    .error-icon {
+        font-size: 2.5rem;
+    }
+
+    .pulse-ring {
+        width: 120px;
+        height: 120px;
+    }
+
+    .pulse-ring-2 {
+        width: 140px;
+        height: 140px;
+    }
+
+    .pulse-ring-3 {
+        width: 160px;
+        height: 160px;
+    }
+
+    .action-buttons .btn {
+        display: block;
+        width: 100%;
+        margin: 0.5rem 0;
+        text-align: center;
+    }
+
+    .me-3 {
+        margin-right: 0 !important;
+    }
+}
+
+@media (max-width: 576px) {
+    .error-description {
+        font-size: 1rem;
+    }
+
+    .error-details {
+        padding: 0.75rem;
+    }
+}
+
+/* Additional floating particles effect */
+.payment-failed-container::after {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-image: radial-gradient(
+            2px 2px at 20px 30px,
+            rgba(220, 53, 69, 0.3),
+            transparent
+        ),
+        radial-gradient(
+            2px 2px at 40px 70px,
+            rgba(220, 53, 69, 0.2),
+            transparent
+        ),
+        radial-gradient(
+            1px 1px at 90px 40px,
+            rgba(220, 53, 69, 0.3),
+            transparent
+        ),
+        radial-gradient(
+            1px 1px at 130px 80px,
+            rgba(220, 53, 69, 0.2),
+            transparent
+        );
+    background-repeat: repeat;
+    background-size: 150px 100px;
+    animation: floatingParticles 20s linear infinite;
+    opacity: 0.6;
+    z-index: -1;
+}
+
+@keyframes floatingParticles {
+    0% {
+        transform: translateY(0);
+    }
+    100% {
+        transform: translateY(-100px);
+    }
+}
+
+/* Ensure all interactive elements are clickable */
+a,
+button,
+.btn {
+    pointer-events: auto !important;
+    z-index: 100 !important;
+    position: relative !important;
+}

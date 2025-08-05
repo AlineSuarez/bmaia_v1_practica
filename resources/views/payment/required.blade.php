@@ -37,7 +37,7 @@
                 if ($dronePayment) {
                     $daysSincePayment = now()->diffInDays($dronePayment->created_at);
                     $droneActive = $daysSincePayment < 16;
-                    $daysRemaining = 16 - $daysSincePayment;
+                    $daysRemaining = intval(16 - $daysSincePayment);
                 }
 
                 $hasPaidPlan = \App\Models\Payment::where('user_id', $user->id)

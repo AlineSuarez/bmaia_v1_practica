@@ -9,6 +9,11 @@ use Illuminate\Support\Facades\Auth;
 
 class PaymentController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
     public function initiatePayment(Request $request)
     {
         // Validar que el plan esté presente en la solicitud
@@ -60,16 +65,27 @@ class PaymentController extends Controller
             $response = $transaction->commit($token);
         }catch(\Exception $e){
             \Log::error('Error al procesar la transacción: ' . $e->getMessage());
+            $request->session()->put('payment_failed', true);
             return redirect()->route('payment.failed')->with('error', 'Error al procesar la transacción');
         }
 
         $payment = Payment::where('transaction_id', $token)->first();
+        if (!$payment) {
+            \Log::error('No se encontró el pago para el token: ' . $token);
+            $request->session()->put('payment_failed', true);
+            return redirect()->route('payment.failed')->with('error', 'No se encontró el pago asociado.');
+        }
 
         if ($response->isApproved()) {
             $payment->update(['status' => 'paid']);
 
             // Obtener el usuario y el plan
             $user = \App\Models\User::find(Auth::id());
+            if (!$user) {
+                \Log::error('Usuario no encontrado para el pago.');
+                $request->session()->put('payment_failed', true);
+                return redirect()->route('payment.failed')->with('error', 'Usuario no encontrado.');
+            }
             $plan = $payment->plan; // Asumimos que el plan se guardó en el pago
 
             // Determinar la fecha de expiración
@@ -81,9 +97,11 @@ class PaymentController extends Controller
             $user->webpay_status = 'pagado';
             $user->save();
 
+            $request->session()->put('payment_success', true);
             return redirect()->route('payment.success');
         } else {
             $payment->update(['status' => 'failed']);
+            $request->session()->put('payment_failed', true);
             return redirect()->route('payment.failed');
         }
     }
@@ -100,11 +118,13 @@ class PaymentController extends Controller
 
         // Si ya tiene una prueba activa (menos de 16 días), no permitir otra
         if ($dronePayment && now()->diffInDays($dronePayment->created_at) < 16) {
-            return redirect()->route('dashboard')->with('error', 'Ya tienes una prueba gratuita activa.');
+            return redirect()->route('home')->with('error', 'Ya tienes una prueba gratuita activa.');
         }
 
         // Si ya usó la prueba y pasaron los 16 días, no permitir otra
         if ($dronePayment && now()->diffInDays($dronePayment->created_at) >= 16) {
+            // Cuando detectes que debe ver el required
+            $request->session()->put('payment_required', true);
             return redirect()->route('payment.required')->with('error', 'Ya usaste tu prueba gratuita.');
         }
 
@@ -117,7 +137,35 @@ class PaymentController extends Controller
             'plan' => 'drone',
         ]);
 
-        return redirect()->route('dashboard')->with('success', 'Prueba gratuita activada por 16 días.');
+        return redirect()->route('home')->with('success', 'Prueba gratuita activada por 16 días.');
     }
 
+    public function showSuccess(Request $request)
+    {
+        // Solo permite acceso si existe el flag en sesión
+        if (!$request->session()->pull('payment_success')) {
+            return redirect()->route('home');
+        }
+        return view('payment.success');
+    }
+
+    public function showFailed(Request $request)
+    {
+        if (!$request->session()->pull('payment_failed')) {
+            return redirect()->route('home');
+        }
+        return view('payment.failed');
+    }
+    public function showRequired(Request $request)
+    {
+        $user = Auth::user();
+
+        // Si el usuario NO tiene plan activo o el plan está vencido, mostrar la vista
+        if (!$user->plan || ($user->fecha_vencimiento && now()->greaterThan($user->fecha_vencimiento))) {
+            return view('payment.required');
+        }
+
+        // Si tiene plan activo, redirigir al HOME
+        return redirect()->route('home');
+    }
 }

@@ -1,146 +1,133 @@
-@extends('layouts.app')
-
-@section('title', 'Maia - Pago Aprobado')
-
-@push('styles')
-<link rel="stylesheet" href="{{ asset('css/components/home-user/settings.css') }}">
-@endpush
-
-@section('content')
-<div class="container">
-    <div class="row justify-content-center">
-        <div class="col-md-8 col-lg-6">
-            <div class="settings-card">
-                <div class="card-header text-center">
-                    <div class="success-icon mb-3">
-                        <i class="fas fa-check-circle" style="font-size: 4rem; color: var(--success-color);"></i>
-                    </div>
-                    <h3 class="text-success">Transacción Completada</h3>
-                    <p>Tu pago se ha procesado correctamente</p>
-                </div>
-                
-                <div class="card-body">
-                    <div class="payment-details mb-4">
-                        <h5 class="text-center mb-3" style="color: var(--primary-dark);">Detalles de la Transacción</h5>
-                        <div class="row">
-                            <div class="col-6">
-                                <small class="text-muted">Estado:</small>
-                                <p class="mb-2"><span class="plan-badge plan-premium">Aprobado</span></p>
-                            </div>
-                            <div class="col-6">
-                                <small class="text-muted">Fecha:</small>
-                                <p class="mb-2">{{ date('d/m/Y H:i') }}</p>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>B-MaiA - Pago Exitoso</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ asset('css/components/home-user/payment/success.css') }}">
+</head>
+<body>
+    <div class="payment-success-container">
+        <div class="container-fluid h-100">
+            <div class="row h-100 justify-content-center align-items-center">
+                <div class="col-lg-6 col-md-8 col-sm-10 text-center">
+                    <div class="success-animation-wrapper mb-4">
+                        <div class="success-circle">
+                            <div class="success-icon">
+                                <i class="fas fa-check"></i>
                             </div>
                         </div>
+                        <div class="success-ring"></div>
+                        <div class="success-ring-2"></div>
+                        <div class="success-ring-3"></div>
                     </div>
 
-                    <div class="next-steps mb-4">
-                        <h6 style="color: var(--primary-dark);">¿Qué sigue ahora?</h6>
-                        <ul class="utility-features">
-                            <li>Ya puedes acceder a todas las funciones premium</li>
-                            <li>Revisa tu configuración de cuenta actualizada</li>
-                            <li>Explora las nuevas herramientas disponibles</li>
-                        </ul>
-                    </div>
+                    <div class="success-content">
+                        <h1 class="success-title">¡Pago Exitoso!</h1>
+                        <h2 class="success-subtitle">Tu transacción se ha completado correctamente</h2>
+                        <p class="success-description">
+                            ¡Felicidades! Ahora tienes acceso completo a todas las funciones premium de B-MaiA.
+                        </p>
 
-                    <div class="action-buttons text-center">
-                        <a href="{{ url('/user/settings') }}" class="btn btn-primary me-2">
-                            <i class="fas fa-cog me-1"></i>
-                            Ir a Configuración
-                        </a>
-                        <a href="{{ url('/home') }}" class="btn btn-outline-primary">
-                            <i class="fas fa-home me-1"></i>
-                            Volver al Inicio
-                        </a>
+                        <div class="transaction-details">
+                            <div class="detail-card">
+                                <div class="detail-icon">
+                                    <i class="fas fa-calendar-check"></i>
+                                </div>
+                                <div class="detail-info">
+                                    <small>Fecha de transacción</small>
+                                    <strong>{{ date('d/m/Y H:i') }}</strong>
+                                </div>
+                            </div>
+                            <div class="detail-card">
+                                <div class="detail-icon">
+                                    <i class="fas fa-check-circle"></i>
+                                </div>
+                                <div class="detail-info">
+                                    <small>Estado</small>
+                                    <strong class="text-success">Aprobado</strong>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="next-steps">
+                            <h5 class="steps-title">¿Qué sigue ahora?</h5>
+                            <div class="steps-list">
+                                <div class="step-item">
+                                    <i class="fas fa-star"></i>
+                                    <span>Ya puedes acceder a todas las funciones premium</span>
+                                </div>
+                                <div class="step-item">
+                                    <i class="fas fa-cog"></i>
+                                    <span>Revisa tu configuración de cuenta actualizada</span>
+                                </div>
+                                <div class="step-item">
+                                    <i class="fas fa-rocket"></i>
+                                    <span>Explora las nuevas herramientas disponibles</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="action-buttons mt-4">
+                            <a href="{{ route('user.settings') }}" class="btn btn-primary btn-lg me-3">
+                                <i class="fas fa-cog me-2"></i>
+                                Ir a Configuración
+                            </a>
+                            <a href="{{ route('home') }}" class="btn btn-outline-success btn-lg">
+                                <i class="fas fa-home me-2"></i>
+                                Volver al Inicio
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
-@endsection
 
-@push('scripts')
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Animación de entrada para la tarjeta
-    const card = document.querySelector('.settings-card');
-    if (card) {
-        card.style.opacity = '0';
-        card.style.transform = 'translateY(30px)';
-        
-        setTimeout(() => {
-            card.style.transition = 'all 0.6s ease';
-            card.style.opacity = '1';
-            card.style.transform = 'translateY(0)';
-        }, 200);
-    }
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const successCircle = document.querySelector('.success-circle');
+            if (successCircle) {
+                successCircle.addEventListener('click', function() {
+                    createConfettiBurst();
+                });
+            }
 
-    // Animación para el ícono de éxito
-    const successIcon = document.querySelector('.success-icon i');
-    if (successIcon) {
-        setTimeout(() => {
-            successIcon.style.animation = 'pulse 1.5s ease-in-out';
-        }, 800);
-    }
-});
-</script>
+            document.querySelectorAll('.btn, .support-link').forEach(function(element) {
+                element.style.pointerEvents = 'auto';
+                element.style.zIndex = '100';
+                element.style.position = 'relative';
+            });
 
-<style>
-@keyframes pulse {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.1); }
-    100% { transform: scale(1); }
-}
+            setTimeout(function() {
+                createConfettiBurst();
+            }, 2000);
+        });
 
-.success-icon {
-    animation: fadeInScale 0.8s ease-out;
-}
+        function createConfettiBurst() {
+            const container = document.querySelector('.confetti-container');
+            if (!container) return;
 
-@keyframes fadeInScale {
-    0% {
-        opacity: 0;
-        transform: scale(0.5);
-    }
-    100% {
-        opacity: 1;
-        transform: scale(1);
-    }
-}
-
-.payment-details {
-    background-color: var(--lighter-bg);
-    border-radius: 8px;
-    padding: 1.25rem;
-    border: 1px solid var(--border-color);
-}
-
-.next-steps {
-    background-color: rgba(123, 168, 64, 0.05);
-    border-radius: 8px;
-    padding: 1.25rem;
-    border-left: 4px solid var(--success-color);
-}
-
-.action-buttons .btn {
-    min-width: 160px;
-    margin-bottom: 0.5rem;
-}
-
-@media (max-width: 767px) {
-    .action-buttons .btn {
-        display: block;
-        width: 100%;
-        margin-bottom: 1rem;
-    }
-    
-    .action-buttons .btn:last-child {
-        margin-bottom: 0;
-    }
-    
-    .success-icon i {
-        font-size: 3rem !important;
-    }
-}
-</style>
-@endpush
+            for (let i = 0; i < 15; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti';
+                confetti.style.left = Math.random() * 100 + '%';
+                confetti.style.background = Math.random() > 0.5 ? '#28a745' : '#ffd700';
+                confetti.style.animationDelay = Math.random() * 2 + 's';
+                confetti.style.animationDuration = (Math.random() * 2 + 2) + 's';
+                
+                container.appendChild(confetti);
+                
+                setTimeout(() => {
+                    if (confetti.parentNode) {
+                        confetti.parentNode.removeChild(confetti);
+                    }
+                }, 4000);
+            }
+        }
+    </script>
+</body>
+</html>

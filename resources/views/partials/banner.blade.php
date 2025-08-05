@@ -17,10 +17,6 @@
                 <a href="#inicio" style="color: rgb(212, 159, 0); font-weight: bold;" class="nav-link active">Inicio</a>
             </li>
             <li class="nav-item">
-                <a href="#mision" style="color: rgb(212, 159, 0); font-weight: bold;" class="nav-link">Nuestra
-                    Misión</a>
-            </li>
-            <li class="nav-item">
                 <a href="#herramientas" style="color: rgb(212, 159, 0); font-weight: bold;"
                     class="nav-link">Herramientas</a>
             </li>
@@ -92,9 +88,6 @@
     <ul class="mobile-nav-list">
         <li class="mobile-nav-item">
             <a href="#inicio" class="mobile-nav-link active" style="font-weight: bold;">Inicio</a>
-        </li>
-        <li class="mobile-nav-item">
-            <a href="#mision" class="mobile-nav-link" style="font-weight: bold;">Nuestra Misión</a>
         </li>
         <li class="mobile-nav-item">
             <a href="#herramientas" class="mobile-nav-link" style="font-weight: bold;">Herramientas</a>
