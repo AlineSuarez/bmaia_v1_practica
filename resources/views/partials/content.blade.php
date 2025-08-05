@@ -1069,25 +1069,25 @@
       </div>
 
       <div class="contacto-buttons">
-        <a href="https://wa.me/56933479555" target="_blank" class="contacto-btn whatsapp-btn">
+        <a href="https://wa.me/56977632303?text=Hola%2C%20me%20gustar%C3%ADa%20recibir%20informaci%C3%B3n%20detallada%20sobre%20las%20soluciones%20y%20servicios%20de%20B-MaiA.%20Agradezco%20su%20atenci%C3%B3n." target="_blank" class="contacto-btn whatsapp-btn" aria-label="Contáctanos por WhatsApp">
           <div class="btn-icon">
             <i class="fa-brands fa-whatsapp" style="font-size: 1em !important;"></i>
           </div>
           <div class="btn-text">
             <span class="btn-label">Contáctanos por WhatsApp</span>
-            <span class="btn-description">Respuesta inmediata</span>
+            <span class="btn-description">Atención profesional y respuesta inmediata</span>
           </div>
           <div class="btn-arrow">
             <i class="fa-solid fa-arrow-right"></i>
           </div>
         </a>
 
-        <a href="mailto:contacto@apicheck.cl" class="contacto-btn email-btn">
+        <a href="mailto:contacto@bmaia.cl" class="contacto-btn email-btn">
           <div class="btn-icon">
             <i class="fa-solid fa-envelope" style="font-size: 1em !important;"></i>
           </div>
           <div class="btn-text">
-            <span class="btn-label">contacto@apicheck.cl</span>
+            <span class="btn-label">contacto@bmaia.cl</span>
             <span class="btn-description">Escríbenos un correo</span>
           </div>
           <div class="btn-arrow">
@@ -1178,20 +1178,16 @@
       <h3>Contacto</h3>
       <ul class="footer-contact-info">
         <li>
-          <i class="fas fa-phone-alt"></i>
-          <span>+34 123 456 789</span>
-        </li>
-        <li>
           <i class="fas fa-envelope"></i>
-          <span>info@maia-tech.com</span>
+          <span>contacto@bmaia.com</span>
         </li>
         <li>
           <i class="fas fa-headset"></i>
-          <span>Soporte: +34 123 456 790</span>
+          <span>Soporte: +56 9 7763 2303</span>
         </li>
         <li>
           <i class="fas fa-map-marker-alt"></i>
-          <span>Calle Apicultura 123, Ciudad Miel, 28001</span>
+          <span>54 Oriente nº 1145, Talca</span>
         </li>
       </ul>
     </div>
