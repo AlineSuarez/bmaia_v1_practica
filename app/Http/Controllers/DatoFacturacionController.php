@@ -28,7 +28,6 @@ class DatoFacturacionController extends Controller
         $userId = $request->user()->id;
 
         $datos = DatoFacturacion::firstOrNew(['user_id' => $userId]);
-
         $datos->fill([
             'razon_social' => $request->razon_social,
             'rut' => $request->rut,
@@ -39,7 +38,7 @@ class DatoFacturacionController extends Controller
             'ciudad' => $request->ciudad,
             'telefono' => $request->telefono,
             'correo' => $request->correo,
-            'autorizacion_envio_dte' => $request->has('autorizacion_envio_dte'),
+            'autorizacion_envio_dte' => $request->boolean('autorizacion_envio_dte'),
             'correo_envio_dte' => $request->correo_envio_dte,
         ]);
 

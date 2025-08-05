@@ -204,6 +204,16 @@
             </section>
 
             <!-- SECCIÓN: DATOS DE FACTURACIÓN -->
+             @if ($errors->any())
+                <div class="alert alert-danger">
+                    <ul class="mb-0">
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                    </ul>
+                </div>
+            @endif
+
             <section class="tab-pane fade" id="billing" role="tabpanel" aria-labelledby="billing-tab">
                 <div class="card settings-card mb-4">
                     <div class="card-header">
@@ -307,8 +317,9 @@
                             </div>
 
                             <div class="dte-authorization mt-4">
+                                <input type="hidden" name="autorizacion_envio_dte" value="0">
                                 <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" id="autorizacion_envio_dte" name="autorizacion_envio_dte"
+                                    <input type="checkbox" id="autorizacion_envio_dte" name="autorizacion_envio_dte" value="1"
                                         {{ old('autorizacion_envio_dte', $datosFacturacion->autorizacion_envio_dte ?? false) ? 'checked' : '' }}>
                                     <label class="form-check-label" for="autorizacion_envio_dte">
                                         <strong>Autorizo el envío del Documento Tributario Electrónico por Email</strong>
@@ -1007,7 +1018,8 @@
 
             const billingRegionSelect = document.getElementById('billing_region');
             const billingComunaSelect = document.getElementById('billing_comuna');
-            const userBillingComunaId = {{ $user->billing_comuna ?? 'null' }};
+            const userBillingComunaId = "{{ old('billing_comuna', $datosFacturacion->comuna_id ?? '') }}";
+
 
             function loadComunas(regionId, comunaSelect, selectedComunaId = null) {
                 comunaSelect.innerHTML = '<option value="">Seleccione una comuna</option>';
