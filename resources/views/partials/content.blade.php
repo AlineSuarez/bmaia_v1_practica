@@ -112,8 +112,7 @@
           <div class="title-button-row">
             <h2 class="platform-title">Plataforma de Gestión Apícola</h2>
             <div class="cta-buttons">
-              <a href="javascript:void(0);" class="cta-button primary" id="open-register-btn">Comienza tu prueba
-                gratis</a>
+              <a href="{{ route('register') }}" class="cta-button primary">Comienza tu prueba gratis</a>
             </div>
           </div>
         </div>

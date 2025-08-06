@@ -67,7 +67,7 @@
         @else
             <button class="action-button action-button-enter"
                 style="background-color:#ecc100; color:rgb(255, 255, 255); justify-content: center;"
-                onclick="openModal('login-modal')">
+                onclick="window.location.href='{{ route('login') }}'">
                 Ingresar
             </button>
         @endif
@@ -132,7 +132,8 @@
                 </button>
             </form>
         @else
-            <button class="mobile-action-button mobile-action-enter" onclick="openModal('login-modal')">
+            <button class="mobile-action-button mobile-action-enter"
+                onclick="window.location.href='{{ route('login') }}'">
                 Ingresar
             </button>
         @endif

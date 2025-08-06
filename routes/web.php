@@ -27,6 +27,8 @@ use App\Http\Controllers\EmergencyContactController;
 use App\Http\Controllers\SistemaExpertoController;
 use App\Http\Controllers\DatoFacturacionController;
 
+Auth::routes();
+
 // Proxy para reverse geocoding (Nominatim)
 Route::get('/reverse-geocode', function (Illuminate\Http\Request $request) {
     $lat = $request->query('lat');
@@ -41,44 +43,15 @@ Route::view('/politicas-de-privacidad', 'legal.privacidad')->name('privacidad');
 Route::view('/terminos-de-uso', 'legal.terminos')->name('terminos');
 Route::view('/politica-de-cookies', 'legal.cookies')->name('cookies');
 
+// Login con Google usando controlador
 Route::get('auth/google', [GoogleController::class, 'redirectToGoogle'])->name('auth.google');
 Route::get('auth/google/callback', [GoogleController::class, 'handleGoogleCallback']);
 
+
+// Rutas públicas
 Route::get('/', function () {
     return view('welcome');
 })->name('welcome');
-// Rutas de autenticación
-Auth::routes();
-Route::get('login/google', [LoginController::class, 'redirectToGoogle']);
-Route::get('login/google/callback', [LoginController::class, 'handleGoogleCallback']);
-
-// Redirigir a Google para autenticación
-Route::get('login/google', function () {
-    return Socialite::driver('google')->redirect();
-});
-
-// Callback después de la autenticación
-Route::get('login/google/callback', function () {
-    $googleUser = Socialite::driver('google')->user();
-    $user = User::where('email', $googleUser->getEmail())->first();
-    if (!$user) {
-        $user = User::create([
-            'name' => $googleUser->getName(),
-            'email' => $googleUser->getEmail(),
-            'password' => bcrypt(\Illuminate\Support\Str::random(16)),
-        ]);
-    }
-    Auth::login($user);
-    return redirect()->intended('home');
-});
-
-// Ruta de registro
-Route::get('/register', [RegisterController::class, 'showRegistrationForm'])->name('register');
-Route::post('/register', [RegisterController::class, 'register']);
-
-Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
-Route::post('/login', [LoginController::class, 'login']);
-Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
 // Ruta AJAX para obtener dinamicamente coordenadas de comuna al crear temporal
 Route::get('/comuna-coordenadas/{id}', function ($id) {
@@ -88,7 +61,6 @@ Route::get('/comuna-coordenadas/{id}', function ($id) {
         'lon' => $comuna->lon,
     ]);
 });
-
 Route::get('/colmena-publica/{colmena}', [ColmenaController::class, 'publicView'])->name('colmenas.public');
 
 // AJAX individual: obtener consejo por apiario (simulado)

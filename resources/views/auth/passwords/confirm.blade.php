@@ -1,4 +1,6 @@
-@extends('layouts.app')
+@extends('layouts.guest')
+
+@section('title', 'B-Maia - Confirmar contraseña')
 
 @section('content')
 <div class="container">

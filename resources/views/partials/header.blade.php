@@ -35,9 +35,6 @@
                             <a class="apiario-dropdown-item" href="{{route('user.settings')}}">
                                 <i class="fas fa-cog apiario-icon-gray"></i>Configuración de cuenta
                             </a>
-                            <!-- <a class="apiario-dropdown-item" href="#">
-                                        <i class="fas fa-question-circle apiario-icon-gray"></i>Ayuda
-                                    </a> -->
                             <div class="apiario-dropdown-divider"></div>
                             <a class="apiario-dropdown-item apiario-logout-item" href="{{route('logout')}}"
                                 onclick="event.preventDefault(); document.getElementById('apiario-logout-form').submit();">
@@ -53,8 +50,4 @@
             </div>
         </nav>
     </div>
-@else
-    <script type="text/javascript">
-        window.location = "{{ route('welcome') }}";
-    </script>
 @endif
