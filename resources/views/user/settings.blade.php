@@ -573,6 +573,26 @@
                             $gePrice = $isAugust ? intval(round(150900 * 0.7)) : 150900;
                         @endphp
 
+                        @php
+                            $datosFacturacionCompletos = $user->datosFacturacion &&
+                                $user->datosFacturacion->razon_social &&
+                                $user->datosFacturacion->rut &&
+                                $user->datosFacturacion->correo_envio_dte;
+                        @endphp
+
+                        @if (!$datosFacturacionCompletos)
+                            <div class="alert alert-warning d-flex align-items-center" role="alert">
+                                <i class="fas fa-exclamation-triangle me-2"></i>
+                                <div>
+                                    Debes completar tus <strong>datos de facturación</strong> antes de seleccionar un plan.
+<!--<a href="{{ route('user.settings') }}#billing" class="btn btn-sm btn-outline-dark ms-2">
+                                        Completar ahora
+                                    </a> -->
+                                </div>
+                            </div>
+                        @endif
+
+
                         <form action="{{ route('payment.initiate') }}" method="POST" class="plans-form">
                             @csrf
 
@@ -1052,7 +1072,6 @@
             const billingRegionSelect = document.getElementById('billing_region');
             const billingComunaSelect = document.getElementById('billing_comuna');
             const userBillingComunaId = "{{ old('billing_comuna', $datosFacturacion->comuna_id ?? '') }}";
-
 
             function loadComunas(regionId, comunaSelect, selectedComunaId = null) {
                 comunaSelect.innerHTML = '<option value="">Seleccione una comuna</option>';

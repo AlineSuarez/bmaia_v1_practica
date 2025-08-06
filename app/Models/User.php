@@ -14,6 +14,7 @@ use App\Models\Reminder;
 use App\Models\Alert;
 use App\Models\ImportantDate;
 use App\Models\Preference;
+//use Illuminate\Contracts\Auth\MustVerifyEmail;
 
 class User extends Authenticatable
 {
@@ -125,4 +126,8 @@ class User extends Authenticatable
         return $this->hasOne(Preference::class);
     }
 
+    public function datosFacturacion()
+    {
+        return $this->hasOne(DatoFacturacion::class);
+    }
 }

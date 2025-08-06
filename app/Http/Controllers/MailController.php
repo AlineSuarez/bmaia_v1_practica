@@ -14,7 +14,7 @@ class MailController extends Controller
             'body' => 'Este es un correo de prueba desde Maia.'
         ];
 
-        Mail::to('hernandezarancibiac@gmail.com')->send(new NotificationMail($details));
+        Mail::to('alinesuarez2002@gmail.com')->send(new NotificationMail($details));
 
         return response()->json(['message' => 'Correo enviado con éxito.']);
     }

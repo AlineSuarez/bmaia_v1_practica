@@ -7,6 +7,9 @@ use App\Models\User;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Mail;
+use App\Mail\WelcomeMail;
+use Illuminate\Http\Request;
 
 class RegisterController extends Controller
 {
@@ -61,18 +64,19 @@ class RegisterController extends Controller
      * @param  array  $data
      * @return \App\Models\User
      */
+
     protected function create(array $data)
     {
-        $this->validator($data)->validate();
-
-        return User::create([
+        $user = User::create([
             'name' => $data['name'],
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
         ]);
 
-        Auth::login($user);
+        // Enviar correo de bienvenida
+        Mail::to($user->email)->send(new WelcomeMail($user));
 
-        return redirect($this->redirectTo);
+        return $user;
     }
+
 }

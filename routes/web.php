@@ -2,6 +2,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
+//use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use App\Http\Controllers\ApiarioController;
 use App\Http\Controllers\ColmenaController;
 use App\Http\Controllers\TrashumanciaController;
@@ -47,6 +48,23 @@ Route::view('/politica-de-cookies', 'legal.cookies')->name('cookies');
 Route::get('auth/google', [GoogleController::class, 'redirectToGoogle'])->name('auth.google');
 Route::get('auth/google/callback', [GoogleController::class, 'handleGoogleCallback']);
 
+/*
+Route::middleware(['auth'])->group(function () {
+    Route::get('/email/verify', function () {
+        return view('auth.verify-email');
+    })->name('verification.notice');
+
+    Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
+        $request->fulfill();
+        return redirect('/home');
+    })->middleware(['signed'])->name('verification.verify');
+
+    Route::post('/email/verification-notification', function () {
+        request()->user()->sendEmailVerificationNotification();
+        return back()->with('message', 'Correo de verificación enviado.');
+    })->middleware(['throttle:6,1'])->name('verification.send');
+});
+*/
 
 // Rutas públicas
 Route::get('/', function () {

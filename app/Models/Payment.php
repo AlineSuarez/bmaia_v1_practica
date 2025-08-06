@@ -17,7 +17,13 @@ class Payment extends Model
         'transaction_id',
         'status',
         'amount',
-        'plan'
+        'plan',
+        'dato_facturacion_id',
 
     ];
+
+    public function datosFacturacion()
+    {
+        return $this->belongsTo(\App\Models\DatoFacturacion::class, 'dato_facturacion_id');
+    }
 }
