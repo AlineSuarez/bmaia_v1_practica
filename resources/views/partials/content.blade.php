@@ -1178,7 +1178,7 @@
       <ul class="footer-contact-info">
         <li>
           <i class="fas fa-envelope"></i>
-          <span>contacto@bmaia.com</span>
+          <span>contacto@bmaia.cl</span>
         </li>
         <li>
           <i class="fas fa-headset"></i>
@@ -1327,9 +1327,11 @@
 
   document.addEventListener('DOMContentLoaded', function () {
     var btn = document.getElementById('open-register-btn');
-    btn.addEventListener('click', function () {
-      // Reemplaza 'register-modal' por el id real de tu modal de registro
-      document.getElementById('register-modal').style.display = 'block';
-    });
+    if (btn) {
+      btn.addEventListener('click', function () {
+        // Reemplaza 'register-modal' por el id real de tu modal de registro
+        document.getElementById('register-modal').style.display = 'block';
+      });
+    }
   });
 </script>
