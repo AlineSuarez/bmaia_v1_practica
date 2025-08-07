@@ -56,6 +56,12 @@ class ColmenaController extends Controller
 
     public function store(Request $request, Apiario $apiario)
     {
+        $user = Auth::user();
+
+        if (!is_null($user->colmenaLimit()) && $user->totalColmenas() >= $user->colmenaLimit()) {
+            return redirect()->back()->with('error', 'Has alcanzado el límite de colmenas permitido por tu plan.');
+        }
+        
         $data = $request->validate([
             'color_etiqueta' => 'required|string|max:20',
             'numero' => 'required|string|max:10',

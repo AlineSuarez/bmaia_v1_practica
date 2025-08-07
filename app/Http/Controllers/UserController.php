@@ -9,6 +9,8 @@ use App\Models\User;
 use App\Models\Region;
 use App\Models\Comuna;
 use App\Models\DatoFacturacion;
+use App\Mail\PasswordChangedNotification;
+use Illuminate\Support\Facades\Mail;
 
 class UserController extends Controller
 {
@@ -150,6 +152,8 @@ class UserController extends Controller
         }
         $user->password = Hash::make($request->new_password);
         $user->save();
+        // Envía el correo de confirmación
+        Mail::to($user->email)->send(new PasswordChangedNotification($user));
         return redirect()->back()->with('success_password', 'Contraseña actualizada correctamente.');
     }
 

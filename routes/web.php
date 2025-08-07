@@ -114,6 +114,8 @@ Route::middleware(['auth', 'check.payment'])->group(function () {
     // Dashboard y Home
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
+    
+    Route::get('/apiarios/create-temporal', [ApiarioController::class, 'createTemporal'])->name('apiarios.createTemporal');
     // Apiarios
     Route::resource('apiarios', ApiarioController::class)->except(['show']);
     Route::get('/apiarios', [ApiarioController::class, 'index'])->name('apiarios');
@@ -125,7 +127,6 @@ Route::middleware(['auth', 'check.payment'])->group(function () {
     Route::delete('/apiarios/delete/{apiario}', [ApiarioController::class, 'deleterApiario'])->name('apiarios.destroy');
     Route::get('/apiarios/{id}', [ApiarioController::class, 'show'])->name('apiarios.show');
     Route::get('/apiarios-temporales/{apiario}/detalle-movimiento', [ApiarioController::class, 'detalleMovimiento']);
-    Route::get('/apiarios/create-temporal', [ApiarioController::class, 'createTemporal'])->name('apiarios.createTemporal');
     Route::post('/apiarios/massDelete', [ApiarioController::class, 'massDelete'])->name('apiarios.massDelete');
 
     // Trashumancia - temporal

@@ -65,7 +65,13 @@ class ApiarioController extends Controller
             return [$comuna->nombre => ['lat' => $comuna->lat, 'lon' => $comuna->lon]];
         })->toArray();
 
-        return view('apiarios.create', compact('regiones', 'comunasCoordenadas'));
+        // Obtener datos del usuario actual
+        $user = Auth::user();
+        $colmenas_actuales = $user->totalColmenas();  // Método definido en User.php
+        $limite_colmenas = $user->colmenaLimit();     // Método definido en User.php
+
+
+        return view('apiarios.create', compact('regiones', 'comunasCoordenadas','colmenas_actuales', 'limite_colmenas'));
     }
 
     // Guardar un nuevo apiario
@@ -88,6 +94,16 @@ class ApiarioController extends Controller
             'foto' => 'nullable|image|mimes:jpeg,jpg,png,gif,webp,bmp,svg|max:10240',
         ]);
 
+        // 1) Verificación del límite de colmenas antes de continuar
+        $user = Auth::user();
+        $colmenasActuales = $user->totalColmenas();
+        $limite = $user->colmenaLimit();
+        $colmenasSolicitadas = $data['num_colmenas'];
+
+        if (!is_null($limite) && ($colmenasActuales + $colmenasSolicitadas) > $limite) {
+            return redirect()->back()->with('error', "No puedes crear este apiario con {$colmenasSolicitadas} colmenas. Excederías el límite de colmenas permitido por tu plan ({$limite}).");
+        }
+
         // 2) completamos campos extra
         $data['user_id'] = $userId = Auth::id();
         $data['region_id'] = $data['region'];
@@ -100,10 +116,8 @@ class ApiarioController extends Controller
         // Manejo mejorado de la foto
         if ($request->hasFile('foto')) {
             $file = $request->file('foto');
-
             // Generar nombre único para evitar conflictos
             $filename = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
-
             // Guardar en storage/app/public/fotos_apiarios
             $data['foto'] = $file->storeAs('fotos_apiarios', $filename, 'public');
         }

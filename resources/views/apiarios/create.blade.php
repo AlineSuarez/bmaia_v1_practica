@@ -10,6 +10,24 @@
 @endsection
 
 @section('content')
+
+    @if (!is_null($limite_colmenas))
+        @php
+            $restantes = $limite_colmenas - $colmenas_actuales;
+        @endphp
+
+        <div class="alert {{ $restantes <= 0 ? 'alert-danger' : ($restantes <= 10 ? 'alert-warning' : 'alert-info') }}">
+            <strong>Atención:</strong>
+            Tienes actualmente <strong>{{ $colmenas_actuales }}</strong> colmenas registradas
+            de un total permitido de <strong>{{ $limite_colmenas }}</strong> colmenas según tu plan.
+            @if ($restantes <= 0)
+                Ya has alcanzado el límite. No podrás crear nuevas colmenas hasta actualizar tu plan.
+            @else
+                Te quedan <strong>{{ $restantes }}</strong> colmenas disponibles.
+            @endif
+        </div>
+    @endif
+
     <head>
         <link href="{{ asset('./css/components/home-user/create/create-apiario.css') }}" rel="stylesheet">
     </head>

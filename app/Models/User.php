@@ -130,4 +130,22 @@ class User extends Authenticatable
     {
         return $this->hasOne(DatoFacturacion::class);
     }
+    public function colmenaLimit()
+    {
+        return match ($this->plan) {
+            'afc' => 299,
+            'me' => 799,
+            'ge' => null, // sin límite
+            'drone' => 299, // para la prueba gratuita
+            default => 299,
+        };
+    }
+
+    public function totalColmenas()
+    {
+        return Colmena::whereHas('apiario', function ($query) {
+            $query->where('user_id', $this->id);
+        })->count();
+    }
+
 }
