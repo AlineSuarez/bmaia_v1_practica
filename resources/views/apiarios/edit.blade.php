@@ -1056,15 +1056,15 @@
 
             $('#num_colmenas').on('input', function () {
                 let val = $(this).val();
-                // Permite vacío mientras escribe
                 if (val === '') return;
                 val = parseInt(val, 10);
+                let maxColmenas = @json($limite_colmenas ?? 99999); // Usa el límite del backend o un valor alto por defecto
                 if (isNaN(val)) {
                     $(this).val('');
                 } else if (val < 1) {
                     $(this).val(1);
-                } else if (val > 250) {
-                    $(this).val(250);
+                } else if (val > maxColmenas) {
+                    $(this).val(maxColmenas);
                 }
             });
 

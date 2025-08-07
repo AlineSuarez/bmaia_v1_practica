@@ -141,6 +141,7 @@
               </div>
             </div>
           </li>
+
           <!-- Cuaderno de Campo -->
           <li class="herramienta-card">
             <div class="herramienta-header">
@@ -150,11 +151,13 @@
               <h3>Cuaderno de Campo</h3>
             </div>
             <div class="herramienta-body">
-              <p>Completa y descarga el cuaderno de campo y registro de movimiento de colmenas fiscalizado por el SAG.
-                Cumple con los
-                requisitos regulatorios, generando documentación oficial a partir de los datos que registras. Evita
-                multas, solo tienes
-                que imprimir y firmar.
+              <p>Completa y descarga el cuaderno de
+                  campo y registro de movimiento de
+                  colmenas fiscalizado por el SAG.
+                  Cumple con los requisitos
+                  regulatorios, generando
+                  documentación a partir de los datos
+                  que registras. ¡Evita multas!
               </p>
               <div class="herramienta-stat">
                 <span class="stat-value">100%</span>
@@ -169,7 +172,7 @@
               <div class="herramienta-icon">
                 <i class="fa-solid fa-calendar-check"></i>
               </div>
-              <h3>Plan de trabajo Anual</h3>
+              <h3>Plan de Trabajo Anual</h3>
             </div>
             <div class="herramienta-body">
               <p>Planifica y organiza tus inspecciones y tareas de manera eficiente, asegurando un monitoreo constante
@@ -181,26 +184,6 @@
               <div class="herramienta-stat">
                 <span class="stat-value">50%</span>
                 <span class="stat-label">Ahorro de tiempo</span>
-              </div>
-            </div>
-          </li>
-
-          <!-- Control Sanitario -->
-          <li class="herramienta-card">
-            <div class="herramienta-header">
-              <div class="herramienta-icon">
-                <i class="fa-solid fa-chart-line"></i>
-              </div>
-              <h3>Indicadores</h3>
-            </div>
-            <div class="herramienta-body">
-              <p>Visualiza en tiempo real los indicadores de tu producción, desde el rendimiento de miel hasta la
-                cantidad de tratamientos aplicados en tus apiarios y colmenas. Podrás optimizar tus decisiones y
-                maximizar la eficiencia de tus manejos productivos.
-              </p>
-              <div class="herramienta-stat">
-                <span class="stat-value">30%</span>
-                <span class="stat-label">Reducción de mortandad</span>
               </div>
             </div>
           </li>
@@ -250,7 +233,7 @@
       <div class="decoration-hexagon"></div>
       <div class="shine-effect"></div>
 
-      <h2>¿Qué es B-MAIA Estándar?</h2>
+      <h2>¿Qué es B-MaiA Estándar?</h2>
       <p>B-MAIA Estándar es nuestra solución básica, diseñada para apicultores que buscan una gestión eficiente de sus
         colmenas sin complicaciones. Incluye herramientas esenciales para el monitoreo y la gestión de apiarios.</p>
     </div>
@@ -391,7 +374,7 @@
       <div class="decoration-hexagon"></div>
       <div class="shine-effect"></div>
 
-      <h2>¿Qué es B-MAIA Plus?</h2>
+      <h2>¿Qué es B-MaiA Plus?</h2>
       <p>
         B-MAIA Plus es nuestra solución avanzada para apicultores que buscan ir más allá en la gestión de sus colmenas.
         No solo accedes a herramientas inteligentes y modelos predictivos, sino también a nuestro acompañamiento experto
@@ -501,7 +484,7 @@
       <div class="decoration-hexagon"></div>
       <div class="shine-effect"></div>
 
-      <h2>¿Qué es B-MAIA PRO?</h2>
+      <h2>¿Qué es B-MaiA <span class="highlight">PRO</span>?</h2>
       <p>
         B-MAIA PRO es nuestra solución más avanzada, pensada para apicultores profesionales que buscan llevar su
         producción
@@ -841,7 +824,7 @@
           <h3 class="category-title">Productividad y Eficiencia</h3>
           <div class="benefits-row">
             <div class="benefit-item"
-              data-tooltip="Incrementa la producción de miel hasta un 30% gracias a intervenciones oportunas basadas en datos reales.">
+              data-tooltip="Incrementa la producción de miel gracias a intervenciones oportunas basadas en datos reales.">
               <div class="benefit-icon">
                 <i class="fa-solid fa-chart-line"></i>
               </div>
@@ -1094,8 +1077,7 @@
           </div>
         </a>
       </div>
-      <p class="section-description" style="text-align: center; font-weight: bold;">B-MaiA: Gestión apícola al
-        servicio de la Apicultura.
+      <p class="section-description" style="text-align: center; font-weight: bold;">B-MaiA: Inteligencia Artificial al servicio de la Apicultura
       </p>
       <p style="text-align: center;"> Un sistema desarrollado por Bee Fractal SpA al servicio del apicultor
         chileno.</p>

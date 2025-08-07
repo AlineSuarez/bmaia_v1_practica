@@ -96,7 +96,7 @@
                         <i class="fas fa-archive fa-fw"></i> N° de Colmenas
                     </label>
                     <input type="number" class="form-control" id="num_colmenas" name="num_colmenas" required
-                        placeholder="Ingrese el número de colmenas" min="1" max="250">
+                        placeholder="Ingrese el número de colmenas" min="1">
                     <div class="custom-tooltip" data-tooltip-for="num_colmenas">
                         Indica la cantidad total de colmenas que tiene este apiario.
                     </div>
@@ -590,6 +590,12 @@
                 }
             });
 
+            // Justo después de cargar el documento, agrega este bloque:
+            // Limitar el input de colmenas según el valor enviado por el backend
+            @if (!is_null($limite_colmenas))
+                $('#num_colmenas').attr('max', {{ $limite_colmenas }});
+            @endif
+
             // Función para añadir efectos de brillo
             function addSparkleEffects() {
                 // Añadir destellos al título
@@ -1013,15 +1019,15 @@
 
             $('#num_colmenas').on('input', function () {
                 let val = $(this).val();
-                // Permite vacío mientras escribe
                 if (val === '') return;
                 val = parseInt(val, 10);
+                let maxColmenas = @json($limite_colmenas ?? 99999); // Usa el límite del backend o un valor alto por defecto
                 if (isNaN(val)) {
                     $(this).val('');
                 } else if (val < 1) {
                     $(this).val(1);
-                } else if (val > 250) {
-                    $(this).val(250);
+                } else if (val > maxColmenas) {
+                    $(this).val(maxColmenas);
                 }
             });
 
