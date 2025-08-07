@@ -6,6 +6,9 @@ use Transbank\Webpay\WebpayPlus;
 use Transbank\Webpay\WebpayPlus\Transaction;
 use App\Models\Payment;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\FreeTrialActivatedMail;
+
 
 class PaymentController extends Controller
 {
@@ -142,6 +145,13 @@ class PaymentController extends Controller
             'amount' => 0,
             'plan' => 'drone',
         ]);
+
+        // Actualizar campo de vencimiento en tabla users
+        $user->fecha_vencimiento = now()->addDays(16);
+        $user->save();
+        
+        // Enviar correo de activación de prueba
+        Mail::to($user->email)->send(new FreeTrialActivatedMail($user));
 
         return redirect()->route('home')->with('success', 'Prueba gratuita activada por 16 días.');
     }
