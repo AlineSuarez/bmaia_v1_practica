@@ -25,7 +25,7 @@
         <img src="{{ asset('img/abeja.png') }}" width="160px" height="130px" alt="Fondo apícola" class="development-icon-image">
       </div>
       <p>¡Descubre B-Ma<span class="highlight">iA</span>!</p>
-      <p>El nuevo ecosistema apícola al servicio de la Apicultura Chilena.</p>
+      <p>Un Ecosistema de Inteligencia Artificial al servicio de la Apicultura Chilena</p>
       <p>En Bee Fractal hemos desarrollado una plataforma que te ayudará a gestionar tus colmenas de forma más
         eficiente, sencilla y práctica.</p>
       <p style="font-weight:bold;">¡Mantente informado y aprovecha todas las herramientas que tenemos para ti!</p>
