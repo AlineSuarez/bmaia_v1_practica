@@ -2,7 +2,7 @@
 
 return [
 
-    
+
     /*
     |--------------------------------------------------------------------------
     | Application Name
@@ -146,23 +146,24 @@ return [
         Illuminate\Translation\TranslationServiceProvider::class,
         Illuminate\Validation\ValidationServiceProvider::class,
         Illuminate\View\ViewServiceProvider::class,
-   
-    
-    /*
-     * Package Service Providers...
-     */
-    // Otros Service Providers...
-    Illuminate\Filesystem\FilesystemServiceProvider::class,
-    
-    /*
-     * Application Service Providers...
-     */
-    App\Providers\ChatbotServiceProvider::class, // Agrega tu Service Provider aquí
-    //
-    /*'openai' => [
-        'api_key' => env('OPENAI_API_KEY',''),
-            ],*/
-],
+
+
+        /*
+         * Package Service Providers...
+         */
+        // Otros Service Providers...
+        Illuminate\Filesystem\FilesystemServiceProvider::class,
+
+        /*
+         * Application Service Providers...
+         */
+        App\Providers\ChatbotServiceProvider::class,
+        Sichikawa\LaravelSendgridDriver\SendgridTransportServiceProvider::class,
+        //
+        /*'openai' => [
+            'api_key' => env('OPENAI_API_KEY',''),
+                ],*/
+    ],
 
 
 ];
