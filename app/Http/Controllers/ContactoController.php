@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Mail;
-use App\Mail\ContactoMail;
+use SendGrid;
+use Exception;
 
 class ContactoController extends Controller
 {
@@ -33,8 +33,35 @@ class ContactoController extends Controller
             'website.max' => 'Spam detectado.',
         ]);
 
-        // Enviar correo
-        Mail::to('agente.bmaia@gmail.com')->send(new ContactoMail($request->all()));
+        // Datos del formulario
+        $data = $request->all();
+
+        // Construir el correo
+        $email = new \SendGrid\Mail\Mail();
+        $email->setFrom("tu_correo@tudominio.com", "Tu Nombre o Empresa");
+        $email->setSubject($data['asunto']);
+        $email->addTo("agente.bmaia@gmail.com", "Agente Bmaia");
+        $email->addContent(
+            "text/plain",
+            "Nombre: {$data['nombre']}\nEmail: {$data['email']}\nTeléfono: {$data['telefono']}\nEmpresa: {$data['empresa']}\nTipo: {$data['tipo']}\nMensaje: {$data['mensaje']}"
+        );
+        $email->addContent(
+            "text/html",
+            "<strong>Nombre:</strong> {$data['nombre']}<br>
+            <strong>Email:</strong> {$data['email']}<br>
+            <strong>Teléfono:</strong> {$data['telefono']}<br>
+            <strong>Empresa:</strong> {$data['empresa']}<br>
+            <strong>Tipo:</strong> {$data['tipo']}<br>
+            <strong>Mensaje:</strong> {$data['mensaje']}"
+        );
+
+        // Envía el correo usando la API de SendGrid
+        $sendgrid = new SendGrid(getenv('SENDGRID_API_KEY'));
+        try {
+            $response = $sendgrid->send($email);
+        } catch (Exception $e) {
+            return back()->withErrors(['email' => 'No se pudo enviar el correo. Intenta más tarde.']);
+        }
 
         return redirect()->route('contacto.form')->with('success', '¡Mensaje enviado correctamente!');
     }
