@@ -27,6 +27,7 @@ use App\Http\Controllers\ImportantDateController;
 use App\Http\Controllers\EmergencyContactController;
 use App\Http\Controllers\SistemaExpertoController;
 use App\Http\Controllers\DatoFacturacionController;
+use App\Http\Controllers\ContactoController;
 
 Auth::routes();
 
@@ -71,6 +72,13 @@ Route::get('/', function () {
     return view('welcome');
 })->name('welcome');
 
+// Página de contacto - Formulario
+Route::get('/contacto', function () {
+    return view('contacto.contacto-form');
+})->name('contacto.form');
+
+Route::post('/contacto', [App\Http\Controllers\ContactoController::class, 'enviar'])->name('contacto.enviar');
+
 // Ruta AJAX para obtener dinamicamente coordenadas de comuna al crear temporal
 Route::get('/comuna-coordenadas/{id}', function ($id) {
     $comuna = \App\Models\Comuna::find($id);
@@ -110,11 +118,11 @@ Route::middleware(['auth'])->group(function () {
 // RUTAS PROTEGIDAS POR SISTEMA DE PAGO
 // ================================
 Route::middleware(['auth', 'check.payment'])->group(function () {
-    
+
     // Dashboard y Home
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-    
+
     Route::get('/apiarios/create-temporal', [ApiarioController::class, 'createTemporal'])->name('apiarios.createTemporal');
     // Apiarios
     Route::resource('apiarios', ApiarioController::class)->except(['show']);
@@ -160,28 +168,28 @@ Route::middleware(['auth', 'check.payment'])->group(function () {
     Route::get('visitas/create/{id}', [VisitaController::class, 'create'])->name('visitas.create');
     Route::post('apiarios/{apiario}/visitas', [VisitaController::class, 'store'])->name('visitas.store');
     Route::post('apiarios/{apiario}/visitas1', [VisitaController::class, 'store1'])->name('visitas.store1');
-    
+
     // Rutas para Registro de Inspección de Apiario
     Route::post('apiarios/{apiario}/inspeccion-apiario', [VisitaController::class, 'store'])->name('apiarios.inspeccion-apiario.store');
     Route::get('/generate-document/inspeccion/{id}', [DocumentController::class, 'generateInspeccionDocument'])->name('generate.document.inspeccion');
-    
+
     // Rutas para Registro General de Visitas
     Route::get('visitas/create1/{id}', [VisitaController::class, 'createGeneral'])->name('visitas.visitas-general');
     Route::post('apiarios/{apiario}/visitas-general', [VisitaController::class, 'storeGeneral'])->name('apiarios.visitas-general.store');
     Route::get('/generate-document/visitas/{id}', [DocumentController::class, 'generateVisitasDocument'])->name('generate.document.visitas');
-    
+
     //Rutas para registro de uso de medicamentos.
     Route::get('visitas/create2/{id}', [VisitaController::class, 'createMedicamentos'])->name('visitas.medicamentos-registro');
     Route::post('apiarios/{apiario}/medicamentos-registro', [VisitaController::class, 'storeMedicamentos'])->name('apiarios.medicamentos-registro.store');
     Route::get('/generate-document/medicamentos/{apiarioId}', [DocumentController::class, 'generateMedicamentsDocument'])->name('generate.document.medicamentos');
     Route::get('apiarios/{apiario}/medicamentos-registro/{visita}/edit', [VisitaController::class, 'editMedicamentos'])->name('apiarios.medicamentos-registro.edit');
-    
+
     // Rutas para registro de Alimentación
     Route::get('visitas/create3/{apiario}', [VisitaController::class, 'createAlimentacion'])->name('visitas.create3');
     Route::post('visitas/create3/{apiario}', [VisitaController::class, 'storeAlimentacion'])->name('visitas.store3');
     Route::get('/generate-document/alimentacion-record/{apiarioId}', [DocumentController::class, 'generateAlimentacionDocument'])->name('generate.document.alimentacion');
     Route::get('visitas/create3/{apiario}/{visita}/edit', [VisitaController::class, 'editAlimentacion'])->name('visitas.alimentacion.edit');
-    
+
     // Rutas para registro de Reina
     Route::get('visitas/create4/{apiario}', [VisitaController::class, 'createReina'])->name('visitas.create4');
     Route::post('visitas/create4/{apiario}', [VisitaController::class, 'storeReina'])->name('visitas.store4');
@@ -236,22 +244,22 @@ Route::middleware(['auth', 'check.payment'])->group(function () {
     Route::patch('/user/update-password', [UserController::class, 'updatePassword'])->name('user.update.password');
     Route::post('/user/update-settings', [UserController::class, 'updateSettings'])->name('user.updateSettings');
     Route::post('/user/update-plan', [UserController::class, 'updatePlan'])->name('user.updatePlan');
-    
+
     // FACTURACION
     Route::post('user/datos-facturacion', [DatoFacturacionController::class, 'store'])->name('datos-facturacion.store');
-    
+
     // Permisos
     Route::get('/user/settings/permissions', [PermissionsController::class, 'index'])->name('permissions.index');
     Route::post('/user/settings/permissions', [PermissionsController::class, 'update'])->name('permissions.update');
     Route::post('/user/settings/permissions/reset', [PermissionsController::class, 'reset'])->name('permissions.reset');
-    
+
     // Preferencias
     Route::get('/user/settings/preferences', [PreferencesController::class, 'index'])->name('preferences.index');
     Route::post('/user/settings/preferences', [PreferencesController::class, 'update'])->name('preferences.update');
     Route::post('/user/settings/preferences/reset', [PreferencesController::class, 'reset'])->name('preferences.reset');
     Route::get('/user/settings/preferences/demo', [PreferencesController::class, 'dateFormatDemo'])->name('preferences.demo');
     Route::post('/user/settings/preferences/date-format', [PreferencesController::class, 'updateDateFormat'])->name('preferences.updateDateFormat');
-    
+
     Route::get('/debug-date', function () {
         return [
             'auth_user' => Auth::check() ? Auth::user()->email : 'no user',
@@ -270,19 +278,19 @@ Route::middleware(['auth', 'check.payment'])->group(function () {
     Route::post('/user/settings/alerts', [AlertController::class, 'store'])->name('alerts.store');
     Route::put('/user/settings/alerts/{alert}', [AlertController::class, 'update'])->name('alerts.update');
     Route::delete('/user/settings/alerts/{alert}', [AlertController::class, 'destroy'])->name('alerts.destroy');
-    
+
     // Recordatorios
     Route::get('/user/settings/reminders', [ReminderController::class, 'index'])->name('reminders.index');
     Route::post('/user/settings/reminders', [ReminderController::class, 'store'])->name('reminders.store');
     Route::put('/user/settings/reminders/{reminder}', [ReminderController::class, 'update'])->name('reminders.update');
     Route::delete('/user/settings/reminders/{reminder}', [ReminderController::class, 'destroy'])->name('reminders.destroy');
-    
+
     // Fechas importantes
     Route::get('/user/settings/dates', [ImportantDateController::class, 'index'])->name('dates.index');
     Route::post('/user/settings/dates', [ImportantDateController::class, 'store'])->name('dates.store');
     Route::put('/user/settings/dates/{date}', [ImportantDateController::class, 'update'])->name('dates.update');
     Route::delete('/user/settings/dates/{date}', [ImportantDateController::class, 'destroy'])->name('dates.destroy');
-    
+
     // Contactos de emergencia
     Route::get('/user/settings/contacts', [EmergencyContactController::class, 'index'])->name('contacts.index');
     Route::post('/user/settings/contacts', [EmergencyContactController::class, 'store'])->name('contacts.store');

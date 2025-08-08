@@ -22,7 +22,8 @@
       <div class="modal-particle modal-particle-4"></div>
 
       <div class="development-icon">
-        <img src="{{ asset('img/abeja.png') }}" width="160px" height="130px" alt="Fondo apícola" class="development-icon-image">
+        <img src="{{ asset('img/abeja.png') }}" width="160px" height="130px" alt="Fondo apícola"
+          class="development-icon-image">
       </div>
       <p>¡Descubre B-Ma<span class="highlight">iA</span>!</p>
       <p>Un Ecosistema de Inteligencia Artificial al servicio de la Apicultura Chilena</p>
@@ -152,12 +153,12 @@
             </div>
             <div class="herramienta-body">
               <p>Completa y descarga el cuaderno de
-                  campo y registro de movimiento de
-                  colmenas fiscalizado por el SAG.
-                  Cumple con los requisitos
-                  regulatorios, generando
-                  documentación a partir de los datos
-                  que registras. ¡Evita multas!
+                campo y registro de movimiento de
+                colmenas fiscalizado por el SAG.
+                Cumple con los requisitos
+                regulatorios, generando
+                documentación a partir de los datos
+                que registras. ¡Evita multas!
               </p>
               <div class="herramienta-stat">
                 <span class="stat-value">100%</span>
@@ -1051,7 +1052,8 @@
       </div>
 
       <div class="contacto-buttons">
-        <a href="https://wa.me/56977632303?text=Hola%2C%20me%20gustar%C3%ADa%20recibir%20informaci%C3%B3n%20detallada%20sobre%20las%20soluciones%20y%20servicios%20de%20B-MaiA.%20Agradezco%20su%20atenci%C3%B3n." target="_blank" class="contacto-btn whatsapp-btn" aria-label="Contáctanos por WhatsApp">
+        <a href="https://wa.me/56977632303?text=Hola%2C%20me%20gustar%C3%ADa%20recibir%20informaci%C3%B3n%20detallada%20sobre%20las%20soluciones%20y%20servicios%20de%20B-MaiA.%20Agradezco%20su%20atenci%C3%B3n."
+          target="_blank" class="contacto-btn whatsapp-btn" aria-label="Contáctanos por WhatsApp">
           <div class="btn-icon">
             <i class="fa-brands fa-whatsapp" style="font-size: 1em !important;"></i>
           </div>
@@ -1064,7 +1066,7 @@
           </div>
         </a>
 
-        <a href="mailto:contacto@bmaia.cl" class="contacto-btn email-btn">
+        <a href="{{ route('contacto.form') }}" class="contacto-btn email-btn">
           <div class="btn-icon">
             <i class="fa-solid fa-envelope" style="font-size: 1em !important;"></i>
           </div>
@@ -1077,7 +1079,8 @@
           </div>
         </a>
       </div>
-      <p class="section-description" style="text-align: center; font-weight: bold;">B-MaiA: Inteligencia Artificial al servicio de la Apicultura
+      <p class="section-description" style="text-align: center; font-weight: bold;">B-MaiA: Inteligencia Artificial al
+        servicio de la Apicultura
       </p>
       <p style="text-align: center;"> Un sistema desarrollado por Bee Fractal SpA al servicio del apicultor
         chileno.</p>
@@ -1160,7 +1163,9 @@
       <ul class="footer-contact-info">
         <li>
           <i class="fas fa-envelope"></i>
-          <span>contacto@bmaia.cl</span>
+          <a href="{{ route('contacto.form') }}" style="color: inherit; text-decoration: none;">
+            <span>contacto@bmaia.cl</span>
+          </a>
         </li>
         <li>
           <i class="fas fa-headset"></i>

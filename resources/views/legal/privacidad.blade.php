@@ -231,7 +231,8 @@
             Si deseas obtener más información, no dudes en contactarnos a través de nuestros canales de comunicación.
         </p>
         <p>
-            <strong>Correo electrónico:</strong> <a href="mailto:info@apicheck.cl">info@apicheck.cl</a>
+            <strong>Correo electrónico:</strong>
+            <a href="{{ route('contacto.form') }}">contacto@bmaia.cl</a>
         </p>
     </div>
 @endsection

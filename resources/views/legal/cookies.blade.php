@@ -7,7 +7,7 @@
         <h2 id="introduccion">Política de Cookies de B-MaiA</h2>
         <p>
             Esta política de cookies explica cómo utilizamos cookies y tecnologías similares en nuestro sitio web
-            www.apicheck.cl (en adelante, "Sitio Web") para ofrecerte una mejor experiencia de usuario.
+            www.bmaia.cl (en adelante, "Sitio Web") para ofrecerte una mejor experiencia de usuario.
         </p>
     </div>
 
@@ -121,7 +121,7 @@
         <h2 id="contacto">7. Contacto</h2>
         <p>
             Si tienes alguna pregunta o inquietud sobre esta Política de Cookies, puedes contactarnos a través de
-            <a href="mailto:contacto@apicheck.cl">contacto@apicheck.cl</a> o en la sección de contacto.
+            <a href="{{ route('contacto.form') }}">contacto@bmaia.cl</a> o en la sección de contacto.
         </p>
         <p>
             <strong>Última actualización:</strong> 03 de Abril, 2025

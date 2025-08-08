@@ -395,7 +395,7 @@
         <h2 id="privacidad">Política de privacidad</h2>
         <p>
             El uso de las plataformas asociadas a B-Maia está sujeto a la Política de Privacidad, disponible en
-            <a href="https://www.apicheck.cl/privacy-policy/" target="_blank">www.apicheck.cl/privacy-policy/</a>.
+            <a href="https://www.bmaia.cl/politicas-de-privacidad" target="_blank">www.bmaia.cl/politicas-de-privacidad</a>.
             Te recomendamos que leas atentamente esta política ahora y que la revises periódicamente, ya que se actualiza
             con frecuencia.
         </p>
@@ -461,7 +461,8 @@
             Si tienes alguna pregunta sobre estos Términos y Condiciones, por favor contáctanos a través de:
         </p>
         <p>
-            <strong>Correo electrónico:</strong> <a href="mailto:info@apicheck.cl">info@apicheck.cl</a>
+            <strong>Correo electrónico:</strong>
+            <a href="{{ route('contacto.form') }}">contacto@bmaia.cl</a>
         </p>
         <p>
             <strong>Fecha de última actualización:</strong> Mayo 2023

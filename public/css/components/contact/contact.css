@@ -1,0 +1,449 @@
+body.contact-page {
+    font-family: "Montserrat", sans-serif;
+    background: linear-gradient(180deg, var(--amber-50, #fffbeb) 0%, #fff 100%);
+    color: var(--text-dark, #2c3e50);
+}
+
+/* Sección */
+.contacto-section.contacto-form-only {
+    position: relative;
+    padding: 100px 0 120px;
+    overflow: hidden;
+}
+
+.contacto-section .container {
+    max-width: 1100px;
+    padding: 0 5%;
+}
+
+.contacto-header .section-title {
+    font-family: "Playfair Display", serif;
+    font-size: 44px;
+    margin-bottom: 10px;
+}
+
+.contacto-header .section-description {
+    margin: 0 auto 30px;
+    text-align: center;
+}
+
+/* Tarjeta del formulario (glassmorphism similar a cards del home) */
+.contact-card {
+    background: linear-gradient(
+        135deg,
+        rgba(255, 255, 255, 0.85),
+        rgba(255, 255, 255, 0.95)
+    );
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 213, 79, 0.25);
+    border-radius: 20px;
+    box-shadow: var(--shadow-md, 0 10px 15px rgba(0, 0, 0, 0.1));
+    padding: 28px;
+    position: relative;
+    overflow: hidden;
+}
+
+.contact-card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(
+            1200px 600px at -10% -10%,
+            rgba(255, 213, 79, 0.08),
+            transparent 40%
+        ),
+        radial-gradient(
+            800px 400px at 110% 10%,
+            rgba(255, 213, 79, 0.06),
+            transparent 40%
+        );
+    pointer-events: none;
+}
+
+.contact-card-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 18px;
+}
+
+.contact-card-header h3 {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text-dark, #2c3e50);
+}
+
+.contact-card-header p {
+    margin: 0;
+    font-size: 14px;
+    color: var(--text-lighter, #718096);
+}
+
+.contact-card .contact-card-icon {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    color: white;
+    box-shadow: var(--shadow-sm, 0 4px 6px rgba(0, 0, 0, 0.05));
+    background: linear-gradient(
+        135deg,
+        var(--amber-400, #fbbf24),
+        var(--amber-600, #d97706)
+    );
+}
+
+/* Grid de campos */
+.contact-form .form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 14px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.form-group label {
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: var(--text-dark, #2c3e50);
+}
+
+.req {
+    color: #c0392b;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    appearance: none;
+    -webkit-appearance: none;
+    background: #fff;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    border-radius: 12px;
+    padding: 12px 14px;
+    font-size: 0.98rem;
+    color: var(--text-dark, #2c3e50);
+    outline: none;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease,
+        transform 0.05s ease;
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.03);
+}
+
+.form-group select {
+    background-image: linear-gradient(
+            45deg,
+            transparent 50%,
+            rgba(0, 0, 0, 0.25) 50%
+        ),
+        linear-gradient(135deg, rgba(0, 0, 0, 0.25) 50%, transparent 50%),
+        linear-gradient(to right, #fff, #fff);
+    background-position: calc(100% - 22px) calc(1em + 2px),
+        calc(100% - 17px) calc(1em + 2px), 100% 0;
+    background-size: 5px 5px, 5px 5px, 2.5em 3.5em;
+    background-repeat: no-repeat;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    border-color: var(--amber-400, #fbbf24);
+    box-shadow: 0 0 0 4px rgba(255, 213, 79, 0.25);
+}
+
+.form-group textarea {
+    resize: vertical;
+    min-height: 140px;
+}
+
+.char-counter {
+    font-size: 0.85rem;
+    color: var(--text-lighter, #718096);
+    margin-top: 4px;
+}
+
+/* Consentimiento y honeypot */
+.form-consent {
+    margin: 8px 0 4px;
+}
+
+.checkbox {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 0.95rem;
+    color: var(--text-dark, #2c3e50);
+}
+
+.checkbox a {
+    color: var(--amber-700, #b45309);
+    text-decoration: underline;
+}
+
+.hp {
+    position: absolute;
+    left: -10000px;
+    top: auto;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+}
+
+/* Acciones */
+.form-actions {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    margin-top: 14px;
+}
+
+.btn {
+    display: inline-flex;
+    gap: 8px;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 22px;
+    border-radius: 14px;
+    font-weight: 600;
+    font-size: 1rem;
+    text-decoration: none;
+    transition: all 0.25s ease;
+    min-width: 140px;
+    border: none;
+    cursor: pointer;
+}
+
+.btn-primary {
+    background: var(--amber-400, #fbbf24);
+    color: var(--text-dark, #2c3e50);
+    box-shadow: 0 8px 20px rgba(255, 213, 79, 0.35);
+}
+
+.btn-primary:hover {
+    background: var(--amber-500, #f59e0b);
+    transform: translateY(-2px);
+    box-shadow: 0 12px 28px rgba(255, 213, 79, 0.45);
+}
+
+.btn-secondary {
+    background: rgba(0, 0, 0, 0.03);
+    color: var(--text-dark, #2c3e50);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.btn-secondary:hover {
+    background: rgba(0, 0, 0, 0.05);
+    transform: translateY(-2px);
+}
+
+/* Alerts coherentes con el home */
+.alert {
+    border-radius: 14px;
+    padding: 12px 16px;
+    margin-bottom: 16px;
+    border: 1px solid transparent;
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    box-shadow: var(--shadow-sm, 0 4px 6px rgba(0, 0, 0, 0.05));
+}
+
+.alert-success {
+    background: #ecfdf5;
+    color: #065f46;
+    border-color: #a7f3d0;
+}
+
+.alert-danger {
+    background: #fef2f2;
+    color: #991b1b;
+    border-color: #fecaca;
+    flex-direction: column;
+}
+
+.alert ul {
+    margin: 6px 0 0 18px;
+}
+
+/* Errores de validación */
+.invalid-feedback {
+    color: #c0392b;
+    font-size: 0.9rem;
+    margin-top: 4px;
+}
+
+/* Decoración hexagonal ya existe en home.css, solo aseguramos opacidad coherente */
+.honeycomb-pattern {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='100' viewBox='0 0 56 100'%3E%3Cpath fill='%23fbbf24' d='M28 66L0 50L0 16L28 0L56 16L56 50L28 66L28 100'/%3E%3C/svg%3E");
+    opacity: 0.05;
+}
+
+/* Social */
+.social-media {
+    text-align: center;
+    margin-top: 26px;
+}
+
+.social-media h3 {
+    font-size: 18px;
+    margin-bottom: 12px;
+    color: var(--text-dark, #2c3e50);
+}
+
+.social-icons {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.social-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    color: white;
+    font-size: 18px;
+    background: linear-gradient(
+        135deg,
+        var(--amber-500, #f59e0b),
+        var(--amber-700, #b45309)
+    );
+    box-shadow: var(--shadow-sm, 0 4px 6px rgba(0, 0, 0, 0.05));
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    text-decoration: none;
+}
+
+.social-icon:hover {
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: var(--shadow-md, 0 10px 15px rgba(0, 0, 0, 0.1));
+}
+
+/* Animaciones de entrada */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeInLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+/* Aplicar animaciones a los elementos */
+.contacto-content > .btn {
+    animation: fadeInLeft 0.6s ease-out;
+}
+
+.contacto-header {
+    animation: fadeInUp 0.8s ease-out 0.1s both;
+}
+
+.contact-card {
+    animation: fadeInUp 0.8s ease-out 0.3s both;
+}
+
+.social-media {
+    animation: fadeInUp 0.8s ease-out 0.5s both;
+}
+
+.alert {
+    animation: fadeIn 0.5s ease-out;
+}
+
+/* Animación escalonada para los campos del formulario */
+.form-grid .form-group:nth-child(1) {
+    animation: fadeInUp 0.6s ease-out 0.4s both;
+}
+
+.form-grid .form-group:nth-child(2) {
+    animation: fadeInUp 0.6s ease-out 0.5s both;
+}
+
+.form-grid .form-group:nth-child(3) {
+    animation: fadeInUp 0.6s ease-out 0.6s both;
+}
+
+.form-grid .form-group:nth-child(4) {
+    animation: fadeInUp 0.6s ease-out 0.7s both;
+}
+
+.form-grid .form-group:nth-child(5) {
+    animation: fadeInUp 0.6s ease-out 0.8s both;
+}
+
+.form-grid .form-group:nth-child(6) {
+    animation: fadeInUp 0.6s ease-out 0.9s both;
+}
+
+.contact-form > .form-group {
+    animation: fadeInUp 0.6s ease-out 1s both;
+}
+
+.form-consent {
+    animation: fadeInUp 0.6s ease-out 1.1s both;
+}
+
+.form-actions {
+    animation: fadeInUp 0.6s ease-out 1.2s both;
+}
+
+/* Reducir animaciones en dispositivos con motion reducido */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* Responsive */
+@media (max-width: 992px) {
+    .contact-form .form-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 576px) {
+    .contact-card {
+        padding: 18px;
+    }
+
+    .btn {
+        width: 100%;
+        min-width: 0;
+    }
+
+    .form-actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+}
