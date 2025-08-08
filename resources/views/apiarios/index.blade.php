@@ -183,6 +183,12 @@
                                                         data-bs-target="#deleteModal{{ $apiario->id }}" title="Eliminar">
                                                         <i class="fas fa-trash"></i>
                                                     </button>
+                                                    <form action="{{ route('apiarios.convertirBase', $apiario->id) }}" method="POST" class="d-inline" onsubmit="return confirm('¿Estás seguro de convertir este apiario a trashumante base?');">
+                                                        @csrf
+                                                        <button type="submit" class="action-icon special" class="d-inline" title="Convertir a Trashumante Base">
+                                                            <i class="fas fa-exchange-alt"></i> 
+                                                        </button>
+                                                    </form>
                                                 </div>
                                             </td>
                                         </tr>
@@ -355,6 +361,14 @@
                                                             data-bs-target="#deleteModal{{ $apiario->id }}" title="Eliminar">
                                                             <i class="fas fa-trash"></i>
                                                         </button>
+                                                        <form action="{{ route('apiarios.convertirFijo', $apiario->id) }}" method="POST" class="d-inline" onsubmit="return confirm('¿Estás seguro de convertir este apiario a fijo?');">
+                                                            @csrf
+                                                            <button type="submit" title="Mover a Apiario Fijo" class="btn btn-sm btn-outline-secondary" style="font-size: 0.75rem;">
+                                                                 <i class="fas fa-exchange-alt"></i>
+                                                            </button>
+                                                            
+                                                        </form>
+
                                                     </div>
                                                 </td>
                                             </tr>

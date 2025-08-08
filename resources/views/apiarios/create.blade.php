@@ -19,13 +19,20 @@
         <div class="alert {{ $restantes <= 0 ? 'alert-danger' : ($restantes <= 10 ? 'alert-warning' : 'alert-info') }}">
             <strong>Atención:</strong>
             Tienes actualmente <strong>{{ $colmenas_actuales }}</strong> colmenas registradas
-            de un total permitido de <strong>{{ $limite_colmenas }}</strong> colmenas según tu plan.
+            de un total permitido de <strong>{{ $limite_colmenas }}</strong> colmenas según tu plan <strong>{{ strtoupper($plan) }}</strong>.
             @if ($restantes <= 0)
                 Ya has alcanzado el límite. No podrás crear nuevas colmenas hasta actualizar tu plan.
             @else
                 Te quedan <strong>{{ $restantes }}</strong> colmenas disponibles.
             @endif
         </div>
+        
+        {{-- VIEW PLANES  @if ($restantes <= 0)
+            <div class="alert alert-danger mt-3">
+                <i class="fas fa-lock"></i> Has alcanzado el máximo permitido de colmenas. Contrata o Actualiza tu Plan para crear nuevas colmenas. <br>
+                <a href="{{ route('pricing') }}" class="btn btn-sm btn-primary mt-2">Actualizar plan</a> 
+            </div>
+        @endif--}}
     @endif
 
     <head>

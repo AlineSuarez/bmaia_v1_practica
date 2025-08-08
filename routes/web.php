@@ -136,6 +136,8 @@ Route::middleware(['auth', 'check.payment'])->group(function () {
     Route::get('/apiarios/{id}', [ApiarioController::class, 'show'])->name('apiarios.show');
     Route::get('/apiarios-temporales/{apiario}/detalle-movimiento', [ApiarioController::class, 'detalleMovimiento']);
     Route::post('/apiarios/massDelete', [ApiarioController::class, 'massDelete'])->name('apiarios.massDelete');
+    Route::post('/apiarios/{id}/convertir-trashumante-base', [ApiarioController::class, 'convertirEnTrashumanteBase'])->name(name: 'apiarios.convertirBase');
+    Route::post('/apiarios/{apiario}/convertir-fijo', [ApiarioController::class, 'convertirAFijo'])->name('apiarios.convertirFijo');
 
     // Trashumancia - temporal
     Route::post('/trashumancia/store', [TrashumanciaController::class, 'store'])->name('trashumancia.store');
