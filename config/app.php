@@ -158,7 +158,6 @@ return [
          * Application Service Providers...
          */
         App\Providers\ChatbotServiceProvider::class,
-        Sichikawa\LaravelSendgridDriver\SendgridTransportServiceProvider::class,
         //
         /*'openai' => [
             'api_key' => env('OPENAI_API_KEY',''),
