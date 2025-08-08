@@ -92,6 +92,10 @@ return [
             ],
         ],
 
+        'sendgrid' => [
+            'transport' => 'sendgrid',
+        ],
+
     ],
 
     /*

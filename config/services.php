@@ -38,14 +38,17 @@ return [
         ],
     ],
     'google' => [
-    'client_id' => env('GOOGLE_CLIENT_ID'),
-    'client_secret' => env('GOOGLE_CLIENT_SECRET'),
-    'redirect' => env('GOOGLE_REDIRECT_URL'),
-],
+        'client_id' => env('GOOGLE_CLIENT_ID'),
+        'client_secret' => env('GOOGLE_CLIENT_SECRET'),
+        'redirect' => env('GOOGLE_REDIRECT_URL'),
+    ],
     'webpay' => [
         'commerce_code' => env('WEBPAY_COMMERCE_CODE'),
         'api_key' => env('WEBPAY_API_KEY'),
         'environment' => env('WEBPAY_ENVIRONMENT'),
+    ],
+    'sendgrid' => [
+        'api_key' => env('SENDGRID_API_KEY'),
     ],
 
 
