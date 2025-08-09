@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use SendGrid;
 use Exception;
+use Illuminate\Support\Facades\View;
 
 class ContactoController extends Controller
 {
@@ -36,30 +37,37 @@ class ContactoController extends Controller
         // Datos del formulario
         $data = $request->all();
 
+        // Renderiza la vista Blade como HTML
+        $htmlContent = View::make('emails.contact-base', ['datos' => $data])->render();
+
+        // Construir el asunto único
+        $uniqueSubject = $data['asunto'] . ' [' . now()->format('Y-m-d H:i:s') . ']';
+
         // Construir el correo
         $email = new \SendGrid\Mail\Mail();
-        $email->setFrom("tu_correo@tudominio.com", "Tu Nombre o Empresa");
-        $email->setSubject($data['asunto']);
-        $email->addTo("agente.bmaia@gmail.com", "Agente Bmaia");
+        $email->setFrom("contacto@bmaia.cl", "B-MaiA - Contacto");
+        $email->setSubject($uniqueSubject);
+        $email->addTo("agente.bmaia@gmail.com", "Agente B-MaiA");
         $email->addContent(
             "text/plain",
             "Nombre: {$data['nombre']}\nEmail: {$data['email']}\nTeléfono: {$data['telefono']}\nEmpresa: {$data['empresa']}\nTipo: {$data['tipo']}\nMensaje: {$data['mensaje']}"
         );
         $email->addContent(
             "text/html",
-            "<strong>Nombre:</strong> {$data['nombre']}<br>
-            <strong>Email:</strong> {$data['email']}<br>
-            <strong>Teléfono:</strong> {$data['telefono']}<br>
-            <strong>Empresa:</strong> {$data['empresa']}<br>
-            <strong>Tipo:</strong> {$data['tipo']}<br>
-            <strong>Mensaje:</strong> {$data['mensaje']}"
+            $htmlContent
         );
 
         // Envía el correo usando la API de SendGrid
-        $sendgrid = new SendGrid(getenv('SENDGRID_API_KEY'));
+        $sendgrid = new SendGrid(config('services.sendgrid.api_key'));
         try {
             $response = $sendgrid->send($email);
+            \Log::info('SendGrid response', [
+                'status' => $response->statusCode(),
+                'body' => $response->body(),
+                'headers' => $response->headers(),
+            ]);
         } catch (Exception $e) {
+            \Log::error('SendGrid error: ' . $e->getMessage());
             return back()->withErrors(['email' => 'No se pudo enviar el correo. Intenta más tarde.']);
         }
 
