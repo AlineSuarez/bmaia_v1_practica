@@ -8,6 +8,9 @@ use App\Models\Payment;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\FreeTrialActivatedMail;
+use SendGrid;
+use Illuminate\Support\Facades\View;
+use Exception;
 
 
 class PaymentController extends Controller
@@ -70,9 +73,9 @@ class PaymentController extends Controller
     {
         $transaction = new Transaction();
         $token = $request->input('token_ws');
-        try{
+        try {
             $response = $transaction->commit($token);
-        }catch(\Exception $e){
+        } catch (Exception $e) {
             \Log::error('Error al procesar la transacción: ' . $e->getMessage());
             $request->session()->put('payment_failed', true);
             return redirect()->route('payment.failed')->with('error', 'Error al procesar la transacción');
@@ -140,7 +143,7 @@ class PaymentController extends Controller
         // Crear el registro de prueba gratuita
         Payment::create([
             'user_id' => $user->id,
-            'transaction_id' => 'trial-'.uniqid(),
+            'transaction_id' => 'trial-' . uniqid(),
             'status' => 'paid',
             'amount' => 0,
             'plan' => 'drone',
@@ -149,9 +152,34 @@ class PaymentController extends Controller
         // Actualizar campo de vencimiento en tabla users
         $user->fecha_vencimiento = now()->addDays(16);
         $user->save();
-        
+
         // Enviar correo de activación de prueba
-        Mail::to($user->email)->send(new FreeTrialActivatedMail($user));
+        $htmlContent = View::make('emails.free-trial-activated', ['user' => $user])->render();
+
+        $email = new \SendGrid\Mail\Mail();
+        $email->setFrom("soporte@bmaia.cl", "B-MaiA - Prueba Gratuita");
+        $email->setSubject("¡Prueba gratuita activada en B-MaiA!");
+        $email->addTo($user->email, $user->name);
+        $email->addContent(
+            "text/plain",
+            "¡Hola {$user->name}! Tu prueba gratuita ha sido activada por 16 días."
+        );
+        $email->addContent(
+            "text/html",
+            $htmlContent
+        );
+
+        $sendgrid = new SendGrid(config('services.sendgrid.api_key'));
+        try {
+            $response = $sendgrid->send($email);
+            \Log::info('SendGrid trial response', [
+                'status' => $response->statusCode(),
+                'body' => $response->body(),
+                'headers' => $response->headers(),
+            ]);
+        } catch (Exception $e) {
+            \Log::error('SendGrid trial error: ' . $e->getMessage());
+        }
 
         return redirect()->route('home')->with('success', 'Prueba gratuita activada por 16 días.');
     }
