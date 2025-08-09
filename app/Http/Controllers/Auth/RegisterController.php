@@ -10,6 +10,9 @@ use Illuminate\Support\Facades\Validator;
 use Mail;
 use App\Mail\WelcomeMail;
 use Illuminate\Http\Request;
+use SendGrid;
+use Illuminate\Support\Facades\View;
+use Exception;
 
 class RegisterController extends Controller
 {
@@ -73,8 +76,36 @@ class RegisterController extends Controller
             'password' => Hash::make($data['password']),
         ]);
 
-        // Enviar correo de bienvenida
-        Mail::to($user->email)->send(new WelcomeMail($user));
+        // Renderiza la vista Blade como HTML
+        $htmlContent = View::make('emails.welcome', ['user' => $user])->render();
+
+        // Construir el correo
+        $email = new \SendGrid\Mail\Mail();
+        $email->setFrom("soporte@bmaia.cl", "B-MaiA");
+        $email->setSubject("¡Bienvenido a B-MaiA, {$user->name}!");
+        $email->addTo($user->email, $user->name);
+        $email->addContent(
+            "text/plain",
+            "¡Bienvenido a B-MaiA, {$user->name}!"
+        );
+        $email->addContent(
+            "text/html",
+            $htmlContent
+        );
+
+        // Envía el correo usando la API de SendGrid
+        $sendgrid = new SendGrid(config('services.sendgrid.api_key'));
+        try {
+            $response = $sendgrid->send($email);
+            \Log::info('SendGrid welcome response', [
+                'status' => $response->statusCode(),
+                'body' => $response->body(),
+                'headers' => $response->headers(),
+            ]);
+        } catch (Exception $e) {
+            \Log::error('SendGrid welcome error: ' . $e->getMessage());
+            // Opcional: puedes decidir si lanzar una excepción o solo registrar el error
+        }
 
         return $user;
     }
