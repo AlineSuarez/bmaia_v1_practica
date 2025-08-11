@@ -136,10 +136,6 @@
                 durante la temporada,
                 manteniendo la trazabilidad individual de cada colmena.
               </p>
-              <div class="herramienta-stat">
-                <span class="stat-value">100%</span>
-                <span class="stat-label">Trazabilidad de colmenas</span>
-              </div>
             </div>
           </li>
 
@@ -160,10 +156,6 @@
                 documentación a partir de los datos
                 que registras. ¡Evita multas!
               </p>
-              <div class="herramienta-stat">
-                <span class="stat-value">100%</span>
-                <span class="stat-label">Más Práctico</span>
-              </div>
             </div>
           </li>
 
@@ -182,10 +174,23 @@
                 permitirá tomar
                 decisiones rápidas y mejorar la gestión de tu plan de trabajo.
               </p>
-              <div class="herramienta-stat">
-                <span class="stat-value">50%</span>
-                <span class="stat-label">Ahorro de tiempo</span>
+            </div>
+          </li>
+
+          <!-- Indicadores -->
+          <li class="herramienta-card">
+            <div class="herramienta-header">
+              <div class="herramienta-icon">
+                <i class="fa-solid fa-chart-line"></i>
               </div>
+              <h3>Indicadores</h3>
+            </div>
+            <div class="herramienta-body">
+              <p>Visualiza en tiempo real los indicadores de tu producción, desde el rendimiento de miel hasta la
+                cantidad de
+                tratamientos aplicados en tus apiarios y colmenas. Podrás optimizar tus decisiones y maximizar la
+                eficiencia de tus
+                manejos productivos.</p>
             </div>
           </li>
 
@@ -201,10 +206,6 @@
               <p>Monitorea las condiciones climáticas y geográficas de tus lugares de producción. Podrás planificar y
                 organizar la
                 ubicación de tus colmenas con mayor precisión.</p>
-              <div class="herramienta-stat">
-                <span class="stat-value">85%</span>
-                <span class="stat-label">Precisión de monitoreo</span>
-              </div>
             </div>
           </li>
 
@@ -235,7 +236,7 @@
       <div class="shine-effect"></div>
 
       <h2>¿Qué es B-MaiA Estándar?</h2>
-      <p>B-MAIA Estándar es nuestra solución básica, diseñada para apicultores que buscan una gestión eficiente de sus
+      <p>B-MaiA Estándar es nuestra solución básica, diseñada para apicultores que buscan una gestión eficiente de sus
         colmenas sin complicaciones. Incluye herramientas esenciales para el monitoreo y la gestión de apiarios.</p>
     </div>
 

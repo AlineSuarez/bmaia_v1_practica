@@ -32,6 +32,10 @@
                         </button>
 
                         <div class="apiario-dropdown-menu" id="apiarioUserDropdownMenu">
+                            <a class="apiario-dropdown-item" href="{{ url('/') }}">
+                                <i class="fas fa-home apiario-icon-gray"></i>Página principal
+                            </a>
+                            <div class="apiario-dropdown-divider"></div>
                             <a class="apiario-dropdown-item" href="{{route('user.settings')}}">
                                 <i class="fas fa-cog apiario-icon-gray"></i>Configuración de cuenta
                             </a>

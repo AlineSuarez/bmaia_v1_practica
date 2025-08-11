@@ -252,6 +252,7 @@ body {
 .btn-outline-primary {
     color: var(--primary-color);
     border-color: var(--primary-color);
+    margin-bottom: 1.46rem;
 }
 
 .btn-outline-primary:hover {
