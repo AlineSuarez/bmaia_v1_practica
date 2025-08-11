@@ -19,8 +19,16 @@ class Payment extends Model
         'amount',
         'plan',
         'dato_facturacion_id',
+        'billing_snapshot',
 
     ];
+    protected $casts = [
+        'billing_snapshot' => 'array', // convierte JSON a array automáticamente
+    ];
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 
     public function datosFacturacion()
     {

@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use App\Models\SubTarea;
 use Carbon\Carbon;
+use Illuminate\Support\Str;
 
 class DocumentController extends Controller
 {
@@ -532,6 +533,14 @@ class DocumentController extends Controller
         $subtareas = SubTarea::with('tareaGeneral')
             ->where('archivada', false)
             ->get();
+        // 🔹 Eliminar duplicados por nombre normalizado
+        $subtareas = $subtareas
+            ->map(function ($t) {
+                $t->nombre_key = Str::of($t->nombre)->squish()->lower();
+                return $t;
+            })
+            ->unique('nombre_key') // quita duplicados
+            ->values();
         $fechaGeneracion = $this->obtenerFechaHoraLocal();
         $pdf = Pdf::loadView('documents.tareas-todas', compact('subtareas','fechaGeneracion'));
         $pdf->setPaper('A4', 'portrait');

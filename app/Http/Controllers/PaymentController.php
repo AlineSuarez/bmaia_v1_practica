@@ -12,7 +12,6 @@ use SendGrid;
 use Illuminate\Support\Facades\View;
 use Exception;
 
-
 class PaymentController extends Controller
 {
     public function __construct()
@@ -20,50 +19,85 @@ class PaymentController extends Controller
         $this->middleware('auth');
     }
 
+    /** Configura Webpay para TEST o PRODUCCIÓN según .env */
+    private function configureWebpay(): void
+    {
+        $env = env('WEBPAY_ENVIRONMENT', 'TEST'); // TEST | PRODUCTION
+
+        if ($env === 'PRODUCTION') {
+            WebpayPlus::configureForProduction(
+                env('WEBPAY_COMMERCE_CODE'),
+                env('WEBPAY_API_KEY')
+            );
+        } else {
+            WebpayPlus::configureForTesting(); // usa llaves de integración
+        }
+    }
+
     public function initiatePayment(Request $request)
     {
-        // Validar que el plan esté presente en la solicitud
+        $this->configureWebpay();
+
+        // Validar plan
         $request->validate([
             'plan' => 'required|in:afc,me,ge',
         ]);
+
         $user = Auth::user();
         $plan = $request->input('plan');
-        $transaction = new Transaction();
 
-        // Asignar el monto según el plan seleccionado
+        // 1) Verificar datos de facturación mínimos
+        $df = $user->datosFacturacion; // relación hasOne en User
+        if (!$df || !$df->razon_social || !$df->rut || !$df->correo_envio_dte) {
+            return back()->with('error',
+                'Debes completar Razón Social, RUT y Correo de envío DTE en tus Datos de Facturación antes de pagar.');
+        }
+
+        // 2) Monto por plan
         switch ($plan) {
-            case 'afc':
-                $amount = 69900;
-                break;
-            case 'me':
-                $amount = 87900;
-                break;
-            case 'ge':
-                $amount = 150900;
-                break;
-            default:
-                return redirect()->back()->with('error', 'Plan no válido');
+            case 'afc': $amount = 69900; break;
+            case 'me':  $amount = 87900; break;
+            case 'ge':  $amount = 150900; break;
+            default:    return back()->with('error', 'Plan no válido');
         }
 
-        // DESCUENTO DEL 30% SOLO EN AGOSTO
-        $now = now();
-        if ($now->month == 8) { // Agosto
-            $amount = intval(round($amount * 0.7));
+        // 3) Descuento de Agosto (-30%)
+        if (now()->month == 8) {
+            $amount = (int) round($amount * 0.7);
         }
 
-        $response = $transaction->create(
-            uniqid(),
-            uniqid(),
+        // 4) Crear transacción Webpay
+        $buyOrder  = uniqid('ORDER_');
+        $sessionId = session()->getId();
+
+        $response = (new Transaction())->create(
+            $buyOrder,
+            $sessionId,
             $amount,
             route('payment.response')
         );
 
+        // 5) Guardar Payment con relación a datos de facturación + snapshot
         Payment::create([
-            'user_id' => $user->id,
-            'transaction_id' => $response->getToken(),
-            'status' => 'pending',
-            'amount' => $amount,
-            'plan' => $plan,
+            'user_id'             => $user->id,
+            'dato_facturacion_id' => $df->id,
+            'transaction_id'      => $response->getToken(),
+            'status'              => 'pending',
+            'amount'              => $amount,
+            'plan'                => $plan,
+            'billing_snapshot'    => [
+                'razon_social'           => $df->razon_social,
+                'rut'                    => $df->rut,
+                'giro'                   => $df->giro,
+                'direccion_comercial'    => $df->direccion_comercial,
+                'region_id'              => $df->region_id,
+                'comuna_id'              => $df->comuna_id,
+                'ciudad'                 => $df->ciudad,
+                'telefono'               => $df->telefono,
+                'correo'                 => $df->correo,
+                'autorizacion_envio_dte' => (bool) $df->autorizacion_envio_dte,
+                'correo_envio_dte'       => $df->correo_envio_dte,
+            ],
         ]);
 
         return redirect($response->getUrl() . '?token_ws=' . $response->getToken());
@@ -71,10 +105,11 @@ class PaymentController extends Controller
 
     public function paymentResponse(Request $request)
     {
-        $transaction = new Transaction();
+        $this->configureWebpay();
+
         $token = $request->input('token_ws');
         try {
-            $response = $transaction->commit($token);
+            $response = (new Transaction())->commit($token);
         } catch (Exception $e) {
             \Log::error('Error al procesar la transacción: ' . $e->getMessage());
             $request->session()->put('payment_failed', true);
@@ -91,21 +126,17 @@ class PaymentController extends Controller
         if ($response->isApproved()) {
             $payment->update(['status' => 'paid']);
 
-            // Obtener el usuario y el plan
             $user = \App\Models\User::find(Auth::id());
             if (!$user) {
                 \Log::error('Usuario no encontrado para el pago.');
                 $request->session()->put('payment_failed', true);
                 return redirect()->route('payment.failed')->with('error', 'Usuario no encontrado.');
             }
-            $plan = $payment->plan; // Asumimos que el plan se guardó en el pago
 
-            // Determinar la fecha de expiración
-            $fechaVencimiento = now()->addMonths($plan === 'mensual' ? 1 : 12);
-
-            // Actualizar el usuario con el plan y la fecha de expiración
+            // Plan y vencimiento (anual)
+            $plan = $payment->plan;
             $user->plan = $plan;
-            $user->fecha_vencimiento = $fechaVencimiento;
+            $user->fecha_vencimiento = now()->addYear();
             $user->webpay_status = 'pagado';
             $user->save();
 
@@ -122,60 +153,46 @@ class PaymentController extends Controller
     {
         $user = Auth::user();
 
-        // Buscar el último registro de prueba gratuita (plan drone)
         $dronePayment = Payment::where('user_id', $user->id)
             ->where('plan', 'drone')
             ->orderByDesc('created_at')
             ->first();
 
-        // Si ya tiene una prueba activa (menos de 16 días), no permitir otra
         if ($dronePayment && now()->diffInDays($dronePayment->created_at) < 16) {
             return redirect()->route('home')->with('error', 'Ya tienes una prueba gratuita activa.');
         }
 
-        // Si ya usó la prueba y pasaron los 16 días, no permitir otra
         if ($dronePayment && now()->diffInDays($dronePayment->created_at) >= 16) {
-            // Cuando detectes que debe ver el required
             $request->session()->put('payment_required', true);
             return redirect()->route('payment.required')->with('error', 'Ya usaste tu prueba gratuita.');
         }
 
-        // Crear el registro de prueba gratuita
         Payment::create([
-            'user_id' => $user->id,
+            'user_id'        => $user->id,
             'transaction_id' => 'trial-' . uniqid(),
-            'status' => 'paid',
-            'amount' => 0,
-            'plan' => 'drone',
+            'status'         => 'paid',
+            'amount'         => 0,
+            'plan'           => 'drone',
         ]);
 
-        // Actualizar campo de vencimiento en tabla users
         $user->fecha_vencimiento = now()->addDays(16);
         $user->save();
 
-        // Enviar correo de activación de prueba
+        // Envío con SDK SendGrid (opcional)
         $htmlContent = View::make('emails.free-trial-activated', ['user' => $user])->render();
-
         $email = new \SendGrid\Mail\Mail();
         $email->setFrom("soporte@bmaia.cl", "B-MaiA - Prueba Gratuita");
         $email->setSubject("¡Prueba gratuita activada en B-MaiA!");
         $email->addTo($user->email, $user->name);
-        $email->addContent(
-            "text/plain",
-            "¡Hola {$user->name}! Tu prueba gratuita ha sido activada por 16 días."
-        );
-        $email->addContent(
-            "text/html",
-            $htmlContent
-        );
+        $email->addContent("text/plain", "¡Hola {$user->name}! Tu prueba gratuita ha sido activada por 16 días.");
+        $email->addContent("text/html", $htmlContent);
 
         $sendgrid = new SendGrid(config('services.sendgrid.api_key'));
         try {
-            $response = $sendgrid->send($email);
+            $sgResp = $sendgrid->send($email);
             \Log::info('SendGrid trial response', [
-                'status' => $response->statusCode(),
-                'body' => $response->body(),
-                'headers' => $response->headers(),
+                'status' => $sgResp->statusCode(),
+                'body'   => $sgResp->body(),
             ]);
         } catch (Exception $e) {
             \Log::error('SendGrid trial error: ' . $e->getMessage());
@@ -186,11 +203,17 @@ class PaymentController extends Controller
 
     public function showSuccess(Request $request)
     {
-        // Solo permite acceso si existe el flag en sesión
         if (!$request->session()->pull('payment_success')) {
             return redirect()->route('home');
         }
-        return view('payment.success');
+
+        $payment = Payment::where('user_id', Auth::id())
+            ->where('status', 'paid')
+            ->latest()
+            ->with('datosFacturacion')
+            ->first();
+
+        return view('payment.success', compact('payment'));
     }
 
     public function showFailed(Request $request)
@@ -200,16 +223,14 @@ class PaymentController extends Controller
         }
         return view('payment.failed');
     }
+
     public function showRequired(Request $request)
     {
         $user = Auth::user();
 
-        // Si el usuario NO tiene plan activo o el plan está vencido, mostrar la vista
         if (!$user->plan || ($user->fecha_vencimiento && now()->greaterThan($user->fecha_vencimiento))) {
             return view('payment.required');
         }
-
-        // Si tiene plan activo, redirigir al HOME
         return redirect()->route('home');
     }
 }
