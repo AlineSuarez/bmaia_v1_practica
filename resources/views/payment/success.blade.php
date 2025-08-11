@@ -9,222 +9,176 @@
     <link rel="stylesheet" href="{{ asset('css/components/home-user/payment/success.css') }}">
 </head>
 <body>
-    <div class="payment-success-container">
-        <div class="container-fluid h-100">
-            <div class="row h-100 justify-content-center align-items-center">
-                <div class="col-lg-8 col-md-10 col-sm-12">
+@php
+    // Helpers locales por si no los cargaste vía autoload
+    if (!function_exists('mask_middle')) {
+        function mask_middle(string $value, int $keepStart = 2, int $keepEnd = 2, string $mask = '*'): string {
+            $value = (string) $value;
+            $len = mb_strlen($value);
+            if ($len <= $keepStart + $keepEnd) return str_repeat($mask, $len);
+            return mb_substr($value, 0, $keepStart)
+                . str_repeat($mask, $len - $keepStart - $keepEnd)
+                . mb_substr($value, -$keepEnd);
+        }
+    }
+    if (!function_exists('mask_email')) {
+        function mask_email(string $email): string {
+            if (!str_contains($email, '@')) return mask_middle($email);
+            [$user, $domain] = explode('@', $email, 2);
+            return mask_middle($user, 1, 1) . '@' . $domain;
+        }
+    }
 
-                    <div class="text-center mb-4">
-                        <div class="success-animation-wrapper mb-4">
-                            <div class="success-circle">
-                                <div class="success-icon">
-                                    <i class="fas fa-check"></i>
-                                </div>
-                            </div>
-                            <div class="success-ring"></div>
-                            <div class="success-ring-2"></div>
-                            <div class="success-ring-3"></div>
-                        </div>
+    // Fallback si por accidente no envían $payment desde el controlador
+    if (!isset($payment)) {
+        $payment = \App\Models\Payment::where('user_id', \Illuminate\Support\Facades\Auth::id())
+            ->where('status', 'paid')
+            ->latest()
+            ->with('datosFacturacion')
+            ->first();
+    }
 
-                        <h1 class="success-title">¡Pago Exitoso!</h1>
-                        <h2 class="success-subtitle">Tu transacción se ha completado correctamente</h2>
-                        <p class="success-description">
-                            ¡Felicidades! Ahora tienes acceso completo a todas las funciones premium de B‑MaiA.
-                        </p>
+    $tokenShort = $payment?->transaction_id
+        ? substr($payment->transaction_id, 0, 4) . '…' . substr($payment->transaction_id, -6)
+        : '—';
+
+    $bs = $payment?->billing_snapshot ?? null;
+    $df = $payment?->datosFacturacion ?? null;
+
+    $razon       = $bs['razon_social']        ?? ($df->razon_social        ?? '—');
+    $rut         = $bs['rut']                  ?? ($df->rut                  ?? '—');
+    $giro        = $bs['giro']                 ?? ($df->giro                 ?? '—');
+    $dir         = $bs['direccion_comercial']  ?? ($df->direccion_comercial  ?? '—');
+    $ciudad      = $bs['ciudad']               ?? ($df->ciudad               ?? '—');
+    $telefono    = $bs['telefono']             ?? ($df->telefono             ?? '—');
+    $correoDte   = $bs['correo_envio_dte']     ?? ($df->correo_envio_dte     ?? '—');
+    $envioDte    = isset($bs['autorizacion_envio_dte'])
+                    ? ($bs['autorizacion_envio_dte'] ? 'Sí' : 'No')
+                    : ($df?->autorizacion_envio_dte ? 'Sí' : 'No');
+@endphp
+
+<div class="payment-success-container py-5">
+    <div class="container">
+        <!-- Encabezado -->
+        <div class="text-center mb-4">
+            <div class="success-animation-wrapper mb-3">
+                <div class="success-circle"><div class="success-icon"><i class="fas fa-check"></i></div></div>
+                <div class="success-ring"></div>
+                <div class="success-ring-2"></div>
+                <div class="success-ring-3"></div>
+            </div>
+            <h1 class="success-title mb-1">¡Pago Exitoso!</h1>
+            <p class="text-muted mb-0">Tu transacción se ha completado correctamente.</p>
+        </div>
+
+        <!-- Detalle compacto -->
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-light"><strong><i class="fas fa-receipt me-2"></i>Detalle de la transacción</strong></div>
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-md-3">
+                        <small class="text-muted d-block">Fecha</small>
+                        <strong>{{ now()->format('d/m/Y H:i') }}</strong>
                     </div>
-
-                    {{-- Detalle de la transacción --}}
-                    <div class="card shadow-sm mb-4">
-                        <div class="card-header d-flex align-items-center">
-                            <i class="fas fa-receipt me-2"></i>
-                            <strong>Detalle de la transacción</strong>
-                        </div>
-                        <div class="card-body">
-                            <div class="row g-3">
-                                <div class="col-md-4">
-                                    <div class="detail-card p-3 border rounded h-100">
-                                        <div class="detail-icon mb-2">
-                                            <i class="fas fa-calendar-check"></i>
-                                        </div>
-                                        <small class="text-muted d-block">Fecha de transacción</small>
-                                        <strong>{{ date('d/m/Y H:i') }}</strong>
-                                    </div>
-                                </div>
-
-                                <div class="col-md-4">
-                                    <div class="detail-card p-3 border rounded h-100">
-                                        <div class="detail-icon mb-2">
-                                            <i class="fas fa-tag"></i>
-                                        </div>
-                                        <small class="text-muted d-block">Plan</small>
-                                        <strong>
-                                            @if(isset($payment))
-                                                {{ strtoupper($payment->plan) }}
-                                            @else
-                                                —
-                                            @endif
-                                        </strong>
-                                    </div>
-                                </div>
-
-                                <div class="col-md-4">
-                                    <div class="detail-card p-3 border rounded h-100">
-                                        <div class="detail-icon mb-2">
-                                            <i class="fas fa-dollar-sign"></i>
-                                        </div>
-                                        <small class="text-muted d-block">Monto</small>
-                                        <strong>
-                                            @if(isset($payment))
-                                                ${{ number_format($payment->amount ?? 0, 0, ',', '.') }} + IVA
-                                            @else
-                                                —
-                                            @endif
-                                        </strong>
-                                    </div>
-                                </div>
-
-                                <div class="col-md-12">
-                                    <div class="detail-card p-3 border rounded">
-                                        <div class="d-flex align-items-center">
-                                            <i class="fas fa-check-circle text-success me-2"></i>
-                                            <small class="text-muted me-2">Estado</small>
-                                            <strong class="text-success">Aprobado</strong>
-                                        </div>
-                                        @if(isset($payment) && $payment->transaction_id)
-                                            <div class="mt-2">
-                                                <small class="text-muted">Token / ID de transacción:</small>
-                                                <code class="d-block">{{ $payment->transaction_id }}</code>
-                                            </div>
-                                        @endif
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                    <div class="col-md-3">
+                        <small class="text-muted d-block">Plan</small>
+                        <strong>{{ strtoupper($payment->plan ?? '—') }}</strong>
                     </div>
-
-                    {{-- Datos de facturación utilizados en el pago --}}
-                    <div class="card shadow-sm mb-4">
-                        <div class="card-header d-flex align-items-center">
-                            <i class="fas fa-building me-2"></i>
-                            <strong>Datos de facturación utilizados</strong>
-                        </div>
-
-                        @php
-                            $bs = isset($payment) ? ($payment->billing_snapshot ?? null) : null;
-                            $df = isset($payment) ? ($payment->datosFacturacion ?? null) : null;
-                        @endphp
-
-                        <div class="card-body">
-                            @if(isset($payment))
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <p class="mb-1"><small class="text-muted">Razón social</small><br>
-                                            <strong>{{ $bs['razon_social'] ?? ($df->razon_social ?? '—') }}</strong>
-                                        </p>
-                                        <p class="mb-1"><small class="text-muted">RUT</small><br>
-                                            <strong>{{ $bs['rut'] ?? ($df->rut ?? '—') }}</strong>
-                                        </p>
-                                        <p class="mb-1"><small class="text-muted">Giro</small><br>
-                                            <span>{{ $bs['giro'] ?? ($df->giro ?? '—') }}</span>
-                                        </p>
-                                        <p class="mb-1"><small class="text-muted">Correo envío DTE</small><br>
-                                            <span>{{ $bs['correo_envio_dte'] ?? ($df->correo_envio_dte ?? '—') }}</span>
-                                        </p>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <p class="mb-1"><small class="text-muted">Dirección comercial</small><br>
-                                            <span>{{ $bs['direccion_comercial'] ?? ($df->direccion_comercial ?? '—') }}</span>
-                                        </p>
-                                        <p class="mb-1"><small class="text-muted">Ciudad</small><br>
-                                            <span>{{ $bs['ciudad'] ?? ($df->ciudad ?? '—') }}</span>
-                                        </p>
-                                        <p class="mb-1"><small class="text-muted">Teléfono</small><br>
-                                            <span>{{ $bs['telefono'] ?? ($df->telefono ?? '—') }}</span>
-                                        </p>
-                                        <p class="mb-1"><small class="text-muted">Autorización envío DTE</small><br>
-                                            @php
-                                                $authDte = $bs['autorizacion_envio_dte'] ?? ($df->autorizacion_envio_dte ?? null);
-                                            @endphp
-                                            <span class="{{ $authDte ? 'text-success' : 'text-muted' }}">
-                                                {{ $authDte ? 'Sí' : 'No' }}
-                                            </span>
-                                        </p>
-                                    </div>
-                                </div>
-                                <small class="text-muted d-block mt-2">
-                                    *Estos son los datos que se usaron al momento del pago (snapshot). Si luego editas tu información, este comprobante no cambia.
-                                </small>
-                            @else
-                                <div class="alert alert-info mb-0">
-                                    No encontramos los detalles del pago en esta vista. Si recargaste o entraste directo,
-                                    vuelve desde el flujo de pago o revisa tu historial.
-                                </div>
-                            @endif
-                        </div>
+                    <div class="col-md-3">
+                        <small class="text-muted d-block">Monto</small>
+                        <strong>${{ number_format($payment->amount ?? 0, 0, ',', '.') }} + IVA</strong>
                     </div>
-
-                    {{-- Siguientes pasos --}}
-                    <div class="card shadow-sm">
-                        <div class="card-header d-flex align-items-center">
-                            <i class="fas fa-shoe-prints me-2"></i>
-                            <strong>¿Qué sigue ahora?</strong>
-                        </div>
-                        <div class="card-body">
-                            <ul class="list-unstyled mb-0">
-                                <li class="mb-2">
-                                    <i class="fas fa-star me-2"></i> Ya puedes acceder a todas las funciones premium.
-                                </li>
-                                <li class="mb-2">
-                                    <i class="fas fa-cog me-2"></i> Revisa tu configuración de cuenta actualizada.
-                                </li>
-                                <li class="mb-0">
-                                    <i class="fas fa-rocket me-2"></i> Explora las nuevas herramientas disponibles.
-                                </li>
-                            </ul>
-
-                            <div class="mt-4 d-flex flex-wrap gap-2">
-                                <a href="{{ route('user.settings') }}" class="btn btn-primary">
-                                    <i class="fas fa-cog me-2"></i> Ir a Configuración
-                                </a>
-                                <a href="{{ route('home') }}" class="btn btn-outline-success">
-                                    <i class="fas fa-home me-2"></i> Volver al Inicio
-                                </a>
-                            </div>
-                        </div>
+                    <div class="col-md-3">
+                        <small class="text-muted d-block">ID transacción</small>
+                        <code>{{ $tokenShort }}</code>
                     </div>
-
-                </div> <!-- /col -->
+                </div>
+                <div class="d-flex align-items-center gap-2 mt-3">
+                    <span class="badge bg-success"><i class="fas fa-check-circle me-1"></i>Aprobado</span>
+                    <small class="text-muted">Gracias por tu compra.</small>
+                </div>
             </div>
         </div>
+
+        <!-- Acordeón: datos de facturación enmascarados -->
+        <div class="accordion mb-4" id="billingAccordion">
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="headingBill">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseBill">
+                        Ver datos de facturación usados (enmascarados)
+                    </button>
+                </h2>
+                <div id="collapseBill" class="accordion-collapse collapse" data-bs-parent="#billingAccordion">
+                    <div class="accordion-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <p class="mb-1"><small class="text-muted">Razón social</small><br><strong>{{ $razon }}</strong></p>
+                                <p class="mb-1"><small class="text-muted">RUT</small><br><span>{{ $rut !== '—' ? mask_middle($rut, 4, 2) : '—' }}</span></p>
+                                <p class="mb-1"><small class="text-muted">Giro</small><br><span>{{ $giro }}</span></p>
+                            </div>
+                            <div class="col-md-6">
+                                <p class="mb-1"><small class="text-muted">Dirección comercial</small><br><span>{{ $dir ? '• • •' : '—' }}</span></p>
+                                <p class="mb-1"><small class="text-muted">Ciudad</small><br><span>{{ $ciudad }}</span></p>
+                                <p class="mb-1"><small class="text-muted">Teléfono</small><br><span>{{ $telefono !== '—' ? mask_middle($telefono, 2, 2) : '—' }}</span></p>
+                                <p class="mb-1"><small class="text-muted">Correo envío DTE</small><br><span>{{ $correoDte !== '—' ? mask_email($correoDte) : '—' }}</span></p>
+                                <p class="mb-0"><small class="text-muted">Autorización envío DTE</small><br><span>{{ $envioDte }}</span></p>
+                            </div>
+                        </div>
+                        <small class="text-muted d-block mt-3">
+                            *Este es un snapshot de tus datos al momento del pago. Para modificarlos, ve a
+                            <a href="{{ route('user.settings') }}#billing">Configuración &gt; Datos de facturación</a>.
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Qué sigue -->
+        <div class="card mb-4 shadow-sm">
+            <div class="card-header bg-light"><strong><i class="fas fa-list-check me-2"></i>¿Qué sigue ahora?</strong></div>
+            <div class="card-body">
+                <ul class="mb-0">
+                    <li>Ya tienes acceso a todas las funciones premium.</li>
+                    <li>Revisa tu configuración de cuenta actualizada.</li>
+                    <li>Explora las nuevas herramientas disponibles.</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Acciones -->
+        <div class="d-flex gap-2 justify-content-center">
+            <a href="{{ route('user.settings') }}" class="btn btn-primary btn-lg">
+                <i class="fas fa-cog me-2"></i>Ir a Configuración
+            </a>
+            <a href="{{ route('home') }}" class="btn btn-outline-success btn-lg">
+                <i class="fas fa-home me-2"></i>Volver al Inicio
+            </a>
+        </div>
     </div>
+</div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const successCircle = document.querySelector('.success-circle');
-            if (successCircle) {
-                successCircle.addEventListener('click', function() {
-                    createConfettiBurst();
-                });
-            }
-            setTimeout(createConfettiBurst, 1200);
-        });
-
-        function createConfettiBurst() {
-            const container = document.querySelector('.confetti-container');
-            if (!container) return;
-
-            for (let i = 0; i < 15; i++) {
-                const confetti = document.createElement('div');
-                confetti.className = 'confetti';
-                confetti.style.left = Math.random() * 100 + '%';
-                confetti.style.background = Math.random() > 0.5 ? '#28a745' : '#ffd700';
-                confetti.style.animationDelay = Math.random() * 2 + 's';
-                confetti.style.animationDuration = (Math.random() * 2 + 2) + 's';
-                container.appendChild(confetti);
-                setTimeout(() => confetti.remove(), 4000);
-            }
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const successCircle = document.querySelector('.success-circle');
+    if (successCircle) {
+        successCircle.addEventListener('click', createConfettiBurst);
+        setTimeout(createConfettiBurst, 1200);
+    }
+    function createConfettiBurst() {
+        const container = document.querySelector('.payment-success-container');
+        if (!container) return;
+        for (let i = 0; i < 14; i++) {
+            const c = document.createElement('div');
+            c.className = 'confetti';
+            c.style.left = Math.random() * 100 + '%';
+            c.style.animationDelay = Math.random() * 1.2 + 's';
+            c.style.animationDuration = (Math.random() * 1.2 + 1.6) + 's';
+            container.appendChild(c);
+            setTimeout(() => c.remove(), 2600);
         }
-    </script>
+    }
+});
+</script>
 </body>
 </html>
