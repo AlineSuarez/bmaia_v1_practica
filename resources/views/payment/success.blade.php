@@ -90,6 +90,12 @@
                                             <small class="text-muted me-2">Estado</small>
                                             <strong class="text-success">Aprobado</strong>
                                         </div>
+                                        @if(isset($payment) && $payment->transaction_id)
+                                            <div class="mt-2">
+                                                <small class="text-muted">Token / ID de transacción:</small>
+                                                <code class="d-block">{{ $payment->transaction_id }}</code>
+                                            </div>
+                                        @endif
                                     </div>
                                 </div>
                             </div>
