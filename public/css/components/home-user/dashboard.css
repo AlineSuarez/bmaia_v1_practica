@@ -1619,7 +1619,6 @@
     border-radius: var(--radius-lg);
     box-shadow: var(--shadow-md), 0 0 0 1px rgba(0, 0, 0, 0.05);
     transition: all var(--transition-normal);
-    border-left: 4px solid var(--honey-darker);
     position: relative;
     overflow: hidden;
 }
@@ -3307,6 +3306,7 @@
     transition: filter 180ms;
 }
 
-#dashboard-container #weather-date-picker:hover::-webkit-calendar-picker-indicator {
+#dashboard-container
+    #weather-date-picker:hover::-webkit-calendar-picker-indicator {
     filter: brightness(1.5) drop-shadow(0 0 2px var(--honey-darkest));
 }

@@ -120,6 +120,55 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/home', [DashboardController::class, 'home'])->name('home');
 });
 
+Route::middleware(['auth'])->group(function () {
+    Route::get('/user/settings', [UserController::class, 'settings'])->name('user.settings');
+    Route::patch('/user/update-name', [UserController::class, 'updateName'])->name('user.update.name');
+    Route::post('/user/avatar', [UserController::class, 'updateAvatar'])->name('user.updateAvatar');
+    Route::patch('/user/update-password', [UserController::class, 'updatePassword'])->name('user.update.password');
+    Route::post('/user/update-settings', [UserController::class, 'updateSettings'])->name('user.updateSettings');
+    Route::post('/user/update-plan', [UserController::class, 'updatePlan'])->name('user.updatePlan');
+
+    // Permisos
+    Route::get('/user/settings/permissions', [PermissionsController::class, 'index'])->name('permissions.index');
+    Route::post('/user/settings/permissions', [PermissionsController::class, 'update'])->name('permissions.update');
+    Route::post('/user/settings/permissions/reset', [PermissionsController::class, 'reset'])->name('permissions.reset');
+
+    // Preferencias
+    Route::get('/user/settings/preferences', [PreferencesController::class, 'index'])->name('preferences.index');
+    Route::post('/user/settings/preferences', [PreferencesController::class, 'update'])->name('preferences.update');
+    Route::post('/user/settings/preferences/reset', [PreferencesController::class, 'reset'])->name('preferences.reset');
+    Route::get('/user/settings/preferences/demo', [PreferencesController::class, 'dateFormatDemo'])->name('preferences.demo');
+    Route::post('/user/settings/preferences/date-format', [PreferencesController::class, 'updateDateFormat'])->name('preferences.updateDateFormat');
+
+    // Alertas
+    Route::get('/user/settings/alerts', [AlertController::class, 'index'])->name('alerts.index');
+    Route::post('/user/settings/alerts', [AlertController::class, 'store'])->name('alerts.store');
+    Route::put('/user/settings/alerts/{alert}', [AlertController::class, 'update'])->name('alerts.update');
+    Route::delete('/user/settings/alerts/{alert}', [AlertController::class, 'destroy'])->name('alerts.destroy');
+
+    // Recordatorios
+    Route::get('/user/settings/reminders', [ReminderController::class, 'index'])->name('reminders.index');
+    Route::post('/user/settings/reminders', [ReminderController::class, 'store'])->name('reminders.store');
+    Route::put('/user/settings/reminders/{reminder}', [ReminderController::class, 'update'])->name('reminders.update');
+    Route::delete('/user/settings/reminders/{reminder}', [ReminderController::class, 'destroy'])->name('reminders.destroy');
+
+    // Fechas importantes
+    Route::get('/user/settings/dates', [ImportantDateController::class, 'index'])->name('dates.index');
+    Route::post('/user/settings/dates', [ImportantDateController::class, 'store'])->name('dates.store');
+    Route::put('/user/settings/dates/{date}', [ImportantDateController::class, 'update'])->name('dates.update');
+    Route::delete('/user/settings/dates/{date}', [ImportantDateController::class, 'destroy'])->name('dates.destroy');
+
+    // Contactos de emergencia
+    Route::get('/user/settings/contacts', [EmergencyContactController::class, 'index'])->name('contacts.index');
+    Route::post('/user/settings/contacts', [EmergencyContactController::class, 'store'])->name('contacts.store');
+    Route::put('/user/settings/contacts/{contact}', [EmergencyContactController::class, 'update'])->name('contacts.update');
+    Route::delete('/user/settings/contacts/{contact}', [EmergencyContactController::class, 'destroy'])->name('contacts.destroy');
+
+    // FACTURACION
+    Route::post('user/datos-facturacion', [DatoFacturacionController::class, 'store'])->name('datos-facturacion.store');
+    Route::post('/facturas/{factura}/enviar-correo', [DatoFacturacionController::class, 'enviarCorreo'])->name('facturas.enviarCorreo');
+});
+
 // ================================
 // RUTAS PROTEGIDAS POR SISTEMA DE PAGO
 // ================================
@@ -245,30 +294,6 @@ Route::middleware(['auth', 'check.payment'])->group(function () {
     // Zonificación
     Route::get('/zonificacion', [ZonificacionController::class, 'index'])->name('zonificacion');
 
-    // Usuarios y configuraciones
-    Route::get('/user/settings', [UserController::class, 'settings'])->name('user.settings');
-    Route::patch('/user/update-name', [UserController::class, 'updateName'])->name('user.update.name');
-    Route::post('/user/avatar', [UserController::class, 'updateAvatar'])->name('user.updateAvatar');
-    Route::patch('/user/update-password', [UserController::class, 'updatePassword'])->name('user.update.password');
-    Route::post('/user/update-settings', [UserController::class, 'updateSettings'])->name('user.updateSettings');
-    Route::post('/user/update-plan', [UserController::class, 'updatePlan'])->name('user.updatePlan');
-
-    // FACTURACION
-    Route::post('user/datos-facturacion', [DatoFacturacionController::class, 'store'])->name('datos-facturacion.store');
-    Route::post('/facturas/{factura}/enviar-correo', [DatoFacturacionController::class, 'enviarCorreo'])->name('facturas.enviarCorreo');
-
-    // Permisos
-    Route::get('/user/settings/permissions', [PermissionsController::class, 'index'])->name('permissions.index');
-    Route::post('/user/settings/permissions', [PermissionsController::class, 'update'])->name('permissions.update');
-    Route::post('/user/settings/permissions/reset', [PermissionsController::class, 'reset'])->name('permissions.reset');
-
-    // Preferencias
-    Route::get('/user/settings/preferences', [PreferencesController::class, 'index'])->name('preferences.index');
-    Route::post('/user/settings/preferences', [PreferencesController::class, 'update'])->name('preferences.update');
-    Route::post('/user/settings/preferences/reset', [PreferencesController::class, 'reset'])->name('preferences.reset');
-    Route::get('/user/settings/preferences/demo', [PreferencesController::class, 'dateFormatDemo'])->name('preferences.demo');
-    Route::post('/user/settings/preferences/date-format', [PreferencesController::class, 'updateDateFormat'])->name('preferences.updateDateFormat');
-
     Route::get('/debug-date', function () {
         return [
             'auth_user' => Auth::check() ? Auth::user()->email : 'no user',
@@ -280,31 +305,6 @@ Route::middleware(['auth', 'check.payment'])->group(function () {
     Route::get('/test-lang', function () {
         return view('apiarios.test-lang');
     });
-
-    // UTILIDADES
-    // Alertas
-    Route::get('/user/settings/alerts', [AlertController::class, 'index'])->name('alerts.index');
-    Route::post('/user/settings/alerts', [AlertController::class, 'store'])->name('alerts.store');
-    Route::put('/user/settings/alerts/{alert}', [AlertController::class, 'update'])->name('alerts.update');
-    Route::delete('/user/settings/alerts/{alert}', [AlertController::class, 'destroy'])->name('alerts.destroy');
-
-    // Recordatorios
-    Route::get('/user/settings/reminders', [ReminderController::class, 'index'])->name('reminders.index');
-    Route::post('/user/settings/reminders', [ReminderController::class, 'store'])->name('reminders.store');
-    Route::put('/user/settings/reminders/{reminder}', [ReminderController::class, 'update'])->name('reminders.update');
-    Route::delete('/user/settings/reminders/{reminder}', [ReminderController::class, 'destroy'])->name('reminders.destroy');
-
-    // Fechas importantes
-    Route::get('/user/settings/dates', [ImportantDateController::class, 'index'])->name('dates.index');
-    Route::post('/user/settings/dates', [ImportantDateController::class, 'store'])->name('dates.store');
-    Route::put('/user/settings/dates/{date}', [ImportantDateController::class, 'update'])->name('dates.update');
-    Route::delete('/user/settings/dates/{date}', [ImportantDateController::class, 'destroy'])->name('dates.destroy');
-
-    // Contactos de emergencia
-    Route::get('/user/settings/contacts', [EmergencyContactController::class, 'index'])->name('contacts.index');
-    Route::post('/user/settings/contacts', [EmergencyContactController::class, 'store'])->name('contacts.store');
-    Route::put('/user/settings/contacts/{contact}', [EmergencyContactController::class, 'update'])->name('contacts.update');
-    Route::delete('/user/settings/contacts/{contact}', [EmergencyContactController::class, 'destroy'])->name('contacts.destroy');
 
     // Sistema Experto
     Route::prefix('sistemaexperto')->name('sistemaexperto.')->group(function () {

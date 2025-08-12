@@ -100,7 +100,6 @@
                 </form>
             </div>
         </div>
-
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
@@ -122,40 +121,6 @@
         $secret = 'c8d90s0wkuati88jobrhewy4g8v3dcf3';
         $userHash = $userId ? hash_hmac('sha256', $userId, $secret) : null;
     @endphp
-
-    <!-- Chatbase Chatbot Widget personalizado por usuario -->
-    <script>
-        window.chatbaseConfig = {
-            chatbotId: "LcCXt7l5ZbEmxA9bAiPjd",
-            @if($userId)
-                userId: "{{ $userId }}",
-                userHash: "{{ $userHash }}",
-            @endif
-        };
-        (function () {
-            if (!window.chatbase || window.chatbase("getState") !== "initialized") {
-                window.chatbase = (...arguments) => {
-                    if (!window.chatbase.q) { window.chatbase.q = [] }
-                    window.chatbase.q.push(arguments)
-                };
-                window.chatbase = new Proxy(window.chatbase, {
-                    get(target, prop) {
-                        if (prop === "q") { return target.q }
-                        return (...args) => target(prop, ...args)
-                    }
-                })
-            }
-            const onLoad = function () {
-                const script = document.createElement("script");
-                script.src = "https://www.chatbase.co/embed.min.js";
-                script.id = "LcCXt7l5ZbEmxA9bAiPjd";
-                script.domain = "www.chatbase.co";
-                document.body.appendChild(script)
-            };
-            if (document.readyState === "complete") { onLoad() }
-            else { window.addEventListener("load", onLoad) }
-        })();
-    </script>
 </body>
 
 </html>

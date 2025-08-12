@@ -333,7 +333,7 @@ function paginateApiaries(
     let currentPage = initialPage;
     const totalPages = Math.ceil(cards.length / cardsPerPage);
 
-    function showPage(page) {
+    function showPage(page, scrollTo = false) {
         currentPage = page;
         cards.forEach((card, idx) => {
             if (idx >= (page - 1) * cardsPerPage && idx < page * cardsPerPage) {
@@ -349,8 +349,8 @@ function paginateApiaries(
         renderPagination();
         if (tabName) setCurrentPage(tabName, currentPage);
 
-        // --- Mantener el scroll en la posición del contenedor ---
-        if (container) {
+        // Solo hacer scroll si se indica explícitamente
+        if (container && scrollTo) {
             container.scrollIntoView({ behavior: "smooth", block: "start" });
         }
     }
@@ -379,11 +379,12 @@ function paginateApiaries(
         pagination.innerHTML = html;
 
         pagination.querySelectorAll(".page-btn").forEach((btn) => {
-            btn.onclick = () => showPage(Number(btn.getAttribute("data-page")));
+            btn.onclick = () =>
+                showPage(Number(btn.getAttribute("data-page")), true); // Solo aquí scroll
         });
     }
 
-    showPage(currentPage);
+    showPage(currentPage, false); // No hacer scroll al inicializar
 }
 
 // Configuración al cargar el documento

@@ -310,10 +310,6 @@ document.addEventListener("DOMContentLoaded", () => {
               }
           }
           
-          .apiario-navbar-logo {
-              animation: apiario-float 6s ease-in-out infinite;
-          }
-          
           .apiario-user-avatar-container {
               animation: apiario-pulse 3s infinite;
               border-radius: 50% !important; /* Forzar forma circular */

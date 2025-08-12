@@ -84,7 +84,7 @@
                     <div class="input-wrapper">
                         <input id="email" type="email" class="form-input @error('email') is-invalid @enderror"
                             name="email" value="{{ old('email') }}" required autocomplete="email" autofocus
-                            placeholder="tu@email.com">
+                            placeholder="Correo electrónico">
                     </div>
                     @error('email')
                         <div class="invalid-feedback">

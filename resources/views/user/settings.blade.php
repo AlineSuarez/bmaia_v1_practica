@@ -342,7 +342,7 @@
                             </div>
 
                             <div class="form-actions mt-4">
-                                <button type="submit" class="btn btn-primary">Guardar Datos de Facturación</button>
+                                <button type="submit" class="btn btn-primary">Guardar Datos</button>
                                 <button type="reset" class="btn btn-outline-secondary ms-2">Restablecer</button>
                             </div>
                         </form>

@@ -1756,7 +1756,13 @@ document.addEventListener("DOMContentLoaded", function () {
                 } else {
                     restoreScrollPosition(savedTabId);
                 }
+                return;
             }
+        }
+        // Si no hay pestaña guardada o no existe, activar la primera pestaña
+        const firstTabBtn = document.querySelector('[data-bs-toggle="tab"]');
+        if (firstTabBtn) {
+            firstTabBtn.click();
         }
     }
 

@@ -48,7 +48,8 @@
         </div>
         <div class="stat-info">
         <span class="stat-label">Hoy</span>
-        <span class="stat-value">{{ date('d M, Y') }}</span>
+        <span
+          class="stat-value">{{ ucfirst(\Carbon\Carbon::now()->locale('es_CL')->translatedFormat('d \d\e F')) }}</span>
         </div>
       </div>
       <div class="quick-stat">

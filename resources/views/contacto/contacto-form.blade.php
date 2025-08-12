@@ -58,7 +58,7 @@
                             <div class="form-group">
                                 <label for="email">Correo electrónico <span class="req">*</span></label>
                                 <input type="email" name="email" id="email" value="{{ old('email') }}" required
-                                    maxlength="160" placeholder="tu@correo.com" inputmode="email">
+                                    maxlength="160" placeholder="Correo electrónico" inputmode="email">
                                 @error('email')<div class="invalid-feedback">{{ $message }}</div>@enderror
                             </div>
 
