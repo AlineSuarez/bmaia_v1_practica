@@ -110,47 +110,78 @@ class PaymentController extends Controller
     public function paymentResponse(Request $request)
     {
         $this->configureWebpay();
-
+        // 1) Debe venir token_ws; si no, fallo
+        if (!$request->has('token_ws')) {
+            \Log::warning('[TBK] Sin token_ws -> FAILED');
+            $request->session()->put('payment_failed', true);
+            $request->session()->put('payment_token', null);
+            return redirect()->route('payment.failed')->with('error', 'La transacción fue rechazada o cancelada por el usuario.');
+        }
         $token = $request->input('token_ws');
-        $request->session()->put('payment_token', $token); 
+        $request->session()->put('payment_token', $token); // guardar token para mostrar en vistas
+        // 2) Commit en Transbank *************
         try {
-            $response = (new Transaction())->commit($token);
+            $tx = (new Transaction())->commit($token);
         } catch (Exception $e) {
             \Log::error('Error al procesar la transacción: ' . $e->getMessage());
             $request->session()->put('payment_failed', true);
             return redirect()->route('payment.failed')->with('error', 'Error al procesar la transacción');
         }
+
         $payment = Payment::where('transaction_id', $token)->first();
         if (!$payment) {
             \Log::error('No se encontró el pago para el token: ' . $token);
             $request->session()->put('payment_failed', true);
             return redirect()->route('payment.failed')->with('error', 'No se encontró el pago asociado.');
         }
-        if (!$response->isApproved()) {
+
+        // === Validar respuesta Transbank ===
+        $responseCode = $tx->getResponseCode();
+        $status       = strtoupper($tx->getStatus());
+        $paymentType  = strtoupper($tx->getPaymentTypeCode()); // VN, VC, VD, VP, etc.
+
+        // Tipos de pago de crédito permitidos
+        $allowedCreditTypes = ['VN', 'VC', 'SI', 'S2', 'S3', 'NC', 'ND'];
+        $isCredit           = in_array($paymentType, $allowedCreditTypes);
+
+        // Rechazar si no es aprobado o si es débito/prepago
+        if ($responseCode !== 0 || $status !== 'AUTHORIZED' || !$isCredit) {
             $payment->update(['status' => 'failed']);
             $request->session()->put('payment_failed', true);
-            return redirect()->route('payment.failed');
+
+            \Log::info('Pago rechazado por política interna o banco.', [
+                'responseCode' => $responseCode,
+                'status'       => $status,
+                'paymentType'  => $paymentType
+            ]);
+
+            return redirect()->route('payment.failed')->with('error', 'El pago fue rechazado.');
         }
+
         // === Pago aprobado ===
         $payment->update(['status' => 'paid']);
         $user = User::find(Auth::id());
+
         if (!$user) {
             \Log::error('Usuario no encontrado para el pago aprobado.');
             $request->session()->put('payment_failed', true);
             return redirect()->route('payment.failed')->with('error', 'Usuario no encontrado.');
         }
+
         // Actualiza plan del usuario (anual)
         $plan = $payment->plan;
         $user->plan = $plan;
         $user->fecha_vencimiento = now()->addYear();
         $user->webpay_status = 'pagado';
         $user->save();
-        // === Crear Factura (emitida internamente) ===
+
+        // === Crear Factura ===
         try {
             $montoNeto = (int) $payment->amount;
             $porcIva   = 19;
             $montoIva  = (int) round($montoNeto * ($porcIva / 100));
             $montoTot  = $montoNeto + $montoIva;
+
             $billingSnapshot = $payment->billing_snapshot ?? [];
             $df = $payment->datosFacturacion()->first();
 
@@ -170,24 +201,24 @@ class PaymentController extends Controller
                 ];
             }
 
-            // === Generar número correlativo interno ===
+            // Número de factura
             $numeroFactura = now()->format('Ymd') . '-' . strtoupper(Str::random(4));
 
-            // === Generar PDF ===
+            // Generar PDF
             $facturaPdf = Pdf::loadView('pdfs.factura-oficial', [
-                'user'    => $user,
-                'payment' => $payment,
-                'montoNeto' => $montoNeto,
-                'montoIva'  => $montoIva,
-                'montoTotal'=> $montoTot,
-                'numero'    => $numeroFactura,
-                'snapshot'  => $billingSnapshot,
+                'user'       => $user,
+                'payment'    => $payment,
+                'montoNeto'  => $montoNeto,
+                'montoIva'   => $montoIva,
+                'montoTotal' => $montoTot,
+                'numero'     => $numeroFactura,
+                'snapshot'   => $billingSnapshot,
             ]);
 
             $pdfFilename = 'facturas/' . $user->id . '/' . $numeroFactura . '.pdf';
             Storage::disk('local')->put($pdfFilename, $facturaPdf->output());
 
-            // === Guardar factura ===
+            // Guardar en BD
             $factura = \App\Models\Factura::create([
                 'user_id'                    => $user->id,
                 'payment_id'                 => $payment->id,
@@ -203,19 +234,19 @@ class PaymentController extends Controller
                 'fecha_emision'              => now(),
                 'fecha_vencimiento'          => now()->addDays(30),
                 'pdf_path'                   => $pdfFilename,
-                'xml_path'                   => null, // si lo generas en futuro
+                'xml_path'                   => null,
                 'pdf_url'                    => null,
                 'xml_url'                    => null,
                 'datos_facturacion_snapshot' => $billingSnapshot,
                 'plan'                       => $plan,
             ]);
 
-            // Enviar por correo (si autorizado)
+            // Enviar correo si está autorizado
             if ($df && $df->autorizacion_envio_dte) {
                 Mail::to($df->correo_envio_dte)->queue(new \App\Mail\FacturaGeneradaMail($factura));
             }
 
-            \Log::info('Factura completa creada', ['factura_id' => $factura->id]);
+            \Log::info('Factura creada correctamente', ['factura_id' => $factura->id]);
         } catch (\Throwable $tx) {
             \Log::error('Error al generar factura tras el pago: ' . $tx->getMessage());
         }
@@ -223,6 +254,7 @@ class PaymentController extends Controller
         $request->session()->put('payment_success', true);
         return redirect()->route('payment.success');
     }
+
 
     public function startTrial(Request $request)
     {
