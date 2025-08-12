@@ -105,8 +105,13 @@ Route::middleware(['auth'])->group(function () {
 });
 
 Route::get('/payment/success', [PaymentController::class, 'showSuccess'])->name('payment.success');
-Route::get('/payment/failed', [PaymentController::class, 'showFailed'])->name('payment.failed');
+//Route::match(['get', 'post'], '/payment/failed', [PaymentController::class, 'showFailed'])->name('payment.failed');
+
 Route::get('/payment/required', [PaymentController::class, 'showRequired'])->name('payment.required');
+Route::get('/payment/failed',  [PaymentController::class, 'showFailed'])->name('payment.failed');
+Route::post('/payment/failed', [PaymentController::class, 'showFailed']);
+
+
 
 Route::middleware(['auth'])->group(function () {
     Route::post('/payment/initiate', [PaymentController::class, 'initiatePayment'])->name('payment.initiate');

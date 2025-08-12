@@ -48,6 +48,30 @@
                             </div>
                         @endif
 
+                        @if(isset($idSesion))
+                            <div class="mt-2">
+                                <p class="text-muted small">ID de Sesión:</p>
+                                <code class="text-primary">{{ $idSesion }}</code>
+                            </div>
+                        @endif
+
+                        @if(isset($ordenCompra))
+                            <div class="mt-2">
+                                <p class="text-muted small">Orden de Compra:</p>
+                                <code class="text-success">{{ $ordenCompra }}</code>
+                            </div>
+                        @endif
+
+
+                        @if(session('tbk_debug'))
+                            @php $d = session('tbk_debug'); @endphp
+                            <div class="mt-3 small text-muted">
+                                <div>responseCode: <code>{{ $d['responseCode'] }}</code></div>
+                                <div>status:       <code>{{ $d['status'] }}</code></div>
+                                <div>paymentType:  <code>{{ $d['paymentType'] }}</code></div>
+                            </div>
+                        @endif
+
 
                         <!-- Action Buttons -->
                         <div class="action-buttons mt-4">

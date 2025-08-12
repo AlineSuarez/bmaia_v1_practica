@@ -110,72 +110,108 @@ class PaymentController extends Controller
     public function paymentResponse(Request $request)
     {
         $this->configureWebpay();
-        // 1) Debe venir token_ws; si no, fallo
-        if (!$request->has('token_ws')) {
-            \Log::warning('[TBK] Sin token_ws -> FAILED');
+
+        /* =========================
+        * 1) CANCELACIÓN / ANULACIÓN (flujo TBK)
+        *    TBK envía TBK_TOKEN, TBK_ID_SESION, TBK_ORDEN_COMPRA
+        *    ¡NO llamar commit() aquí!
+        * ========================= */
+        if ($request->has('TBK_TOKEN')) {
+            $tbkToken      = $request->input('TBK_TOKEN');
+            $tbkIdSesion   = $request->input('TBK_ID_SESION');
+            $tbkOrdenCompra= $request->input('TBK_ORDEN_COMPRA');
+
+            // Guarda en sesión para mostrarlos en failed.blade
             $request->session()->put('payment_failed', true);
-            $request->session()->put('payment_token', null);
-            return redirect()->route('payment.failed')->with('error', 'La transacción fue rechazada o cancelada por el usuario.');
-        }
-        $token = $request->input('token_ws');
-        $request->session()->put('payment_token', $token); // guardar token para mostrar en vistas
-        // 2) Commit en Transbank *************
-        try {
-            $tx = (new Transaction())->commit($token);
-        } catch (Exception $e) {
-            \Log::error('Error al procesar la transacción: ' . $e->getMessage());
-            $request->session()->put('payment_failed', true);
-            return redirect()->route('payment.failed')->with('error', 'Error al procesar la transacción');
+            $request->session()->put('payment_token', $tbkToken);
+            $request->session()->put('TBK_ID_SESION', $tbkIdSesion);
+            $request->session()->put('TBK_ORDEN_COMPRA', $tbkOrdenCompra);
+
+            \Log::info('[TBK] Cancelación/anulación recibida', [
+                'TBK_TOKEN'        => $tbkToken,
+                'TBK_ID_SESION'    => $tbkIdSesion,
+                'TBK_ORDEN_COMPRA' => $tbkOrdenCompra,
+            ]);
+
+            return redirect()->route('payment.failed')
+                ->with('error', 'La compra fue anulada desde el formulario de Transbank.');
         }
 
-        $payment = Payment::where('transaction_id', $token)->first();
+        /* =========================
+        * 2) TRANSACCIÓN NORMAL (token_ws)
+        * ========================= */
+        if (!$request->has('token_ws')) {
+            \Log::warning('[TBK] Sin token_ws ni TBK_TOKEN -> FAILED');
+            $request->session()->put('payment_failed', true);
+            $request->session()->put('payment_token', null);
+            return redirect()->route('payment.failed')
+                ->with('error', 'No se recibió token de Transbank.');
+        }
+
+        $token = $request->input('token_ws');
+        $request->session()->put('payment_token', $token); // para mostrar en vistas
+
+        // Commit en Transbank
+        try {
+            $tx = (new Transaction())->commit($token);
+        } catch (\Throwable $e) {
+            \Log::error('[TBK] commit() exception: '.$e->getMessage());
+            $request->session()->put('payment_failed', true);
+            return redirect()->route('payment.failed')->with('error', 'Error al procesar la transacción.');
+        }
+
+        // Buscar el Payment por token
+        $payment =Payment::where('transaction_id', $token)->first();
         if (!$payment) {
-            \Log::error('No se encontró el pago para el token: ' . $token);
+            \Log::error('[TBK] No se encontró Payment para token: '.$token);
             $request->session()->put('payment_failed', true);
             return redirect()->route('payment.failed')->with('error', 'No se encontró el pago asociado.');
         }
 
-        // === Validar respuesta Transbank ===
-        $responseCode = $tx->getResponseCode();
-        $status       = strtoupper($tx->getStatus());
-        $paymentType  = strtoupper($tx->getPaymentTypeCode()); // VN, VC, VD, VP, etc.
+        // Evaluación estricta: SOLO crédito permitido
+        $responseCode = method_exists($tx,'getResponseCode') ? $tx->getResponseCode() : null;
+        $status       = strtoupper(method_exists($tx,'getStatus') ? $tx->getStatus() : '');
+        $paymentType  = strtoupper(method_exists($tx,'getPaymentTypeCode') ? $tx->getPaymentTypeCode() : '');
 
-        // Tipos de pago de crédito permitidos
-        $allowedCreditTypes = ['VN', 'VC', 'SI', 'S2', 'S3', 'NC', 'ND'];
-        $isCredit           = in_array($paymentType, $allowedCreditTypes);
+        $allowedCreditTypes = ['VN','VC','SI','S2','S3','NC','ND']; // crédito
+        $isCredit           = in_array($paymentType, $allowedCreditTypes, true);
 
-        // Rechazar si no es aprobado o si es débito/prepago
+        \Log::info('[TBK] Resultado commit', compact('responseCode','status','paymentType'));
+
         if ($responseCode !== 0 || $status !== 'AUTHORIZED' || !$isCredit) {
+            // Rechazo (incluye VD / VP)
             $payment->update(['status' => 'failed']);
             $request->session()->put('payment_failed', true);
 
-            \Log::info('Pago rechazado por política interna o banco.', [
+            // (opcional) datos para depurar en la vista
+            session()->flash('tbk_debug', [
                 'responseCode' => $responseCode,
                 'status'       => $status,
-                'paymentType'  => $paymentType
+                'paymentType'  => $paymentType,
             ]);
 
-            return redirect()->route('payment.failed')->with('error', 'El pago fue rechazado.');
+            return redirect()->route('payment.failed')
+                ->with('error', 'El pago fue rechazado.');
         }
 
         // === Pago aprobado ===
         $payment->update(['status' => 'paid']);
-        $user = User::find(Auth::id());
 
+        /** @var \App\Models\User $user */
+        $user = $payment->user ?? User::find(Auth::id());
         if (!$user) {
-            \Log::error('Usuario no encontrado para el pago aprobado.');
+            \Log::error('[TBK] Usuario no encontrado para pago aprobado (payment_id='.$payment->id.')');
             $request->session()->put('payment_failed', true);
             return redirect()->route('payment.failed')->with('error', 'Usuario no encontrado.');
         }
 
-        // Actualiza plan del usuario (anual)
         $plan = $payment->plan;
         $user->plan = $plan;
         $user->fecha_vencimiento = now()->addYear();
         $user->webpay_status = 'pagado';
         $user->save();
 
-        // === Crear Factura ===
+        // === Crear factura + PDF (igual que tenías) ===
         try {
             $montoNeto = (int) $payment->amount;
             $porcIva   = 19;
@@ -201,24 +237,21 @@ class PaymentController extends Controller
                 ];
             }
 
-            // Número de factura
             $numeroFactura = now()->format('Ymd') . '-' . strtoupper(Str::random(4));
 
-            // Generar PDF
             $facturaPdf = Pdf::loadView('pdfs.factura-oficial', [
-                'user'       => $user,
-                'payment'    => $payment,
-                'montoNeto'  => $montoNeto,
-                'montoIva'   => $montoIva,
-                'montoTotal' => $montoTot,
-                'numero'     => $numeroFactura,
-                'snapshot'   => $billingSnapshot,
+                'user'        => $user,
+                'payment'     => $payment,
+                'montoNeto'   => $montoNeto,
+                'montoIva'    => $montoIva,
+                'montoTotal'  => $montoTot,
+                'numero'      => $numeroFactura,
+                'snapshot'    => $billingSnapshot,
             ]);
 
             $pdfFilename = 'facturas/' . $user->id . '/' . $numeroFactura . '.pdf';
             Storage::disk('local')->put($pdfFilename, $facturaPdf->output());
 
-            // Guardar en BD
             $factura = \App\Models\Factura::create([
                 'user_id'                    => $user->id,
                 'payment_id'                 => $payment->id,
@@ -241,19 +274,21 @@ class PaymentController extends Controller
                 'plan'                       => $plan,
             ]);
 
-            // Enviar correo si está autorizado
             if ($df && $df->autorizacion_envio_dte) {
-                Mail::to($df->correo_envio_dte)->queue(new \App\Mail\FacturaGeneradaMail($factura));
+                Mail::to($df->correo_envio_dte)
+                    ->queue(new \App\Mail\FacturaGeneradaMail($factura));
             }
 
-            \Log::info('Factura creada correctamente', ['factura_id' => $factura->id]);
+            \Log::info('[TBK] Factura creada', ['factura_id' => $factura->id, 'payment_id' => $payment->id]);
         } catch (\Throwable $tx) {
             \Log::error('Error al generar factura tras el pago: ' . $tx->getMessage());
+            // No bloqueamos el success del pago si la factura falla.
         }
 
         $request->session()->put('payment_success', true);
         return redirect()->route('payment.success');
-    }
+}
+
 
 
     public function startTrial(Request $request)
@@ -334,11 +369,21 @@ class PaymentController extends Controller
 
     public function showFailed(Request $request)
     {
-        if (!$request->session()->pull('payment_failed')) {
+        if ($request->isMethod('post')) {
+            // Guardar en sesión
+            $request->session()->put('payment_token',       $request->input('TBK_TOKEN'));
+            $request->session()->put('payment_idSesion',    $request->input('TBK_ID_SESION'));
+            $request->session()->put('payment_ordenCompra', $request->input('TBK_ORDEN_COMPRA'));
+            $request->session()->put('payment_failed', true);
+        }
+        if (!$request->session()->get('payment_failed')) {
             return redirect()->route('home');
         }
-        $token = $request->session()->pull('payment_token');
-        return view('payment.failed', compact('token'));
+        $token       = $request->session()->get('payment_token');
+        $idSesion    = $request->session()->get('payment_idSesion');
+        $ordenCompra = $request->session()->get('payment_ordenCompra');
+
+        return view('payment.failed', compact('token', 'idSesion', 'ordenCompra'));
     }
 
     public function showRequired(Request $request)
