@@ -41,6 +41,14 @@
                             </div>
                         @endif
 
+                        @if(isset($token) && $token)
+                            <div class="mt-4">
+                                <p class="text-muted small">Token de la transacción:</p>
+                                <code class="text-danger">{{ $token }}</code>
+                            </div>
+                        @endif
+
+
                         <!-- Action Buttons -->
                         <div class="action-buttons mt-4">
                             <a href="{{ route('home') }}" class="btn btn-outline-secondary btn-lg">

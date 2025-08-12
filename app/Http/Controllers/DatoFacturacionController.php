@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\DatoFacturacion;
+use App\Models\Factura;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\FacturaGeneradaMail;
 
 
 class DatoFacturacionController extends Controller
@@ -46,6 +49,25 @@ class DatoFacturacionController extends Controller
         $datos->save();
 
         return back()->with('success', 'Datos de facturación guardados correctamente.');
+    }
+
+    public function enviarCorreo(Request $request, Factura $factura)
+    {
+        $correoDestino = $request->input('correo') ?? $factura->user->email;
+
+        try {
+            if (!filter_var($correoDestino, FILTER_VALIDATE_EMAIL)) {
+                return back()->with('error', 'Correo no válido.');
+            }
+
+            // Enviar el correo
+            Mail::to($correoDestino)->queue(new FacturaGeneradaMail($factura));
+
+            return back()->with('success', 'Factura enviada correctamente al correo.');
+        } catch (\Throwable $e) {
+            \Log::error('Error al enviar factura por correo: ' . $e->getMessage());
+            return back()->with('error', 'No se pudo enviar la factura.');
+        }
     }
 
 }

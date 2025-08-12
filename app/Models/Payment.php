@@ -34,4 +34,9 @@ class Payment extends Model
     {
         return $this->belongsTo(\App\Models\DatoFacturacion::class, 'dato_facturacion_id');
     }
+    public function factura()
+    {
+        return $this->hasOne(\App\Models\Factura::class, 'payment_id');
+    }
+
 }

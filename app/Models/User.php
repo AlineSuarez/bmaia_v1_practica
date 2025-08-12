@@ -147,5 +147,9 @@ class User extends Authenticatable
             $query->where('user_id', $this->id);
         })->count();
     }
+    public function facturas()
+    {
+        return $this->hasMany(\App\Models\Factura::class, 'user_id');
+    }
 
 }

@@ -91,6 +91,13 @@
                     <div class="col-md-3">
                         <small class="text-muted d-block">ID transacción</small>
                         <code>{{ $tokenShort }}</code>
+                        @if(isset($token) && $token)
+                            <div class="mt-2">
+                                <small class="text-muted d-block">Token real:</small>
+                                <code>{{ $token }}</code>
+                            </div>
+                        @endif
+
                     </div>
                 </div>
                 <div class="d-flex align-items-center gap-2 mt-3">

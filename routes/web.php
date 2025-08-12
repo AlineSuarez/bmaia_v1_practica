@@ -28,6 +28,7 @@ use App\Http\Controllers\EmergencyContactController;
 use App\Http\Controllers\SistemaExpertoController;
 use App\Http\Controllers\DatoFacturacionController;
 use App\Http\Controllers\ContactoController;
+use App\Http\Controllers\FacturaController;
 
 Auth::routes();
 
@@ -249,6 +250,7 @@ Route::middleware(['auth', 'check.payment'])->group(function () {
 
     // FACTURACION
     Route::post('user/datos-facturacion', [DatoFacturacionController::class, 'store'])->name('datos-facturacion.store');
+    Route::post('/facturas/{factura}/enviar-correo', [DatoFacturacionController::class, 'enviarCorreo'])->name('facturas.enviarCorreo');
 
     // Permisos
     Route::get('/user/settings/permissions', [PermissionsController::class, 'index'])->name('permissions.index');

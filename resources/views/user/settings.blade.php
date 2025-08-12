@@ -206,7 +206,7 @@
             </section>
 
             <!-- SECCIÓN: DATOS DE FACTURACIÓN -->
-             @if ($errors->any())
+            @if ($errors->any())
                 <div class="alert alert-danger">
                     <ul class="mb-0">
                     @foreach ($errors->all() as $error)
@@ -352,58 +352,134 @@
 
                 <div class="card settings-card mt-4">
                     <div class="card-header">
-                        <h3>Historial de Facturas</h3>
-                        <p class="text-muted">Consulta el registro de tus facturas emitidas y su estado de pago.</p>
+                        <h3 class="text-center fw-bold">Historial de Facturas</h3>
+                        <p class="text-muted text-center">Consulta el registro de tus facturas emitidas y su estado de pago.</p>
                     </div>
                     <div class="card-body">
                         <div class="invoice-filters mb-3">
-                            <div class="row">
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label for="invoice-year">Año</label>
-                                        <select class="form-select" id="invoice-year">
-                                            <option value="all">Todos</option>
-                                            <option value="2025">2025</option>
-                                            <option value="2024">2024</option>
+                            <form method="GET" action="{{ route('user.settings') }}">
+                                <div class="row g-3 align-items-end">
+                                    <div class="col-md-4">
+                                        {{-- Elimina el label para que coincida con el diseño --}}
+                                        <select class="form-select" id="invoice-year" name="year">
+                                            <option value="all" {{ $selectedYear==='all' ? 'selected' : '' }}>Año: Todos</option>
+                                            @foreach($years as $y)
+                                                <option value="{{ $y }}" {{ (string)$selectedYear===(string)$y ? 'selected' : '' }}>Año: {{ $y }}</option>
+                                            @endforeach
                                         </select>
                                     </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label for="invoice-status">Estado</label>
-                                        <select class="form-select" id="invoice-status">
-                                            <option value="all">Todos</option>
-                                            <option value="paid">Pagada</option>
-                                            <option value="pending">Pendiente</option>
-                                            <option value="cancelled">Anulada</option>
+                                    <div class="col-md-4">
+                                        {{-- Elimina el label para que coincida con el diseño --}}
+                                        <select class="form-select" id="invoice-status" name="estado">
+                                            @php $estados = ['all'=>'Todos','emitida'=>'Emitida','pendiente'=>'Pendiente','anulada'=>'Anulada','ajustada'=>'Ajustada']; @endphp
+                                            @foreach($estados as $k=>$label)
+                                                <option value="{{ $k }}" {{ $selectedEstado===$k ? 'selected' : '' }}>Estado: {{ $label }}</option>
+                                            @endforeach
                                         </select>
                                     </div>
+                                    <div class="col-md-4">
+                                        <button type="submit" class="btn btn-outline-primary w-100">Filtrar</button>
+                                    </div>
                                 </div>
-                                <div class="col-md-4 d-flex align-items-end">
-                                    <button type="button" class="btn btn-outline-primary w-100">Filtrar</button>
-                                </div>
-                            </div>
+                            </form>
                         </div>
 
+                        <hr>
+
                         <div class="table-responsive">
-                            <table class="table table-striped invoice-table">
-                                <thead>
+                            <table class="table table-striped table-hover align-middle invoice-table">
+                                <thead class="table-light">
                                     <tr>
-                                        <th>Número</th>
-                                        <th>Fecha</th>
-                                        <th>Monto</th>
-                                        <th>Estado</th>
-                                        <th>Acciones</th>
+                                        <th class="text-start">Folio / Nº</th>
+                                        <th class="text-start">Emisión</th>
+                                        <th class="text-start">Venc.</th>
+                                        <th class="text-start">Plan</th>
+                                        <th class="text-end">Neto</th>
+                                        <th class="text-end">IVA</th>
+                                        <th class="text-end">Total</th>
+                                        <th class="text-start">Estado</th>
+                                        <th class="text-start">Acciones</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <!-- Aquí se mostrarían las facturas del usuario -->
+                                    @forelse($facturas as $f)
                                     <tr>
-                                        <td colspan="5" class="text-center">No hay facturas disponibles</td>
+                                    <td class="font-monospace">{{ $f->numero_mostrar }}</td>
+                                    <td>{{ optional($f->fecha_emision)->format('d/m/Y') ?? '—' }}</td>
+                                    <td>{{ optional($f->fecha_vencimiento)->format('d/m/Y') ?? '—' }}</td>
+                                    <td>{{ strtoupper($f->plan ?? '—') }}</td>
+                                    <td class="text-end">${{ number_format($f->monto_neto, 0, ',', '.') }}</td>
+                                    <td class="text-end">${{ number_format($f->monto_iva, 0, ',', '.') }}</td>
+                                    <td class="text-end fw-semibold">${{ number_format($f->monto_total, 0, ',', '.') }}</td>
+                                    <td>
+                                        @php $map=['emitida'=>'success','pendiente'=>'warning','anulada'=>'secondary','ajustada'=>'info']; @endphp
+                                        <span class="badge bg-{{ $map[$f->estado] ?? 'secondary' }}">{{ ucfirst($f->estado) }}</span>
+                                    </td>
+                                    <td class="text-nowrap">
+                                        <button title="Ver factura" class="btn btn-sm btn-outline-dark" data-bs-toggle="offcanvas" data-bs-target="#detalleFactura{{ $f->id }}">
+                                        <i class="fas fa-eye"></i>
+                                        </button>
+                                        {{--@if($f->hasPdf())
+                                        <a href="{{ route('facturas.pdf', $f) }}" class="btn btn-sm btn-outline-primary ms-1">PDF</a>
+                                         @else
+                                        <button class="btn btn-sm btn-outline-secondary ms-1" disabled>PDF</button>
+                                        @endif
+                                        @if($f->hasXml())
+                                        <a href="{{ route('facturas.xml', $f) }}" class="btn btn-sm btn-outline-secondary ms-1">XML</a>
+                                        @else
+                                        <button class="btn btn-sm btn-outline-secondary ms-1" disabled>XML</button>
+                                        @endif
+                                        <form action="{{ route('facturas.enviarCorreo', $f) }}" method="POST" class="d-inline ms-1">
+                                            @csrf
+                                            <input type="hidden" name="correo" value="{{ optional(auth()->user()->datosFacturacion)->correo_envio_dte ?? auth()->user()->email }}">
+                                            <button type="submit" class="btn btn-sm btn-success">Reenviar</button>
+                                        </form> --}}
+                                        
+                                    </td>
                                     </tr>
-                                </tbody>
+
+                                    {{-- Offcanvas de detalle --}}
+                                    <div class="offcanvas offcanvas-end" tabindex="-1" id="detalleFactura{{ $f->id }}">
+                                    <div class="offcanvas-header">
+                                        <h5 class="offcanvas-title">Factura {{ $f->numero_mostrar }}</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
+                                    </div>
+                                    <div class="offcanvas-body small">
+                                        <p><strong>Estado SII:</strong> {{ ucfirst($f->estado) }}</p>
+                                        @if($f->sii_track_id)
+                                        <p><strong>Track ID:</strong> <span class="font-monospace">{{ $f->sii_track_id }}</span></p>
+                                        @endif
+                                        <hr>
+                                        @php $snap = $f->datos_facturacion_snapshot ?? []; @endphp
+                                        <p class="mb-1"><strong>Receptor:</strong> {{ $snap['razon_social'] ?? '—' }}</p>
+                                        <p class="mb-1"><strong>RUT:</strong> {{ $snap['rut'] ?? '—' }}</p>
+                                        <p class="mb-1"><strong>Giro:</strong> {{ $snap['giro'] ?? '—' }}</p>
+                                        <p class="mb-1"><strong>Dirección:</strong> {{ $snap['direccion_comercial'] ?? '—' }}</p>
+                                        <p class="mb-1"><strong>Ciudad/Región:</strong> {{ $snap['ciudad'] ?? '—' }}</p>
+                                        <hr>
+                                        <p class="mb-1"><strong>Moneda:</strong> {{ $f->moneda ?? 'CLP' }}</p>
+                                        <p class="mb-1"><strong>Plan:</strong> {{ strtoupper($f->plan ?? '—') }}</p>
+                                        <p class="mb-1"><strong>Emisión:</strong> {{ optional($f->fecha_emision)->format('d/m/Y H:i') ?? '—' }}</p>
+                                        <p class="mb-1"><strong>Vencimiento:</strong> {{ optional($f->fecha_vencimiento)->format('d/m/Y') ?? '—' }}</p>
+                                        <hr>
+                                        <p class="mb-1"><strong>Neto:</strong> ${{ number_format($f->monto_neto, 0, ',', '.') }}</p>
+                                        <p class="mb-1"><strong>IVA ({{ $f->porcentaje_iva ?? 19 }}%):</strong> ${{ number_format($f->monto_iva, 0, ',', '.') }}</p>
+                                        <p class="mb-1"><strong>Total:</strong> ${{ number_format($f->monto_total, 0, ',', '.') }}</p>
+                                    </div>
+                                    </div>
+                                    @empty
+                                    <tr><td colspan="9" class="text-center">No hay facturas disponibles</td></tr>
+                                    @endforelse
+                                    </tbody>
+
                             </table>
                         </div>
+
+                        @if($facturas->hasPages())
+                        <div class="mt-3">
+                            {{ $facturas->onEachSide(1)->links() }}
+                        </div>
+                        @endif
                     </div>
                 </div>
             </section>

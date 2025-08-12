@@ -11,6 +11,10 @@ use App\Mail\FreeTrialActivatedMail;
 use SendGrid;
 use Illuminate\Support\Facades\View;
 use Exception;
+use App\Models\User;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class PaymentController extends Controller
 {
@@ -108,6 +112,7 @@ class PaymentController extends Controller
         $this->configureWebpay();
 
         $token = $request->input('token_ws');
+        $request->session()->put('payment_token', $token); 
         try {
             $response = (new Transaction())->commit($token);
         } catch (Exception $e) {
@@ -115,38 +120,108 @@ class PaymentController extends Controller
             $request->session()->put('payment_failed', true);
             return redirect()->route('payment.failed')->with('error', 'Error al procesar la transacción');
         }
-
         $payment = Payment::where('transaction_id', $token)->first();
         if (!$payment) {
             \Log::error('No se encontró el pago para el token: ' . $token);
             $request->session()->put('payment_failed', true);
             return redirect()->route('payment.failed')->with('error', 'No se encontró el pago asociado.');
         }
-
-        if ($response->isApproved()) {
-            $payment->update(['status' => 'paid']);
-
-            $user = \App\Models\User::find(Auth::id());
-            if (!$user) {
-                \Log::error('Usuario no encontrado para el pago.');
-                $request->session()->put('payment_failed', true);
-                return redirect()->route('payment.failed')->with('error', 'Usuario no encontrado.');
-            }
-
-            // Plan y vencimiento (anual)
-            $plan = $payment->plan;
-            $user->plan = $plan;
-            $user->fecha_vencimiento = now()->addYear();
-            $user->webpay_status = 'pagado';
-            $user->save();
-
-            $request->session()->put('payment_success', true);
-            return redirect()->route('payment.success');
-        } else {
+        if (!$response->isApproved()) {
             $payment->update(['status' => 'failed']);
             $request->session()->put('payment_failed', true);
             return redirect()->route('payment.failed');
         }
+        // === Pago aprobado ===
+        $payment->update(['status' => 'paid']);
+        $user = User::find(Auth::id());
+        if (!$user) {
+            \Log::error('Usuario no encontrado para el pago aprobado.');
+            $request->session()->put('payment_failed', true);
+            return redirect()->route('payment.failed')->with('error', 'Usuario no encontrado.');
+        }
+        // Actualiza plan del usuario (anual)
+        $plan = $payment->plan;
+        $user->plan = $plan;
+        $user->fecha_vencimiento = now()->addYear();
+        $user->webpay_status = 'pagado';
+        $user->save();
+        // === Crear Factura (emitida internamente) ===
+        try {
+            $montoNeto = (int) $payment->amount;
+            $porcIva   = 19;
+            $montoIva  = (int) round($montoNeto * ($porcIva / 100));
+            $montoTot  = $montoNeto + $montoIva;
+            $billingSnapshot = $payment->billing_snapshot ?? [];
+            $df = $payment->datosFacturacion()->first();
+
+            if (empty($billingSnapshot) && $df) {
+                $billingSnapshot = [
+                    'razon_social'           => $df->razon_social,
+                    'rut'                    => $df->rut,
+                    'giro'                   => $df->giro,
+                    'direccion_comercial'    => $df->direccion_comercial,
+                    'region_id'              => $df->region_id,
+                    'comuna_id'              => $df->comuna_id,
+                    'ciudad'                 => $df->ciudad,
+                    'telefono'               => $df->telefono,
+                    'correo'                 => $df->correo,
+                    'autorizacion_envio_dte' => (bool) $df->autorizacion_envio_dte,
+                    'correo_envio_dte'       => $df->correo_envio_dte,
+                ];
+            }
+
+            // === Generar número correlativo interno ===
+            $numeroFactura = now()->format('Ymd') . '-' . strtoupper(Str::random(4));
+
+            // === Generar PDF ===
+            $facturaPdf = Pdf::loadView('pdfs.factura-oficial', [
+                'user'    => $user,
+                'payment' => $payment,
+                'montoNeto' => $montoNeto,
+                'montoIva'  => $montoIva,
+                'montoTotal'=> $montoTot,
+                'numero'    => $numeroFactura,
+                'snapshot'  => $billingSnapshot,
+            ]);
+
+            $pdfFilename = 'facturas/' . $user->id . '/' . $numeroFactura . '.pdf';
+            Storage::disk('local')->put($pdfFilename, $facturaPdf->output());
+
+            // === Guardar factura ===
+            $factura = \App\Models\Factura::create([
+                'user_id'                    => $user->id,
+                'payment_id'                 => $payment->id,
+                'numero'                     => $numeroFactura,
+                'folio'                      => null,
+                'sii_track_id'               => null,
+                'estado'                     => 'emitida',
+                'monto_neto'                 => $montoNeto,
+                'monto_iva'                  => $montoIva,
+                'monto_total'                => $montoTot,
+                'porcentaje_iva'             => $porcIva,
+                'moneda'                     => 'CLP',
+                'fecha_emision'              => now(),
+                'fecha_vencimiento'          => now()->addDays(30),
+                'pdf_path'                   => $pdfFilename,
+                'xml_path'                   => null, // si lo generas en futuro
+                'pdf_url'                    => null,
+                'xml_url'                    => null,
+                'datos_facturacion_snapshot' => $billingSnapshot,
+                'plan'                       => $plan,
+            ]);
+
+            // Enviar por correo (si autorizado)
+            if ($df && $df->autorizacion_envio_dte) {
+                Mail::to($df->correo_envio_dte)->queue(new \App\Mail\FacturaGeneradaMail($factura));
+            }
+
+            \Log::info('Factura completa creada', ['factura_id' => $factura->id]);
+        } catch (\Throwable $tx) {
+            \Log::error('Error al generar factura tras el pago: ' . $tx->getMessage());
+        }
+
+        $request->session()->put('payment_success', true);
+        return redirect()->route('payment.success');
     }
 
     public function startTrial(Request $request)
@@ -206,14 +281,23 @@ class PaymentController extends Controller
         if (!$request->session()->pull('payment_success')) {
             return redirect()->route('home');
         }
-
+        $token = $request->session()->pull('payment_token');
         $payment = Payment::where('user_id', Auth::id())
             ->where('status', 'paid')
             ->latest()
             ->with('datosFacturacion')
             ->first();
 
-        return view('payment.success', compact('payment'));
+        return view('payment.success', compact('payment','token'));
+    }
+
+    public function success(Request $request)
+    {
+        // ... tu lógica actual de validación de pago
+        $factura = $this->generarFactura($request); // tu método para crear el registro
+
+        // Preguntar si quiere envío por correo (puedes pasar la factura a la vista)
+        return view('pagos.confirmacion', compact('factura'));
     }
 
     public function showFailed(Request $request)
@@ -221,7 +305,8 @@ class PaymentController extends Controller
         if (!$request->session()->pull('payment_failed')) {
             return redirect()->route('home');
         }
-        return view('payment.failed');
+        $token = $request->session()->pull('payment_token');
+        return view('payment.failed', compact('token'));
     }
 
     public function showRequired(Request $request)
