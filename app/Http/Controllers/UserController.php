@@ -34,6 +34,12 @@ class UserController extends Controller
         $datosFacturacion = DatoFacturacion::where('user_id', $user->id)->first();
         $regiones = Region::with('comunas')->get();
 
+        $filled = fn($v) => !is_null($v) && trim((string)$v) !== '';
+        $datosFacturacionCompletos = $datosFacturacion
+            && $filled($datosFacturacion->razon_social)
+            && $filled($datosFacturacion->rut)
+            && $filled($datosFacturacion->correo_envio_dte);
+
         $plan = $user->plan ?? 'drone';
         $payment = \App\Models\Payment::where('user_id', $user->id)
             ->where('plan', $plan)
@@ -69,7 +75,7 @@ class UserController extends Controller
         $plan_progress = $totalDays > 0 ? round(100 - (($plan_days_left + ($plan_hours_left/24)) / $totalDays * 100)) : 0;
 
         return view('user.settings', compact(
-            'user', 'regiones', 'datosFacturacion',
+            'user', 'regiones', 'datosFacturacion', 'datosFacturacionCompletos',
             'plan_start_date', 'plan_end_date', 'plan_days_left', 'plan_hours_left', 'plan_progress'
         ));
     }
