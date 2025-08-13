@@ -528,17 +528,37 @@ document.addEventListener("DOMContentLoaded", function () {
         const osm = L.tileLayer(
             "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
             { maxZoom: 40 }
-        ).addTo(map);
+        );
         const esriSat = L.tileLayer(
             "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
         );
-        L.control
-            .layers(
-                { "Mapa Base (OSM)": osm, "Satélite (Esri)": esriSat },
-                null,
-                { position: "topright" }
-            )
+
+        // Leer preferencia del usuario (por defecto satélite)
+        const preferredLayer = localStorage.getItem("mapLayer") || "satellite";
+        let baseLayers = {
+            "Mapa Base (OSM)": osm,
+            "Satélite (Esri)": esriSat,
+        };
+
+        // Agregar la capa preferida
+        if (preferredLayer === "satellite") {
+            esriSat.addTo(map);
+        } else {
+            osm.addTo(map);
+        }
+
+        // Control de capas y guardar preferencia al cambiar
+        const layerControl = L.control
+            .layers(baseLayers, null, { position: "topright" })
             .addTo(map);
+
+        map.on("baselayerchange", function (e) {
+            if (e.name === "Satélite (Esri)") {
+                localStorage.setItem("mapLayer", "satellite");
+            } else {
+                localStorage.setItem("mapLayer", "osm");
+            }
+        });
 
         const markers = L.featureGroup().addTo(map);
         const otrosGroup = L.layerGroup();

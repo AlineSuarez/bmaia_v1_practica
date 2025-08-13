@@ -25,8 +25,7 @@
                     funciona</a>
             </li>
             <li class="nav-item">
-                <a href="#logros" style="color: rgb(212, 159, 0); font-weight: bold;"
-                    class="nav-link">Logros</a>
+                <a href="#logros" style="color: rgb(212, 159, 0); font-weight: bold;" class="nav-link">Logros</a>
             </li>
             <li class="nav-item">
                 <a href="#contacto" style="color: rgb(212, 159, 0); font-weight: bold;" class="nav-link">Contacto</a>
@@ -132,11 +131,49 @@
                 </button>
             </form>
         @else
-            <button class="mobile-action-button mobile-action-enter"
-                onclick="window.location.href='{{ route('login') }}'">
+            <button class="mobile-action-button mobile-action-enter" onclick="window.location.href='{{ route('login') }}'">
                 Ingresar
             </button>
         @endif
     </div>
 </div>
 </header>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const sections = ['inicio', 'herramientas', 'como-funciona', 'logros', 'contacto'];
+        const navLinks = document.querySelectorAll('.nav-link');
+        const mobileLinks = document.querySelectorAll('.mobile-nav-link');
+
+        function onScroll() {
+            const scrollPosition = window.scrollY + window.innerHeight / 2;
+            let currentSection = sections[0];
+
+            for (let i = 0; i < sections.length; i++) {
+                const section = document.getElementById(sections[i]);
+                if (section) {
+                    const sectionTop = section.offsetTop;
+                    if (scrollPosition >= sectionTop) {
+                        currentSection = sections[i];
+                    }
+                }
+            }
+
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === '#' + currentSection) {
+                    link.classList.add('active');
+                }
+            });
+            mobileLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === '#' + currentSection) {
+                    link.classList.add('active');
+                }
+            });
+        }
+
+        window.addEventListener('scroll', onScroll);
+        onScroll();
+    });
+</script>
