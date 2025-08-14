@@ -403,74 +403,84 @@
                                 </thead>
                                 <tbody>
                                     @forelse($facturas as $f)
-                                    <tr>
-                                    <td class="font-monospace">{{ $f->numero_mostrar }}</td>
-                                    <td>{{ optional($f->fecha_emision)->format('d/m/Y') ?? '—' }}</td>
-                                    <td>{{ optional($f->fecha_vencimiento)->format('d/m/Y') ?? '—' }}</td>
-                                    <td>{{ strtoupper($f->plan ?? '—') }}</td>
-                                    <td class="text-end">${{ number_format($f->monto_neto, 0, ',', '.') }}</td>
-                                    <td class="text-end">${{ number_format($f->monto_iva, 0, ',', '.') }}</td>
-                                    <td class="text-end fw-semibold">${{ number_format($f->monto_total, 0, ',', '.') }}</td>
-                                    <td>
-                                        @php $map=['emitida'=>'success','pendiente'=>'warning','anulada'=>'secondary','ajustada'=>'info']; @endphp
-                                        <span class="badge bg-{{ $map[$f->estado] ?? 'secondary' }}">{{ ucfirst($f->estado) }}</span>
-                                    </td>
-                                    <td class="text-nowrap">
-                                        <button title="Ver factura" class="btn btn-sm btn-outline-dark" data-bs-toggle="offcanvas" data-bs-target="#detalleFactura{{ $f->id }}">
-                                        <i class="fas fa-eye"></i>
-                                        </button>
-                                        {{--@if($f->hasPdf())
-                                        <a href="{{ route('facturas.pdf', $f) }}" class="btn btn-sm btn-outline-primary ms-1">PDF</a>
-                                         @else
-                                        <button class="btn btn-sm btn-outline-secondary ms-1" disabled>PDF</button>
-                                        @endif
-                                        @if($f->hasXml())
-                                        <a href="{{ route('facturas.xml', $f) }}" class="btn btn-sm btn-outline-secondary ms-1">XML</a>
-                                        @else
-                                        <button class="btn btn-sm btn-outline-secondary ms-1" disabled>XML</button>
-                                        @endif
-                                        <form action="{{ route('facturas.enviarCorreo', $f) }}" method="POST" class="d-inline ms-1">
-                                            @csrf
-                                            <input type="hidden" name="correo" value="{{ optional(auth()->user()->datosFacturacion)->correo_envio_dte ?? auth()->user()->email }}">
-                                            <button type="submit" class="btn btn-sm btn-success">Reenviar</button>
-                                        </form> --}}
-                                        
-                                    </td>
-                                    </tr>
+                                        @php
+                                            // snapshot seguro (soporta array ya casteado o string JSON antiguo)
+                                            $snap = $f->datos_facturacion_snapshot;
+                                            if (is_string($snap)) {
+                                                $snap = json_decode($snap, true) ?? [];
+                                            }
 
-                                    {{-- Offcanvas de detalle --}}
-                                    <div class="offcanvas offcanvas-end" tabindex="-1" id="detalleFactura{{ $f->id }}">
-                                    <div class="offcanvas-header">
-                                        <h5 class="offcanvas-title">Factura {{ $f->numero_mostrar }}</h5>
-                                        <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
-                                    </div>
-                                    <div class="offcanvas-body small">
-                                        <p><strong>Estado SII:</strong> {{ ucfirst($f->estado) }}</p>
-                                        @if($f->sii_track_id)
-                                        <p><strong>Track ID:</strong> <span class="font-monospace">{{ $f->sii_track_id }}</span></p>
-                                        @endif
-                                        <hr>
-                                        @php $snap = $f->datos_facturacion_snapshot ?? []; @endphp
-                                        <p class="mb-1"><strong>Receptor:</strong> {{ $snap['razon_social'] ?? '—' }}</p>
-                                        <p class="mb-1"><strong>RUT:</strong> {{ $snap['rut'] ?? '—' }}</p>
-                                        <p class="mb-1"><strong>Giro:</strong> {{ $snap['giro'] ?? '—' }}</p>
-                                        <p class="mb-1"><strong>Dirección:</strong> {{ $snap['direccion_comercial'] ?? '—' }}</p>
-                                        <p class="mb-1"><strong>Ciudad/Región:</strong> {{ $snap['ciudad'] ?? '—' }}</p>
-                                        <hr>
-                                        <p class="mb-1"><strong>Moneda:</strong> {{ $f->moneda ?? 'CLP' }}</p>
-                                        <p class="mb-1"><strong>Plan:</strong> {{ strtoupper($f->plan ?? '—') }}</p>
-                                        <p class="mb-1"><strong>Emisión:</strong> {{ optional($f->fecha_emision)->format('d/m/Y H:i') ?? '—' }}</p>
-                                        <p class="mb-1"><strong>Vencimiento:</strong> {{ optional($f->fecha_vencimiento)->format('d/m/Y') ?? '—' }}</p>
-                                        <hr>
-                                        <p class="mb-1"><strong>Neto:</strong> ${{ number_format($f->monto_neto, 0, ',', '.') }}</p>
-                                        <p class="mb-1"><strong>IVA ({{ $f->porcentaje_iva ?? 19 }}%):</strong> ${{ number_format($f->monto_iva, 0, ',', '.') }}</p>
-                                        <p class="mb-1"><strong>Total:</strong> ${{ number_format($f->monto_total, 0, ',', '.') }}</p>
-                                    </div>
-                                    </div>
+                                            // helpers visuales
+                                            $estadoMap = ['emitida'=>'success','pendiente'=>'warning','anulada'=>'secondary','ajustada'=>'info'];
+                                            $badge = $estadoMap[$f->estado] ?? 'secondary';
+                                            $offcanvasId = 'detalleFactura'.$f->id;
+
+                                            // urls si existen (accessors del modelo resuelven S3/local)
+                                            $pdfUrl = $f->pdf_url;   // puede ser null
+                                            $xmlUrl = $f->xml_url;   // puede ser null
+                                        @endphp
+
+                                        <tr>
+                                            <td class="font-monospace">{{ $f->numero_mostrar }}</td>
+                                            <td>{{ $f->fecha_emision?->format('d/m/Y') ?? '—' }}</td>
+                                            <td>{{ $f->fecha_vencimiento?->format('d/m/Y') ?? '—' }}</td>
+                                            <td>{{ strtoupper($f->plan ?? '—') }}</td>
+                                            <td class="text-end">${{ number_format((int)$f->monto_neto, 0, ',', '.') }}</td>
+                                            <td class="text-end">${{ number_format((int)$f->monto_iva, 0, ',', '.') }}</td>
+                                            <td class="text-end fw-semibold">${{ number_format((int)$f->monto_total, 0, ',', '.') }}</td>
+                                            <td><span class="badge bg-{{ $badge }}">{{ ucfirst($f->estado) }}</span></td>
+
+                                            <td class="text-nowrap">
+                                                {{-- Ver detalle (offcanvas) --}}
+                                                <button
+                                                    title="Ver factura"
+                                                    class="btn btn-sm btn-outline-dark"
+                                                    data-bs-toggle="offcanvas"
+                                                    data-bs-target="#{{ $offcanvasId }}"
+                                                >
+                                                    <i class="fas fa-eye"></i>
+                                                </button>
+                                                {{-- Reenviar por correo --}}
+                                                
+                                            </td>
+                                        </tr>
+
+                                        {{-- Offcanvas de detalle (fuera de la fila para mantener el DOM limpio) --}}
+                                        <div class="offcanvas offcanvas-end" tabindex="-1" id="{{ $offcanvasId }}">
+                                            <div class="offcanvas-header">
+                                                <h5 class="offcanvas-title">Factura {{ $f->numero_mostrar }}</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
+                                            </div>
+                                            <div class="offcanvas-body small">
+                                                <p class="mb-1"><strong>Estado SII:</strong> {{ ucfirst($f->estado) }}</p>
+                                                @if($f->sii_track_id)
+                                                    <p class="mb-1"><strong>Track ID:</strong> <span class="font-monospace">{{ $f->sii_track_id }}</span></p>
+                                                @endif
+                                                <hr>
+                                                <p class="mb-1"><strong>Receptor:</strong> {{ $snap['razon_social'] ?? '—' }}</p>
+                                                <p class="mb-1"><strong>RUT:</strong> {{ $snap['rut'] ?? '—' }}</p>
+                                                <p class="mb-1"><strong>Giro:</strong> {{ $snap['giro'] ?? '—' }}</p>
+                                                <p class="mb-1"><strong>Dirección:</strong> {{ $snap['direccion_comercial'] ?? '—' }}</p>
+                                                <p class="mb-1"><strong>Ciudad:</strong> {{ $snap['ciudad'] ?? '—' }}</p>
+                                                <p class="mb-1"><strong>Región:</strong> {{ $snap['region'] ?? ($snap['region_nombre'] ?? '—') }}</p>
+                                                <p class="mb-1"><strong>Teléfono:</strong> {{ $snap['telefono'] ?? '—' }}</p>
+                                                <p class="mb-1"><strong>Correo:</strong> {{ $snap['correo'] ?? ($snap['correo_envio_dte'] ?? '—') }}</p>
+                                                <hr>
+                                                <p class="mb-1"><strong>Moneda:</strong> {{ $f->moneda ?? 'CLP' }}</p>
+                                                <p class="mb-1"><strong>Plan:</strong> {{ strtoupper($f->plan ?? '—') }}</p>
+                                                <p class="mb-1"><strong>Emisión:</strong> {{ $f->fecha_emision?->format('d/m/Y H:i') ?? '—' }}</p>
+                                                <p class="mb-1"><strong>Vencimiento:</strong> {{ $f->fecha_vencimiento?->format('d/m/Y') ?? '—' }}</p>
+                                                <hr>
+                                                <p class="mb-1"><strong>Neto:</strong> ${{ number_format((int)$f->monto_neto, 0, ',', '.') }}</p>
+                                                <p class="mb-1"><strong>IVA ({{ $f->porcentaje_iva ?? 19 }}%):</strong> ${{ number_format((int)$f->monto_iva, 0, ',', '.') }}</p>
+                                                <p class="mb-1"><strong>Total:</strong> ${{ number_format((int)$f->monto_total, 0, ',', '.') }}</p>
+                                            </div>
+                                        </div>
                                     @empty
-                                    <tr><td colspan="9" class="text-center">No hay facturas disponibles</td></tr>
+                                        <tr><td colspan="9" class="text-center">No hay facturas disponibles</td></tr>
                                     @endforelse
                                     </tbody>
+
 
                             </table>
                         </div>

@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Filesystem\FilesystemAdapter;
 
 class Factura extends Model
 {
@@ -57,52 +58,66 @@ class Factura extends Model
     
     public function getPdfUrlAttribute($value)
     {
-        if (!empty($value)) {
-            return $value; // URL absoluta ya guardada
+        if (!empty($value)) return $value;
+        $path = $this->attributes['pdf_path'] ?? null;
+        if (!$path) return null;
+
+        /** @var FilesystemAdapter $public */
+        $public = Storage::disk('public');
+        if ($public->exists($path)) {
+            return $public->url($path);
         }
 
-        $path = $this->attributes['pdf_path'] ?? null;
-        if ($path) {
-            // Si tienes S3 como cloud
-            $disk = config('filesystems.cloud', 's3');
+        $cloudName = config('filesystems.cloud');
+        if ($cloudName) {
+            /** @var FilesystemAdapter $cloud */
+            $cloud = Storage::disk($cloudName);
 
-            // Si el disco soporta temporaryUrl (S3), úsalo
-            try {
-                return Storage::disk($disk)->temporaryUrl($path, now()->addMinutes(5));
-            } catch (\Throwable $e) {
-                // Fallback: si estás en local/public, devolver URL pública
-                if (Storage::disk($disk)->exists($path)) {
-                    return Storage::disk($disk)->url($path);
+            if ($cloud->exists($path)) {
+                // temporaryUrl solo existe en ciertos drivers (S3). Protegemos la llamada:
+                if (method_exists($cloud, 'temporaryUrl')) {
+                    try {
+                        return $cloud->temporaryUrl($path, now()->addMinutes(5));
+                    } catch (\Throwable $e) {
+                        // si falla, seguimos al fallback url()
+                    }
                 }
-                // último intento: disco public
-                if (Storage::disk('public')->exists($path)) {
-                    return Storage::disk('public')->url($path);
-                }
+                return $cloud->url($path);
             }
         }
+
         return null;
     }
 
     public function getXmlUrlAttribute($value)
     {
-        if (!empty($value)) {
-            return $value;
+        if (!empty($value)) return $value;
+        $path = $this->attributes['xml_path'] ?? null;
+        if (!$path) return null;
+
+        /** @var FilesystemAdapter $public */
+        $public = Storage::disk('public');
+        if ($public->exists($path)) {
+            return $public->url($path);
         }
 
-        $path = $this->attributes['xml_path'] ?? null;
-        if ($path) {
-            $disk = config('filesystems.cloud', 's3');
-            try {
-                return Storage::disk($disk)->temporaryUrl($path, now()->addMinutes(5));
-            } catch (\Throwable $e) {
-                if (Storage::disk($disk)->exists($path)) {
-                    return Storage::disk($disk)->url($path);
+        $cloudName = config('filesystems.cloud');
+        if ($cloudName) {
+            /** @var FilesystemAdapter $cloud */
+            $cloud = Storage::disk($cloudName);
+
+            if ($cloud->exists($path)) {
+                if (method_exists($cloud, 'temporaryUrl')) {
+                    try {
+                        return $cloud->temporaryUrl($path, now()->addMinutes(5));
+                    } catch (\Throwable $e) {
+                        // fallback a url() si no soporta temporal
+                    }
                 }
-                if (Storage::disk('public')->exists($path)) {
-                    return Storage::disk('public')->url($path);
-                }
+                return $cloud->url($path);
             }
         }
+
         return null;
     }
 
@@ -116,5 +131,7 @@ class Factura extends Model
     {
         return (bool) (($this->attributes['xml_url'] ?? null) || ($this->attributes['xml_path'] ?? null));
     }
+
+    
 
 }

@@ -66,6 +66,10 @@ class UserController extends Controller
             ->orderByDesc('y')
             ->pluck('y')
             ->all();
+        // fallback para que el filtro muestre al menos el año actual
+        if (empty($years)) {
+            $years = [now()->year];
+        }
 
         $facturasQuery = Factura::where('user_id', $user->id);
 

@@ -60,8 +60,18 @@ class DatoFacturacionController extends Controller
                 return back()->with('error', 'Correo no válido.');
             }
 
-            // Enviar el correo
-            Mail::to($correoDestino)->queue(new FacturaGeneradaMail($factura));
+            // Adjuntar PDF si está en disco público
+            $mailable = new FacturaGeneradaMail($factura);
+
+            if (!empty($factura->pdf_path) && \Storage::disk('public')->exists($factura->pdf_path)) {
+                $fileContents = \Storage::disk('public')->get($factura->pdf_path);
+                $filename = basename($factura->pdf_path);
+                $mailable->attachData($fileContents, $filename, [
+                    'mime' => 'application/pdf'
+                ]);
+            }
+
+            Mail::to($correoDestino)->send($mailable);
 
             return back()->with('success', 'Factura enviada correctamente al correo.');
         } catch (\Throwable $e) {
@@ -69,5 +79,6 @@ class DatoFacturacionController extends Controller
             return back()->with('error', 'No se pudo enviar la factura.');
         }
     }
+
 
 }

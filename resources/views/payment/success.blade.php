@@ -88,17 +88,9 @@
                         <small class="text-muted d-block">Monto</small>
                         <strong>${{ number_format($payment->amount ?? 0, 0, ',', '.') }} + IVA</strong>
                     </div>
-                    <div class="col-md-3">
-                        <small class="text-muted d-block">ID transacción</small>
-                        <code>{{ $tokenShort }}</code>
-                        @if(isset($token) && $token)
-                            <div class="mt-2">
-                                <small class="text-muted d-block">Token real:</small>
-                                <code>{{ $token }}</code>
-                            </div>
-                        @endif
+                    <!-- Botón para descargar pdf --> 
+                    
 
-                    </div>
                 </div>
                 <div class="d-flex align-items-center gap-2 mt-3">
                     <span class="badge bg-success"><i class="fas fa-check-circle me-1"></i>Aprobado</span>

@@ -60,4 +60,13 @@ class Kernel extends HttpKernel
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
     ];
+
+    protected $commands = [
+        \App\Console\Commands\BackfillFacturasCommand::class,
+    ];
+
+    protected function commands()
+    {
+        $this->load(__DIR__.'/Commands');
+    }
 }
