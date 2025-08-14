@@ -392,7 +392,8 @@
                                     <tr>
                                         <th class="text-start">Folio / Nº</th>
                                         <th class="text-start">Emisión</th>
-                                        <th class="text-start">Venc.</th>
+                                        <th class="text-start">Vence factura</th>
+                                        <th class="text-start">Vence plan</th>
                                         <th class="text-start">Plan</th>
                                         <th class="text-end">Neto</th>
                                         <th class="text-end">IVA</th>
@@ -424,6 +425,14 @@
                                             <td class="font-monospace">{{ $f->numero_mostrar }}</td>
                                             <td>{{ $f->fecha_emision?->format('d/m/Y') ?? '—' }}</td>
                                             <td>{{ $f->fecha_vencimiento?->format('d/m/Y') ?? '—' }}</td>
+                                            @php
+                                                // usa expires_at si existe; fallback: created_at + 365 (o 265)
+                                                $duration = (int) config('plans.duration_days', 365);
+                                                $vencePlan = $f->payment?->expires_at
+                                                    ? \Carbon\Carbon::parse($f->payment->expires_at)
+                                                    : ($f->payment?->created_at ? $f->payment->created_at->copy()->addDays($duration) : null);
+                                            @endphp
+                                            <td>{{ $vencePlan ? $vencePlan->format('d/m/Y') : '—' }}</td>
                                             <td>{{ strtoupper($f->plan ?? '—') }}</td>
                                             <td class="text-end">${{ number_format((int)$f->monto_neto, 0, ',', '.') }}</td>
                                             <td class="text-end">${{ number_format((int)$f->monto_iva, 0, ',', '.') }}</td>
@@ -440,7 +449,19 @@
                                                 >
                                                     <i class="fas fa-eye"></i>
                                                 </button>
-                                                {{-- Reenviar por correo --}}
+                                                {{-- Botón para descargar pdf
+                                                    
+                                                @if(!empty($facturaUrl))
+                                                    <a href="{{ $facturaUrl }}" class="btn btn-sm btn-outline-primary" target="_blank">
+                                                        <i class="fas fa-file-pdf me-1"></i>Descargar PDF
+                                                    </a>
+                                                @else
+                                                    <span class="badge bg-secondary">Sin PDF disponible</span>
+                                                @endif
+                                                    <a href="{{ route('facturas.descargar', $factura) }}" class="btn btn-sm btn-outline-primary">Descargar PDF</a>
+                                                <a href="{{ route('facturas.ver', $factura) }}" target="_blank">Ver PDF</a>
+                                                --}}
+                                                
                                                 
                                             </td>
                                         </tr>

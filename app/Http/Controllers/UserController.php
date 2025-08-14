@@ -71,7 +71,7 @@ class UserController extends Controller
             $years = [now()->year];
         }
 
-        $facturasQuery = Factura::where('user_id', $user->id);
+        $facturasQuery = Factura::where('user_id', $user->id)->with('payment');
 
         if ($selectedYear !== 'all')   $facturasQuery->whereYear('fecha_emision', (int)$selectedYear);
         if ($selectedEstado !== 'all') $facturasQuery->where('estado', $selectedEstado);

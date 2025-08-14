@@ -8,6 +8,8 @@ use App\Models\DatoFacturacion;
 use App\Models\Factura;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\FacturaGeneradaMail;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Auth;
 
 
 class DatoFacturacionController extends Controller
@@ -80,5 +82,31 @@ class DatoFacturacionController extends Controller
         }
     }
 
+    public function download(Factura $factura)
+    {
+        abort_unless($factura->user_id === Auth::id(), 403);
+
+        $path = $factura->pdf_path;           // ej: facturas/123/20240814-ABCD.pdf
+        $disk = 'public';                     // o 'local' si lo guardaste ahí
+
+        abort_unless(Storage::disk($disk)->exists($path), 404);
+
+        $filename = 'Factura-'.$factura->numero.'.pdf';
+        return Storage::disk($disk)->download($path, $filename);
+    }
+
+    public function view(Factura $factura)
+    {
+        abort_unless($factura->user_id === Auth::id(), 403);
+
+        $path = $factura->pdf_path;
+        $disk = 'public'; // o 'local'
+        abort_unless(Storage::disk($disk)->exists($path), 404);
+
+        return response()->file(Storage::disk($disk)->path($path), [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => 'inline; filename="'.$factura->numero.'.pdf"',
+        ]);
+    }
 
 }

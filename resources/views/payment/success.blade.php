@@ -88,9 +88,16 @@
                         <small class="text-muted d-block">Monto</small>
                         <strong>${{ number_format($payment->amount ?? 0, 0, ',', '.') }} + IVA</strong>
                     </div>
-                    <!-- Botón para descargar pdf --> 
                     
-
+                    {{-- Botón para descargar pdf
+                    @if(!empty($facturaUrl))
+                        <a href="{{ $facturaUrl }}" class="btn btn-sm btn-outline-primary" target="_blank">
+                            <i class="fas fa-file-pdf me-1"></i>Descargar PDF
+                        </a>
+                    @else
+                        <span class="badge bg-secondary">Sin PDF disponible</span>
+                    @endif
+                     --}}
                 </div>
                 <div class="d-flex align-items-center gap-2 mt-3">
                     <span class="badge bg-success"><i class="fas fa-check-circle me-1"></i>Aprobado</span>

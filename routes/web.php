@@ -27,7 +27,6 @@ use App\Http\Controllers\ImportantDateController;
 use App\Http\Controllers\EmergencyContactController;
 use App\Http\Controllers\SistemaExpertoController;
 use App\Http\Controllers\DatoFacturacionController;
-use App\Http\Controllers\ContactoController;
 use App\Http\Controllers\FacturaController;
 use Illuminate\Support\Facades\Http;
 
@@ -123,6 +122,9 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/trial/start', [PaymentController::class, 'startTrial'])->name('trial.start');
     Route::get('/home', [DashboardController::class, 'home'])->name('home');
 });
+
+Route::get('/facturas/{factura}/descargar', [DatoFacturacionController::class, 'download'])->name('facturas.descargar');
+    Route::get('/facturas/{factura}/ver', [DatoFacturacionController::class, 'view'])->name('facturas.ver');
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/user/settings', [UserController::class, 'settings'])->name('user.settings');

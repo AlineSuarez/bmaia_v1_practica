@@ -19,6 +19,7 @@ use \App\Models\Factura;
 use App\Models\Region;
 use App\Models\Comuna;
 
+
 class PaymentController extends Controller
 {
     public function __construct()
@@ -403,13 +404,10 @@ class PaymentController extends Controller
     {
         // Permite entrar si venimos del commit o si hay un pago paid reciente
         $fromCommit = (bool) $request->session()->pull('payment_success', false);
-
         $token = $request->session()->pull('payment_token') ?? $request->query('token');
-
         $paymentQuery = Payment::query()
             ->where('user_id', Auth::id())
-            ->with('datosFacturacion');
-
+            ->with('datosFacturacion','factura');
         $payment = null;
         if ($token) {
             $payment = $paymentQuery->where('transaction_id', $token)->latest()->first();
@@ -417,16 +415,20 @@ class PaymentController extends Controller
         if (!$payment) {
             $payment = $paymentQuery->where('status', 'paid')->latest()->first();
         }
-
         if (!$payment && !$fromCommit) {
             return redirect()->route('home')->with('error', 'No se encontró un pago aprobado reciente para mostrar.');
         }
-
         if (!$token && $payment) {
             $token = $payment->transaction_id;
         }
-
-        return view('payment.success', compact('payment', 'token'));
+        // construir URL pública del PDF (usa el disco donde guardas el PDF)
+        $facturaUrl = null;
+        if ($payment?->factura?->pdf_path) {
+            $facturaUrl = Storage::disk('public')->url($payment->factura->pdf_path);
+        } elseif (!empty($payment?->factura_pdf_url)) {
+            $facturaUrl = $payment->factura_pdf_url;
+        }
+        return view('payment.success', compact('payment', 'token','facturaUrl'));
     }
 
     public function success(Request $request)
