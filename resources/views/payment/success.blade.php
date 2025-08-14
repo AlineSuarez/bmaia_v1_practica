@@ -78,26 +78,55 @@
                 <div class="row g-3">
                     <div class="col-md-3">
                         <small class="text-muted d-block">Fecha</small>
-                        <strong>{{ now()->format('d/m/Y H:i') }}</strong>
+                        <strong>{{ optional($payment->created_at)->format('d/m/Y H:i') }}</strong>
                     </div>
                     <div class="col-md-3">
                         <small class="text-muted d-block">Plan</small>
                         <strong>{{ strtoupper($payment->plan ?? '—') }}</strong>
                     </div>
                     <div class="col-md-3">
-                        <small class="text-muted d-block">Monto</small>
-                        <strong>${{ number_format($payment->amount ?? 0, 0, ',', '.') }} + IVA</strong>
+                        <small class="text-muted d-block">Total (incl. IVA)</small>
+                        <strong>${{ number_format((int)($payment->amount ?? 0), 0, ',', '.') }}</strong>
                     </div>
+
+                    <div class="col-md-3">
+                        <small class="text-muted d-block">Vence</small>
+                        <strong>
+                            {{ optional($payment->expires_at ?? ($payment->user->fecha_vencimiento ?? null))->format('d/m/Y') ?? '—' }}
+                        </strong>
+                        
+                    </div>
+                    <div class="col-md-3">
+                        @php
+                            // URLs para ver/descargar
+                            $verUrl = null; $descargarUrl = null;
+                            if(!empty($payment?->factura?->id)) {
+                                $verUrl        = route('facturas.ver',        $payment->factura);
+                                $descargarUrl  = route('facturas.descargar',  $payment->factura);
+                            } elseif(!empty($facturaUrl)) {
+                                $verUrl = $facturaUrl;
+                                $descargarUrl = $facturaUrl; // con atributo download
+                            }
+                        @endphp
+
+                        @if($verUrl)
+                            <a href="{{ $verUrl }}" class="text-decoration-none" target="_blank"
+                            data-bs-toggle="tooltip" title="Ver PDF en otra pestaña">
+                            <i class="fas fa-file-pdf"></i>
+                            </a>
+                        @endif
+
+                        @if($descargarUrl)
+                            <a href="{{ $descargarUrl }}" class="text-decoration-none"
+                            @if(empty($payment?->factura?->id)) download @endif
+                            data-bs-toggle="tooltip" title="Descargar PDF">
+                            <i class="fas fa-download"></i>
+                            </a>
+                        @else
+                            <span class="badge bg-secondary">Sin PDF</span>
+                        @endif
+                    </div>                  
                     
-                    {{-- Botón para descargar pdf
-                    @if(!empty($facturaUrl))
-                        <a href="{{ $facturaUrl }}" class="btn btn-sm btn-outline-primary" target="_blank">
-                            <i class="fas fa-file-pdf me-1"></i>Descargar PDF
-                        </a>
-                    @else
-                        <span class="badge bg-secondary">Sin PDF disponible</span>
-                    @endif
-                     --}}
                 </div>
                 <div class="d-flex align-items-center gap-2 mt-3">
                     <span class="badge bg-success"><i class="fas fa-check-circle me-1"></i>Aprobado</span>

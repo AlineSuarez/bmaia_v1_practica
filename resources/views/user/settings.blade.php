@@ -3,6 +3,16 @@
 @section('title', 'B-MaiA - Configuración de la Cuenta')
 
 @section('content')
+@push('styles')
+<style>
+  .btn-icon{
+    width: 36px; height: 36px; padding: 0;
+    display:inline-flex; align-items:center; justify-content:center;
+    border-radius: 50%;
+  }
+  .invoice-table .btn-icon i{ font-size:1rem; line-height:1; }
+</style>
+@endpush
 
     <head>
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
@@ -443,7 +453,6 @@
                                             <td>{{ $f->fecha_emision?->format('d/m/Y') ?? '—' }}</td>
                                             <td>{{ $f->fecha_vencimiento?->format('d/m/Y') ?? '—' }}</td>
                                             <td>{{ $vencePlan ? $vencePlan->format('d/m/Y') : '—' }}</td>
-                                            <td>{{ $vencePlan ? $vencePlan->format('d/m/Y') : '—' }}</td>
                                             <td>{{ strtoupper($f->plan ?? '—') }}</td>
                                             <td class="text-end">${{ number_format((int)$f->monto_neto, 0, ',', '.') }}</td>
                                             <td class="text-end">${{ number_format((int)$f->monto_iva, 0, ',', '.') }}</td>
@@ -452,29 +461,30 @@
 
                                             <td class="text-nowrap">
                                                 {{-- Ver detalle (offcanvas) --}}
-                                                <button
-                                                    title="Ver factura"
-                                                    class="btn btn-sm btn-outline-dark"
-                                                    data-bs-toggle="offcanvas"
-                                                    data-bs-target="#{{ $offcanvasId }}"
-                                                >
-                                                    <i class="fas fa-eye"></i>
+                                                <button title="Ver factura"
+                                                        class="btn btn-icon btn-outline-dark me-1"
+                                                        data-bs-toggle="offcanvas"
+                                                        data-bs-target="#{{ $offcanvasId }}">
+                                                    <i class="bi bi-eye"></i>
                                                 </button>
-                                                {{-- Botón para descargar pdf
-                                                    
-                                                @if(!empty($facturaUrl))
-                                                    <a href="{{ $facturaUrl }}" class="btn btn-sm btn-outline-primary" target="_blank">
-                                                        <i class="fas fa-file-pdf me-1"></i>Descargar PDF
+
+                                                @php
+                                                    // Rutas dedicadas (recomendado)
+                                                    $descargarUrl = route('facturas.descargar', $f);
+                                                @endphp
+
+                                                @if($descargarUrl)
+                                                    <a href="{{ $descargarUrl }}"
+                                                    class="btn btn-icon btn-outline-success"
+                                                    data-bs-toggle="tooltip" title="Descargar PDF">
+                                                    <i class="bi bi-download"></i>
                                                     </a>
                                                 @else
-                                                    <span class="badge bg-secondary">Sin PDF disponible</span>
+                                                    <span class="badge bg-secondary align-middle">Sin PDF</span>
                                                 @endif
-                                                    <a href="{{ route('facturas.descargar', $factura) }}" class="btn btn-sm btn-outline-primary">Descargar PDF</a>
-                                                <a href="{{ route('facturas.ver', $factura) }}" target="_blank">Ver PDF</a>
-                                                --}}
-                                                
-                                                
                                             </td>
+
+
                                         </tr>
 
                                         {{-- Offcanvas de detalle (fuera de la fila para mantener el DOM limpio) --}}
