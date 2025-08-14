@@ -24,6 +24,15 @@
                         <div class="pulse-ring-3"></div>
                     </div>
 
+                    @php
+                        $err = session('error') ?? session('error_message') ?? request()->query('error_message');
+                        $token = $token ?? request()->query('token') ?? request()->query('TBK_TOKEN');
+                        $idSesion = $idSesion ?? request()->query('TBK_ID_SESION');
+                        $ordenCompra = $ordenCompra ?? request()->query('TBK_ORDEN_COMPRA');
+                        $tbkDebug = session('tbk_debug'); // array con responseCode/status/paymentType si viene del commit
+                    @endphp
+                    
+
                     <div class="error-content">
                         <h1 class="error-title">¡Oops! Algo salió mal</h1>
                         <h2 class="error-subtitle">El pago no pudo ser procesado</h2>
@@ -32,14 +41,22 @@
                             Puedes intentar nuevamente o contactar con nuestro soporte.
                         </p>
 
-                        @if(session('error_message'))
-                            <div class="error-details">
-                                <div class="error-code">
-                                    <i class="fas fa-info-circle me-2"></i>
-                                    {{ session('error_message') }}
-                                </div>
+                        @if($err)
+                        <div class="error-details">
+                            <div class="error-code">
+                            <i class="fas fa-info-circle me-2"></i>{{ $err }}
                             </div>
+                        </div>
                         @endif
+
+                        @if($tbkDebug)
+                        <div class="mt-3 small text-muted">
+                            <div>responseCode: <code>{{ $tbkDebug['responseCode'] }}</code></div>
+                            <div>status:       <code>{{ $tbkDebug['status'] }}</code></div>
+                            <div>paymentType:  <code>{{ $tbkDebug['paymentType'] }}</code></div>
+                        </div>
+                        @endif
+
 
                         @if(isset($token) && $token)
                             <div class="mt-4">

@@ -111,7 +111,10 @@ Route::get('/payment/required', [PaymentController::class, 'showRequired'])->nam
 Route::get('/payment/failed',  [PaymentController::class, 'showFailed'])->name('payment.failed');
 Route::post('/payment/failed', [PaymentController::class, 'showFailed']);
 
-
+Route::middleware(['auth'])->group(function () {
+        Route::post('/payment/refund', [PaymentController::class, 'refund'])->name('payment.refund');
+        Route::post('/payment/refund-partial', [PaymentController::class, 'refundPartial'])->name('payment.refund.partial');
+    });
 
 Route::middleware(['auth'])->group(function () {
     Route::post('/payment/initiate', [PaymentController::class, 'initiatePayment'])->name('payment.initiate');
