@@ -421,17 +421,28 @@
                                             $xmlUrl = $f->xml_url;   // puede ser null
                                         @endphp
 
+                                        @php
+                                            // 365 si no tienes config/plans.php
+                                            $duration = config('plans.duration_days', 365);
+
+                                            // Si existe relación con Payment:
+                                            $vencePlan = null;
+                                            if ($f->payment) {
+                                                // Si más adelante agregas columna expires_at en payments, se usa
+                                                $vencePlan = $f->payment->expires_at
+                                                    ?? optional($f->payment->created_at)->copy()->addDays($duration);
+                                            }
+
+                                            // Fallback: si no hay payment asociado, estimar desde la emisión de la factura
+                                            if (!$vencePlan) {
+                                                $vencePlan = optional($f->fecha_emision)->copy()->addDays($duration);
+                                            }
+                                        @endphp
                                         <tr>
                                             <td class="font-monospace">{{ $f->numero_mostrar }}</td>
                                             <td>{{ $f->fecha_emision?->format('d/m/Y') ?? '—' }}</td>
                                             <td>{{ $f->fecha_vencimiento?->format('d/m/Y') ?? '—' }}</td>
-                                            @php
-                                                // usa expires_at si existe; fallback: created_at + 365 (o 265)
-                                                $duration = (int) config('plans.duration_days', 365);
-                                                $vencePlan = $f->payment?->expires_at
-                                                    ? \Carbon\Carbon::parse($f->payment->expires_at)
-                                                    : ($f->payment?->created_at ? $f->payment->created_at->copy()->addDays($duration) : null);
-                                            @endphp
+                                            <td>{{ $vencePlan ? $vencePlan->format('d/m/Y') : '—' }}</td>
                                             <td>{{ $vencePlan ? $vencePlan->format('d/m/Y') : '—' }}</td>
                                             <td>{{ strtoupper($f->plan ?? '—') }}</td>
                                             <td class="text-end">${{ number_format((int)$f->monto_neto, 0, ',', '.') }}</td>

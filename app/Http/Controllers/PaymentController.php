@@ -224,7 +224,12 @@ class PaymentController extends Controller
         }
 
         // === Pago aprobado ===
-        $payment->update(['status' => 'paid']);
+        $start = $payment->created_at ?? now();
+        $durationDays = (int) config('plans.duration_days', 365);
+        $payment->forceFill([
+            'status'     => 'paid',
+            'expires_at' => (clone $start)->addDays($durationDays),
+        ])->save();
 
         /** @var \App\Models\User $user */
         $user = $payment->user ?? User::find(Auth::id());
@@ -236,7 +241,7 @@ class PaymentController extends Controller
 
         // Actualiza plan/fecha de vencimiento
         $user->plan              = $payment->plan;
-        $user->fecha_vencimiento = now()->addYear();
+        $user->fecha_vencimiento = $payment->expires_at; 
         $user->webpay_status     = 'pagado';
         $user->save();
 

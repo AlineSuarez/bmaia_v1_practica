@@ -24,6 +24,8 @@ class Payment extends Model
     ];
     protected $casts = [
         'billing_snapshot' => 'array', // convierte JSON a array automáticamente
+        'expires_at'      => 'datetime',
+        'card_details'   => 'array',
     ];
     public function user()
     {

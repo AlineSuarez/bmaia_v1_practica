@@ -46,7 +46,7 @@ class Factura extends Model
         return $this->belongsTo(User::class, 'user_id');
     }
 
-    public function pago()
+    public function payment()
     {
         return $this->belongsTo(Payment::class, 'payment_id');
     }
