@@ -20,6 +20,10 @@ class Payment extends Model
         'plan',
         'dato_facturacion_id',
         'billing_snapshot',
+        'expires_at',
+        'card_details',
+        'buy_order',
+        'session_id'
 
     ];
     protected $casts = [

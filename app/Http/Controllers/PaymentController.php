@@ -17,6 +17,10 @@ use Illuminate\Support\Str;
 use \App\Models\Factura;
 use App\Models\Region;
 use App\Models\Comuna;
+use App\Services\PlanService;
+use App\Services\PaymentMailer;
+use Carbon\Carbon;
+use Illuminate\Session\Store;
 
 
 class PaymentController extends Controller
@@ -122,6 +126,26 @@ class PaymentController extends Controller
 
         // === ABORTO / ANULACIÓN DESDE WEBPAY (flujo TBK) ===
         if (empty($token) || !empty($tbkToken)) {
+            // Webpay suele enviar también:
+            $tbkOrder   = $request->input('TBK_ORDEN_COMPRA') ?? $request->query('TBK_ORDEN_COMPRA');
+            $tbkSession = $request->input('TBK_ID_SESION')    ?? $request->query('TBK_ID_SESION');
+
+            $p = null;
+            if (!empty($token)) {
+                $p = Payment::where('transaction_id', $token)->latest()->first();
+            }
+            if (!$p && !empty($tbkOrder)) {
+                $p = Payment::where('buy_order', $tbkOrder)->latest()->first();
+            }
+            if (!$p && !empty($tbkSession)) {
+                $p = Payment::where('session_id', $tbkSession)->latest()->first();
+            }
+
+            if ($p) {
+                $p->update(['status' => 'voided']);
+                PaymentMailer::sendVoided($p);
+            }
+
             $request->session()->put('payment_failed', true);
             $request->session()->flash('error', 'La compra fue cancelada por el usuario.');
             return redirect()->route('payment.failed');
@@ -186,43 +210,49 @@ class PaymentController extends Controller
         $responseCode = (int) ($commit->getResponseCode() ?? 999);   // 0 = aprobado
         $status       = strtoupper($commit->getStatus() ?? '');      // 'AUTHORIZED' = aprobado
         $paymentType  = strtoupper($commit->getPaymentTypeCode() ?? '');
-
         \Log::info('[TBK] Resultado commit', compact('responseCode','status','paymentType'));
 
         // Regla correcta de aprobación: responseCode === 0 y status === 'AUTHORIZED'.
         if ($responseCode !== 0 || $status !== 'AUTHORIZED') {
             $payment->update(['status' => 'failed']);
+            // Mail de pago rechazado
+            PaymentMailer::sendFailed($payment);
             $request->session()->put('payment_failed', true);
             $request->session()->flash('error', 'El pago fue rechazado por el emisor.');
             return redirect()->route('payment.failed');
         }
 
-
         // === Pago aprobado ===
         $start = $payment->created_at ?? now();
-        $durationDays = (int) config('plans.duration_days', 365);
-        $payment->forceFill([
-            'status'     => 'paid',
-            'expires_at' => (clone $start)->addDays($durationDays),
-        ])->save();
+            $durationDays = (int) config('plans.duration_days', 365);
+            $payment->forceFill([
+                'status'     => 'paid',
+                'expires_at' => (clone $start)->addDays($durationDays),
+            ])->save();
 
-        /** @var \App\Models\User $user */
-        $user = $payment->user ?? User::find(Auth::id());
-        if (!$user) {
-            \Log::error('[TBK] Usuario no encontrado para pago aprobado (payment_id='.$payment->id.')');
-            $request->session()->put('payment_failed', true);
-            return redirect()->route('payment.failed')->with('error', 'Usuario no encontrado.');
-        }
+            /** @var \App\Models\User $user */
+            $user = $payment->user ?? User::find(Auth::id());
+            if (!$user) {
+                \Log::error('[TBK] Usuario no encontrado para pago aprobado (payment_id='.$payment->id.')');
+                $request->session()->put('payment_failed', true);
+                return redirect()->route('payment.failed')->with('error', 'Usuario no encontrado.');
+            }
 
-        // Actualiza plan/fecha de vencimiento
-        $user->plan              = $payment->plan;
-        $user->fecha_vencimiento = $payment->expires_at; 
-        $user->webpay_status     = 'pagado';
-        $user->save();
+            // Actualiza plan/fecha de vencimiento
+            $user->plan              = $payment->plan;
+            $user->fecha_vencimiento = $payment->expires_at instanceof Carbon ? $payment->expires_at : Carbon::parse($payment->expires_at);
+            $user->webpay_status     = 'pagado';
+            $user->save();
+            $user->refresh(); // Muy importante: volver a cargar el modelo para que el cast aplique 
+            // Enviar correos
+            PaymentMailer::sendSucceeded($payment);
+            PaymentMailer::sendPlanActivated($user, $payment->plan);
 
-        if (Factura::where('payment_id', $payment->id)->exists()) {
-            return redirect()->route('payment.success');
-        }
+            // Si ya hay factura, continúa a success (después de enviar correos)
+            if (Factura::where('payment_id', $payment->id)->exists()) {
+                $request->session()->put('payment_success', true);
+                return redirect()->route('payment.success');
+            }
         // === Crear factura + PDF (si falla, no bloquea el success) ===
         try {
             // amount ES EL TOTAL COBRADO (con IVA). Prorrateamos a neto + IVA
@@ -358,7 +388,7 @@ class PaymentController extends Controller
         $user->save();
 
         // Envío con SDK SendGrid (opcional)
-        $htmlContent = View::make('emails.free-trial-activated', ['user' => $user])->render();
+        $htmlContent = View::make('emails.free_trial_activated', ['user' => $user])->render();
         $email = new \SendGrid\Mail\Mail();
         $email->setFrom("soporte@bmaia.cl", "B-MaiA - Prueba Gratuita");
         $email->setSubject("¡Prueba gratuita activada en B-MaiA!");

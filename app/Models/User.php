@@ -67,6 +67,7 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
             'invoice_email_opt_in' => 'boolean',
+            'fecha_vencimiento' => 'datetime',
         ];
     }
 
