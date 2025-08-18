@@ -1,219 +1,298 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>B-MaiA - Pago Exitoso</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css" rel="stylesheet">
+    <title>B-MaiA - Transacción Exitosa</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('css/components/home-user/payment/success.css') }}">
+    <script src="https://unpkg.com/@lottiefiles/dotlottie-wc@0.6.2/dist/dotlottie-wc.js" type="module"></script>
 </head>
+
 <body>
-@php
-    // Helpers locales por si no los cargaste vía autoload
-    if (!function_exists('mask_middle')) {
-        function mask_middle(string $value, int $keepStart = 2, int $keepEnd = 2, string $mask = '*'): string {
-            $value = (string) $value;
-            $len = mb_strlen($value);
-            if ($len <= $keepStart + $keepEnd) return str_repeat($mask, $len);
-            return mb_substr($value, 0, $keepStart)
-                . str_repeat($mask, $len - $keepStart - $keepEnd)
-                . mb_substr($value, -$keepEnd);
+    @php
+        // Helpers locales por si no los cargaste vía autoload
+        if (!function_exists('mask_middle')) {
+            function mask_middle(string $value, int $keepStart = 2, int $keepEnd = 2, string $mask = '*'): string
+            {
+                $value = (string) $value;
+                $len = mb_strlen($value);
+                if ($len <= $keepStart + $keepEnd)
+                    return str_repeat($mask, $len);
+                return mb_substr($value, 0, $keepStart)
+                    . str_repeat($mask, $len - $keepStart - $keepEnd)
+                    . mb_substr($value, -$keepEnd);
+            }
         }
-    }
-    if (!function_exists('mask_email')) {
-        function mask_email(string $email): string {
-            if (!str_contains($email, '@')) return mask_middle($email);
-            [$user, $domain] = explode('@', $email, 2);
-            return mask_middle($user, 1, 1) . '@' . $domain;
+        if (!function_exists('mask_email')) {
+            function mask_email(string $email): string
+            {
+                if (!str_contains($email, '@'))
+                    return mask_middle($email);
+                [$user, $domain] = explode('@', $email, 2);
+                return mask_middle($user, 1, 1) . '@' . $domain;
+            }
         }
-    }
 
-    // Fallback si por accidente no envían $payment desde el controlador
-    if (!isset($payment)) {
-        $payment = \App\Models\Payment::where('user_id', \Illuminate\Support\Facades\Auth::id())
-            ->where('status', 'paid')
-            ->latest()
-            ->with('datosFacturacion')
-            ->first();
-    }
+        // Fallback si por accidente no envían $payment desde el controlador
+        if (!isset($payment)) {
+            $payment = \App\Models\Payment::where('user_id', \Illuminate\Support\Facades\Auth::id())
+                ->where('status', 'paid')
+                ->latest()
+                ->with('datosFacturacion')
+                ->first();
+        }
 
-    $tokenShort = $payment?->transaction_id
-        ? substr($payment->transaction_id, 0, 4) . '…' . substr($payment->transaction_id, -6)
-        : '—';
+        $tokenShort = $payment?->transaction_id
+            ? substr($payment->transaction_id, 0, 4) . '…' . substr($payment->transaction_id, -6)
+            : '—';
 
-    $bs = $payment?->billing_snapshot ?? null;
-    $df = $payment?->datosFacturacion ?? null;
+        $bs = $payment?->billing_snapshot ?? null;
+        $df = $payment?->datosFacturacion ?? null;
 
-    $razon       = $bs['razon_social']        ?? ($df->razon_social        ?? '—');
-    $rut         = $bs['rut']                  ?? ($df->rut                  ?? '—');
-    $giro        = $bs['giro']                 ?? ($df->giro                 ?? '—');
-    $dir         = $bs['direccion_comercial']  ?? ($df->direccion_comercial  ?? '—');
-    $ciudad      = $bs['ciudad']               ?? ($df->ciudad               ?? '—');
-    $telefono    = $bs['telefono']             ?? ($df->telefono             ?? '—');
-    $correoDte   = $bs['correo_envio_dte']     ?? ($df->correo_envio_dte     ?? '—');
-    $envioDte    = isset($bs['autorizacion_envio_dte'])
-                    ? ($bs['autorizacion_envio_dte'] ? 'Sí' : 'No')
-                    : ($df?->autorizacion_envio_dte ? 'Sí' : 'No');
-@endphp
+        $razon = $bs['razon_social'] ?? ($df->razon_social ?? '—');
+        $rut = $bs['rut'] ?? ($df->rut ?? '—');
+        $giro = $bs['giro'] ?? ($df->giro ?? '—');
+        $dir = $bs['direccion_comercial'] ?? ($df->direccion_comercial ?? '—');
+        $ciudad = $bs['ciudad'] ?? ($df->ciudad ?? '—');
+        $telefono = $bs['telefono'] ?? ($df->telefono ?? '—');
+        $correoDte = $bs['correo_envio_dte'] ?? ($df->correo_envio_dte ?? '—');
+        $envioDte = isset($bs['autorizacion_envio_dte'])
+            ? ($bs['autorizacion_envio_dte'] ? 'Sí' : 'No')
+            : ($df?->autorizacion_envio_dte ? 'Sí' : 'No');
+    @endphp
 
-<div class="payment-success-container py-5">
-    <div class="container">
-        <!-- Encabezado -->
-        <div class="text-center mb-4">
-            <div class="success-animation-wrapper mb-3">
-                <div class="success-circle"><div class="success-icon"><i class="fas fa-check"></i></div></div>
-                <div class="success-ring"></div>
-                <div class="success-ring-2"></div>
-                <div class="success-ring-3"></div>
+    <div class="payment-success-container">
+        <!-- ===========================================
+             SECCIÓN IZQUIERDA - ANIMACIÓN Y TÍTULO
+             =========================================== -->
+        <div class="left-section">
+            <div class="success-animation-wrapper">
+                <dotlottie-wc src="https://lottie.host/7f5b81f9-883d-4b2c-a295-eebfc5ea8690/QuFBgjcEi0.lottie"
+                    class="success-lottie" speed="1" autoplay>
+                </dotlottie-wc>
             </div>
-            <h1 class="success-title mb-1">¡Pago Exitoso!</h1>
-            <p class="text-muted mb-0">Tu transacción se ha completado correctamente.</p>
+
+            <div class="success-content">
+                <h1 class="success-title">Transacción Exitosa</h1>
+                <p class="success-subtitle">Su pago ha sido procesado correctamente y está disponible en su cuenta</p>
+                <div class="success-badge">
+                    <i class="fas fa-check-circle"></i>
+                    <span>Pago Confirmado</span>
+                </div>
+            </div>
         </div>
 
-        <!-- Detalle compacto -->
-        <div class="card shadow-sm mb-4">
-            <div class="card-header bg-light"><strong><i class="fas fa-receipt me-2"></i>Detalle de la transacción</strong></div>
-            <div class="card-body">
-                <div class="row g-3">
-                    <div class="col-md-3">
-                        <small class="text-muted d-block">Fecha</small>
-                        <strong>{{ optional($payment->created_at)->format('d/m/Y H:i') }}</strong>
+        <!-- ===========================================
+             SECCIÓN DERECHA - DETALLES DE LA TRANSACCIÓN
+             =========================================== -->
+        <div class="right-section">
+            <div class="details-container">
+                <!-- Encabezado de Detalles -->
+                <div class="section-header">
+                    <div class="section-icon">
+                        <i class="fas fa-receipt"></i>
                     </div>
-                    <div class="col-md-3">
-                        <small class="text-muted d-block">Plan</small>
-                        <strong>{{ strtoupper($payment->plan ?? '—') }}</strong>
-                    </div>
-                    <div class="col-md-3">
-                        <small class="text-muted d-block">Total (incl. IVA)</small>
-                        <strong>${{ number_format((int)($payment->amount ?? 0), 0, ',', '.') }}</strong>
-                    </div>
+                    <h2 class="section-title">Detalles de la Transacción</h2>
+                </div>
 
-                    <div class="col-md-3">
-                        <small class="text-muted d-block">Vence</small>
-                        <strong>
-                            {{ optional($payment->expires_at ?? ($payment->user->fecha_vencimiento ?? null))->format('d/m/Y') ?? '—' }}
-                        </strong>
-                        
+                <!-- Grid de Detalles de Pago -->
+                <div class="details-grid">
+                    <div class="detail-item">
+                        <label class="detail-label">Fecha de Transacción</label>
+                        <span class="detail-value">{{ optional($payment->created_at)->format('d/m/Y H:i') }}</span>
                     </div>
-                    <div class="col-md-3">
+                    <div class="detail-item">
+                        <label class="detail-label">Plan Contratado</label>
+                        <span class="detail-value plan-badge">{{ strtoupper($payment->plan ?? '—') }}</span>
+                    </div>
+                    <div class="detail-item">
+                        <label class="detail-label">Monto Total</label>
+                        <span
+                            class="detail-value amount">${{ number_format((int) ($payment->amount ?? 0), 0, ',', '.') }}</span>
+                    </div>
+                    <div class="detail-item">
+                        <label class="detail-label">Fecha de Vencimiento</label>
+                        <span class="detail-value">
+                            {{ optional($payment->expires_at ?? ($payment->user->fecha_vencimiento ?? null))->format('d/m/Y') ?? '—' }}
+                        </span>
+                    </div>
+                    <div class="detail-item" style="grid-column: 1 / -1;">
                         @php
-                            // URLs para ver/descargar
-                            $verUrl = null; $descargarUrl = null;
-                            if(!empty($payment?->factura?->id)) {
-                                $verUrl        = route('facturas.ver',        $payment->factura);
-                                $descargarUrl  = route('facturas.descargar',  $payment->factura);
-                            } elseif(!empty($facturaUrl)) {
+                            // URLs para ver/descargar facturas
+                            $verUrl = null;
+                            $descargarUrl = null;
+                            if (!empty($payment?->factura?->id)) {
+                                $verUrl = route('facturas.ver', $payment->factura);
+                                $descargarUrl = route('facturas.descargar', $payment->factura);
+                            } elseif (!empty($facturaUrl)) {
                                 $verUrl = $facturaUrl;
-                                $descargarUrl = $facturaUrl; // con atributo download
+                                $descargarUrl = $facturaUrl;
                             }
                         @endphp
 
-                        @if($verUrl)
-                            <a href="{{ $verUrl }}" class="text-decoration-none" target="_blank"
-                            data-bs-toggle="tooltip" title="Ver PDF en otra pestaña">
-                            <i class="fas fa-file-pdf"></i>
-                            </a>
-                        @endif
+                        <label class="detail-label">Documentos</label>
+                        <div class="invoice-actions">
+                            @if($verUrl)
+                                <a href="{{ $verUrl }}" class="action-link" target="_blank" title="Ver Factura">
+                                    <i class="fas fa-eye"></i>
+                                    <span>Ver Factura</span>
+                                </a>
+                            @endif
 
-                        @if($descargarUrl)
-                            <a href="{{ $descargarUrl }}" class="text-decoration-none"
-                            @if(empty($payment?->factura?->id)) download @endif
-                            data-bs-toggle="tooltip" title="Descargar PDF">
-                            <i class="fas fa-download"></i>
-                            </a>
-                        @else
-                            <span class="badge bg-secondary">Sin PDF</span>
-                        @endif
-                    </div>                  
-                    
-                </div>
-                <div class="d-flex align-items-center gap-2 mt-3">
-                    <span class="badge bg-success"><i class="fas fa-check-circle me-1"></i>Aprobado</span>
-                    <small class="text-muted">Gracias por tu compra.</small>
-                </div>
-            </div>
-        </div>
-
-        <!-- Acordeón: datos de facturación enmascarados -->
-        <div class="accordion mb-4" id="billingAccordion">
-            <div class="accordion-item">
-                <h2 class="accordion-header" id="headingBill">
-                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseBill">
-                        Ver datos de facturación usados (enmascarados)
-                    </button>
-                </h2>
-                <div id="collapseBill" class="accordion-collapse collapse" data-bs-parent="#billingAccordion">
-                    <div class="accordion-body">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <p class="mb-1"><small class="text-muted">Razón social</small><br><strong>{{ $razon }}</strong></p>
-                                <p class="mb-1"><small class="text-muted">RUT</small><br><span>{{ $rut !== '—' ? mask_middle($rut, 4, 2) : '—' }}</span></p>
-                                <p class="mb-1"><small class="text-muted">Giro</small><br><span>{{ $giro }}</span></p>
-                            </div>
-                            <div class="col-md-6">
-                                <p class="mb-1"><small class="text-muted">Dirección comercial</small><br><span>{{ $dir ? '• • •' : '—' }}</span></p>
-                                <p class="mb-1"><small class="text-muted">Ciudad</small><br><span>{{ $ciudad }}</span></p>
-                                <p class="mb-1"><small class="text-muted">Teléfono</small><br><span>{{ $telefono !== '—' ? mask_middle($telefono, 2, 2) : '—' }}</span></p>
-                                <p class="mb-1"><small class="text-muted">Correo envío DTE</small><br><span>{{ $correoDte !== '—' ? mask_email($correoDte) : '—' }}</span></p>
-                                <p class="mb-0"><small class="text-muted">Autorización envío DTE</small><br><span>{{ $envioDte }}</span></p>
-                            </div>
+                            @if($descargarUrl)
+                                <a href="{{ $descargarUrl }}" class="action-link download"
+                                    @if(empty($payment?->factura?->id)) download @endif title="Descargar Factura">
+                                    <i class="fas fa-download"></i>
+                                    <span>Descargar PDF</span>
+                                </a>
+                            @else
+                                <span class="no-document">
+                                    <i class="fas fa-exclamation-triangle"></i>
+                                    Sin documento disponible
+                                </span>
+                            @endif
                         </div>
-                        <small class="text-muted d-block mt-3">
-                            *Este es un snapshot de tus datos al momento del pago. Para modificarlos, ve a
-                            <a href="{{ route('user.settings') }}#billing">Configuración &gt; Datos de facturación</a>.
-                        </small>
                     </div>
                 </div>
-            </div>
-        </div>
 
-        <!-- Qué sigue -->
-        <div class="card mb-4 shadow-sm">
-            <div class="card-header bg-light"><strong><i class="fas fa-list-check me-2"></i>¿Qué sigue ahora?</strong></div>
-            <div class="card-body">
-                <ul class="mb-0">
-                    <li>Ya tienes acceso a todas las funciones premium.</li>
-                    <li>Revisa tu configuración de cuenta actualizada.</li>
-                    <li>Explora las nuevas herramientas disponibles.</li>
-                </ul>
-            </div>
-        </div>
+                <!-- ===========================================
+                     INFORMACIÓN DE FACTURACIÓN (ACORDEÓN)
+                     =========================================== -->
+                <div class="billing-section">
+                    <div class="accordion-trigger" onclick="toggleBillingAccordion()">
+                        <div class="accordion-title">
+                            <div class="accordion-icon">
+                                <i class="fas fa-building"></i>
+                            </div>
+                            <span>Información de Facturación Utilizada</span>
+                        </div>
+                        <i class="fas fa-chevron-down accordion-arrow" id="billingArrow"></i>
+                    </div>
+                    <div class="accordion-content" id="billingAccordionContent">
+                        <div class="billing-info-grid">
+                            <div class="billing-column">
+                                <div class="billing-field">
+                                    <label class="field-label">Razón Social</label>
+                                    <span class="field-value">{{ $razon }}</span>
+                                </div>
+                                <div class="billing-field">
+                                    <label class="field-label">RUT</label>
+                                    <span
+                                        class="field-value masked">{{ $rut !== '—' ? mask_middle($rut, 4, 2) : '—' }}</span>
+                                </div>
+                                <div class="billing-field">
+                                    <label class="field-label">Giro Comercial</label>
+                                    <span class="field-value">{{ $giro }}</span>
+                                </div>
+                                <div class="billing-field">
+                                    <label class="field-label">Ciudad</label>
+                                    <span class="field-value">{{ $ciudad }}</span>
+                                </div>
+                            </div>
+                            <div class="billing-column">
+                                <div class="billing-field">
+                                    <label class="field-label">Dirección Comercial</label>
+                                    <span class="field-value masked">{{ $dir ? '• • •' : '—' }}</span>
+                                </div>
+                                <div class="billing-field">
+                                    <label class="field-label">Teléfono</label>
+                                    <span
+                                        class="field-value masked">{{ $telefono !== '—' ? mask_middle($telefono, 2, 2) : '—' }}</span>
+                                </div>
+                                <div class="billing-field">
+                                    <label class="field-label">Correo Electrónico DTE</label>
+                                    <span
+                                        class="field-value masked">{{ $correoDte !== '—' ? mask_email($correoDte) : '—' }}</span>
+                                </div>
+                                <div class="billing-field">
+                                    <label class="field-label">Autorización Envío DTE</label>
+                                    <span
+                                        class="field-value authorization {{ strtolower($envioDte) === 'sí' ? 'authorized' : 'not-authorized' }}">
+                                        <i
+                                            class="fas {{ strtolower($envioDte) === 'sí' ? 'fa-check' : 'fa-times' }}"></i>
+                                        {{ $envioDte }}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="billing-disclaimer">
+                            <p>
+                                <strong>Nota:</strong> Esta información corresponde a los datos registrados al momento
+                                del pago.
+                                Para actualizar sus datos de facturación, visite
+                                <a href="{{ route('user.settings') }}#billing" class="settings-link">Configuración de
+                                    Cuenta</a>.
+                            </p>
+                        </div>
+                    </div>
+                </div>
 
-        <!-- Acciones -->
-        <div class="d-flex gap-2 justify-content-center">
-            <a href="{{ route('user.settings') }}" class="btn btn-primary btn-lg">
-                <i class="fas fa-cog me-2"></i>Ir a Configuración
-            </a>
-            <a href="{{ route('home') }}" class="btn btn-outline-success btn-lg">
-                <i class="fas fa-home me-2"></i>Volver al Inicio
-            </a>
+                <!-- ===========================================
+                     PRÓXIMOS PASOS
+                     =========================================== -->
+                <div class="next-steps-section">
+                    <div class="section-header">
+                        <div class="section-icon">
+                            <i class="fas fa-list-check"></i>
+                        </div>
+                        <h2 class="section-title">Próximos Pasos</h2>
+                    </div>
+
+                    <ul class="steps-list">
+                        <li class="step-item">
+                            <div class="step-icon">
+                                <i class="fas fa-unlock"></i>
+                            </div>
+                            <span>Acceso completo a todas las funcionalidades premium habilitado</span>
+                        </li>
+                        <li class="step-item">
+                            <div class="step-icon">
+                                <i class="fas fa-user-cog"></i>
+                            </div>
+                            <span>Revise y configure sus preferencias de cuenta</span>
+                        </li>
+                        <li class="step-item">
+                            <div class="step-icon">
+                                <i class="fas fa-rocket"></i>
+                            </div>
+                            <span>Explore las nuevas herramientas y características disponibles</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- ===========================================
+                     BOTONES DE ACCIÓN FINALES
+                     =========================================== -->
+                <div class="action-buttons">
+                    <a href="{{ route('user.settings') }}" class="btn btn-primary">
+                        <i class="fas fa-cog"></i>
+                        <span>Configuración de Cuenta</span>
+                    </a>
+                    <a href="{{ route('home') }}" class="btn btn-secondary">
+                        <i class="fas fa-home"></i>
+                        <span>Ir al Dashboard</span>
+                    </a>
+                </div>
+            </div>
         </div>
     </div>
-</div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const successCircle = document.querySelector('.success-circle');
-    if (successCircle) {
-        successCircle.addEventListener('click', createConfettiBurst);
-        setTimeout(createConfettiBurst, 1200);
-    }
-    function createConfettiBurst() {
-        const container = document.querySelector('.payment-success-container');
-        if (!container) return;
-        for (let i = 0; i < 14; i++) {
-            const c = document.createElement('div');
-            c.className = 'confetti';
-            c.style.left = Math.random() * 100 + '%';
-            c.style.animationDelay = Math.random() * 1.2 + 's';
-            c.style.animationDuration = (Math.random() * 1.2 + 1.6) + 's';
-            container.appendChild(c);
-            setTimeout(() => c.remove(), 2600);
+    <script>
+        function toggleBillingAccordion() {
+            const content = document.getElementById('billingAccordionContent');
+            const arrow = document.getElementById('billingArrow');
+
+            if (content.classList.contains('active')) {
+                content.classList.remove('active');
+                arrow.style.transform = 'rotate(0deg)';
+            } else {
+                content.classList.add('active');
+                arrow.style.transform = 'rotate(180deg)';
+            }
         }
-    }
-});
-</script>
+    </script>
 </body>
+
 </html>

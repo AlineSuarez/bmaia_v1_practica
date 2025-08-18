@@ -63,7 +63,6 @@
 
 * {
     box-sizing: border-box;
-    font-family: outfit, sans-serif;
 }
 
 .main-container {
@@ -915,7 +914,6 @@
     .pcc-list-value {
         text-align: right;
         flex: 1;
-        margin-left: var(--spacing-3);
     }
 
     .stats-grid {
@@ -1582,4 +1580,529 @@ html {
     background: rgba(255, 255, 255, 0.842);
     border-radius: 50%;
     pointer-events: none;
+}
+
+/* Modal para editar datos de colmena */
+#modalEditarColmena .modal-content {
+    background: var(--color-white);
+    border-radius: 20px;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25),
+        0 0 0 1px rgba(255, 193, 7, 0.1);
+    border: none;
+    padding: 0;
+    overflow: hidden;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    backdrop-filter: blur(10px);
+    width: 100%;
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+#modalEditarColmena .modal-dialog {
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    min-height: calc(100vh - 2rem) !important;
+    margin: 1rem auto !important;
+    width: 100% !important;
+    max-width: 540px !important;
+    padding: 0 1rem;
+}
+
+#modalEditarColmena .modal-dialog-centered {
+    min-height: calc(100vh - 2rem) !important;
+}
+
+#modalEditarColmena .modal {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+#modalEditarColmena .modal-header {
+    background: linear-gradient(135deg, #10b981 0%, #059669 50%, #047857 100%);
+    color: var(--color-white);
+    border-bottom: none;
+    padding: 24px 28px 20px 28px;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+#modalEditarColmena .modal-header::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(
+        45deg,
+        rgba(255, 255, 255, 0.1) 0%,
+        transparent 100%
+    );
+    pointer-events: none;
+}
+
+#modalEditarColmena .modal-title {
+    font-size: 20px;
+    font-weight: 700;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    position: relative;
+    z-index: 1;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    flex: 1;
+}
+
+#modalEditarColmena .modal-title i {
+    font-size: 22px;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+}
+
+#modalEditarColmena .btn-close {
+    color: rgba(255, 255, 255, 0.9);
+    opacity: 1;
+    transition: all 0.2s ease;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(10px);
+    position: relative;
+    z-index: 2;
+    font-size: 20px;
+    border: none;
+    padding: 0;
+    flex-shrink: 0;
+}
+
+#modalEditarColmena .btn-close::before {
+    content: "×";
+    font-size: 24px;
+    font-weight: 300;
+    line-height: 1;
+}
+
+#modalEditarColmena .btn-close:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+#modalEditarColmena .modal-body {
+    padding: 32px 28px;
+    background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
+    position: relative;
+}
+
+#modalEditarColmena .modal-body::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: radial-gradient(
+            circle at 20% 20%,
+            rgba(16, 185, 129, 0.03) 0%,
+            transparent 50%
+        ),
+        radial-gradient(
+            circle at 80% 80%,
+            rgba(5, 150, 105, 0.03) 0%,
+            transparent 50%
+        );
+    pointer-events: none;
+}
+
+#modalEditarColmena .form-group-modal {
+    margin-bottom: 24px;
+    position: relative;
+    z-index: 1;
+}
+
+#modalEditarColmena .form-label {
+    color: #065f46;
+    font-weight: 600;
+    font-size: 15px;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8);
+}
+
+#modalEditarColmena .form-label i {
+    font-size: 14px;
+    color: #059669;
+}
+
+#modalEditarColmena .form-control-modal {
+    width: 100%;
+    padding: 12px 16px;
+    border: 2px solid #a7f3d0;
+    border-radius: 12px;
+    font-size: 15px;
+    background: var(--color-white);
+    color: #065f46;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05),
+        0 2px 4px -1px rgba(0, 0, 0, 0.03);
+}
+
+#modalEditarColmena .form-control-modal:focus {
+    border-color: #059669;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.1),
+        0 4px 12px -2px rgba(0, 0, 0, 0.1);
+    transform: translateY(-1px);
+}
+
+#modalEditarColmena .form-control-modal:hover {
+    border-color: #34d399;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 12px -2px rgba(0, 0, 0, 0.08);
+}
+
+#modalEditarColmena .form-control-modal.error {
+    border-color: #ef4444;
+    background-color: #fef2f2;
+}
+
+#modalEditarColmena .form-control-modal.error:focus {
+    border-color: #dc2626;
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+}
+
+#modalEditarColmena .form-help {
+    color: #059669;
+    font-size: 12px;
+    font-weight: 500;
+    margin-top: 6px;
+    display: block;
+    opacity: 0.8;
+}
+
+#modalEditarColmena .modal-footer {
+    background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
+    border-top: 1px solid rgba(16, 185, 129, 0.2);
+    padding: 24px 28px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 16px;
+    position: relative;
+}
+
+#modalEditarColmena .modal-footer::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 20px;
+    right: 20px;
+    height: 1px;
+    background: linear-gradient(
+        90deg,
+        transparent 0%,
+        rgba(16, 185, 129, 0.3) 50%,
+        transparent 100%
+    );
+}
+
+/* Vista previa de colmena en modal de edición */
+.colmena-preview-container-edit {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 24px;
+    position: relative;
+    z-index: 1;
+}
+
+#modalEditarColmena .colmena-card-edit {
+    width: 100px;
+    height: 100px;
+    border: 3px solid #059669;
+    background-color: rgba(16, 185, 129, 0.1);
+    border-radius: 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+    cursor: default;
+    margin-top: 1.5rem;
+    gap: 4px;
+}
+
+#modalEditarColmena .colmena-card-edit::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(
+        45deg,
+        rgba(255, 255, 255, 0.3) 0%,
+        transparent 100%
+    );
+    pointer-events: none;
+}
+
+#modalEditarColmena .colmena-card-edit:hover {
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 12px 35px -12px rgba(16, 185, 129, 0.3);
+}
+
+#modalEditarColmena .colmena-icon-edit {
+    font-size: 2.2rem;
+    color: #065f46;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+    transition: all 0.3s ease;
+    position: relative;
+    z-index: 1;
+}
+
+#modalEditarColmena .colmena-name-edit {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #065f46;
+    line-height: 1.1;
+    text-align: center;
+    max-width: 90px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    transition: all 0.3s ease;
+    position: relative;
+    z-index: 1;
+}
+
+#modalEditarColmena .colmena-number-edit {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: #059669;
+    line-height: 1;
+    transition: all 0.3s ease;
+    position: relative;
+    z-index: 1;
+}
+
+/* Validación de errores */
+#modalEditarColmena .validation-errors {
+    background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+    border: 1px solid #fca5a5;
+    border-radius: 12px;
+    padding: 16px;
+    margin-top: 16px;
+    transition: all 0.3s ease;
+}
+
+#modalEditarColmena .error-message {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #dc2626;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+#modalEditarColmena .error-message i {
+    font-size: 16px;
+    color: #ef4444;
+}
+
+/* Botones del modal de edición */
+#modalEditarColmena .btn-success,
+#modalEditarColmena .btn-secondary {
+    min-width: 140px;
+    padding: 12px 24px;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 14px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border: none;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+#modalEditarColmena .btn-success {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: white;
+    box-shadow: 0 4px 14px 0 rgba(16, 185, 129, 0.3);
+}
+
+#modalEditarColmena .btn-success:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px -8px rgba(16, 185, 129, 0.4);
+    background: linear-gradient(135deg, #059669 0%, #047857 100%);
+}
+
+#modalEditarColmena .btn-success:disabled {
+    background: linear-gradient(135deg, #9ca3af 0%, #6b7280 100%);
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+#modalEditarColmena .btn-secondary {
+    background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);
+    color: white;
+    box-shadow: 0 4px 14px 0 rgba(107, 114, 128, 0.2);
+}
+
+#modalEditarColmena .btn-secondary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px -8px rgba(107, 114, 128, 0.3);
+    background: linear-gradient(135deg, #4b5563 0%, #374151 100%);
+}
+
+/* Responsividad para el modal de edición */
+@media (max-width: 768px) {
+    #modalEditarColmena .modal-dialog {
+        max-width: 95vw !important;
+        margin: 1rem auto !important;
+        min-height: calc(100vh - 2rem) !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        padding: 0 0.5rem;
+    }
+
+    #modalEditarColmena .modal-content {
+        border-radius: 16px;
+        padding: 0;
+        width: 100%;
+        max-width: 100%;
+    }
+
+    #modalEditarColmena .modal-header {
+        padding: 20px 20px 16px 20px;
+    }
+
+    #modalEditarColmena .modal-body {
+        padding: 24px 20px;
+    }
+
+    #modalEditarColmena .modal-footer {
+        padding: 20px;
+    }
+
+    #modalEditarColmena .modal-title {
+        font-size: 18px;
+    }
+
+    #modalEditarColmena .colmena-card-edit {
+        width: 80px;
+        height: 80px;
+    }
+
+    #modalEditarColmena .colmena-icon-edit {
+        font-size: 1.8rem;
+    }
+
+    #modalEditarColmena .colmena-name-edit {
+        font-size: 0.8rem;
+        max-width: 70px;
+    }
+
+    #modalEditarColmena .colmena-number-edit {
+        font-size: 0.7rem;
+    }
+}
+
+@media (max-width: 480px) {
+    #modalEditarColmena .modal-dialog {
+        max-width: 98vw !important;
+        margin: 0.5rem auto !important;
+        min-height: calc(100vh - 1rem) !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        padding: 0 0.25rem;
+    }
+
+    #modalEditarColmena .modal-content {
+        border-radius: 12px;
+        width: 100%;
+        max-width: 100%;
+    }
+
+    #modalEditarColmena .modal-header {
+        padding: 16px 16px 12px 16px;
+    }
+
+    #modalEditarColmena .modal-body {
+        padding: 20px 16px;
+    }
+
+    #modalEditarColmena .modal-footer {
+        padding: 16px;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    #modalEditarColmena .modal-title {
+        font-size: 16px;
+    }
+
+    #modalEditarColmena .btn-success,
+    #modalEditarColmena .btn-secondary {
+        width: 100%;
+        min-width: auto;
+    }
+
+    #modalEditarColmena .colmena-card-edit {
+        width: 70px;
+        height: 70px;
+    }
+
+    #modalEditarColmena .colmena-icon-edit {
+        font-size: 1.5rem;
+    }
+
+    #modalEditarColmena .colmena-name-edit {
+        font-size: 0.7rem;
+        max-width: 60px;
+    }
+
+    #modalEditarColmena .colmena-number-edit {
+        font-size: 0.6rem;
+    }
+}
+
+/* Centrado adicional para asegurar posición */
+#modalEditarColmena .modal-backdrop {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+/* Estilos adicionales para el centrado perfecto */
+#modalEditarColmena.show .modal-dialog {
+    transform: none !important;
+}
+
+#modalEditarColmena.fade .modal-dialog {
+    transition: transform 0.3s ease-out;
+    transform: none !important;
+}
+
+#modalEditarColmena.fade:not(.show) .modal-dialog {
+    transform: translate(0, -50px) !important;
 }

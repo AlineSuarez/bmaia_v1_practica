@@ -39,12 +39,45 @@
                     <td>
                         @if ($valor instanceof \Carbon\Carbon)
                             {{ $valor->format('d/m/Y') }}
+                        @elseif (is_string($valor) && preg_match('/^\d{4}-\d{2}-\d{2}T/', $valor))
+                            {{ \Carbon\Carbon::parse($valor)->format('d/m/Y') }}
+                        @elseif (is_string($valor) && preg_match('/^\d{4}-\d{2}-\d{2}$/', $valor))
+                            {{ \Carbon\Carbon::parse($valor)->format('d/m/Y') }}
                         @elseif (is_bool($valor))
                             {{ $valor ? 'Sí' : 'No' }}
                         @elseif (is_null($valor))
                             <span style="color: #888;">Sin datos</span>
+                        @elseif (is_array($valor) || $valor instanceof \Illuminate\Support\Collection)
+                            @php
+                                $array = is_array($valor) ? $valor : $valor->toArray();
+                                $isSimple = count($array) === count($array, COUNT_RECURSIVE);
+                            @endphp
+                            @if ($isSimple)
+                                {{ implode(', ', $array) }}
+                            @else
+                                @foreach($array as $item)
+                                    @if(is_array($item))
+                                        @if(isset($item['fecha']))
+                                            <div>
+                                                <strong>Fecha:</strong> {{ \Carbon\Carbon::parse($item['fecha'])->format('d/m/Y') }}
+                                                @if(isset($item['motivo']))
+                                                    <span><strong>Motivo:</strong> {{ $item['motivo'] }}</span>
+                                                @endif
+                                            </div>
+                                        @else
+                                            {{ json_encode($item, JSON_UNESCAPED_UNICODE) }}
+                                        @endif
+                                    @else
+                                        @if(is_string($item) && preg_match('/^\d{4}-\d{2}-\d{2}$/', $item))
+                                            {{ \Carbon\Carbon::parse($item)->format('d/m/Y') }}
+                                        @else
+                                            {{ $item }}
+                                        @endif
+                                    @endif
+                                @endforeach
+                            @endif
                         @else
-                            {{ $valor }}
+                            {{ is_scalar($valor) ? $valor : json_encode($valor, JSON_UNESCAPED_UNICODE) }}
                         @endif
                     </td>
                 </tr>

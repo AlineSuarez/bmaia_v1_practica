@@ -240,6 +240,7 @@
         <div class="colmena-info">
           <h3>INFORMACIÓN DE LA COLMENA</h3>
           <div class="info-line"><strong>Número:</strong> {{ $colmena->numero }}</div>
+          <div class="info-line"><strong>Nombre:</strong> {{ $colmena->nombre ?? ('#' . $colmena->numero) }}</div>
           <div class="info-line"><strong>Registro:</strong> {{ $colmena->created_at->format('d/m/Y') }}</div>
           @if($colmena->numero_marcos)
         <div class="info-line"><strong>Marcos:</strong> {{ $colmena->numero_marcos }}</div>
