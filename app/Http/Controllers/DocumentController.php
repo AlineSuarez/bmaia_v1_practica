@@ -325,8 +325,10 @@ class DocumentController extends Controller
             $data = array_merge(
                 $beekeeperData,
                 $apiaryData,
-                ['visits' => $visitas,
-                'fechaGeneracion' => $this->obtenerFechaHoraLocal()]
+                [
+                    'visits' => $visitas,
+                    'fechaGeneracion' => $this->obtenerFechaHoraLocal()
+                ]
             );
 
             // Log para debugging
@@ -369,7 +371,7 @@ class DocumentController extends Controller
             $beekeeperData = $this->getBeekeeperData();
             $apiaryData = $this->getApiaryData($apiario);
 
-            $data = array_merge($beekeeperData, $apiaryData, ['visits' => $visitas,'fechaGeneracion' => $this->obtenerFechaHoraLocal()]);
+            $data = array_merge($beekeeperData, $apiaryData, ['visits' => $visitas, 'fechaGeneracion' => $this->obtenerFechaHoraLocal()]);
 
             $pdf = Pdf::loadView('documents.visit-record', compact('data'));
             $pdf->setPaper('A4', 'portrait');
@@ -431,15 +433,14 @@ class DocumentController extends Controller
                 ->get();
 
             $beekeeperData = $this->getBeekeeperData();
-            $apiaryData   = $this->getApiaryData($apiario);
+            $apiaryData = $this->getApiaryData($apiario);
 
             $data = array_merge($beekeeperData, $apiaryData, ['visits' => $medicamentos, 'fechaGeneracion' => $this->obtenerFechaHoraLocal()]);
 
             $pdf = Pdf::loadView('documents.medicaments-record', compact('data'));
             // … resto inalterado …
             return $pdf->download('Medicamentos_Apiario_' . $apiario->nombre . '.pdf');
-        }
-        catch (\Exception $e) {
+        } catch (\Exception $e) {
             Log::error('Error generating medicaments document: ' . $e->getMessage());
             return back()->with('error', 'Error al generar el documento de medicamentos: ' . $e->getMessage());
         }
@@ -450,7 +451,7 @@ class DocumentController extends Controller
         $apiario = Apiario::with(['comuna.region'])->findOrFail($apiarioId);
 
         // Trae todas las visitas de tipo "Alimentación" con su EstadoNutricional y la Colmena
-        $visitas = Visita::with(['estadoNutricional','colmena'])
+        $visitas = Visita::with(['estadoNutricional', 'colmena'])
             ->where('apiario_id', $apiarioId)
             ->where('tipo_visita', 'Alimentación')
             ->get();
@@ -459,24 +460,26 @@ class DocumentController extends Controller
             return back()->with('error', 'No hay registros de alimentación válidos para este apiario.');
         }
 
-        $beekeeper  = $this->getBeekeeperData();
+        $beekeeper = $this->getBeekeeperData();
         $apiaryData = $this->getApiaryData($apiario);
 
         // Usamos la Opción A: un solo $data para tu vista Blade existente
         $data = array_merge(
             $beekeeper,
             $apiaryData,
-            ['visits' => $visitas,
-            'fechaGeneracion' => $this->obtenerFechaHoraLocal()]
+            [
+                'visits' => $visitas,
+                'fechaGeneracion' => $this->obtenerFechaHoraLocal()
+            ]
         );
 
         $pdf = Pdf::loadView('documents.alimentacion-record', compact('data'))
-            ->setPaper('A4','portrait')
+            ->setPaper('A4', 'portrait')
             ->setOptions([
-                'isHtml5ParserEnabled'=>true,
-                'isPhpEnabled'=>false,
-                'defaultFont'=>'DejaVu Sans',
-                'enable_remote'=>false,
+                'isHtml5ParserEnabled' => true,
+                'isPhpEnabled' => false,
+                'defaultFont' => 'DejaVu Sans',
+                'enable_remote' => false,
             ]);
 
         return $pdf->download("Alimentacion_{$apiario->nombre}.pdf");
@@ -484,9 +487,12 @@ class DocumentController extends Controller
 
     public function generateReinaDocument($apiarioId)
     {
-        $colmena = Colmena::with(['apiario', 'calidadReina' => function ($q) {
-            $q->latest('updated_at');
-        }])->where('apiario_id', $apiarioId)->first();
+        $colmena = Colmena::with([
+            'apiario',
+            'calidadReina' => function ($q) {
+                $q->latest('updated_at');
+            }
+        ])->where('apiario_id', $apiarioId)->first();
 
         if (!$colmena || !$colmena->calidadReina) {
             abort(404, 'Datos no encontrados.');
@@ -521,11 +527,17 @@ class DocumentController extends Controller
         // Generar PDF 
         $pdf = Pdf::setOptions([
             'isRemoteEnabled' => true,
-        ])->loadView('documents.colmena-qr-pdf', compact('url','apiario','colmena','fechaGeneracion'));
+        ])->loadView('documents.colmena-qr-pdf', compact('url', 'apiario', 'colmena', 'fechaGeneracion'));
         // Nombre dinámico
         $filename = "qr_colmena_{$colmena->numero}_{$apiario->nombre}.pdf";
         // Descargar el archivo PDF
         return $pdf->download($filename);
+    }
+
+    public function qrPdfPublic(Apiario $apiario, Colmena $colmena)
+    {
+        // Reusa la lógica existente
+        return $this->qrPdf($apiario, $colmena);
     }
 
     public function imprimirTodasSubtareas()
@@ -542,7 +554,7 @@ class DocumentController extends Controller
             ->unique('nombre_key') // quita duplicados
             ->values();
         $fechaGeneracion = $this->obtenerFechaHoraLocal();
-        $pdf = Pdf::loadView('documents.tareas-todas', compact('subtareas','fechaGeneracion'));
+        $pdf = Pdf::loadView('documents.tareas-todas', compact('subtareas', 'fechaGeneracion'));
         $pdf->setPaper('A4', 'portrait');
         $pdf->setOptions([
             'isHtml5ParserEnabled' => true,

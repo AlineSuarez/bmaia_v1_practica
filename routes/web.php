@@ -108,7 +108,7 @@ Route::get('/payment/success', [PaymentController::class, 'showSuccess'])->name(
 //Route::match(['get', 'post'], '/payment/failed', [PaymentController::class, 'showFailed'])->name('payment.failed');
 
 Route::get('/payment/required', [PaymentController::class, 'showRequired'])->name('payment.required');
-Route::get('/payment/failed',  [PaymentController::class, 'showFailed'])->name('payment.failed');
+Route::get('/payment/failed', [PaymentController::class, 'showFailed'])->name('payment.failed');
 Route::post('/payment/failed', [PaymentController::class, 'showFailed']);
 /*
 Route::middleware(['auth'])->group(function () {
@@ -124,7 +124,7 @@ Route::middleware(['auth'])->group(function () {
 });
 
 Route::get('/facturas/{factura}/descargar', [DatoFacturacionController::class, 'download'])->name('facturas.descargar');
-    Route::get('/facturas/{factura}/ver', [DatoFacturacionController::class, 'view'])->name('facturas.ver');
+Route::get('/facturas/{factura}/ver', [DatoFacturacionController::class, 'view'])->name('facturas.ver');
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/user/settings', [UserController::class, 'settings'])->name('user.settings');
@@ -214,7 +214,7 @@ Route::middleware(['auth', 'check.payment'])->group(function () {
         Route::post('/', [ColmenaController::class, 'store'])->name('store');
         Route::get('/historicas', [ColmenaController::class, 'historicas'])->name('historicas');
         Route::get('/historicas/export', [ColmenaController::class, 'exportHistoricas'])->name('historicas.export');
-        Route::get('/{colmena}', [ColmenaController::class, 'show'])->name('show');
+        //Route::get('/{colmena}', [ColmenaController::class, 'show'])->name('show');
         Route::get('/{colmena}/edit', [ColmenaController::class, 'edit'])->name('edit');
         Route::put('/{colmena}', [ColmenaController::class, 'update'])->name('update');
         Route::delete('/{colmena}', [ColmenaController::class, 'destroy'])->name('destroy');
@@ -321,3 +321,10 @@ Route::middleware(['auth', 'check.payment'])->group(function () {
         Route::put('sistemaexperto/{sistemaexperto}', [SistemaExpertoController::class, 'update'])->name('update');
     });
 });
+
+// Ruta pública para detalle de colmena
+Route::get('apiarios/{apiario}/colmenas/{colmena}', [App\Http\Controllers\ColmenaController::class, 'show'])->name('colmenas.show');
+
+// Ruta pública para imprimir QR (PDF) sin autenticación
+Route::get('/apiarios/{apiario}/colmenas/{colmena}/qr-pdf-public', [App\Http\Controllers\DocumentController::class, 'qrPdfPublic'])
+    ->name('colmenas.qr-pdf.public');
