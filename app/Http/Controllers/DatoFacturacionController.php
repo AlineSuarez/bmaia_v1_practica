@@ -91,8 +91,8 @@ class DatoFacturacionController extends Controller
 
         abort_unless(Storage::disk($disk)->exists($path), 404);
 
-        $filename = 'Factura-'.$factura->numero.'.pdf';
-        return Storage::disk($disk)->download($path, $filename);
+        $filename = 'Factura-' . $factura->numero . '.pdf';
+        return response()->download(Storage::disk($disk)->path($path), $filename);
     }
 
     public function view(Factura $factura)
@@ -105,7 +105,7 @@ class DatoFacturacionController extends Controller
 
         return response()->file(Storage::disk($disk)->path($path), [
             'Content-Type' => 'application/pdf',
-            'Content-Disposition' => 'inline; filename="'.$factura->numero.'.pdf"',
+            'Content-Disposition' => 'inline; filename="' . $factura->numero . '.pdf"',
         ]);
     }
 

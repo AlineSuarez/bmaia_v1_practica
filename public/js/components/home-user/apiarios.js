@@ -1214,7 +1214,8 @@ document.addEventListener("DOMContentLoaded", function () {
             const coordenadas = cells[8]?.textContent?.trim() || "-";
 
             const imgElement = cells[9]?.querySelector("img");
-            const actionLinks = cells[10]?.querySelectorAll("a, button");
+            // incluir también forms y botones además de enlaces
+            const actionLinks = cells[10]?.querySelectorAll("a, button, form");
 
             return `
                 <div class="card-header-modern">
@@ -1271,20 +1272,16 @@ document.addEventListener("DOMContentLoaded", function () {
                         imgElement
                             ? `<img src="${imgElement.src}" alt="${
                                   imgElement.alt
-                              }" class="card-image-modern" 
-                              onclick="document.querySelector('[data-bs-target=\\'#imageModal${this.extractIdFromActions(
+                              }" class="card-image-modern" onclick="document.querySelector('[data-bs-target=\\'#imageModal${this.extractIdFromActions(
                                   actionLinks
                               )}\\']').click()">`
                             : `<div class="card-no-image-modern">
-                            <i class="fas fa-image"></i>
-                            <span>Sin imagen</span>
-                        </div>`
+                                <i class="fas fa-image"></i>
+                                <span>Sin imagen</span>
+                            </div>`
                     }
 
                     <div class="card-actions-modern">
-                        <div class="card-actions-left-modern">
-                            <span class="card-badge-modern primary">Fijo</span>
-                        </div>
                         <div class="card-actions-right-modern">
                             ${this.createActionButtons(actionLinks)}
                         </div>
@@ -1306,7 +1303,8 @@ document.addEventListener("DOMContentLoaded", function () {
             const coordenadas = cells[9]?.textContent?.trim() || "-";
 
             const imgElement = cells[10]?.querySelector("img");
-            const actionLinks = cells[11]?.querySelectorAll("a");
+            // incluir forms, buttons y enlaces (antes solo 'a' estaba, por eso faltaban acciones)
+            const actionLinks = cells[11]?.querySelectorAll("a, button, form");
 
             return `
                 <div class="card-header-modern">
@@ -1372,20 +1370,16 @@ document.addEventListener("DOMContentLoaded", function () {
                         imgElement
                             ? `<img src="${imgElement.src}" alt="${
                                   imgElement.alt
-                              }" class="card-image-modern" 
-                              onclick="document.querySelector('[data-bs-target=\\'#imageModal${this.extractIdFromActions(
+                              }" class="card-image-modern" onclick="document.querySelector('[data-bs-target=\\'#imageModal${this.extractIdFromActions(
                                   actionLinks
                               )}\\']').click()">`
                             : `<div class="card-no-image-modern">
-                            <i class="fas fa-image"></i>
-                            <span>Sin imagen</span>
-                        </div>`
+                                <i class="fas fa-image"></i>
+                                <span>Sin imagen</span>
+                            </div>`
                     }
 
                     <div class="card-actions-modern">
-                        <div class="card-actions-left-modern">
-                            <span class="card-badge-modern info">Base</span>
-                        </div>
                         <div class="card-actions-right-modern">
                             ${this.createActionButtons(actionLinks)}
                         </div>
@@ -1394,28 +1388,33 @@ document.addEventListener("DOMContentLoaded", function () {
             `;
         }
 
+        // Insertar aqui la nueva función createTemporalesCard
         createTemporalesCard(cells) {
+            // usar la última celda para recoger acciones (más robusto frente a cambios en columnas)
             const checkbox = cells[0]?.querySelector('input[type="checkbox"]');
             const nombre = cells[1]?.textContent?.trim() || "-";
-            const colmenas = cells[2]?.textContent?.trim() || "0";
-            const regionOrigen = cells[3]?.textContent?.trim() || "-";
-            const comunaOrigen = cells[4]?.textContent?.trim() || "-";
-            const regionDestino = cells[5]?.textContent?.trim() || "-";
-            const comunaDestino = cells[6]?.textContent?.trim() || "-";
-            const fechaMovimiento = cells[7]?.textContent?.trim() || "-";
-            const motivo = cells[8]?.textContent?.trim() || "-";
-            const cultivo = cells[9]?.textContent?.trim() || "-";
-            const actionLinks = cells[10]?.querySelectorAll("a");
+            const temporada = cells[2]?.textContent?.trim() || "-";
+            const registroSag = cells[3]?.textContent?.trim() || "-";
+            const colmenas = cells[4]?.textContent?.trim() || "0";
+            const tipo = cells[5]?.textContent?.trim() || "-";
+            const manejo = cells[6]?.textContent?.trim() || "-";
+            const objetivo = cells[7]?.textContent?.trim() || "-";
+            const ubicacion = cells[8]?.textContent?.trim() || "-";
+            const coordenadas = cells[9]?.textContent?.trim() || "-";
+
+            const imgElement = cells[10]?.querySelector("img");
+            const actionLinks =
+                cells[cells.length - 1]?.querySelectorAll("a, button, form");
 
             return `
                 <div class="card-header-modern">
                     <h3 class="card-title-modern">
-                        <i class="fas fa-route"></i>
+                        <i class="fas fa-truck-moving"></i>
                         ${nombre}
                     </h3>
                     <div class="card-subtitle-modern">
                         <i class="fas fa-calendar"></i>
-                        Movimiento ${fechaMovimiento}
+                        Temporada ${temporada}
                     </div>
                     <div class="card-checkbox-modern">
                         <label class="checkbox-wrapper">
@@ -1427,16 +1426,16 @@ document.addEventListener("DOMContentLoaded", function () {
                         </label>
                     </div>
                 </div>
-                
-                <div class="card-body-modern">
-                    <div class="temporal-route-modern">
-                        <i class="fas fa-route"></i>
-                        <span class="temporal-route-text-modern">
-                            ${comunaOrigen}, ${regionOrigen} → ${comunaDestino}, ${regionDestino}
-                        </span>
-                    </div>
 
+                <div class="card-body-modern">
                     <div class="card-info-grid-modern">
+                        <div class="card-info-item-modern">
+                            <span class="card-info-label-modern">
+                                <i class="fas fa-id-card"></i>
+                                Registro SAG
+                            </span>
+                            <span class="card-info-value-modern">${registroSag}</span>
+                        </div>
                         <div class="card-info-item-modern">
                             <span class="card-info-label-modern">
                                 <i class="fas fa-cubes"></i>
@@ -1444,32 +1443,43 @@ document.addEventListener("DOMContentLoaded", function () {
                             </span>
                             <span class="card-info-value-modern">${colmenas}</span>
                         </div>
-                        <div class="card-info-item-modern">
-                            <span class="card-info-label-modern">
-                                <i class="fas fa-seedling"></i>
-                                Cultivo
-                            </span>
-                            <span class="card-info-value-modern">${
-                                cultivo !== "—" ? cultivo : "-"
-                            }</span>
-                        </div>
                     </div>
 
                     <div class="card-badges-modern">
                         <div class="card-badge-item-modern">
-                            <span class="card-badge-label-modern">Motivo:</span>
-                            <span class="card-badge-modern info">${motivo}</span>
+                            <span class="card-badge-label-modern">Tipo:</span>
+                            <span class="card-badge-modern secondary">${tipo}</span>
                         </div>
                         <div class="card-badge-item-modern">
-                            <span class="card-badge-label-modern">Estado:</span>
-                            <span class="card-badge-modern warning">Temporal</span>
+                            <span class="card-badge-label-modern">Manejo:</span>
+                            <span class="card-badge-modern info">${manejo}</span>
+                        </div>
+                        <div class="card-badge-item-modern">
+                            <span class="card-badge-label-modern">Objetivo:</span>
+                            <span class="card-badge-modern warning">${objetivo}</span>
                         </div>
                     </div>
 
+                    <div class="card-location-modern">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span class="card-location-text-modern">${ubicacion}</span>
+                        <span class="card-coordinates-modern">${coordenadas}</span>
+                    </div>
+
+                    ${
+                        imgElement
+                            ? `<img src="${imgElement.src}" alt="${
+                                  imgElement.alt
+                              }" class="card-image-modern" onclick="document.querySelector('[data-bs-target=\\'#imageModal${this.extractIdFromActions(
+                                  actionLinks
+                              )}\\']').click()">`
+                            : `<div class="card-no-image-modern">
+                                <i class="fas fa-image"></i>
+                                <span>Sin imagen</span>
+                            </div>`
+                    }
+
                     <div class="card-actions-modern">
-                        <div class="card-actions-left-modern">
-                            <span class="card-badge-modern warning">En trashumancia</span>
-                        </div>
                         <div class="card-actions-right-modern">
                             ${this.createActionButtons(actionLinks)}
                         </div>
@@ -1482,48 +1492,134 @@ document.addEventListener("DOMContentLoaded", function () {
             if (!actionElements) return "";
 
             let buttons = "";
+
             actionElements.forEach((action) => {
-                const href = action.getAttribute("href");
-                const title = action.getAttribute("title");
-                const icon =
-                    action.querySelector("i")?.className || "fas fa-cog";
+                // Normalizar tipo de nodo
+                const tag = (action.tagName || "").toUpperCase();
 
-                let buttonClass = "card-action-btn-modern";
-                if (title?.toLowerCase().includes("editar"))
-                    buttonClass += " edit";
-                else if (
-                    title?.toLowerCase().includes("ver") ||
-                    title?.toLowerCase().includes("colmenas")
-                )
-                    buttonClass += " view";
-                else if (
-                    title?.toLowerCase().includes("descargar") ||
-                    title?.toLowerCase().includes("pdf")
-                )
-                    buttonClass += " download";
-                else if (title?.toLowerCase().includes("eliminar"))
-                    buttonClass += " delete";
-
-                // --- MODIFICACIÓN: botón de opciones de movimiento ---
+                // Evitar duplicados: si el botón/INPUT está dentro de un FORM,
+                // saltarlo porque el FORM será clonado y ya contendrá el botón.
                 if (
-                    icon.includes("fa-cogs") ||
-                    title?.toLowerCase().includes("opciones")
+                    (tag === "BUTTON" ||
+                        (tag === "INPUT" && action.type === "submit")) &&
+                    action.closest("form")
                 ) {
-                    const dataId = action.getAttribute("data-id") || "";
-                    buttonClass += " action-icon cogs";
-                    buttons += `<a href="#" class="${buttonClass}" title="${title}" data-bs-toggle="modal" data-bs-target="#modalOpcionesApiario" data-id="${dataId}"><i class="${icon}"></i></a>`;
+                    return; // continue en forEach
+                }
+
+                // Si es un form, clonarlo y adaptar el botón interior para que funcione desde la tarjeta
+                if (tag === "FORM") {
+                    try {
+                        const cloned = action.cloneNode(true);
+                        // asegurar que el form tiene CSRF (si no, añadirlo desde window.csrfToken)
+                        if (
+                            !cloned.querySelector('input[name="_token"]') &&
+                            window.csrfToken
+                        ) {
+                            const tokenInput = document.createElement("input");
+                            tokenInput.type = "hidden";
+                            tokenInput.name = "_token";
+                            tokenInput.value = window.csrfToken;
+                            cloned.insertBefore(tokenInput, cloned.firstChild);
+                        }
+                        // adaptar botón de submit dentro del form a estilo de tarjeta
+                        const innerBtn = cloned.querySelector(
+                            "button, input[type='submit']"
+                        );
+                        if (innerBtn) {
+                            innerBtn.className =
+                                (innerBtn.className || "") +
+                                " card-action-btn-modern";
+                            // si el botón original tenía clases action-icon.<variant>, preservar variante
+                            // y aplicar atributos de modal si los tenía
+                            const dataToggle =
+                                innerBtn.getAttribute("data-bs-toggle");
+                            const dataTarget =
+                                innerBtn.getAttribute("data-bs-target");
+                            if (dataToggle && dataTarget) {
+                                innerBtn.setAttribute(
+                                    "data-bs-toggle",
+                                    dataToggle
+                                );
+                                innerBtn.setAttribute(
+                                    "data-bs-target",
+                                    dataTarget
+                                );
+                            }
+                        }
+                        const wrapper = document.createElement("div");
+                        wrapper.appendChild(cloned);
+                        buttons += wrapper.innerHTML;
+                    } catch (err) {
+                        // fallback: ignorar
+                    }
                     return;
                 }
 
-                if (href) {
-                    buttons += `<a href="${href}" class="${buttonClass}" title="${title}"><i class="${icon}"></i></a>`;
-                } else if (action.tagName === "BUTTON") {
+                // Si es button (no dentro de form) o input submit sueltos
+                if (
+                    tag === "BUTTON" ||
+                    (tag === "INPUT" && action.type === "submit")
+                ) {
+                    const title = action.getAttribute("title") || "";
+                    const icon =
+                        action.querySelector("i")?.className || "fas fa-cog";
+                    const dataToggle = action.getAttribute("data-bs-toggle");
                     const dataTarget = action.getAttribute("data-bs-target");
-                    buttons += `<button class="${buttonClass}" title="${title}" ${
-                        dataTarget
-                            ? `data-bs-toggle="modal" data-bs-target="${dataTarget}"`
-                            : ""
-                    }><i class="${icon}"></i></button>`;
+                    const classes =
+                        (action.className || "") + " card-action-btn-modern";
+
+                    if (dataToggle && dataTarget) {
+                        buttons += `<button class="${classes}" title="${title}" data-bs-toggle="${dataToggle}" data-bs-target="${dataTarget}"><i class="${icon}"></i></button>`;
+                    } else if (action.type === "submit") {
+                        // Si era submit pero fuera de form (raro), convertir en form mínimo para POST
+                        const actionUrl =
+                            action.getAttribute("data-action") ||
+                            action.getAttribute("formaction") ||
+                            "";
+                        if (actionUrl) {
+                            const formHtml = `<form action="${actionUrl}" method="POST" class="d-inline">
+                                ${
+                                    window.csrfToken
+                                        ? `<input type="hidden" name="_token" value="${window.csrfToken}">`
+                                        : ""
+                                }
+                                <button type="submit" class="${classes}" title="${title}"><i class="${icon}"></i></button>
+                            </form>`;
+                            buttons += formHtml;
+                        } else {
+                            buttons += `<button class="${classes}" title="${title}"><i class="${icon}"></i></button>`;
+                        }
+                    } else {
+                        buttons += `<button class="${classes}" title="${title}"><i class="${icon}"></i></button>`;
+                    }
+                    return;
+                }
+
+                // Si es enlace <a>
+                if (tag === "A") {
+                    const href = action.getAttribute("href");
+                    const title = action.getAttribute("title") || "";
+                    const icon =
+                        action.querySelector("i")?.className || "fas fa-cog";
+                    const classes =
+                        (action.className || "") + " card-action-btn-modern";
+                    // enlaces que abren modal con data-id (ej. opciones)
+                    const dataToggle = action.getAttribute("data-bs-toggle");
+                    const dataTarget = action.getAttribute("data-bs-target");
+                    const dataId = action.getAttribute("data-id");
+                    if (dataToggle && dataTarget) {
+                        buttons += `<a href="${
+                            href || "#"
+                        }" class="${classes}" title="${title}" data-bs-toggle="${dataToggle}" data-bs-target="${dataTarget}" ${
+                            dataId ? `data-id="${dataId}"` : ""
+                        }><i class="${icon}"></i></a>`;
+                    } else {
+                        buttons += `<a href="${
+                            href || "#"
+                        }" class="${classes}" title="${title}"><i class="${icon}"></i></a>`;
+                    }
+                    return;
                 }
             });
 
@@ -1709,139 +1805,260 @@ document.addEventListener("DOMContentLoaded", function () {
     };
 });
 
-// ============================================================
-// GUARDADO Y RESTAURACIÓN DE SCROLL Y PESTAÑA ACTIVA POR MÓDULO
-// ============================================================
+/*
+  Pagination para vistas de tarjetas (muestra N tarjetas por página).
+  - Se integra observando los contenedores de tarjetas y creando controles
+    debajo de cada grid con ids: {section}-cards-pagination-container y {section}-cards-pagination-info
+  - Se usa mutación del DOM para refrescar cuando IndependentViewToggle repuebla las tarjetas.
+*/
+class CardPagination {
+    constructor(cardsGridId, options = {}) {
+        this.grid = document.getElementById(cardsGridId);
+        if (!this.grid) return;
+        this.section = cardsGridId.replace("-cards-grid", "");
+        this.itemsPerPage = options.itemsPerPage || 4;
+        this.currentPage = 1;
+        this.totalItems = 0;
+        this.totalPages = 0;
 
-(function () {
-    // Devuelve un ID único para la pestaña/módulo actual
-    function getScrollKey(tabId) {
-        const module = window.location.pathname || "apiarios";
-        return `scrollPos_${module}_${tabId}`;
-    }
+        // Crear contenedor de paginación si no existe
+        const parent = this.grid.parentElement;
+        this.paginationContainerId = `${this.section}-cards-pagination-container`;
+        this.infoId = `${this.section}-cards-pagination-info`;
 
-    // Guarda el scroll actual
-    function saveScrollPosition(tabId) {
-        const key = getScrollKey(tabId);
-        localStorage.setItem(key, window.scrollY || window.pageYOffset);
-    }
-
-    // Restaura el scroll guardado
-    function restoreScrollPosition(tabId) {
-        const key = getScrollKey(tabId);
-        const pos = parseInt(localStorage.getItem(key), 10);
-        if (!isNaN(pos)) {
-            setTimeout(() => window.scrollTo(0, pos), 10);
+        if (!document.getElementById(this.paginationContainerId)) {
+            const wrap = document.createElement("div");
+            wrap.className = "cards-pagination-wrap";
+            wrap.id = this.paginationContainerId;
+            wrap.innerHTML = `
+                <div class="pagination-container-inner">
+                    <ul class="cards-pagination pagination-controls" aria-label="Paginación tarjetas"></ul>
+                    <div class="cards-pagination-info" id="${this.infoId}"></div>
+                </div>
+            `;
+            parent.insertBefore(wrap, this.grid.nextSibling);
         }
-    }
 
-    // Guarda la pestaña activa
-    function saveActiveTab(tabId) {
-        const module = window.location.pathname || "apiarios";
-        localStorage.setItem(`activeTab_${module}`, tabId);
-    }
-
-    // Restaura la pestaña activa
-    function restoreActiveTab() {
-        const module = window.location.pathname || "apiarios";
-        const savedTabId = localStorage.getItem(`activeTab_${module}`);
-        if (savedTabId) {
-            const tabBtn = document.querySelector(
-                `[data-bs-target="#${savedTabId}"]`
-            );
-            if (tabBtn) {
-                // Si ya está activa, solo restaurar scroll
-                if (!tabBtn.classList.contains("active")) {
-                    tabBtn.click();
-                } else {
-                    restoreScrollPosition(savedTabId);
-                }
-                return;
-            }
-        }
-        // Si no hay pestaña guardada o no existe, activar la primera pestaña
-        const firstTabBtn = document.querySelector('[data-bs-toggle="tab"]');
-        if (firstTabBtn) {
-            firstTabBtn.click();
-        }
-    }
-
-    // Guardar scroll y pestaña al cambiar de pestaña
-    document.querySelectorAll('[data-bs-toggle="tab"]').forEach((tabBtn) => {
-        tabBtn.addEventListener("show.bs.tab", function (e) {
-            const currentTab = document.querySelector(
-                ".tab-pane.active, .tab-content.active"
-            );
-            if (currentTab) {
-                saveScrollPosition(currentTab.id);
-            }
-        });
-        tabBtn.addEventListener("shown.bs.tab", function (e) {
-            const targetTabId = tabBtn
-                .getAttribute("data-bs-target")
-                ?.replace("#", "");
-            if (targetTabId) {
-                saveActiveTab(targetTabId);
-                restoreScrollPosition(targetTabId);
-            }
-        });
-    });
-
-    // Guardar scroll antes de salir del módulo/página
-    window.addEventListener("beforeunload", function () {
-        const currentTab = document.querySelector(
-            ".tab-pane.active, .tab-content.active"
+        this.paginationEl = document.querySelector(
+            `#${this.paginationContainerId} .cards-pagination`
         );
-        if (currentTab) {
-            saveScrollPosition(currentTab.id);
+        this.infoEl = document.getElementById(this.infoId);
+
+        // Observador para refrescar cuando cambian las tarjetas
+        this.observer = new MutationObserver(() => {
+            this.refresh();
+        });
+        this.observer.observe(this.grid, { childList: true, subtree: false });
+
+        // Delegación de clicks en paginación
+        if (this.paginationEl) {
+            this.paginationEl.addEventListener("click", (e) => {
+                e.preventDefault();
+                const link = e.target.closest("[data-page]");
+                if (!link) return;
+                const page = parseInt(link.dataset.page, 10);
+                if (!isNaN(page)) this.showPage(page);
+            });
         }
-    });
 
-    // Restaurar pestaña activa y scroll al cargar la página
-    document.addEventListener("DOMContentLoaded", function () {
-        restoreActiveTab();
-        // Si no hay pestaña guardada, restaurar scroll de la actual
-        setTimeout(() => {
-            const currentTab = document.querySelector(
-                ".tab-pane.active, .tab-content.active"
-            );
-            if (currentTab) {
-                restoreScrollPosition(currentTab.id);
+        // Inicializar primera vez
+        this.refresh();
+    }
+
+    refresh() {
+        if (!this.grid) return;
+        const items = Array.from(this.grid.children).filter(
+            (c) => c.nodeType === 1
+        );
+        this.totalItems = items.length;
+        this.totalPages = Math.max(
+            1,
+            Math.ceil(this.totalItems / this.itemsPerPage)
+        );
+        // Asegurar currentPage válido
+        if (this.currentPage > this.totalPages)
+            this.currentPage = this.totalPages;
+        if (this.totalItems === 0) this.currentPage = 1;
+        this.createPagination();
+        this.showPage(this.currentPage);
+        this.updateInfo();
+    }
+
+    showPage(page) {
+        if (!this.grid) return;
+        this.currentPage = Math.max(1, Math.min(page, this.totalPages));
+        const start = (this.currentPage - 1) * this.itemsPerPage;
+        const end = start + this.itemsPerPage;
+        const items = Array.from(this.grid.children).filter(
+            (c) => c.nodeType === 1
+        );
+
+        items.forEach((item, idx) => {
+            if (idx >= start && idx < end) {
+                item.style.display = "";
+                // animación simple
+                item.style.opacity = "0";
+                item.style.transform = "translateY(8px)";
+                setTimeout(() => {
+                    item.style.transition =
+                        "opacity 0.25s ease, transform 0.25s ease";
+                    item.style.opacity = "1";
+                    item.style.transform = "translateY(0)";
+                }, (idx - start) * 40);
+            } else {
+                item.style.display = "none";
             }
-        }, 20);
-    });
-})();
+        });
 
-// MODAL OPCIONES APIARIO: ENLACES DINÁMICOS
-document.addEventListener("DOMContentLoaded", () => {
-    // Cambia la URL base a la ruta correcta de exportación
-    const baseDescargarDoc = "/apiarios/__ID__/colmenas/historicas/export";
+        this.updatePaginationState();
+        this.updateInfo();
+    }
 
-    // Cuando se abre el modal de opciones
-    const modal = document.getElementById("modalOpcionesApiario");
-    if (modal) {
-        modal.addEventListener("show.bs.modal", function (event) {
-            const button = event.relatedTarget;
-            const apiarioId = button?.getAttribute("data-id");
-            if (!apiarioId) return;
+    createPagination() {
+        if (!this.paginationEl) return;
+        // Si solo hay una página, esconder controles
+        if (this.totalPages <= 1) {
+            this.paginationEl.innerHTML = "";
+            if (this.paginationEl.parentElement)
+                this.paginationEl.parentElement.style.display = "none";
+            return;
+        } else {
+            if (this.paginationEl.parentElement)
+                this.paginationEl.parentElement.style.display = "flex";
+        }
 
-            // Enlazar dinámicamente los botones
-            const btnVerDetalle = document.getElementById(
-                "btnVerDetalleMovimiento"
-            );
-            if (btnVerDetalle) {
-                btnVerDetalle.onclick = function () {
-                    openDetalleMovimientoModal(apiarioId);
-                };
+        const fragment = document.createDocumentFragment();
+
+        // Prev
+        const prevLi = document.createElement("li");
+        prevLi.className = "page-item";
+        prevLi.innerHTML = `<a href="#" class="page-link" data-page="${
+            this.currentPage - 1
+        }"><i class="fas fa-chevron-left"></i></a>`;
+        fragment.appendChild(prevLi);
+
+        // páginas (se muestra compacto)
+        const maxButtons = 7;
+        const show = (i) => {
+            const li = document.createElement("li");
+            li.className = "page-item";
+            li.innerHTML = `<a href="#" class="page-link" data-page="${i}">${i}</a>`;
+            if (i === this.currentPage) li.classList.add("active");
+            fragment.appendChild(li);
+        };
+
+        if (this.totalPages <= maxButtons) {
+            for (let i = 1; i <= this.totalPages; i++) show(i);
+        } else {
+            show(1);
+            let left = Math.max(2, this.currentPage - 2);
+            let right = Math.min(this.totalPages - 1, this.currentPage + 2);
+
+            if (left > 2) {
+                const ell = document.createElement("li");
+                ell.className = "page-item disabled";
+                ell.innerHTML = '<span class="page-link">...</span>';
+                fragment.appendChild(ell);
             }
-            const btnExportar = document.getElementById("btnExportarHistorial");
-            if (btnExportar) {
-                // Asigna la ruta correcta al href
-                btnExportar.href = baseDescargarDoc.replace(
-                    "__ID__",
-                    apiarioId
-                );
+
+            for (let i = left; i <= right; i++) show(i);
+
+            if (right < this.totalPages - 1) {
+                const ell = document.createElement("li");
+                ell.className = "page-item disabled";
+                ell.innerHTML = '<span class="page-link">...</span>';
+                fragment.appendChild(ell);
+            }
+
+            show(this.totalPages);
+        }
+
+        // Next
+        const nextLi = document.createElement("li");
+        nextLi.className = "page-item";
+        nextLi.innerHTML = `<a href="#" class="page-link" data-page="${
+            this.currentPage + 1
+        }"><i class="fas fa-chevron-right"></i></a>`;
+        fragment.appendChild(nextLi);
+
+        // Reemplazar contenido
+        this.paginationEl.innerHTML = "";
+        this.paginationEl.appendChild(fragment);
+        this.updatePaginationState();
+    }
+
+    updatePaginationState() {
+        if (!this.paginationEl) return;
+        const items = this.paginationEl.querySelectorAll(".page-item");
+        if (items.length === 0) return;
+        // Prev
+        const first = items[0];
+        const prevLink = first.querySelector(".page-link");
+        if (prevLink) prevLink.dataset.page = Math.max(1, this.currentPage - 1);
+        first.classList.toggle("disabled", this.currentPage === 1);
+
+        // Next
+        const last = items[items.length - 1];
+        const nextLink = last.querySelector(".page-link");
+        if (nextLink)
+            nextLink.dataset.page = Math.min(
+                this.totalPages,
+                this.currentPage + 1
+            );
+        last.classList.toggle("disabled", this.currentPage === this.totalPages);
+
+        // marcar active
+        items.forEach((li) => {
+            const link = li.querySelector(".page-link");
+            if (!link) return;
+            const p = parseInt(link.dataset.page, 10);
+            if (!isNaN(p) && p === this.currentPage) {
+                li.classList.add("active");
+            } else {
+                li.classList.remove("active");
             }
         });
     }
+
+    updateInfo() {
+        if (!this.infoEl) return;
+        if (this.totalItems === 0) {
+            this.infoEl.textContent = "Sin apiarios";
+            return;
+        }
+        const start = (this.currentPage - 1) * this.itemsPerPage + 1;
+        const end = Math.min(
+            this.currentPage * this.itemsPerPage,
+            this.totalItems
+        );
+        this.infoEl.textContent = `Mostrando ${start}-${end} de ${this.totalItems} tarjetas`;
+    }
+
+    destroy() {
+        try {
+            this.observer.disconnect();
+        } catch (e) {}
+    }
+}
+
+// Inicializar paginación de tarjetas para las tres secciones (si existen)
+document.addEventListener("DOMContentLoaded", function () {
+    // esperar un tick para que IndependentViewToggle haya creado contenedores
+    setTimeout(() => {
+        window.cardPaginators = window.cardPaginators || {};
+        ["fijos", "base", "temporales"].forEach((section) => {
+            const gridId = `${section}-cards-grid`;
+            if (document.getElementById(gridId)) {
+                // Si ya existe, reutilizar
+                if (!window.cardPaginators[section]) {
+                    window.cardPaginators[section] = new CardPagination(
+                        gridId,
+                        { itemsPerPage: 4 }
+                    );
+                } else {
+                    window.cardPaginators[section].refresh();
+                }
+            }
+        });
+    }, 120);
 });

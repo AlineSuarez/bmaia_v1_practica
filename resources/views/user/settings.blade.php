@@ -3,16 +3,24 @@
 @section('title', 'B-MaiA - Configuración de la Cuenta')
 
 @section('content')
-@push('styles')
-<style>
-  .btn-icon{
-    width: 36px; height: 36px; padding: 0;
-    display:inline-flex; align-items:center; justify-content:center;
-    border-radius: 50%;
-  }
-  .invoice-table .btn-icon i{ font-size:1rem; line-height:1; }
-</style>
-@endpush
+    @push('styles')
+        <style>
+            .btn-icon {
+                width: 36px;
+                height: 36px;
+                padding: 0;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                border-radius: 50%;
+            }
+
+            .invoice-table .btn-icon i {
+                font-size: 1rem;
+                line-height: 1;
+            }
+        </style>
+    @endpush
 
     <head>
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
@@ -21,8 +29,6 @@
     <div class="container">
         <header class="settings-header">
             <h1>Configuración de la Cuenta</h1>
-            <!--<p class="settings-description">Gestiona todos los aspectos de tu cuenta de BeeMaiA para optimizar tu
-                experiencia apícola.</p> -->
         </header>
 
         <!-- Navegación de Pestañas -->
@@ -45,17 +51,17 @@
                         aria-selected="false">Planes</a>
                 </li>
                 <!--<li class="nav-item" role="presentation">
-                    <a class="nav-link" id="permissions-tab" data-bs-toggle="tab" href="#permissions" role="tab"
-                        aria-controls="permissions" aria-selected="false">Permisos</a>
-                </li>
-                <li class="nav-item" role="presentation">
-                    <a class="nav-link" id="preferences-tab" data-bs-toggle="tab" href="#preferences" role="tab"
-                        aria-controls="preferences" aria-selected="false">Preferencias</a>
-                </li>
-                <li class="nav-item" role="presentation">
-                    <a class="nav-link" id="utilities-tab" data-bs-toggle="tab" href="#utilities" role="tab"
-                        aria-controls="utilities" aria-selected="false">Utilidades</a>
-                </li>-->
+                            <a class="nav-link" id="permissions-tab" data-bs-toggle="tab" href="#permissions" role="tab"
+                                aria-controls="permissions" aria-selected="false">Permisos</a>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <a class="nav-link" id="preferences-tab" data-bs-toggle="tab" href="#preferences" role="tab"
+                                aria-controls="preferences" aria-selected="false">Preferencias</a>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <a class="nav-link" id="utilities-tab" data-bs-toggle="tab" href="#utilities" role="tab"
+                                aria-controls="utilities" aria-selected="false">Utilidades</a>
+                        </li>-->
             </ul>
         </nav>
 
@@ -94,7 +100,8 @@
                                                 style="width: 150px; height: 150px; border-radius: 50%; object-fit: cover; border: 3px solid #dee2e6; display: block; margin: 0 auto;">
                                         </div>
 
-                                        <input type="file" class="form-control input-file-sm" id="profile_picture" name="profile_picture" accept="image/*"
+                                        <input type="file" class="form-control input-file-sm" id="profile_picture"
+                                            name="profile_picture" accept="image/*"
                                             style="max-width:450px; margin:0 auto; display:block;">
                                         <small class="form-text text-muted">Formatos aceptados: JPG, PNG (máx. 2MB)</small>
                                     </div>
@@ -219,9 +226,9 @@
             @if ($errors->any())
                 <div class="alert alert-danger">
                     <ul class="mb-0">
-                    @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
                     </ul>
                 </div>
             @endif
@@ -244,7 +251,8 @@
                                         <label for="razon_social">Razón Social</label>
                                         <input type="text" class="form-control" id="razon_social" name="razon_social"
                                             value="{{ old('razon_social', $datosFacturacion->razon_social ?? '') }}">
-                                        <small class="form-text text-muted">Nombre legal de la empresa o persona natural</small>
+                                        <small class="form-text text-muted">Nombre legal de la empresa o persona
+                                            natural</small>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
@@ -270,7 +278,8 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="direccion_comercial">Dirección Comercial</label>
-                                        <input type="text" class="form-control" id="direccion_comercial" name="direccion_comercial"
+                                        <input type="text" class="form-control" id="direccion_comercial"
+                                            name="direccion_comercial"
                                             value="{{ old('direccion_comercial', $datosFacturacion->direccion_comercial ?? '') }}">
                                     </div>
                                 </div>
@@ -331,8 +340,8 @@
                             <div class="dte-authorization mt-4">
                                 <input type="hidden" name="autorizacion_envio_dte" value="0">
                                 <div class="form-check">
-                                    <input type="checkbox" id="autorizacion_envio_dte" name="autorizacion_envio_dte" value="1"
-                                        {{ old('autorizacion_envio_dte', $datosFacturacion->autorizacion_envio_dte ?? false) ? 'checked' : '' }}>
+                                    <input type="checkbox" id="autorizacion_envio_dte" name="autorizacion_envio_dte"
+                                        value="1" {{ old('autorizacion_envio_dte', $datosFacturacion->autorizacion_envio_dte ?? false) ? 'checked' : '' }}>
                                     <label class="form-check-label" for="autorizacion_envio_dte">
                                         <strong>Autorizo el envío del Documento Tributario Electrónico por Email</strong>
                                     </label>
@@ -340,7 +349,8 @@
                                 <div class="mt-2 ps-4">
                                     <div class="form-group">
                                         <label for="correo_envio_dte">Enviar documentos al correo:</label>
-                                        <input type="email" class="form-control" id="correo_envio_dte" name="correo_envio_dte"
+                                        <input type="email" class="form-control" id="correo_envio_dte"
+                                            name="correo_envio_dte"
                                             value="{{ old('correo_envio_dte', $datosFacturacion->correo_envio_dte ?? '') }}">
                                         <small class="form-text text-muted">
                                             <a href="#" data-bs-toggle="modal" data-bs-target="#dteInfoModal">
@@ -363,7 +373,8 @@
                 <div class="card settings-card mt-4">
                     <div class="card-header">
                         <h3 class="text-center fw-bold">Historial de Facturas</h3>
-                        <p class="text-muted text-center">Consulta el registro de tus facturas emitidas y su estado de pago.</p>
+                        <p class="text-muted text-center">Consulta el registro de tus facturas emitidas y su estado de pago.
+                        </p>
                     </div>
                     <div class="card-body">
                         <div class="invoice-filters mb-3">
@@ -372,18 +383,19 @@
                                     <div class="col-md-4">
                                         {{-- Elimina el label para que coincida con el diseño --}}
                                         <select class="form-select" id="invoice-year" name="year">
-                                            <option value="all" {{ $selectedYear==='all' ? 'selected' : '' }}>Año: Todos</option>
+                                            <option value="all" {{ $selectedYear === 'all' ? 'selected' : '' }}>Año: Todos
+                                            </option>
                                             @foreach($years as $y)
-                                                <option value="{{ $y }}" {{ (string)$selectedYear===(string)$y ? 'selected' : '' }}>Año: {{ $y }}</option>
+                                                <option value="{{ $y }}" {{ (string) $selectedYear === (string) $y ? 'selected' : '' }}>Año: {{ $y }}</option>
                                             @endforeach
                                         </select>
                                     </div>
                                     <div class="col-md-4">
                                         {{-- Elimina el label para que coincida con el diseño --}}
                                         <select class="form-select" id="invoice-status" name="estado">
-                                            @php $estados = ['all'=>'Todos','emitida'=>'Emitida','pendiente'=>'Pendiente','anulada'=>'Anulada','ajustada'=>'Ajustada']; @endphp
-                                            @foreach($estados as $k=>$label)
-                                                <option value="{{ $k }}" {{ $selectedEstado===$k ? 'selected' : '' }}>Estado: {{ $label }}</option>
+                                            @php $estados = ['all' => 'Todos', 'emitida' => 'Emitida', 'pendiente' => 'Pendiente', 'anulada' => 'Anulada', 'ajustada' => 'Ajustada']; @endphp@foreach($estados as $k => $label)
+                                                <option value="{{ $k }}" {{ $selectedEstado === $k ? 'selected' : '' }}>Estado:
+                                                    {{ $label }}</option>
                                             @endforeach
                                         </select>
                                     </div>
@@ -422,9 +434,9 @@
                                             }
 
                                             // helpers visuales
-                                            $estadoMap = ['emitida'=>'success','pendiente'=>'warning','anulada'=>'secondary','ajustada'=>'info'];
+                                            $estadoMap = ['emitida' => 'success', 'pendiente' => 'warning', 'anulada' => 'secondary', 'ajustada' => 'info'];
                                             $badge = $estadoMap[$f->estado] ?? 'secondary';
-                                            $offcanvasId = 'detalleFactura'.$f->id;
+                                            $offcanvasId = 'detalleFactura' . $f->id;
 
                                             // urls si existen (accessors del modelo resuelven S3/local)
                                             $pdfUrl = $f->pdf_url;   // puede ser null
@@ -454,84 +466,91 @@
                                             <td>{{ $f->fecha_vencimiento?->format('d/m/Y') ?? '—' }}</td>
                                             <td>{{ $vencePlan ? $vencePlan->format('d/m/Y') : '—' }}</td>
                                             <td>{{ strtoupper($f->plan ?? '—') }}</td>
-                                            <td class="text-end">${{ number_format((int)$f->monto_neto, 0, ',', '.') }}</td>
-                                            <td class="text-end">${{ number_format((int)$f->monto_iva, 0, ',', '.') }}</td>
-                                            <td class="text-end fw-semibold">${{ number_format((int)$f->monto_total, 0, ',', '.') }}</td>
+                                            <td class="text-end">${{ number_format((int) $f->monto_neto, 0, ',', '.') }}</td>
+                                            <td class="text-end">${{ number_format((int) $f->monto_iva, 0, ',', '.') }}</td>
+                                            <td class="text-end fw-semibold">
+                                                ${{ number_format((int) $f->monto_total, 0, ',', '.') }}</td>
                                             <td><span class="badge bg-{{ $badge }}">{{ ucfirst($f->estado) }}</span></td>
 
                                             <td class="text-nowrap">
                                                 {{-- Ver detalle (offcanvas) --}}
-                                                <button title="Ver factura"
-                                                        class="btn btn-icon btn-outline-dark me-1"
-                                                        data-bs-toggle="offcanvas"
-                                                        data-bs-target="#{{ $offcanvasId }}">
+                                                <button title="Ver factura" type="button"
+                                                    class="btn btn-icon btn-outline-dark me-1"
+                                                    onclick="location.href='{{ route('facturas.show', $f) }}'">
                                                     <i class="bi bi-eye"></i>
                                                 </button>
 
                                                 @php
-                                                    // Rutas dedicadas (recomendado)
                                                     $descargarUrl = route('facturas.descargar', $f);
                                                 @endphp
 
                                                 @if($descargarUrl)
-                                                    <a href="{{ $descargarUrl }}"
-                                                    class="btn btn-icon btn-outline-success"
-                                                    data-bs-toggle="tooltip" title="Descargar PDF">
-                                                    <i class="bi bi-download"></i>
+                                                    <a href="{{ $descargarUrl }}" class="btn btn-icon btn-outline-success"
+                                                        data-bs-toggle="tooltip" title="Descargar PDF">
+                                                        <i class="bi bi-download"></i>
                                                     </a>
                                                 @else
                                                     <span class="badge bg-secondary align-middle">Sin PDF</span>
                                                 @endif
                                             </td>
-
-
                                         </tr>
-
-                                        {{-- Offcanvas de detalle (fuera de la fila para mantener el DOM limpio) --}}
-                                        <div class="offcanvas offcanvas-end" tabindex="-1" id="{{ $offcanvasId }}">
-                                            <div class="offcanvas-header">
-                                                <h5 class="offcanvas-title">Factura {{ $f->numero_mostrar }}</h5>
-                                                <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
-                                            </div>
-                                            <div class="offcanvas-body small">
-                                                <p class="mb-1"><strong>Estado SII:</strong> {{ ucfirst($f->estado) }}</p>
-                                                @if($f->sii_track_id)
-                                                    <p class="mb-1"><strong>Track ID:</strong> <span class="font-monospace">{{ $f->sii_track_id }}</span></p>
-                                                @endif
-                                                <hr>
-                                                <p class="mb-1"><strong>Receptor:</strong> {{ $snap['razon_social'] ?? '—' }}</p>
-                                                <p class="mb-1"><strong>RUT:</strong> {{ $snap['rut'] ?? '—' }}</p>
-                                                <p class="mb-1"><strong>Giro:</strong> {{ $snap['giro'] ?? '—' }}</p>
-                                                <p class="mb-1"><strong>Dirección:</strong> {{ $snap['direccion_comercial'] ?? '—' }}</p>
-                                                <p class="mb-1"><strong>Ciudad:</strong> {{ $snap['ciudad'] ?? '—' }}</p>
-                                                <p class="mb-1"><strong>Región:</strong> {{ $snap['region'] ?? ($snap['region_nombre'] ?? '—') }}</p>
-                                                <p class="mb-1"><strong>Teléfono:</strong> {{ $snap['telefono'] ?? '—' }}</p>
-                                                <p class="mb-1"><strong>Correo:</strong> {{ $snap['correo'] ?? ($snap['correo_envio_dte'] ?? '—') }}</p>
-                                                <hr>
-                                                <p class="mb-1"><strong>Moneda:</strong> {{ $f->moneda ?? 'CLP' }}</p>
-                                                <p class="mb-1"><strong>Plan:</strong> {{ strtoupper($f->plan ?? '—') }}</p>
-                                                <p class="mb-1"><strong>Emisión:</strong> {{ $f->fecha_emision?->format('d/m/Y H:i') ?? '—' }}</p>
-                                                <p class="mb-1"><strong>Vencimiento:</strong> {{ $f->fecha_vencimiento?->format('d/m/Y') ?? '—' }}</p>
-                                                <hr>
-                                                <p class="mb-1"><strong>Neto:</strong> ${{ number_format((int)$f->monto_neto, 0, ',', '.') }}</p>
-                                                <p class="mb-1"><strong>IVA ({{ $f->porcentaje_iva ?? 19 }}%):</strong> ${{ number_format((int)$f->monto_iva, 0, ',', '.') }}</p>
-                                                <p class="mb-1"><strong>Total:</strong> ${{ number_format((int)$f->monto_total, 0, ',', '.') }}</p>
-                                            </div>
-                                        </div>
                                     @empty
-                                        <tr><td colspan="9" class="text-center">No hay facturas disponibles</td></tr>
+                                        <tr>
+                                            <td colspan="9" class="text-center">No hay facturas disponibles</td>
+                                        </tr>
                                     @endforelse
-                                    </tbody>
-
-
+                                </tbody>
                             </table>
                         </div>
 
-                        @if($facturas->hasPages())
-                        <div class="mt-3">
-                            {{ $facturas->onEachSide(1)->links() }}
-                        </div>
-                        @endif
+                        {{-- Offcanvas moved outside the table for valid HTML and correct scrolling --}}
+                        @foreach($facturas as $f)
+                            @php
+                                $snap = $f->datos_facturacion_snapshot;
+                                if (is_string($snap)) {
+                                    $snap = json_decode($snap, true) ?? [];
+                                }
+                            @endphp
+
+                            <div class="offcanvas offcanvas-end" tabindex="-1" id="detalleFactura{{ $f->id }}">
+                                <div class="offcanvas-header">
+                                    <h5 class="offcanvas-title">Factura {{ $f->numero_mostrar }}</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
+                                </div>
+                                <div class="offcanvas-body small">
+                                    <p class="mb-1"><strong>Estado SII:</strong> {{ ucfirst($f->estado) }}</p>
+                                    @if($f->sii_track_id)
+                                        <p class="mb-1"><strong>Track ID:</strong> <span
+                                                class="font-monospace">{{ $f->sii_track_id }}</span></p>
+                                    @endif
+                                    <hr>
+                                    <p class="mb-1"><strong>Receptor:</strong> {{ $snap['razon_social'] ?? '—' }}</p>
+                                    <p class="mb-1"><strong>RUT:</strong> {{ $snap['rut'] ?? '—' }}</p>
+                                    <p class="mb-1"><strong>Giro:</strong> {{ $snap['giro'] ?? '—' }}</p>
+                                    <p class="mb-1"><strong>Dirección:</strong> {{ $snap['direccion_comercial'] ?? '—' }}</p>
+                                    <p class="mb-1"><strong>Ciudad:</strong> {{ $snap['ciudad'] ?? '—' }}</p>
+                                    <p class="mb-1"><strong>Región:</strong>
+                                        {{ $snap['region'] ?? ($snap['region_nombre'] ?? '—') }}</p>
+                                    <p class="mb-1"><strong>Teléfono:</strong> {{ $snap['telefono'] ?? '—' }}</p>
+                                    <p class="mb-1"><strong>Correo:</strong>
+                                        {{ $snap['correo'] ?? ($snap['correo_envio_dte'] ?? '—') }}</p>
+                                    <hr>
+                                    <p class="mb-1"><strong>Moneda:</strong> {{ $f->moneda ?? 'CLP' }}</p>
+                                    <p class="mb-1"><strong>Plan:</strong> {{ strtoupper($f->plan ?? '—') }}</p>
+                                    <p class="mb-1"><strong>Emisión:</strong>
+                                        {{ $f->fecha_emision?->format('d/m/Y H:i') ?? '—' }}</p>
+                                    <p class="mb-1"><strong>Vencimiento:</strong>
+                                        {{ $f->fecha_vencimiento?->format('d/m/Y') ?? '—' }}</p>
+                                    <hr>
+                                    <p class="mb-1"><strong>Neto:</strong>
+                                        ${{ number_format((int) $f->monto_neto, 0, ',', '.') }}</p>
+                                    <p class="mb-1"><strong>IVA ({{ $f->porcentaje_iva ?? 19 }}%):</strong>
+                                        ${{ number_format((int) $f->monto_iva, 0, ',', '.') }}</p>
+                                    <p class="mb-1"><strong>Total:</strong>
+                                        ${{ number_format((int) $f->monto_total, 0, ',', '.') }}</p>
+                                </div>
+                            </div>
+                        @endforeach
                     </div>
                 </div>
             </section>
@@ -713,9 +732,9 @@
                                 <i class="fas fa-exclamation-triangle me-2"></i>
                                 <div>
                                     Debes completar tus <strong>datos de facturación</strong> antes de seleccionar un plan.
-<!--<a href="{{ route('user.settings') }}#billing" class="btn btn-sm btn-outline-dark ms-2">
-                                        Completar ahora
-                                    </a> -->
+                                    <!--<a href="{{ route('user.settings') }}#billing" class="btn btn-sm btn-outline-dark ms-2">
+                                                                                    Completar ahora
+                                                                                </a> -->
                                 </div>
                             </div>
                         @endif
@@ -776,8 +795,11 @@
                                                 <div class="price-info">
                                                     <div class="main-price">
                                                         @if($isAugust)
-                                                            <span style="text-decoration:line-through; color:#888;">$69.900</span>
-                                                            <span style="color:#FF8C00; font-weight:bold;">${{ number_format($afcPrice, 0, ',', '.') }} + IVA</span>
+                                                            <span
+                                                                style="text-decoration:line-through; color:#888;">$69.900</span>
+                                                            <span
+                                                                style="color:#FF8C00; font-weight:bold;">${{ number_format($afcPrice, 0, ',', '.') }}
+                                                                + IVA</span>
                                                             <span class="badge bg-success ms-2">-30% Agosto</span>
                                                         @else
                                                             $69.900 + IVA
@@ -811,8 +833,11 @@
                                                 <div class="price-info">
                                                     <div class="main-price">
                                                         @if($isAugust)
-                                                            <span style="text-decoration:line-through; color:#888;">$87.900</span>
-                                                            <span style="color:#FF8C00; font-weight:bold;">${{ number_format($mePrice, 0, ',', '.') }} + IVA</span>
+                                                            <span
+                                                                style="text-decoration:line-through; color:#888;">$87.900</span>
+                                                            <span
+                                                                style="color:#FF8C00; font-weight:bold;">${{ number_format($mePrice, 0, ',', '.') }}
+                                                                + IVA</span>
                                                             <span class="badge bg-success ms-2">-30% Agosto</span>
                                                         @else
                                                             $87.900 + IVA
@@ -847,8 +872,11 @@
                                                 <div class="price-info">
                                                     <div class="main-price">
                                                         @if($isAugust)
-                                                            <span style="text-decoration:line-through; color:#888;">$150.900</span>
-                                                            <span style="color:#FF8C00; font-weight:bold;">${{ number_format($gePrice, 0, ',', '.') }} + IVA</span>
+                                                            <span
+                                                                style="text-decoration:line-through; color:#888;">$150.900</span>
+                                                            <span
+                                                                style="color:#FF8C00; font-weight:bold;">${{ number_format($gePrice, 0, ',', '.') }}
+                                                                + IVA</span>
                                                             <span class="badge bg-success ms-2">-30% Agosto</span>
                                                         @else
                                                             $150.900 + IVA
@@ -905,7 +933,7 @@
                             <div class="form-actions mt-4">
                                 <button type="submit" class="btn btn-success">Suscribirse Ahora</button>
                                 <!--<a href="#" class="btn btn-outline-primary ms-2" data-bs-toggle="modal"
-                                    data-bs-target="#planComparisonModal">Comparar Planes</a> -->
+                                                data-bs-target="#planComparisonModal">Comparar Planes</a> -->
                             </div>
                         </form>
                     </div>
@@ -1332,78 +1360,91 @@
         });
 
         function handleProfileImageCompression() {
-                const input = document.getElementById('profile_picture');
-                const preview = document.getElementById('imagePreview');
+            const input = document.getElementById('profile_picture');
+            const preview = document.getElementById('imagePreview');
 
-                if (!input || !preview) return;
+            if (!input || !preview) return;
 
-                input.addEventListener('change', function (event) {
-                    const file = event.target.files[0];
-                    if (!file) return;
+            input.addEventListener('change', function (event) {
+                const file = event.target.files[0];
+                if (!file) return;
 
-                    const acceptedTypes = [
-                        'image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/bmp', 'image/svg+xml'
-                    ];
-                    if (!acceptedTypes.includes(file.type)) {
-                        alert('Por favor selecciona una imagen en formato JPG, PNG, WEBP, GIF, BMP o SVG.');
-                        input.value = '';
-                        return;
-                    }
+                const acceptedTypes = [
+                    'image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/bmp', 'image/svg+xml'
+                ];
+                if (!acceptedTypes.includes(file.type)) {
+                    alert('Por favor selecciona una imagen en formato JPG, PNG, WEBP, GIF, BMP o SVG.');
+                    input.value = '';
+                    return;
+                }
 
-                    const reader = new FileReader();
-                    reader.onload = function (e) {
-                        const img = new Image();
-                        img.onload = function () {
-                            const canvas = document.createElement('canvas');
-                            const maxWidth = 600;
-                            const maxHeight = 600;
-                            let width = img.width;
-                            let height = img.height;
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    const img = new Image();
+                    img.onload = function () {
+                        const canvas = document.createElement('canvas');
+                        const maxWidth = 600;
+                        const maxHeight = 600;
+                        let width = img.width;
+                        let height = img.height;
 
-                            if (width > maxWidth || height > maxHeight) {
-                                if (width > height) {
-                                    height = Math.round(height * (maxWidth / width));
-                                    width = maxWidth;
-                                } else {
-                                    width = Math.round(width * (maxHeight / height));
-                                    height = maxHeight;
-                                }
+                        if (width > maxWidth || height > maxHeight) {
+                            if (width > height) {
+                                height = Math.round(height * (maxWidth / width));
+                                width = maxWidth;
+                            } else {
+                                width = Math.round(width * (maxHeight / height));
+                                height = maxHeight;
                             }
+                        }
 
-                            canvas.width = width;
-                            canvas.height = height;
-                            const ctx = canvas.getContext('2d');
-                            ctx.drawImage(img, 0, 0, width, height);
+                        canvas.width = width;
+                        canvas.height = height;
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(img, 0, 0, width, height);
 
-                            // Calidad 0.85 para mejor calidad visual
-                            canvas.toBlob(function (blob) {
-                                preview.src = URL.createObjectURL(blob);
+                        // Calidad 0.85 para mejor calidad visual
+                        canvas.toBlob(function (blob) {
+                            preview.src = URL.createObjectURL(blob);
 
-                                let sizeDiv = document.getElementById('imageSize');
-                                if (!sizeDiv) {
-                                    sizeDiv = document.createElement('div');
-                                    sizeDiv.id = 'imageSize';
-                                    sizeDiv.style.textAlign = 'center';
-                                    sizeDiv.style.color = '#888';
-                                    sizeDiv.style.fontSize = '0.95em';
-                                    sizeDiv.style.marginTop = '0.5em';
-                                    input.parentNode.insertBefore(sizeDiv, input.nextSibling);
-                                }
-                                const sizeKB = (blob.size / 1024).toFixed(1);
+                            let sizeDiv = document.getElementById('imageSize');
+                            if (!sizeDiv) {
+                                sizeDiv = document.createElement('div');
+                                sizeDiv.id = 'imageSize';
+                                sizeDiv.style.textAlign = 'center';
+                                sizeDiv.style.color = '#888';
+                                sizeDiv.style.fontSize = '0.95em';
+                                sizeDiv.style.marginTop = '0.5em';
+                                input.parentNode.insertBefore(sizeDiv, input.nextSibling);
+                            }
+                            const sizeKB = (blob.size / 1024).toFixed(1);
 
-                                const compressedFile = new File([blob], file.name.replace(/\.[^/.]+$/, ".jpg"), { type: "image/jpeg" });
-                                const dataTransfer = new DataTransfer();
-                                dataTransfer.items.add(compressedFile);
-                                input.files = dataTransfer.files;
-                            }, 'image/jpeg', 0.85);
-                        };
-                        img.src = e.target.result;
+                            const compressedFile = new File([blob], file.name.replace(/\.[^/.]+$/, ".jpg"), { type: "image/jpeg" });
+                            const dataTransfer = new DataTransfer();
+                            dataTransfer.items.add(compressedFile);
+                            input.files = dataTransfer.files;
+                        }, 'image/jpeg', 0.85);
                     };
-                    reader.readAsDataURL(file);
-                });
-            }
+                    img.src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            });
+        }
 
-            document.addEventListener('DOMContentLoaded', handleProfileImageCompression);
+        document.addEventListener('DOMContentLoaded', handleProfileImageCompression);
+    </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var hash = window.location.hash;
+            if (hash) {
+                var tabTrigger = document.querySelector('a[href="' + hash + '"]');
+                if (tabTrigger) {
+                    var tab = new bootstrap.Tab(tabTrigger);
+                    tab.show();
+                }
+            }
+        });
     </script>
 @endsection
 

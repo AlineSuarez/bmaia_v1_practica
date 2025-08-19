@@ -1,0 +1,549 @@
+/* ESTILOS UNICAMENTE PARA LA VISTA DE LA FACTURACIÓN */
+
+/* Estilos específicos para vista de detalle de factura */
+.invoice-detail-header {
+    margin-bottom: 2rem;
+    animation: fadeInUp 0.6s ease-out;
+}
+
+.header-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.btn-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--text-medium);
+    text-decoration: none;
+    font-weight: 500;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    transition: all 0.3s ease;
+    background: #fff;
+}
+
+.btn-back:hover {
+    color: var(--primary-dark);
+    border-color: var(--primary-color);
+    background: var(--lighter-bg);
+}
+
+.header-buttons {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+
+.btn-primary,
+.btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    border: none;
+    font-size: 0.9rem;
+}
+
+.btn-primary {
+    background: var(--success-color);
+    color: white;
+}
+
+.btn-primary:hover {
+    background: #6a9639;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(123, 168, 64, 0.3);
+}
+
+.btn-secondary {
+    background: var(--text-medium);
+    color: white;
+}
+
+.btn-secondary:hover {
+    background: var(--text-dark);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(109, 87, 67, 0.3);
+}
+
+.invoice-title {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.invoice-title h1 {
+    margin: 0;
+    color: var(--primary-dark);
+    font-size: clamp(1.5rem, 4vw, 2rem);
+    font-weight: 700;
+}
+
+.invoice-status {
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.invoice-status.emitida {
+    background: rgba(123, 168, 64, 0.15);
+    color: var(--success-color);
+}
+
+.invoice-status.pendiente {
+    background: rgba(194, 106, 12, 0.15);
+    color: var(--warning-color);
+}
+
+.invoice-status.anulada {
+    background: rgba(141, 122, 104, 0.15);
+    color: var(--text-muted);
+}
+
+.invoice-status.ajustada {
+    background: rgba(33, 150, 243, 0.15);
+    color: #1976d2;
+}
+
+.invoice-main-info {
+    margin-bottom: 2rem;
+    animation: fadeInUp 0.6s ease-out 0.1s both;
+}
+
+.info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+}
+
+.info-card {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 16px rgba(178, 160, 134, 0.1);
+    border: 1px solid var(--border-color);
+    transition: all 0.3s ease;
+    overflow: hidden;
+}
+
+.info-card:hover {
+    box-shadow: 0 8px 24px rgba(178, 160, 134, 0.15);
+    transform: translateY(-2px);
+}
+
+.card-header {
+    background: linear-gradient(
+        135deg,
+        var(--primary-color),
+        var(--secondary-color)
+    );
+    padding: 1rem 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.card-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    color: white;
+}
+
+.card-header h3 {
+    margin: 0;
+    color: white;
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.card-content {
+    padding: 1.5rem;
+}
+
+.info-items {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.info-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.info-item:last-child {
+    border-bottom: none;
+}
+
+.info-item .label {
+    color: var(--text-medium);
+    font-weight: 500;
+    font-size: 0.9rem;
+}
+
+.info-item .value {
+    color: var(--text-dark);
+    font-weight: 600;
+    text-align: right;
+}
+
+.value.plan-name {
+    background: var(--primary-color);
+    color: white;
+    padding: 0.25rem 0.5rem;
+    border-radius: 6px;
+    font-size: 0.8rem;
+}
+
+.value.monospace {
+    font-family: "Courier New", monospace;
+    background: var(--lighter-bg);
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.85rem;
+}
+
+.totals-card .card-header {
+    background: linear-gradient(135deg, var(--success-color), #6a9639);
+}
+
+.totals-breakdown {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.total-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 0;
+}
+
+.total-item.total-final {
+    border-top: 2px solid var(--primary-color);
+    padding-top: 1rem;
+    margin-top: 0.5rem;
+}
+
+.total-item .amount {
+    font-weight: 700;
+    color: var(--text-dark);
+    font-size: 1.1rem;
+}
+
+.total-final .amount {
+    color: var(--primary-dark);
+    font-size: 1.3rem;
+}
+
+.invoice-receptor {
+    background: #fff;
+    border-radius: 12px;
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 16px rgba(178, 160, 134, 0.1);
+    border: 1px solid var(--border-color);
+    animation: fadeInUp 0.6s ease-out 0.2s both;
+    overflow: hidden;
+}
+
+.receptor-header {
+    background: linear-gradient(
+        135deg,
+        var(--primary-dark),
+        var(--primary-color)
+    );
+    padding: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.section-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+    color: white;
+}
+
+.receptor-header h2 {
+    margin: 0;
+    color: white;
+    font-size: 1.3rem;
+    font-weight: 600;
+}
+
+.receptor-details {
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.detail-group {
+    background: var(--lighter-bg);
+    border-radius: 8px;
+    padding: 1rem;
+    border: 1px solid var(--border-color);
+}
+
+.group-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.group-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    background: var(--primary-color);
+    border-radius: 6px;
+    color: white;
+}
+
+.group-header h4 {
+    margin: 0;
+    color: var(--text-dark);
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.detail-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+.detail-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.detail-item.full-width {
+    grid-column: 1 / -1;
+}
+
+.detail-item .label {
+    color: var(--text-medium);
+    font-weight: 500;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.detail-item .value {
+    color: var(--text-dark);
+    font-weight: 600;
+    font-size: 0.95rem;
+    padding: 0.5rem;
+    background: white;
+    border-radius: 6px;
+    word-break: break-word;
+    border: 1px solid var(--border-color);
+}
+
+.invoice-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 2px solid var(--border-color);
+    animation: fadeInUp 0.6s ease-out 0.3s both;
+}
+
+.action-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    border: 2px solid;
+    font-size: 0.95rem;
+}
+
+.action-btn.primary {
+    background: var(--success-color);
+    border-color: var(--success-color);
+    color: white;
+}
+
+.action-btn.primary:hover {
+    background: #6a9639;
+    border-color: #6a9639;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(123, 168, 64, 0.3);
+}
+
+.action-btn.secondary {
+    background: var(--text-medium);
+    border-color: var(--text-medium);
+    color: white;
+}
+
+.action-btn.secondary:hover {
+    background: var(--text-dark);
+    border-color: var(--text-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(109, 87, 67, 0.3);
+}
+
+.action-btn.outline {
+    background: transparent;
+    border-color: var(--border-color);
+    color: var(--text-medium);
+}
+
+.action-btn.outline:hover {
+    background: var(--lighter-bg);
+    border-color: var(--primary-color);
+    color: var(--primary-dark);
+}
+
+/* Animaciones */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .info-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+    .header-actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .header-buttons {
+        justify-content: center;
+    }
+
+    .invoice-title {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+
+    .detail-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .invoice-actions {
+        flex-direction: column;
+    }
+
+    .action-btn {
+        justify-content: center;
+    }
+
+    .receptor-header {
+        flex-direction: column;
+        text-align: center;
+        gap: 0.75rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .container {
+        padding: 1rem;
+    }
+
+    .card-content,
+    .receptor-details {
+        padding: 1rem;
+    }
+
+    .detail-group {
+        padding: 0.75rem;
+    }
+
+    .btn-primary,
+    .btn-secondary,
+    .action-btn {
+        font-size: 0.85rem;
+        padding: 0.5rem 1rem;
+    }
+
+    .card-header {
+        padding: 0.75rem 1rem;
+    }
+
+    .receptor-header {
+        padding: 1rem;
+    }
+}
+
+/* Print styles */
+@media print {
+    .header-actions,
+    .invoice-actions {
+        display: none !important;
+    }
+
+    .invoice-detail-header,
+    .invoice-main-info,
+    .invoice-receptor {
+        box-shadow: none !important;
+        border: 1px solid #000 !important;
+    }
+
+    .container {
+        max-width: none;
+        padding: 0;
+    }
+
+    .card-header,
+    .receptor-header {
+        background: #f0f0f0 !important;
+        color: #000 !important;
+    }
+}

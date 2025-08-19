@@ -989,7 +989,9 @@ body {
     }
 
     .invoice-filters .btn {
-        min-width: clamp(70px, 12vw, 85px);
+        width: auto;
+        min-width: 70px;
+        max-width: 85px;
     }
 }
 
@@ -1127,4 +1129,94 @@ body {
         max-width: none;
         padding: 0;
     }
+}
+
+html,
+body {
+    width: 100%;
+    overflow-x: hidden;
+}
+
+.container {
+    box-sizing: border-box;
+    max-width: 1200px;
+    width: 100%;
+    overflow-x: visible;
+}
+
+.table-responsive {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    touch-action: pan-x;
+    width: 100%;
+}
+
+.invoice-table {
+    width: 100% !important;
+    min-width: 800px;
+    max-width: none;
+    table-layout: auto;
+}
+
+@media (max-width: 768px) {
+    .invoice-table {
+        min-width: 720px;
+    }
+
+    .settings-card,
+    .tab-pane,
+    .card,
+    .container {
+        overflow-x: visible !important;
+        transform: none !important;
+    }
+}
+
+img,
+svg,
+iframe,
+video,
+table {
+    max-width: 100%;
+    height: auto;
+    box-sizing: border-box;
+}
+
+.offcanvas,
+.invoice-modal,
+.modal {
+    position: fixed !important;
+    left: 0;
+    top: 0;
+    right: 0;
+    box-sizing: border-box;
+}
+
+* {
+    backface-visibility: hidden;
+    -webkit-font-smoothing: antialiased;
+}
+
+.btn.btn-icon.btn-outline-dark {
+    background-color: transparent;
+    width: 45px;
+    border-color: #343a40;
+    color: #343a40;
+}
+
+.btn.btn-icon.btn-outline-dark:hover {
+    background-color: #343a40;
+    color: #fff;
+}
+
+.btn.btn-icon.btn-outline-success {
+    background-color: transparent;
+    width: 45px;
+    border-color: #28a745;
+    color: #28a745;
+}
+
+.btn.btn-icon.btn-outline-success:hover {
+    background-color: #28a745;
+    color: #fff;
 }

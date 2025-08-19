@@ -19,7 +19,7 @@ class GoogleController extends Controller
     public function handleGoogleCallback()
     {
         try {
-            $googleUser = Socialite::driver('google')->stateless()->user();
+            $googleUser = Socialite::driver('google')->user();
             $user = User::where('email', $googleUser->getEmail())->first();
 
             if ($user) {
@@ -37,7 +37,7 @@ class GoogleController extends Controller
             }
 
             return redirect()->intended('/home');
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             return redirect('/login')->with('error', 'No se pudo iniciar sesión con Google.');
         }
     }

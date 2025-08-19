@@ -173,6 +173,10 @@ Route::middleware(['auth'])->group(function () {
     // FACTURACION
     Route::post('user/datos-facturacion', [DatoFacturacionController::class, 'store'])->name('datos-facturacion.store');
     Route::post('/facturas/{factura}/enviar-correo', [DatoFacturacionController::class, 'enviarCorreo'])->name('facturas.enviarCorreo');
+
+    // RUTA: ver detalle de factura
+    Route::get('/facturas/{factura}', [App\Http\Controllers\FacturaController::class, 'show'])
+        ->name('facturas.show');
 });
 
 // ================================

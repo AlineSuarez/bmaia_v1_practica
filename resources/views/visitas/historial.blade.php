@@ -754,7 +754,7 @@
                     <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
                         <a href="{{ route('visitas') }}" class="custom-btn-back">
                             <i class="fas fa-arrow-left me-2"></i>
-                            Volver a Mis Apiarios
+                            Volver
                         </a>
                         @if(!$apiario->visitas->isEmpty())
                             <div class="summary-info">
