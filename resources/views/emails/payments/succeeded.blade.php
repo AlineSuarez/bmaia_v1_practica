@@ -1,13 +1,27 @@
-@component('mail::message')
-# Pago recibido
+<!DOCTYPE html>
+<html>
 
-Hola {{ $p->user->name }}, tu pago fue **aprobado**.
+<head>
+    <meta charset="UTF-8">
+    <title>Pago recibido</title>
+</head>
 
-**Plan:** {{ strtoupper($p->plan) }}  
-**Monto:** ${{ number_format($p->amount, 0, ',', '.') }}  
-**Fecha:** {{ $p->created_at->format('d/m/Y H:i') }}
+<body>
+    <h1>Pago recibido</h1>
+    <p>
+        Hola {{ $payment->user->name }}, tu pago fue <strong>aprobado</strong>.
+    </p>
+    <ul>
+        <li><strong>Plan:</strong> {{ strtoupper($payment->plan) }}</li>
+        <li><strong>Monto:</strong> ${{ number_format($payment->amount, 0, ',', '.') }}</li>
+        <li><strong>Fecha:</strong> {{ $payment->created_at->format('d/m/Y H:i') }}</li>
+    </ul>
+    <p>
+        <a href="{{ route('user.settings') }}"
+            style="display:inline-block;padding:10px 20px;background:#007bff;color:#fff;text-decoration:none;border-radius:4px;">
+            Ver mi suscripción
+        </a>
+    </p>
+</body>
 
-@component('mail::button', ['url' => route('user.settings')])
-Ver mi suscripción
-@endcomponent
-@endcomponent
+</html>

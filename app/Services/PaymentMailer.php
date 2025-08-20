@@ -1,21 +1,20 @@
 <?php
 namespace App\Services;
 
-use App\Mail\Payments\PaymentFailedMail;
-use App\Mail\Payments\PaymentSucceededMail;
-use App\Mail\Payments\PaymentVoidedMail;
-use App\Mail\Payments\ReceiptMail;
-use App\Mail\Plans\PlanActivatedMail;
 use App\Models\Payment;
 use App\Models\User;
-use Illuminate\Support\Facades\Mail;
+use SendGrid;
+use SendGrid\Mail\Mail as SendGridMail;
+use Illuminate\Support\Facades\View;
+use Illuminate\Support\Facades\Storage;
 
 class PaymentMailer
 {
     /** Normaliza y deduplica una lista (string|array) de emails */
     protected static function normalizeEmails(string|array|null $emails): array
     {
-        if (!$emails) return [];
+        if (!$emails)
+            return [];
         if (is_string($emails)) {
             // soporta "a@x.com, b@x.com"
             $emails = preg_split('/[,;]+/', $emails);
@@ -30,69 +29,125 @@ class PaymentMailer
         return array_keys($clean);
     }
 
-    protected static function toBilling(User $user)
+    /** Envío genérico usando SendGrid */
+    protected static function sendWithSendGrid(array $toList, array $ccList, string $subject, string $plainText, string $htmlContent, array $attachments = []): void
     {
         try {
-            $toList = self::normalizeEmails($user->email);
-            $ccList = self::normalizeEmails($user->datosFacturacion?->correo_envio_dte);
+            $email = new SendGridMail();
+            $email->setFrom("soporte@bmaia.cl", "B-MaiA");
+            foreach ($toList as $to) {
+                $email->addTo($to);
+            }
+            foreach ($ccList as $cc) {
+                $email->addCc($cc);
+            }
+            $email->setSubject($subject);
+            $email->addContent("text/plain", $plainText);
+            $email->addContent("text/html", $htmlContent);
 
-            if ($ccList) {
-                $toSet = array_flip($toList);
-                $ccList = array_values(array_filter($ccList, fn($cc) => !isset($toSet[strtolower($cc)])));
+            // Adjuntos (solo para sendReceipt)
+            foreach ($attachments as $attachment) {
+                $email->addAttachment(
+                    $attachment['content'],
+                    $attachment['type'],
+                    $attachment['name'],
+                    'attachment'
+                );
             }
 
-            $m = \Mail::to($toList);
-            if (!empty($ccList)) {
-                $m->cc($ccList);
-            }
-            return $m;
+            $sendgrid = new SendGrid(config('services.sendgrid.api_key'));
+            $sendgrid->send($email);
         } catch (\Throwable $e) {
-            \Log::warning('[MAIL] Envío deshabilitado o mal configurado: '.$e->getMessage());
-            // Stub que ignora queue()/send() para no romper flujo
-            return new class {
-                public function queue($x = null){ return $this; }
-                public function send($x = null){ return $this; }
-                public function cc($x = null){ return $this; }
-            };
+            \Log::error('Error enviando correo SendGrid: ' . $e->getMessage());
         }
+    }
+
+    protected static function getToAndCc(User $user): array
+    {
+        $toList = self::normalizeEmails($user->email);
+        $ccList = self::normalizeEmails($user->datosFacturacion?->correo_envio_dte);
+
+        if ($ccList) {
+            $toSet = array_flip($toList);
+            $ccList = array_values(array_filter($ccList, fn($cc) => !isset($toSet[strtolower($cc)])));
+        }
+        return [$toList, $ccList];
     }
 
     public static function sendSucceeded(Payment $p): void
     {
-        self::toBilling($p->user)->queue(new PaymentSucceededMail($p));
+        $user = $p->user;
+        [$toList, $ccList] = self::getToAndCc($user);
+        $subject = "Pago realizado con éxito en B-MaiA";
+        $plainText = "¡Tu pago fue realizado con éxito!";
+        $htmlContent = View::make('emails.payments.succeeded', ['payment' => $p, 'user' => $user])->render();
+
+        self::sendWithSendGrid($toList, $ccList, $subject, $plainText, $htmlContent);
     }
 
     public static function sendFailed(Payment $p): void
     {
-        self::toBilling($p->user)->queue(new PaymentFailedMail($p));
+        $user = $p->user;
+        [$toList, $ccList] = self::getToAndCc($user);
+        $subject = "Pago fallido en B-MaiA";
+        $plainText = "Tu pago no pudo ser procesado. Por favor, intenta nuevamente.";
+        $htmlContent = View::make('emails.payments.failed', ['p' => $p])->render();
+
+        self::sendWithSendGrid($toList, $ccList, $subject, $plainText, $htmlContent);
     }
 
     public static function sendVoided(Payment $p): void
     {
-        self::toBilling($p->user)->queue(new PaymentVoidedMail($p));
+        $user = $p->user;
+        [$toList, $ccList] = self::getToAndCc($user);
+        $subject = "Transacción anulada en B-MaiA";
+        $plainText = "La transacción para el plan {$p->plan} fue anulada.";
+        $htmlContent = View::make('emails.payments.voided', ['p' => $p])->render();
+
+        self::sendWithSendGrid($toList, $ccList, $subject, $plainText, $htmlContent);
     }
 
     public static function sendPlanActivated(User $user, string $plan): void
     {
-        self::toBilling($user)->queue(new PlanActivatedMail($user, $plan));
+        [$toList, $ccList] = self::getToAndCc($user);
+        $subject = "Plan activado en B-MaiA";
+        $plainText = "¡Tu plan {$plan} ha sido activado!";
+        $htmlContent = View::make('emails.plans.activated', ['user' => $user, 'plan' => $plan])->render();
+
+        self::sendWithSendGrid($toList, $ccList, $subject, $plainText, $htmlContent);
     }
 
     public static function sendReceipt(Payment $payment): void
     {
-        try {
-            $user = $payment->user;
-            $pdfUrl = null;
+        $user = $payment->user;
+        [$toList, $ccList] = self::getToAndCc($user);
+        $subject = "Comprobante de pago B-MaiA";
+        $plainText = "Adjuntamos el comprobante de tu pago.";
+        $pdfUrl = null;
+        $attachments = [];
 
-            if ($payment->receipt_pdf_path && \Storage::disk('public')->exists($payment->receipt_pdf_path)) {
-                $pdfUrl = \Storage::disk('public')->url($payment->receipt_pdf_path);
-            }
-
-            \Mail::to($user->email)
-                ->queue(new ReceiptMail($payment, $pdfUrl));
-
-        } catch (\Throwable $e) {
-            \Log::error('Error enviando comprobante: '.$e->getMessage(), ['payment_id' => $payment->id]);
+        if ($payment->receipt_pdf_path && Storage::disk('public')->exists($payment->receipt_pdf_path)) {
+            $pdfPath = Storage::disk('public')->path($payment->receipt_pdf_path);
+            $attachments[] = [
+                'content' => base64_encode(file_get_contents($pdfPath)),
+                'type' => 'application/pdf',
+                'name' => 'comprobante.pdf',
+            ];
         }
-    }
 
+        // Agrega aquí los datos de tu empresa
+        $empresa = [
+            'razon' => 'B-MaiA SpA',
+            'rut' => '76.123.456-7',
+        ];
+
+        $htmlContent = View::make('payment.receipt', [
+            'payment' => $payment,
+            'user' => $user,
+            'empresa' => $empresa,
+            'pdfUrl' => $pdfUrl,
+        ])->render();
+
+        self::sendWithSendGrid($toList, $ccList, $subject, $plainText, $htmlContent, $attachments);
+    }
 }

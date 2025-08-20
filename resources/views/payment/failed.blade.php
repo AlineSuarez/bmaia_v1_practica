@@ -137,7 +137,7 @@
         // Redirección automática después de 15 segundos
         document.addEventListener('DOMContentLoaded', function () {
             setTimeout(function () {
-                window.location.href = "{{ route('payment.required') }}";
+                window.location.href = "{{ route('home') }}";
             }, 15000);
         });
     </script>

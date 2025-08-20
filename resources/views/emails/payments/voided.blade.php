@@ -1,5 +1,16 @@
-@component('mail::message')
-# Transacción anulada
+<!DOCTYPE html>
+<html>
 
-La transacción para el plan **{{ strtoupper($p->plan) }}** fue anulada.
-@endcomponent
+<head>
+    <meta charset="UTF-8">
+    <title>Transacción anulada</title>
+</head>
+
+<body>
+    <h1>Transacción anulada</h1>
+    <p>
+        La transacción para el plan <strong>{{ strtoupper($p->plan) }}</strong> fue anulada.
+    </p>
+</body>
+
+</html>

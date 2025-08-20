@@ -1,7 +1,19 @@
-@component('mail::message')
-# Pago rechazado
+<!DOCTYPE html>
+<html>
 
-No pudimos procesar tu pago del plan **{{ strtoupper($p->plan) }}**.
+<head>
+    <meta charset="UTF-8">
+    <title>Pago rechazado</title>
+</head>
 
-Por favor intenta nuevamente o contáctanos.
-@endcomponent
+<body>
+    <h1>Pago rechazado</h1>
+    <p>
+        No pudimos procesar tu pago del plan <strong>{{ strtoupper($p->plan) }}</strong>.
+    </p>
+    <p>
+        Por favor intenta nuevamente o contáctanos.
+    </p>
+</body>
+
+</html>
