@@ -32,21 +32,29 @@ class PaymentMailer
 
     protected static function toBilling(User $user)
     {
-        $toList = self::normalizeEmails($user->email);
-        $ccList = self::normalizeEmails($user->datosFacturacion?->correo_envio_dte);
+        try {
+            $toList = self::normalizeEmails($user->email);
+            $ccList = self::normalizeEmails($user->datosFacturacion?->correo_envio_dte);
 
-        // quita de CC los que ya están en TO
-        if ($ccList) {
-            $toSet = array_flip($toList);
-            $ccList = array_values(array_filter($ccList, fn($cc) => !isset($toSet[strtolower($cc)])));
-        }
+            if ($ccList) {
+                $toSet = array_flip($toList);
+                $ccList = array_values(array_filter($ccList, fn($cc) => !isset($toSet[strtolower($cc)])));
+            }
 
-        // arma el mailer sin duplicados
-        $m = Mail::to($toList);
-        if (!empty($ccList)) {
-            $m->cc($ccList);
+            $m = \Mail::to($toList);
+            if (!empty($ccList)) {
+                $m->cc($ccList);
+            }
+            return $m;
+        } catch (\Throwable $e) {
+            \Log::warning('[MAIL] Envío deshabilitado o mal configurado: '.$e->getMessage());
+            // Stub que ignora queue()/send() para no romper flujo
+            return new class {
+                public function queue($x = null){ return $this; }
+                public function send($x = null){ return $this; }
+                public function cc($x = null){ return $this; }
+            };
         }
-        return $m;
     }
 
     public static function sendSucceeded(Payment $p): void
