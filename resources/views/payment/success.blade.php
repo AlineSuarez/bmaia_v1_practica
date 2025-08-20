@@ -382,7 +382,7 @@
                     </a>
                     <a href="{{ route('home') }}" class="btn btn-secondary">
                         <i class="fas fa-home"></i>
-                        <span>Ir al Dashboard</span>
+                        <span>Ir al Inicio</span>
                     </a>
                 </div>
             </div>

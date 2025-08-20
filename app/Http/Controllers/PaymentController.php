@@ -60,57 +60,60 @@ class PaymentController extends Controller
         $df = $user->datosFacturacion;
         $billingSnapshot = null;
         $datoFacturacionId = null;
-        
+
         if ($docType === 'factura') {
             if (!$df || !$df->razon_social || !$df->rut || !$df->correo_envio_dte) {
-                return back()->with('error',
-                    'Para factura, completa Razón Social, RUT y Correo de envío DTE en tus Datos de Facturación.');
+                return back()->with(
+                    'error',
+                    'Para factura, completa Razón Social, RUT y Correo de envío DTE en tus Datos de Facturación.'
+                );
             }
         }
         // Monto
-        $amount = match($plan){
+        $amount = match ($plan) {
             'afc' => 69900,
-            'me'  => 87900,
-            'ge'  => 150900,
+            'me' => 87900,
+            'ge' => 150900,
         };
-        if (now()->month == 8) $amount = (int) round($amount * 0.7);
+        if (now()->month == 8)
+            $amount = (int) round($amount * 0.7);
 
         // Transacción
-        $buyOrder  = uniqid('ORDER_');
+        $buyOrder = uniqid('ORDER_');
         $sessionId = session()->getId();
-        $response  = (new Transaction())->create($buyOrder, $sessionId, $amount, route('payment.response'));
+        $response = (new Transaction())->create($buyOrder, $sessionId, $amount, route('payment.response'));
 
         // ⚠️ Solo setear snapshot si es FACTURA
         $billingSnapshot = null;
         $datoFacturacionId = null;
         if ($docType === 'factura' && $df) {
             $billingSnapshot = [
-                'razon_social'           => $df->razon_social,
-                'rut'                    => $df->rut,
-                'giro'                   => $df->giro,
-                'direccion_comercial'    => $df->direccion_comercial,
-                'region_id'              => $df->region_id,
-                'comuna_id'              => $df->comuna_id,
-                'ciudad'                 => $df->ciudad,
-                'telefono'               => $df->telefono,
-                'correo'                 => $df->correo,
+                'razon_social' => $df->razon_social,
+                'rut' => $df->rut,
+                'giro' => $df->giro,
+                'direccion_comercial' => $df->direccion_comercial,
+                'region_id' => $df->region_id,
+                'comuna_id' => $df->comuna_id,
+                'ciudad' => $df->ciudad,
+                'telefono' => $df->telefono,
+                'correo' => $df->correo,
                 'autorizacion_envio_dte' => (bool) $df->autorizacion_envio_dte,
-                'correo_envio_dte'       => $df->correo_envio_dte,
+                'correo_envio_dte' => $df->correo_envio_dte,
             ];
             $datoFacturacionId = $df->id;
         }
         // 5) Guardar Payment (dejamos el token inmediatamente)
         Payment::create([
-            'user_id'             => $user->id,
+            'user_id' => $user->id,
             'dato_facturacion_id' => $datoFacturacionId,   // ✅ null si es boleta
-            'transaction_id'      => $response->getToken(),
-            'status'              => 'pending',
-            'amount'              => $amount,
-            'plan'                => $plan,
-            'doc_type'            => $docType,
-            'billing_snapshot'    => $billingSnapshot,     // ✅ null si es boleta
-            'buy_order'           => $buyOrder,
-            'session_id'          => $sessionId,
+            'transaction_id' => $response->getToken(),
+            'status' => 'pending',
+            'amount' => $amount,
+            'plan' => $plan,
+            'doc_type' => $docType,
+            'billing_snapshot' => $billingSnapshot,     // ✅ null si es boleta
+            'buy_order' => $buyOrder,
+            'session_id' => $sessionId,
         ]);
         return redirect($response->getUrl() . '?token_ws=' . $response->getToken());
     }
@@ -121,13 +124,13 @@ class PaymentController extends Controller
 
         // Acepta GET o POST (algunos entornos retornan por GET)
         $tbkToken = $request->input('TBK_TOKEN') ?? $request->query('TBK_TOKEN');
-        $token    = $request->input('token_ws')  ?? $request->query('token_ws');
+        $token = $request->input('token_ws') ?? $request->query('token_ws');
 
         // === ABORTO / ANULACIÓN DESDE WEBPAY (flujo TBK) ===
         if (empty($token) || !empty($tbkToken)) {
             // Webpay suele enviar también:
-            $tbkOrder   = $request->input('TBK_ORDEN_COMPRA') ?? $request->query('TBK_ORDEN_COMPRA');
-            $tbkSession = $request->input('TBK_ID_SESION')    ?? $request->query('TBK_ID_SESION');
+            $tbkOrder = $request->input('TBK_ORDEN_COMPRA') ?? $request->query('TBK_ORDEN_COMPRA');
+            $tbkSession = $request->input('TBK_ID_SESION') ?? $request->query('TBK_ID_SESION');
 
             $p = null;
             if (!empty($token)) {
@@ -145,10 +148,9 @@ class PaymentController extends Controller
                 PaymentMailer::sendVoided($p);
             }
             $user = Auth::user();
-            \Storage::disk('public')->makeDirectory('comprobantes/'.$user->id);
+            \Storage::disk('public')->makeDirectory('comprobantes/' . $user->id);
             $request->session()->put('payment_failed', true);
-            $request->session()->flash('error', 'La compra fue cancelada por el usuario.');
-            return redirect()->route('payment.failed');
+            return redirect()->route('payment.failed')->with('error', 'La compra fue cancelada por el usuario.');
         }
 
         // Guarda el token para mostrarlo en success/failed
@@ -158,7 +160,7 @@ class PaymentController extends Controller
         try {
             $commit = (new Transaction())->commit($token);
         } catch (\Throwable $e) {
-            \Log::error('[TBK] commit() exception: '.$e->getMessage(), ['ex' => $e]);
+            \Log::error('[TBK] commit() exception: ' . $e->getMessage(), ['ex' => $e]);
             $request->session()->put('payment_failed', true);
             return redirect()->route('payment.failed')
                 ->with('error', 'Error al procesar la transacción.');
@@ -174,8 +176,8 @@ class PaymentController extends Controller
 
         if (!$payment) {
             \Log::error('[TBK] No se encontró Payment para token/buy_order', [
-                'token_ws'   => $token,
-                'buy_order'  => method_exists($commit, 'getBuyOrder') ? $commit->getBuyOrder() : null,
+                'token_ws' => $token,
+                'buy_order' => method_exists($commit, 'getBuyOrder') ? $commit->getBuyOrder() : null,
             ]);
             $request->session()->put('payment_failed', true);
             return redirect()->route('payment.failed')->with('error', 'No se encontró el pago asociado.');
@@ -203,14 +205,14 @@ class PaymentController extends Controller
                 $payment->forceFill($updates)->save();
             }
         } catch (\Throwable $e) {
-            \Log::warning('[TBK] No se pudieron guardar campos de diagnóstico en payments: '.$e->getMessage());
+            \Log::warning('[TBK] No se pudieron guardar campos de diagnóstico en payments: ' . $e->getMessage());
         }
 
         // === LECTURA RESULTADO ===
         $responseCode = (int) ($commit->getResponseCode() ?? 999);   // 0 = aprobado
-        $status       = strtoupper($commit->getStatus() ?? '');      // 'AUTHORIZED' = aprobado
-        $paymentType  = strtoupper($commit->getPaymentTypeCode() ?? '');
-        \Log::info('[TBK] Resultado commit', compact('responseCode','status','paymentType'));
+        $status = strtoupper($commit->getStatus() ?? '');      // 'AUTHORIZED' = aprobado
+        $paymentType = strtoupper($commit->getPaymentTypeCode() ?? '');
+        \Log::info('[TBK] Resultado commit', compact('responseCode', 'status', 'paymentType'));
 
         // Regla correcta de aprobación: responseCode === 0 y status === 'AUTHORIZED'.
         if ($responseCode !== 0 || $status !== 'AUTHORIZED') {
@@ -218,186 +220,188 @@ class PaymentController extends Controller
             // Mail de pago rechazado
             PaymentMailer::sendFailed($payment);
             $request->session()->put('payment_failed', true);
-            $request->session()->flash('error', 'El pago fue rechazado por el emisor.');
+            session()->flash('error', 'El pago fue rechazado por el emisor.');
             return redirect()->route('payment.failed');
         }
 
         // === Pago aprobado ===
         $start = $payment->created_at ?? now();
-            $durationDays = (int) config('plans.duration_days', 365);
-            $payment->forceFill([
-                'status'     => 'paid',
-                'expires_at' => (clone $start)->addDays($durationDays),
-            ])->save();
+        $durationDays = (int) config('plans.duration_days', 365);
+        $payment->forceFill([
+            'status' => 'paid',
+            'expires_at' => (clone $start)->addDays($durationDays),
+        ])->save();
 
-            /** @var \App\Models\User $user */
-            $user = $payment->user ?? User::find(Auth::id());
-            if (!$user) {
-                \Log::error('[TBK] Usuario no encontrado para pago aprobado (payment_id='.$payment->id.')');
-                $request->session()->put('payment_failed', true);
-                return redirect()->route('payment.failed')->with('error', 'Usuario no encontrado.');
-            }
+        /** @var \App\Models\User $user */
+        $user = $payment->user ?? User::find(Auth::id());
+        if (!$user) {
+            \Log::error('[TBK] Usuario no encontrado para pago aprobado (payment_id=' . $payment->id . ')');
+            $request->session()->put('payment_failed', true);
+            return redirect()->route('payment.failed')->with('error', 'Usuario no encontrado.');
+        }
 
-            // Actualiza plan/fecha de vencimiento
-            $user->plan              = $payment->plan;
-            $user->fecha_vencimiento = $payment->expires_at instanceof Carbon ? $payment->expires_at : Carbon::parse($payment->expires_at);
-            $user->webpay_status     = 'pagado';
-            $user->save();
-            $user->refresh(); 
-            // Enviar correos
-            PaymentMailer::sendSucceeded($payment);
-            PaymentMailer::sendPlanActivated($user, $payment->plan);
+        // Actualiza plan/fecha de vencimiento
+        $user->plan = $payment->plan;
+        $user->fecha_vencimiento = $payment->expires_at instanceof Carbon ? $payment->expires_at : Carbon::parse($payment->expires_at);
+        $user->webpay_status = 'pagado';
+        $user->save();
+        $user->refresh();
+        // Enviar correos
+        PaymentMailer::sendSucceeded($payment);
+        PaymentMailer::sendPlanActivated($user, $payment->plan);
 
-            // === Documento según elección ===
-            if ($payment->doc_type === 'factura') {
-                // === Crear factura + PDF (si falla, no bloquea el success) ===
-                try {
-                    // amount ES EL TOTAL COBRADO (con IVA). Prorrateamos a neto + IVA
-                    $porcIva   = 19;
-                    $montoTot  = (int) $payment->amount;                        // total cobrado
-                    $montoNeto = (int) round($montoTot / (1 + $porcIva / 100));  // prorrateo 19%
-                    $montoIva  = $montoTot - $montoNeto;
-                    $billingSnapshot = $payment->billing_snapshot ?? [];
-                    $df = $payment->datosFacturacion()->first();
-                    if (empty($billingSnapshot) && $df) {
-                        $regionNombre = null;
-                        $comunaNombre = null;
+        // === Documento según elección ===
+        if ($payment->doc_type === 'factura') {
+            // === Crear factura + PDF (si falla, no bloquea el success) ===
+            try {
+                // amount ES EL TOTAL COBRADO (con IVA). Prorrateamos a neto + IVA
+                $porcIva = 19;
+                $montoTot = (int) $payment->amount;                        // total cobrado
+                $montoNeto = (int) round($montoTot / (1 + $porcIva / 100));  // prorrateo 19%
+                $montoIva = $montoTot - $montoNeto;
+                $billingSnapshot = $payment->billing_snapshot ?? [];
+                $df = $payment->datosFacturacion()->first();
+                if (empty($billingSnapshot) && $df) {
+                    $regionNombre = null;
+                    $comunaNombre = null;
+                    try {
+                        $regionNombre = method_exists($df, 'region') && $df->relationLoaded('region')
+                            ? optional($df->region)->nombre
+                            : (Region::find($df->region_id)->nombre ?? null);
+                        $comunaNombre = method_exists($df, 'comuna') && $df->relationLoaded('comuna')
+                            ? optional($df->comuna)->nombre
+                            : (Comuna::find($df->comuna_id)->nombre ?? null);
+                    } catch (\Throwable $e) {
+                        // silencioso
+                    }
+                    $billingSnapshot = [
+                        'razon_social' => $df->razon_social,
+                        'rut' => $df->rut,
+                        'giro' => $df->giro,
+                        'direccion_comercial' => $df->direccion_comercial,
+                        'region_id' => $df->region_id,
+                        'comuna_id' => $df->comuna_id,
+                        'ciudad' => $df->ciudad,
+                        'telefono' => $df->telefono,
+                        'correo' => $df->correo,
+                        'autorizacion_envio_dte' => (bool) $df->autorizacion_envio_dte,
+                        'correo_envio_dte' => $df->correo_envio_dte,
+                        'region' => $regionNombre,
+                        'region_nombre' => $regionNombre,
+                        'comuna' => $comunaNombre,
+                        'comuna_nombre' => $comunaNombre,
+                    ];
+                } else {
+                    if ($df && (!isset($billingSnapshot['region_nombre']) || !isset($billingSnapshot['comuna_nombre']))) {
                         try {
-                            $regionNombre = method_exists($df, 'region') && $df->relationLoaded('region')
-                                ? optional($df->region)->nombre
-                                : (Region::find($df->region_id)->nombre ?? null);
-                            $comunaNombre = method_exists($df, 'comuna') && $df->relationLoaded('comuna')
-                                ? optional($df->comuna)->nombre
-                                : (Comuna::find($df->comuna_id)->nombre ?? null);
+                            $regionNombre = Region::find($df->region_id)->nombre ?? null;
+                            $comunaNombre = Comuna::find($df->comuna_id)->nombre ?? null;
                         } catch (\Throwable $e) {
-                            // silencioso
+                            $regionNombre = $billingSnapshot['region_nombre'] ?? null;
+                            $comunaNombre = $billingSnapshot['comuna_nombre'] ?? null;
                         }
-                        $billingSnapshot = [
-                            'razon_social'           => $df->razon_social,
-                            'rut'                    => $df->rut,
-                            'giro'                   => $df->giro,
-                            'direccion_comercial'    => $df->direccion_comercial,
-                            'region_id'              => $df->region_id,
-                            'comuna_id'              => $df->comuna_id,
-                            'ciudad'                 => $df->ciudad,
-                            'telefono'               => $df->telefono,
-                            'correo'                 => $df->correo,
-                            'autorizacion_envio_dte' => (bool) $df->autorizacion_envio_dte,
-                            'correo_envio_dte'       => $df->correo_envio_dte,
-                            'region'                 => $regionNombre,
-                            'region_nombre'          => $regionNombre,
-                            'comuna'                 => $comunaNombre,
-                            'comuna_nombre'          => $comunaNombre,
-                        ];
-                    } else {
-                        if ($df && (!isset($billingSnapshot['region_nombre']) || !isset($billingSnapshot['comuna_nombre']))) {
-                            try {
-                                $regionNombre = Region::find($df->region_id)->nombre ?? null;
-                                $comunaNombre = Comuna::find($df->comuna_id)->nombre ?? null;
-                            } catch (\Throwable $e) {
-                                $regionNombre = $billingSnapshot['region_nombre'] ?? null;
-                                $comunaNombre = $billingSnapshot['comuna_nombre'] ?? null;
-                            }
-                            $billingSnapshot['region']         = $billingSnapshot['region']         ?? $regionNombre;
-                            $billingSnapshot['region_nombre']  = $billingSnapshot['region_nombre']  ?? $regionNombre;
-                            $billingSnapshot['comuna']         = $billingSnapshot['comuna']         ?? $comunaNombre;
-                            $billingSnapshot['comuna_nombre']  = $billingSnapshot['comuna_nombre']  ?? $comunaNombre;
-                        }
+                        $billingSnapshot['region'] = $billingSnapshot['region'] ?? $regionNombre;
+                        $billingSnapshot['region_nombre'] = $billingSnapshot['region_nombre'] ?? $regionNombre;
+                        $billingSnapshot['comuna'] = $billingSnapshot['comuna'] ?? $comunaNombre;
+                        $billingSnapshot['comuna_nombre'] = $billingSnapshot['comuna_nombre'] ?? $comunaNombre;
                     }
-                    $numeroFactura = now()->format('Ymd') . '-' . strtoupper(\Str::random(4));
-                    $facturaPdf = Pdf::loadView('user.factura', [
-                        'user'        => $user,
-                        'payment'     => $payment,
-                        'montoNeto'   => $montoNeto,
-                        'montoIva'    => $montoIva,
-                        'montoTotal'  => $montoTot,
-                        'numero'      => $numeroFactura,
-                        'snapshot'    => $billingSnapshot,
-                    ]);
-
-                    $pdfFilename = 'facturas/' . $user->id . '/' . $numeroFactura . '.pdf';
-                    \Storage::disk('public')->put($pdfFilename, $facturaPdf->output());
-                    $factura = Factura::create([
-                        'user_id'                    => $user->id,
-                        'payment_id'                 => $payment->id,
-                        'numero'                     => $numeroFactura,
-                        'folio'                      => null,
-                        'sii_track_id'               => null,
-                        'estado'                     => 'emitida',
-                        'monto_neto'                 => $montoNeto,
-                        'monto_iva'                  => $montoIva,
-                        'monto_total'                => $montoTot,
-                        'porcentaje_iva'             => $porcIva,
-                        'moneda'                     => 'CLP',
-                        'fecha_emision'              => now(),
-                        'fecha_vencimiento'          => now()->addDays(30),
-                        'pdf_path'                   => $pdfFilename,
-                        'xml_path'                   => null,
-                        'pdf_url'                    => null,
-                        'xml_url'                    => null,
-                        'datos_facturacion_snapshot' => $billingSnapshot,
-                        'plan'                       => $payment->plan,
-                    ]);
-                    if ($df && $df->autorizacion_envio_dte) {
-                        \Mail::to($df->correo_envio_dte)
-                            ->queue(new \App\Mail\FacturaGeneradaMail($factura));
-                    }
-                    \Log::info('[TBK] Factura creada', [
-                        'factura_id' => $factura->id,
-                        'payment_id' => $payment->id
-                    ]);
-                } catch (\Throwable $e) {
-                    \Log::error('Error al generar factura tras el pago: ' . $e->getMessage(), ['ex' => $e]);
-                    // No bloqueamos el success del pago si la factura falla.
                 }
-            } else {
-                // === COMPROBANTE / BOLETA (voucher interno) ===
-                $items = [[
-                    'desc'  => 'Suscripción plan ' . strtoupper($payment->plan) . ' por 12 meses',
-                    'qty'   => 1,
-                    'price' => (int) $payment->amount,
-                ]];
-
-                $paymentTypeLabel = match (strtoupper($payment->payment_type ?? '')) {
-                    'VD' => 'Débito',
-                    'VN','VC','SI','S2' => 'Crédito',
-                    default => 'Tarjeta',
-                };
-
-                $payment->forceFill([
-                    'receipt_number'         => now()->format('Ymd-His') . '-' . $payment->id,
-                    'receipt_issued_at'      => now(),
-                    'receipt_payment_method' => $paymentTypeLabel,
-                    'receipt_items'          => $items,
-                ])->save();
-                
-                // ✅ crear carpeta y guardar PDF
-                \Storage::disk('public')->makeDirectory('comprobantes/'.$user->id);
-
-                // PDF del comprobante
-                $receiptPdf = Pdf::loadView('payment.receipt', [
-                    'user'    => $user,
+                $numeroFactura = now()->format('Ymd') . '-' . strtoupper(\Str::random(4));
+                $facturaPdf = Pdf::loadView('user.factura', [
+                    'user' => $user,
                     'payment' => $payment,
-                    'empresa' => [
-                        'razon' => config('app.company_name', 'Bee Fractal SpA'),
-                        'rut'   => config('app.company_rut', 'XX.XXX.XXX-X'),
-                    ],
+                    'montoNeto' => $montoNeto,
+                    'montoIva' => $montoIva,
+                    'montoTotal' => $montoTot,
+                    'numero' => $numeroFactura,
+                    'snapshot' => $billingSnapshot,
                 ]);
 
-                $receiptName = 'comprobantes/'.$user->id.'/COMP-'.$payment->receipt_number.'.pdf';
-                \Storage::disk('public')->put($receiptName, $receiptPdf->output());
-                $payment->update(['receipt_pdf_path' => $receiptName]);
-
-                PaymentMailer::sendReceipt($payment);
+                $pdfFilename = 'facturas/' . $user->id . '/' . $numeroFactura . '.pdf';
+                \Storage::disk('public')->put($pdfFilename, $facturaPdf->output());
+                $factura = Factura::create([
+                    'user_id' => $user->id,
+                    'payment_id' => $payment->id,
+                    'numero' => $numeroFactura,
+                    'folio' => null,
+                    'sii_track_id' => null,
+                    'estado' => 'emitida',
+                    'monto_neto' => $montoNeto,
+                    'monto_iva' => $montoIva,
+                    'monto_total' => $montoTot,
+                    'porcentaje_iva' => $porcIva,
+                    'moneda' => 'CLP',
+                    'fecha_emision' => now(),
+                    'fecha_vencimiento' => now()->addDays(30),
+                    'pdf_path' => $pdfFilename,
+                    'xml_path' => null,
+                    'pdf_url' => null,
+                    'xml_url' => null,
+                    'datos_facturacion_snapshot' => $billingSnapshot,
+                    'plan' => $payment->plan,
+                ]);
+                if ($df && $df->autorizacion_envio_dte) {
+                    \Mail::to($df->correo_envio_dte)
+                        ->queue(new \App\Mail\FacturaGeneradaMail($factura));
+                }
+                \Log::info('[TBK] Factura creada', [
+                    'factura_id' => $factura->id,
+                    'payment_id' => $payment->id
+                ]);
+            } catch (\Throwable $e) {
+                \Log::error('Error al generar factura tras el pago: ' . $e->getMessage(), ['ex' => $e]);
+                // No bloqueamos el success del pago si la factura falla.
             }
+        } else {
+            // === COMPROBANTE / BOLETA (voucher interno) ===
+            $items = [
+                [
+                    'desc' => 'Suscripción plan ' . strtoupper($payment->plan) . ' por 12 meses',
+                    'qty' => 1,
+                    'price' => (int) $payment->amount,
+                ]
+            ];
+
+            $paymentTypeLabel = match (strtoupper($payment->payment_type ?? '')) {
+                'VD' => 'Débito',
+                'VN', 'VC', 'SI', 'S2' => 'Crédito',
+                default => 'Tarjeta',
+            };
+
+            $payment->forceFill([
+                'receipt_number' => now()->format('Ymd-His') . '-' . $payment->id,
+                'receipt_issued_at' => now(),
+                'receipt_payment_method' => $paymentTypeLabel,
+                'receipt_items' => $items,
+            ])->save();
+
+            // ✅ crear carpeta y guardar PDF
+            \Storage::disk('public')->makeDirectory('comprobantes/' . $user->id);
+
+            // PDF del comprobante
+            $receiptPdf = Pdf::loadView('payment.receipt', [
+                'user' => $user,
+                'payment' => $payment,
+                'empresa' => [
+                    'razon' => config('app.company_name', 'Bee Fractal SpA'),
+                    'rut' => config('app.company_rut', 'XX.XXX.XXX-X'),
+                ],
+            ]);
+
+            $receiptName = 'comprobantes/' . $user->id . '/COMP-' . $payment->receipt_number . '.pdf';
+            \Storage::disk('public')->put($receiptName, $receiptPdf->output());
+            $payment->update(['receipt_pdf_path' => $receiptName]);
+
+            PaymentMailer::sendReceipt($payment);
+        }
 
 
-            // Si ya hay factura, continúa a success (después de enviar correos)
-            if (Factura::where('payment_id', $payment->id)->exists()) {
-                $request->session()->put('payment_success', true);
-                return redirect()->route('payment.success');
-            }
-        
+        // Si ya hay factura, continúa a success (después de enviar correos)
+        if (Factura::where('payment_id', $payment->id)->exists()) {
+            $request->session()->put('payment_success', true);
+            return redirect()->route('payment.success');
+        }
+
         // Marca success para la vista
         $request->session()->put('payment_success', true);
         return redirect()->route('payment.success');
@@ -422,11 +426,11 @@ class PaymentController extends Controller
         }
 
         Payment::create([
-            'user_id'        => $user->id,
+            'user_id' => $user->id,
             'transaction_id' => 'trial-' . uniqid(),
-            'status'         => 'paid',
-            'amount'         => 0,
-            'plan'           => 'drone',
+            'status' => 'paid',
+            'amount' => 0,
+            'plan' => 'drone',
         ]);
 
         $user->fecha_vencimiento = now()->addDays(16);
@@ -446,7 +450,7 @@ class PaymentController extends Controller
             $sgResp = $sendgrid->send($email);
             \Log::info('SendGrid trial response', [
                 'status' => $sgResp->statusCode(),
-                'body'   => $sgResp->body(),
+                'body' => $sgResp->body(),
             ]);
         } catch (Exception $e) {
             \Log::error('SendGrid trial error: ' . $e->getMessage());
@@ -454,33 +458,34 @@ class PaymentController extends Controller
 
         return redirect()->route('home')->with('success', 'Prueba gratuita activada por 16 días.');
     }
-    
+
     public function showSuccess(Request $request)
     {
+        // Solo permite mostrar si viene de un commit exitoso
         $fromCommit = (bool) $request->session()->pull('payment_success', false);
 
-        $payment = Payment::where('user_id', Auth::id())
-            ->where('status', 'paid')
-            ->latest()
-            ->with(['datosFacturacion','factura','user'])
-            ->first();
-
-        if (!$fromCommit && !$payment) {
+        if (!$fromCommit) {
             return redirect()->route('home')
                 ->with('error', 'No se encontró un pago aprobado reciente para mostrar.');
         }
 
+        $payment = Payment::where('user_id', Auth::id())
+            ->where('status', 'paid')
+            ->latest()
+            ->with(['datosFacturacion', 'factura', 'user'])
+            ->first();
+
         // URL de comprobante si es boleta
         $receiptUrl = null;
         if ($payment && $payment->receipt_pdf_path && \Storage::disk('public')->exists($payment->receipt_pdf_path)) {
-            $receiptUrl = \Storage::disk('public')->url($payment->receipt_pdf_path);
+            $receiptUrl = asset('storage/' . $payment->receipt_pdf_path);
         }
 
         // URL de factura si existe
         $facturaUrl = null;
         if ($payment && $payment->factura && $payment->factura->pdf_path) {
             if (\Storage::disk('public')->exists($payment->factura->pdf_path)) {
-                $facturaUrl = \Storage::disk('public')->url($payment->factura->pdf_path);
+                $facturaUrl = asset('storage/' . $payment->factura->pdf_path);
             }
         }
         if (!$facturaUrl && !empty($payment?->factura_pdf_url)) {
@@ -495,15 +500,15 @@ class PaymentController extends Controller
         if (!$isFactura) {
             $u = $payment->user;
             $buyer = [
-                'nombre'   => trim(($u->name ?? '').' '.($u->last_name ?? '')) ?: ($u->name ?? $u->email),
-                'rut'      => $u->rut,
+                'nombre' => trim(($u->name ?? '') . ' ' . ($u->last_name ?? '')) ?: ($u->name ?? $u->email),
+                'rut' => $u->rut,
                 'telefono' => $u->telefono,
-                'correo'   => $u->email,
+                'correo' => $u->email,
             ];
         }
 
         // >>> FALTABA PASAR isFactura y buyer <<<
-        return view('payment.success', compact('payment','facturaUrl','receiptUrl','isFactura','buyer'));
+        return view('payment.success', compact('payment', 'facturaUrl', 'receiptUrl', 'isFactura', 'buyer'));
     }
 
 
@@ -521,7 +526,11 @@ class PaymentController extends Controller
 
         // Limpia cualquier resto sensible de la sesión
         $request->session()->forget([
-            'payment_failed', 'payment_token', 'payment_idSesion', 'payment_ordenCompra', 'tbk_debug'
+            'payment_failed',
+            'payment_token',
+            'payment_idSesion',
+            'payment_ordenCompra',
+            'tbk_debug'
         ]);
 
         return view('payment.failed', compact('errorMessage'));
