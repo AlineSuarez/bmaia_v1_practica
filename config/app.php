@@ -16,6 +16,9 @@ return [
 
     'name' => env('APP_NAME', 'Laravel'),
 
+    // 👇 tus datos de emisor para comprobante/facturas
+    'company_name' => env('APP_COMPANY_NAME', 'Bee Fractal SpA'),
+    'company_rut'  => env('APP_COMPANY_RUT',  '76.123.456-7'),
     /*
     |--------------------------------------------------------------------------
     | Application Environment

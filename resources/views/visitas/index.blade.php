@@ -182,16 +182,14 @@
                                                                 <span class="option-desc">Alimentos, metodos e insumos a utilizar</span>
                                                             </div>
                                                         </a>
-                                                        @if($apiario->calidadesReina->count())
-                                                            <a href="{{ route('generate.document.reina', $apiario->calidadesReina->last()->id) }}"
-                                                                class="dropdown-option">
-                                                                <div class="option-icon"><i class="fas fa-crown"></i></div>
-                                                                <div class="option-content">
-                                                                    <span class="option-title">Registro de Reina</span>
-                                                                    <span class="option-desc">Calidad y reemplazos de reina</span>
-                                                                </div>
-                                                            </a>
-                                                        @endif
+                                                        <a href="{{ route('generate.document.reina', $apiario->id) }}"
+                                                        class="dropdown-option">
+                                                            <div class="option-icon"><i class="fas fa-crown"></i></div>
+                                                            <div class="option-content">
+                                                                <span class="option-title">Registro de Reina</span>
+                                                                <span class="option-desc">Calidad y reemplazos de reina</span>
+                                                            </div>
+                                                        </a>
                                                     </div>
                                                 </div>
                                             </div>

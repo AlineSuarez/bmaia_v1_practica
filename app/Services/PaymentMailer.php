@@ -4,6 +4,7 @@ namespace App\Services;
 use App\Mail\Payments\PaymentFailedMail;
 use App\Mail\Payments\PaymentSucceededMail;
 use App\Mail\Payments\PaymentVoidedMail;
+use App\Mail\Payments\ReceiptMail;
 use App\Mail\Plans\PlanActivatedMail;
 use App\Models\Payment;
 use App\Models\User;
@@ -67,4 +68,23 @@ class PaymentMailer
     {
         self::toBilling($user)->queue(new PlanActivatedMail($user, $plan));
     }
+
+    public static function sendReceipt(Payment $payment): void
+    {
+        try {
+            $user = $payment->user;
+            $pdfUrl = null;
+
+            if ($payment->receipt_pdf_path && \Storage::disk('public')->exists($payment->receipt_pdf_path)) {
+                $pdfUrl = \Storage::disk('public')->url($payment->receipt_pdf_path);
+            }
+
+            \Mail::to($user->email)
+                ->queue(new ReceiptMail($payment, $pdfUrl));
+
+        } catch (\Throwable $e) {
+            \Log::error('Error enviando comprobante: '.$e->getMessage(), ['payment_id' => $payment->id]);
+        }
+    }
+
 }

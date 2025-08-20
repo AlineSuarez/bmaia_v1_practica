@@ -87,18 +87,18 @@
     </thead>
     <tbody>
       <tr>
-        <td>{{ $calidadReina->postura_reina }}</td>
-        <td>{{ $calidadReina->estado_cria }}</td>
-        <td>{{ $calidadReina->postura_zanganos }}</td>
-        <td>{{ ucfirst($calidadReina->origen_reina) }}</td>
-        <td>{{ $calidadReina->raza }}</td>
-        <td>{{ $calidadReina->linea_genetica }}</td>
+        <td>{{ $calidadReina?->postura_reina ?? 'No registrada' }}</td>
+        <td>{{ $calidadReina?->estado_cria ?? 'No registrada' }}</td>
+        <td>{{ $calidadReina?->postura_zanganos ?? 'No registrada' }}</td>
+        <td>{{ ucfirst($calidadReina?->origen_reina ?? 'No registrada') }}</td>
+        <td>{{ $calidadReina?->raza ?? 'No registrada' }}</td>
+        <td>{{ $calidadReina?->linea_genetica ?? 'No registrada' }}</td>
         <td>
-          {{ $calidadReina->fecha_introduccion
-             ? \Carbon\Carbon::parse($calidadReina->fecha_introduccion)->format('d/m/Y')
-             : 'N/A' }}
+            {{ $calidadReina?->fecha_introduccion
+                ? \Carbon\Carbon::parse($calidadReina->fecha_introduccion)->format('d/m/Y')
+                : 'No registrada' }}
         </td>
-        <td>{{ ucfirst($calidadReina->estado_actual) }}</td>
+        <td>{{ ucfirst($calidadReina?->estado_actual ?? 'No registrada') }}</td>
         <td>
           @if($ultimoReemplazo && !empty($ultimoReemplazo['fecha']))
             {{ \Carbon\Carbon::parse($ultimoReemplazo['fecha'])->format('d/m/Y') }}

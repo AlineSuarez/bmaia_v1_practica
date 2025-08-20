@@ -727,19 +727,6 @@
                                 $user->datosFacturacion->correo_envio_dte;
                         @endphp
 
-                        @if (!$datosFacturacionCompletos)
-                            <div class="alert alert-warning d-flex align-items-center" role="alert">
-                                <i class="fas fa-exclamation-triangle me-2"></i>
-                                <div>
-                                    Debes completar tus <strong>datos de facturación</strong> antes de seleccionar un plan.
-                                    <!--<a href="{{ route('user.settings') }}#billing" class="btn btn-sm btn-outline-dark ms-2">
-                                                                                    Completar ahora
-                                                                                </a> -->
-                                </div>
-                            </div>
-                        @endif
-
-
                         <form action="{{ route('payment.initiate') }}" method="POST" class="plans-form">
                             @csrf
 
@@ -928,6 +915,34 @@
                                 </p>
                                 <p class="text-muted"><i class="bi bi-shield-check"></i> Todos los pagos son procesados de
                                     forma segura a través de WebPay Plus.</p>
+                            </div>
+
+                            {{-- ✨ Tipo de documento tributario --}}
+                            <div class="card mb-4">
+                                <div class="card-body">
+                                        <h5 class="mb-2">Documento tributario</h5>
+                                        <p class="text-muted mb-3">Elige si quieres boleta/comprobante (persona natural) o factura (empresa).</p>
+
+                                        <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="doc_type" id="docBoleta" value="boleta" checked>
+                                        <label class="form-check-label" for="docBoleta">
+                                            Pagar como persona natural <span class="text-muted">(Boleta / Comprobante)</span>
+                                        </label>
+                                        </div>
+
+                                        <div class="form-check mt-2">
+                                        <input class="form-check-input" type="radio" name="doc_type" id="docFactura" value="factura">
+                                        <label class="form-check-label" for="docFactura">
+                                            Pagar como empresa <span class="text-muted">(Factura)</span>
+                                        </label>
+                                        </div>
+
+                                        {{-- Aviso cuando elija factura y falten datos --}}
+                                        <div id="facturaWarning" class="alert alert-warning d-none mt-3" role="alert">
+                                        Para emitir <strong>Factura</strong> debes completar Razón Social, RUT y Correo de envío DTE en
+                                        <a href="{{ route('user.settings') }}#billing" class="alert-link">Datos de Facturación</a>.
+                                        </div>
+                                </div>
                             </div>
 
                             <div class="form-actions mt-4">
@@ -1357,6 +1372,38 @@
             document.querySelector('.user-data-form').addEventListener('submit', function () {
                 comunaSelect.disabled = false;
             });
+
+            // --- Selector Boleta/Factura ---
+            const docBoleta  = document.getElementById('docBoleta');
+            const docFactura = document.getElementById('docFactura');
+            const facturaWarning = document.getElementById('facturaWarning');
+
+            // viene del blade
+            const datosFacturacionCompletos = {!! $datosFacturacionCompletos ? 'true' : 'false' !!};
+
+            function refreshDocTypeUI() {
+                if (docFactura && docFactura.checked) {
+                facturaWarning && facturaWarning.classList.toggle('d-none', datosFacturacionCompletos);
+                } else {
+                facturaWarning && facturaWarning.classList.add('d-none');
+                }
+            }
+
+            if (docBoleta)  docBoleta.addEventListener('change', refreshDocTypeUI);
+            if (docFactura) docFactura.addEventListener('change', refreshDocTypeUI);
+            refreshDocTypeUI();
+
+            // Bloquear submit solo si pidió FACTURA y faltan datos
+            const plansForm = document.querySelector('form.plans-form');
+            if (plansForm) {
+                plansForm.addEventListener('submit', function (e) {
+                if (docFactura && docFactura.checked && !datosFacturacionCompletos) {
+                    e.preventDefault();
+                    facturaWarning && facturaWarning.classList.remove('d-none');
+                    facturaWarning && facturaWarning.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+                });
+            }
         });
 
         function handleProfileImageCompression() {

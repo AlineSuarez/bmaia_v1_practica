@@ -23,13 +23,26 @@ class Payment extends Model
         'expires_at',
         'card_details',
         'buy_order',
-        'session_id'
+        'session_id',
+        'doc_type',
+        'response_code',
+        'tbk_status',
+        'payment_type',
+        'auth_code',
+        'expires_at',
+        'receipt_issued_at',
+        'receipt_items',
+        'receipt_number',
+        'receipt_paynment_method',
+        'receipt_pdf_path'
 
     ];
     protected $casts = [
         'billing_snapshot' => 'array', // convierte JSON a array automáticamente
         'expires_at'      => 'datetime',
         'card_details'   => 'array',
+        'receipt_issued_at' => 'datetime',
+        'receipt_items'     => 'array',
     ];
     public function user()
     {

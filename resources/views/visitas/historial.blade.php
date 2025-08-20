@@ -720,18 +720,19 @@
                                                         </td>
                                                         <td class="actions-cell">
                                                             <div class="btn-group" role="group">
-                                                                @if($apiario->calidadesReina->count())
-                                                                    <a href="{{ route('generate.document.reina', $apiario->id) }}"
-                                                                        class="btn btn-outline-secondary btn-sm" title="Generar PDF"
-                                                                        target="_blank">
-                                                                        <i class="fas fa-file-pdf"></i>
+                                                                <a href="{{ route('generate.document.reina', $apiario->id) }}"
+                                                                    class="btn btn-outline-secondary btn-sm" title="Generar PDF" target="_blank">
+                                                                    <i class="fas fa-file-pdf"></i>
+                                                                </a>
+
+                                                                @if(isset($visita) && isset($visita->id))
+                                                                    <a href="{{ route('visitas.reina.edit', ['apiario' => $apiario->id, 'visita' => $visita->id]) }}"
+                                                                        class="btn btn-outline-primary btn-sm" title="Editar">
+                                                                        <i class="fas fa-edit"></i>
                                                                     </a>
                                                                 @endif
-                                                                <a href="{{ route('visitas.reina.edit', [$apiario->id, $reina->visita_id]) }}"
-                                                                    class="btn btn-outline-primary btn-sm" title="Editar">
-                                                                    <i class="fas fa-edit"></i>
-                                                                </a>
                                                             </div>
+
                                                         </td>
                                                     </tr>
                                                 @empty

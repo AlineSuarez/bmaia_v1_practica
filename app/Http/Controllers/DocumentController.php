@@ -487,21 +487,17 @@ class DocumentController extends Controller
 
     public function generateReinaDocument($apiarioId)
     {
-        $colmena = Colmena::with([
-            'apiario',
-            'calidadReina' => function ($q) {
-                $q->latest('updated_at');
-            }
-        ])->where('apiario_id', $apiarioId)->first();
+        $apiario = Apiario::with(['user', 'comuna.region', 'colmenas.calidadReina'])->findOrFail($apiarioId);
+        $apicultor = $apiario->user;
 
-        if (!$colmena || !$colmena->calidadReina) {
-            abort(404, 'Datos no encontrados.');
-        }
+        // Buscar la primera calidad de reina, si existe
+        $calidadReina = $apiario->colmenas
+            ->pluck('calidadReina')
+            ->filter()
+            ->flatten()
+            ->first();
 
-        $apiario = $colmena->apiario; // este será el apiario actual de la colmena
-        $apicultor = $apiario->user; // asumiendo que apiario tiene relación con usuario
-        $calidadReina = $colmena->calidadReina;
-        $reemplazos = $calidadReina->reemplazos ?? [];
+        $reemplazos = $calidadReina->reemplazos_realizados ?? [];
         $ultimoReemplazo = !empty($reemplazos) ? end($reemplazos) : null;
 
         $pdf = PDF::loadView('documents.reina-record', compact(
@@ -512,7 +508,7 @@ class DocumentController extends Controller
             'ultimoReemplazo'
         ));
 
-        return $pdf->download('registro_reina_' . $apiario->nombre . '.pdf');
+        return $pdf->download('registro-reina-' . \Str::slug($apiario->nombre) . '.pdf');
     }
 
 

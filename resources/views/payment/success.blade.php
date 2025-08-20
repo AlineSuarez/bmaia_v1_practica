@@ -61,6 +61,51 @@
         $envioDte = isset($bs['autorizacion_envio_dte'])
             ? ($bs['autorizacion_envio_dte'] ? 'Sí' : 'No')
             : ($df?->autorizacion_envio_dte ? 'Sí' : 'No');
+
+        if (!isset($payment)) {
+            $payment = \App\Models\Payment::where('user_id', \Illuminate\Support\Facades\Auth::id())
+                ->where('status', 'paid')
+                ->latest()
+                ->with('datosFacturacion','user')
+                ->first();
+        }
+
+        // VIENE DESDE EL CONTROLLER, pero por si acaso definimos fallback:
+        $isFactura = isset($isFactura) ? (bool)$isFactura : ($payment?->doc_type === 'factura');
+
+        // Facturación (FACTURA) desde snapshot/datosFacturacion
+        $bs = $payment?->billing_snapshot ?? null;
+        $df = $payment?->datosFacturacion ?? null;
+
+        // Comprador (BOLETA) desde perfil (si el controller no lo pasó):
+        $buyer = $buyer ?? [
+            'nombre'   => trim(($payment?->user?->name ?? '').' '.($payment?->user?->last_name ?? '')) ?: ($payment?->user?->name ?? $payment?->user?->email),
+            'rut'      => $payment?->user?->rut,
+            'telefono' => $payment?->user?->telefono,
+            'correo'   => $payment?->user?->email,
+        ];
+
+        // Campos que usarán los bloques de abajo:
+        if ($isFactura) {
+            $razon     = $bs['razon_social']        ?? ($df->razon_social ?? '—');
+            $rut       = $bs['rut']                  ?? ($df->rut ?? '—');
+            $giro      = $bs['giro']                 ?? ($df->giro ?? '—');
+            $dir       = $bs['direccion_comercial']  ?? ($df->direccion_comercial ?? '—');
+            $ciudad    = $bs['ciudad']               ?? ($df->ciudad ?? '—');
+            $telefono  = $bs['telefono']             ?? ($df->telefono ?? '—');
+            $correoDte = $bs['correo_envio_dte']     ?? ($df->correo_envio_dte ?? '—');
+            $envioDte  = isset($bs['autorizacion_envio_dte'])
+                            ? ($bs['autorizacion_envio_dte'] ? 'Sí' : 'No')
+                            : ($df?->autorizacion_envio_dte ? 'Sí' : 'No');
+        } else {
+            // Para boleta, lo mínimo y SOLO desde perfil:
+            $razon     = $buyer['nombre']   ?? '—';
+            $rut       = $buyer['rut']      ?? '—';
+            $telefono  = $buyer['telefono'] ?? '—';
+            $correoDte = $buyer['correo']   ?? '—';
+            // no aplica giro/dirección/envío DTE
+            $giro = $dir = $ciudad = $envioDte = null;
+        }
     @endphp
 
     <div class="payment-success-container">
@@ -134,24 +179,44 @@
 
                         <label class="detail-label">Documentos</label>
                         <div class="invoice-actions">
-                            @if($verUrl)
-                                <a href="{{ $verUrl }}" class="action-link" target="_blank" title="Ver Factura">
-                                    <i class="fas fa-eye"></i>
-                                    <span>Ver Factura</span>
-                                </a>
-                            @endif
+                            @if($isFactura)
+                                {{-- enlaces de factura --}}
+                                @php
+                                    $verUrl = null; $descargarUrl = null;
+                                    if (!empty($payment?->factura?->id)) {
+                                        $verUrl = route('facturas.ver', $payment->factura);
+                                        $descargarUrl = route('facturas.descargar', $payment->factura);
+                                    } elseif (!empty($facturaUrl)) {
+                                        $verUrl = $facturaUrl;
+                                        $descargarUrl = $facturaUrl;
+                                    }
+                                @endphp
 
-                            @if($descargarUrl)
-                                <a href="{{ $descargarUrl }}" class="action-link download"
+                                @if($verUrl)
+                                    <a href="{{ $verUrl }}" class="action-link" target="_blank" title="Ver Factura">
+                                        <i class="fas fa-eye"></i>
+                                        <span>Ver Factura</span>
+                                    </a>
+                                @endif
+
+                                @if($descargarUrl)
+                                    <a href="{{ $descargarUrl }}" class="action-link download"
                                     @if(empty($payment?->factura?->id)) download @endif title="Descargar Factura">
-                                    <i class="fas fa-download"></i>
-                                    <span>Descargar PDF</span>
-                                </a>
+                                        <i class="fas fa-download"></i>
+                                        <span>Descargar PDF</span>
+                                    </a>
+                                @else
+                                    <span class="no-document"><i class="fas fa-exclamation-triangle"></i> Sin documento disponible</span>
+                                @endif
                             @else
-                                <span class="no-document">
-                                    <i class="fas fa-exclamation-triangle"></i>
-                                    Sin documento disponible
-                                </span>
+                                {{-- enlace a comprobante --}}
+                                @if(!empty($receiptUrl))
+                                    <a class="btn btn-outline-primary" href="{{ $receiptUrl }}" target="_blank">
+                                        Descargar comprobante (PDF)
+                                    </a>
+                                @else
+                                    <span class="no-document"><i class="fas fa-exclamation-triangle"></i> Sin documento disponible</span>
+                                @endif
                             @endif
                         </div>
                     </div>
@@ -160,13 +225,84 @@
                 <!-- ===========================================
                      INFORMACIÓN DE FACTURACIÓN (ACORDEÓN)
                      =========================================== -->
+
+                @if($isFactura)
+                    <div class="billing-section">
+                        <div class="billing-section">
+                            <div class="accordion-trigger" onclick="toggleBillingAccordion()">
+                                <div class="accordion-title">
+                                    <div class="accordion-icon">
+                                        <i class="fas fa-building"></i>
+                                    </div>
+                                    <span>Información de Facturación Utilizada</span>
+                                </div>
+                                <i class="fas fa-chevron-down accordion-arrow" id="billingArrow"></i>
+                            </div>
+                            <div class="accordion-content" id="billingAccordionContent">
+                                <div class="billing-info-grid">
+                                    <div class="billing-column">
+                                        <div class="billing-field">
+                                            <label class="field-label">Razón Social</label>
+                                            <span class="field-value">{{ $razon }}</span>
+                                        </div>
+                                        <div class="billing-field">
+                                            <label class="field-label">RUT</label>
+                                            <span
+                                                class="field-value masked">{{ $rut !== '—' ? mask_middle($rut, 4, 2) : '—' }}</span>
+                                        </div>
+                                        <div class="billing-field">
+                                            <label class="field-label">Giro Comercial</label>
+                                            <span class="field-value">{{ $giro }}</span>
+                                        </div>
+                                        <div class="billing-field">
+                                            <label class="field-label">Ciudad</label>
+                                            <span class="field-value">{{ $ciudad }}</span>
+                                        </div>
+                                    </div>
+                                    <div class="billing-column">
+                                        <div class="billing-field">
+                                            <label class="field-label">Dirección Comercial</label>
+                                            <span class="field-value masked">{{ $dir ? '• • •' : '—' }}</span>
+                                        </div>
+                                        <div class="billing-field">
+                                            <label class="field-label">Teléfono</label>
+                                            <span
+                                                class="field-value masked">{{ $telefono !== '—' ? mask_middle($telefono, 2, 2) : '—' }}</span>
+                                        </div>
+                                        <div class="billing-field">
+                                            <label class="field-label">Correo Electrónico DTE</label>
+                                            <span
+                                                class="field-value masked">{{ $correoDte !== '—' ? mask_email($correoDte) : '—' }}</span>
+                                        </div>
+                                        <div class="billing-field">
+                                            <label class="field-label">Autorización Envío DTE</label>
+                                            <span
+                                                class="field-value authorization {{ strtolower($envioDte) === 'sí' ? 'authorized' : 'not-authorized' }}">
+                                                <i
+                                                    class="fas {{ strtolower($envioDte) === 'sí' ? 'fa-check' : 'fa-times' }}"></i>
+                                                {{ $envioDte }}
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="billing-disclaimer">
+                                    <p>
+                                        <strong>Nota:</strong> Esta información corresponde a los datos registrados al momento
+                                        del pago.
+                                        Para actualizar sus datos de facturación, visite
+                                        <a href="{{ route('user.settings') }}#billing" class="settings-link">Configuración de
+                                            Cuenta</a>.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                @else
                 <div class="billing-section">
                     <div class="accordion-trigger" onclick="toggleBillingAccordion()">
                         <div class="accordion-title">
-                            <div class="accordion-icon">
-                                <i class="fas fa-building"></i>
-                            </div>
-                            <span>Información de Facturación Utilizada</span>
+                            <div class="accordion-icon"><i class="fas fa-user"></i></div>
+                            <span>Datos del Comprador</span>
                         </div>
                         <i class="fas fa-chevron-down accordion-arrow" id="billingArrow"></i>
                     </div>
@@ -174,60 +310,34 @@
                         <div class="billing-info-grid">
                             <div class="billing-column">
                                 <div class="billing-field">
-                                    <label class="field-label">Razón Social</label>
+                                    <label class="field-label">Nombre</label>
                                     <span class="field-value">{{ $razon }}</span>
                                 </div>
                                 <div class="billing-field">
                                     <label class="field-label">RUT</label>
-                                    <span
-                                        class="field-value masked">{{ $rut !== '—' ? mask_middle($rut, 4, 2) : '—' }}</span>
-                                </div>
-                                <div class="billing-field">
-                                    <label class="field-label">Giro Comercial</label>
-                                    <span class="field-value">{{ $giro }}</span>
-                                </div>
-                                <div class="billing-field">
-                                    <label class="field-label">Ciudad</label>
-                                    <span class="field-value">{{ $ciudad }}</span>
+                                    <span class="field-value masked">{{ $rut !== '—' ? mask_middle($rut,4,2) : '—' }}</span>
                                 </div>
                             </div>
                             <div class="billing-column">
                                 <div class="billing-field">
-                                    <label class="field-label">Dirección Comercial</label>
-                                    <span class="field-value masked">{{ $dir ? '• • •' : '—' }}</span>
+                                    <label class="field-label">Correo</label>
+                                    <span class="field-value masked">{{ mask_email($correoDte) }}</span>
                                 </div>
                                 <div class="billing-field">
                                     <label class="field-label">Teléfono</label>
-                                    <span
-                                        class="field-value masked">{{ $telefono !== '—' ? mask_middle($telefono, 2, 2) : '—' }}</span>
-                                </div>
-                                <div class="billing-field">
-                                    <label class="field-label">Correo Electrónico DTE</label>
-                                    <span
-                                        class="field-value masked">{{ $correoDte !== '—' ? mask_email($correoDte) : '—' }}</span>
-                                </div>
-                                <div class="billing-field">
-                                    <label class="field-label">Autorización Envío DTE</label>
-                                    <span
-                                        class="field-value authorization {{ strtolower($envioDte) === 'sí' ? 'authorized' : 'not-authorized' }}">
-                                        <i
-                                            class="fas {{ strtolower($envioDte) === 'sí' ? 'fa-check' : 'fa-times' }}"></i>
-                                        {{ $envioDte }}
-                                    </span>
+                                    <span class="field-value masked">{{ $telefono !== '—' ? mask_middle($telefono,2,2) : '—' }}</span>
                                 </div>
                             </div>
                         </div>
                         <div class="billing-disclaimer">
-                            <p>
-                                <strong>Nota:</strong> Esta información corresponde a los datos registrados al momento
-                                del pago.
-                                Para actualizar sus datos de facturación, visite
-                                <a href="{{ route('user.settings') }}#billing" class="settings-link">Configuración de
-                                    Cuenta</a>.
-                            </p>
+                            <p><strong>Nota:</strong> Este pago se emitió como <strong>boleta/comprobante</strong>. 
+                            Si necesitas una factura para futuras compras, primero completa tus datos en 
+                            <a href="{{ route('user.settings') }}#billing" class="settings-link">Configuración de Cuenta</a>
+                            y selecciona “Factura” al pagar.</p>
                         </div>
                     </div>
                 </div>
+                @endif
 
                 <!-- ===========================================
                      PRÓXIMOS PASOS
