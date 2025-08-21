@@ -32,33 +32,49 @@ class PaymentMailer
     /** Envío genérico usando SendGrid */
     protected static function sendWithSendGrid(array $toList, array $ccList, string $subject, string $plainText, string $htmlContent, array $attachments = []): void
     {
+        $email = new SendGridMail();
+        $email->setFrom("soporte@bmaia.cl", "B-MaiA");
+        foreach ($toList as $to) {
+            $email->addTo($to);
+        }
+        foreach ($ccList as $cc) {
+            $email->addCc($cc);
+        }
+        $email->setSubject($subject);
+        $email->addContent("text/plain", $plainText);
+        $email->addContent("text/html", $htmlContent);
+
+        // Adjuntos (solo para sendReceipt)
+        foreach ($attachments as $attachment) {
+            $email->addAttachment(
+                $attachment['content'],
+                $attachment['type'],
+                $attachment['name'],
+                'attachment'
+            );
+        }
+
+        $sendgrid = new SendGrid(config('services.sendgrid.api_key'));
         try {
-            $email = new SendGridMail();
-            $email->setFrom("soporte@bmaia.cl", "B-MaiA");
-            foreach ($toList as $to) {
-                $email->addTo($to);
+            $response = $sendgrid->send($email);
+            \Log::info('SendGrid response', [
+                'status' => $response->statusCode(),
+                'body' => $response->body(),
+                'headers' => $response->headers(),
+                'to' => $toList,
+                'cc' => $ccList,
+                'subject' => $subject,
+            ]);
+            
+            if ($response->statusCode() >= 400) {
+                throw new \Exception('SendGrid error: ' . $response->body());
             }
-            foreach ($ccList as $cc) {
-                $email->addCc($cc);
-            }
-            $email->setSubject($subject);
-            $email->addContent("text/plain", $plainText);
-            $email->addContent("text/html", $htmlContent);
-
-            // Adjuntos (solo para sendReceipt)
-            foreach ($attachments as $attachment) {
-                $email->addAttachment(
-                    $attachment['content'],
-                    $attachment['type'],
-                    $attachment['name'],
-                    'attachment'
-                );
-            }
-
-            $sendgrid = new SendGrid(config('services.sendgrid.api_key'));
-            $sendgrid->send($email);
         } catch (\Throwable $e) {
-            \Log::error('Error enviando correo SendGrid: ' . $e->getMessage());
+            \Log::error('SendGrid error: ' . $e->getMessage(), [
+                'to' => $toList,
+                'cc' => $ccList,
+                'subject' => $subject,
+            ]);
         }
     }
 
