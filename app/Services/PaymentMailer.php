@@ -30,12 +30,13 @@ class PaymentMailer
     }
 
     /** Envío genérico usando SendGrid */
-    protected static function sendWithSendGrid(array $toList, array $ccList, string $subject, string $plainText, string $htmlContent, array $attachments = []): void
+    protected static function sendWithSendGrid(array $toList, array $ccList, string $subject, string $plainText, string $htmlContent, array $attachments = [], ?string $toName = null): void
     {
         $email = new SendGridMail();
         $email->setFrom("soporte@bmaia.cl", "B-MaiA");
         foreach ($toList as $to) {
-            $email->addTo($to);
+            // Si hay nombre, agrégalo, si no, solo el email
+            $email->addTo($to, $toName ?? $to);
         }
         foreach ($ccList as $cc) {
             $email->addCc($cc);
@@ -44,7 +45,6 @@ class PaymentMailer
         $email->addContent("text/plain", $plainText);
         $email->addContent("text/html", $htmlContent);
 
-        // Adjuntos (solo para sendReceipt)
         foreach ($attachments as $attachment) {
             $email->addAttachment(
                 $attachment['content'],
@@ -65,7 +65,6 @@ class PaymentMailer
                 'cc' => $ccList,
                 'subject' => $subject,
             ]);
-            
             if ($response->statusCode() >= 400) {
                 throw new \Exception('SendGrid error: ' . $response->body());
             }
@@ -98,7 +97,7 @@ class PaymentMailer
         $plainText = "¡Tu pago fue realizado con éxito!";
         $htmlContent = View::make('emails.payments.succeeded', ['payment' => $p, 'user' => $user])->render();
 
-        self::sendWithSendGrid($toList, $ccList, $subject, $plainText, $htmlContent);
+        self::sendWithSendGrid($toList, $ccList, $subject, $plainText, $htmlContent, [], $user->name);
     }
 
     public static function sendFailed(Payment $p): void
