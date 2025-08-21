@@ -162,7 +162,7 @@
                                     <div class="form-group">
                                         <label for="email">Correo Electrónico</label>
                                         <input type="email" class="form-control" id="email" name="email"
-                                            placeholder="Ingrese su correo electrónico" required value='{{ $user->email}}'>
+                                            placeholder="Ingrese su correo electrónico" required value='{{ $user->email}}' readonly>
                                         <small class="form-text text-muted">Recibirás notificaciones en este correo</small>
                                     </div>
                                 </div>
@@ -331,9 +331,9 @@
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="correo">Correo electrónico</label>
                                         <input type="email" class="form-control" id="correo" name="correo"
-                                            value="{{ old('correo', $datosFacturacion->correo ?? '') }}">
+                                            value="{{ old('correo', $datosFacturacion->correo ?? $user->email) }}">
+                                        <small class="form-text text-muted">Puedes usar un correo distinto al de tu cuenta para recibir facturación.</small>
                                     </div>
                                 </div>
                             </div>

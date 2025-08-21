@@ -77,7 +77,11 @@ class PaymentController extends Controller
         };
         if (now()->month == 8)
             $amount = (int) round($amount * 0.7);
-
+        
+        // Aplica IVA 19% (total final)
+        $amount = $amount * 1.19;
+        // Redondear a entero
+        $amount = (int) round($amount);
         // Transacción
         $buyOrder = uniqid('ORDER_');
         $sessionId = session()->getId();
