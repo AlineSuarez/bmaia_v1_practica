@@ -49,7 +49,7 @@ class PaymentController extends Controller
     {
         $this->configureWebpay();
         // Validar plan
-        $request->validate([
+        $request->validateWithBag('plans', [
             'plan' => 'required|in:afc,me,ge',
             'doc_type' => 'required|in:boleta,factura',
         ]);

@@ -16,9 +16,9 @@ class DatoFacturacionController extends Controller
 {
     public function store(Request $request)
     {
-        $request->validate([
-            'razon_social' => 'required|string|max:255',
-            'rut' => 'required|string|max:255',
+        $request->validateWithBag('billing', [
+            'razon_social' => 'nullable|string|max:255',
+            'rut' => 'nullable|string|max:255',
             'giro' => 'nullable|string|max:255',
             'direccion_comercial' => 'nullable|string|max:255',
             'billing_region' => 'nullable|integer|exists:regiones,id',

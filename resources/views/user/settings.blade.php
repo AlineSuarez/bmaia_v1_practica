@@ -223,15 +223,16 @@
             </section>
 
             <!-- SECCIÓN: DATOS DE FACTURACIÓN -->
-            @if ($errors->any())
+            @if ($errors->billing->any())
                 <div class="alert alert-danger">
                     <ul class="mb-0">
-                        @foreach ($errors->all() as $error)
+                        @foreach ($errors->billing->all() as $error)
                             <li>{{ $error }}</li>
                         @endforeach
                     </ul>
                 </div>
             @endif
+
 
             <section class="tab-pane fade" id="billing" role="tabpanel" aria-labelledby="billing-tab">
                 <div class="card settings-card mb-4">
@@ -556,6 +557,15 @@
             </section>
 
             <!-- SECCIÓN: SEGURIDAD -->
+             @if ($errors->password->any())
+                <div class="alert alert-danger">
+                    <ul class="mb-0">
+                        @foreach ($errors->password->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
             <section class="tab-pane fade" id="security" role="tabpanel" aria-labelledby="security-tab">
                 <div class="card settings-card mb-4">
                     <div class="card-header">
@@ -674,6 +684,16 @@
             </section>
 
             <!-- SECCIÓN: PLANES -->
+             @if ($errors->plans->any())
+                <div class="alert alert-danger">
+                    <ul class="mb-0">
+                        @foreach ($errors->plans->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
+
             <section class="tab-pane fade" id="plans" role="tabpanel" aria-labelledby="plans-tab">
                 <div class="card settings-card mb-4">
                     <div class="card-header">
@@ -924,14 +944,14 @@
                                         <p class="text-muted mb-3">Elige si quieres boleta/comprobante (persona natural) o factura (empresa).</p>
 
                                         <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="doc_type" id="docBoleta" value="boleta" checked>
+                                        <input class="form-check-input" type="radio" name="doc_type" id="docBoleta" value="boleta" {{ old('doc_type', 'boleta') == 'boleta' ? 'checked' : '' }}>
                                         <label class="form-check-label" for="docBoleta">
                                             Pagar como persona natural <span class="text-muted">(Boleta / Comprobante)</span>
                                         </label>
                                         </div>
 
                                         <div class="form-check mt-2">
-                                        <input class="form-check-input" type="radio" name="doc_type" id="docFactura" value="factura">
+                                        <input class="form-check-input" type="radio" name="doc_type" id="docFactura" value="factura" {{ old('doc_type') == 'factura' ? 'checked' : '' }}>
                                         <label class="form-check-label" for="docFactura">
                                             Pagar como empresa <span class="text-muted">(Factura)</span>
                                         </label>

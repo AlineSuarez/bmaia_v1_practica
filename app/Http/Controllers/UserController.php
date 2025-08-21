@@ -157,7 +157,7 @@ class UserController extends Controller
     // Restablecer contraseña del usuario
     public function updatePassword(Request $request)
     {
-        $request->validate([
+        $request->validateWithBag('password', [
             'current_password' => 'required|string',
             'new_password' => 'required|string|min:8|confirmed',
         ]);
