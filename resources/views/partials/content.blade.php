@@ -1080,7 +1080,151 @@
           </div>
         </a>
       </div>
-      <p class="section-description" style="text-align: center; font-weight: bold;">B-MaiA: Inteligencia Artificial al
+      <!-- Sección de Planes en Contacto -->
+      <div class="contacto-planes-section">
+        <!-- Header de la sección -->
+        <div class="planes-header">
+          <h2 class="section-title" style="color: #333;">¡Comienza tu experiencia B-MaiA!</h2>
+          <p class="section-description">Elige el plan perfecto para tu operación apícola</p>
+        </div>
+
+        <!-- Alerta de prueba gratuita -->
+        <div class="trial-alert">
+          <div class="trial-content">
+            <div class="trial-icon">
+              <i class="fas fa-rocket"></i>
+            </div>
+            <div class="trial-text">
+              <h3>¡Prueba Gratuita de 16 Días!</h3>
+              <p>Accede a todas las funciones del plan Drone completamente gratis</p>
+            </div>
+            <div class="trial-badge">
+              <span>GRATIS</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Grid de planes -->
+        <div class="contacto-planes-grid">
+          <!-- Plan Drone (Prueba Gratuita) -->
+          <div class="contacto-plan-card trial-card">
+            <div class="plan-header">
+              <div class="plan-icon trial-icon">
+                <i class="fas fa-rocket"></i>
+              </div>
+              <h3 class="plan-title">Drone</h3>
+              <div class="plan-subtitle">Prueba Gratuita</div>
+            </div>
+            <div class="plan-body">
+              <div class="plan-price">
+                <span class="price-main">$0</span>
+                <span class="price-period">16 días</span>
+              </div>
+              <ul class="plan-features">
+                <li><i class="fas fa-check"></i>Todas las funciones básicas</li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- Plan AFC -->
+          <div class="contacto-plan-card">
+            <div class="plan-header">
+              <div class="plan-icon afc-icon">
+                <i class="fas fa-cogs"></i>
+              </div>
+              <h3 class="plan-title">WorkerBee AFC</h3>
+              <div class="plan-subtitle">Apicultor Familiar Comercial</div>
+            </div>
+            <div class="plan-body">
+              <div class="plan-price">
+                <span class="price-main">$69.900</span>
+                <span class="price-period">+ IVA/año</span>
+              </div>
+              <div class="price-breakdown">
+                <small>$5.825/mes • $234 por colmena/año</small>
+              </div>
+              <ul class="plan-features">
+                <li><i class="fas fa-check"></i>1 Usuario Administrador</li>
+                <li><i class="fas fa-check"></i>Hasta 299 colmenas</li>
+                <li><i class="fas fa-check"></i>Funcionalidades básicas</li>
+                <li><i class="fas fa-check"></i>Soporte técnico estándar</li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- Plan ME -->
+          <div class="contacto-plan-card featured">
+            <div class="featured-badge">Más Popular</div>
+            <div class="plan-header">
+              <div class="plan-icon me-icon">
+                <i class="fas fa-chart-line"></i>
+              </div>
+              <h3 class="plan-title">WorkerBee ME</h3>
+              <div class="plan-subtitle">Mediana Empresa</div>
+            </div>
+            <div class="plan-body">
+              <div class="plan-price">
+                <span class="price-main">$87.900</span>
+                <span class="price-period">+ IVA/año</span>
+              </div>
+              <div class="price-breakdown">
+                <small>$7.325/mes • $110 por colmena/año</small>
+              </div>
+              <ul class="plan-features">
+                <li><i class="fas fa-check"></i>Todo de AFC incluido</li>
+                <li><i class="fas fa-check"></i>Hasta 799 colmenas</li>
+                <li><i class="fas fa-check"></i>Analytics avanzados</li>
+                <li><i class="fas fa-check"></i>Soporte prioritario</li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- Plan GE -->
+          <div class="contacto-plan-card premium">
+            <div class="plan-header">
+              <div class="plan-icon ge-icon">
+                <i class="fas fa-crown"></i>
+              </div>
+              <h3 class="plan-title">WorkerBee GE</h3>
+              <div class="plan-subtitle">Gran Empresa</div>
+            </div>
+            <div class="plan-body">
+              <div class="plan-price">
+                <span class="price-main">$150.900</span>
+                <span class="price-period">+ IVA/año</span>
+              </div>
+              <div class="price-breakdown">
+                <small>$12.575/mes • $86 por colmena/año</small>
+              </div>
+              <ul class="plan-features">
+                <li><i class="fas fa-check"></i>Todo de ME incluido</li>
+                <li><i class="fas fa-check"></i>Colmenas ilimitadas</li>
+                <li><i class="fas fa-check"></i>Soporte 24/7 dedicado</li>
+                <li><i class="fas fa-check"></i>Personalización completa</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- Botón de llamada a la acción -->
+        <div class="planes-cta-section">
+          <a href="{{ route('register') }}" class="planes-cta-button">
+            <div class="btn-icon">
+              <i class="fas fa-rocket"></i>
+            </div>
+            <div class="btn-text">
+              <span class="btn-label">Comienza Ya</span>
+              <span class="btn-description">Inicia tu prueba gratuita de 16 días</span>
+            </div>
+            <div class="btn-arrow">
+              <i class="fas fa-arrow-right"></i>
+            </div>
+          </a>
+        </div>
+      </div>
+
+      <p class="section-description" style="text-align: center; font-weight: bold; margin-top: 2rem;">B-MaiA:
+        Inteligencia Artificial al
         servicio de la Apicultura
       </p>
       <p style="text-align: center;"> Un sistema desarrollado por Bee Fractal SpA al servicio del apicultor

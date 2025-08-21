@@ -437,7 +437,7 @@ class PaymentController extends Controller
         $user->save();
 
         // Envío con SDK SendGrid (opcional)
-        $htmlContent = View::make('emails.free_trial_activated', ['user' => $user])->render();
+        $htmlContent = View::make('emails.free-trial-activated', ['user' => $user])->render();
         $email = new \SendGrid\Mail\Mail();
         $email->setFrom("soporte@bmaia.cl", "B-MaiA - Prueba Gratuita");
         $email->setSubject("¡Prueba gratuita activada en B-MaiA!");

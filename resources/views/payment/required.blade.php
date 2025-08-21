@@ -28,22 +28,22 @@
             @php
                 $user = auth()->user();
                 $dronePayment = \App\Models\Payment::where('user_id', $user->id)
-                    ->where('plan', 'drone')
-                    ->orderByDesc('created_at')
-                    ->first();
+                ->where('plan', 'drone')
+                ->orderByDesc('created_at')
+                ->first();
 
                 $droneActive = false;
                 $daysRemaining = 0;
                 if ($dronePayment) {
-                    $daysSincePayment = now()->diffInDays($dronePayment->created_at);
-                    $droneActive = $daysSincePayment < 16;
-                    $daysRemaining = intval(16 - $daysSincePayment);
+                $daysSincePayment = now()->diffInDays($dronePayment->created_at);
+                $droneActive = $daysSincePayment < 16;
+                $daysRemaining = intval(16 - $daysSincePayment);
                 }
 
                 $hasPaidPlan = \App\Models\Payment::where('user_id', $user->id)
-                    ->where('status', 'paid')
-                    ->whereIn('plan', ['afc', 'me', 'ge'])
-                    ->exists();
+                ->where('status', 'paid')
+                ->whereIn('plan', ['afc', 'me', 'ge'])
+                ->exists();
             @endphp
 
             <!-- Trial Section -->
@@ -72,7 +72,7 @@
                                         </div>
                                         <div class="progress mt-2" style="height: 6px;">
                                             <div class="progress-bar bg-warning" role="progressbar" 
-                                                 style="width: {{ ($daysRemaining / 16) * 100 }}%"></div>
+                                                    style="width: {{ ($daysRemaining / 16) * 100 }}%"></div>
                                         </div>
                                     @else
                                         <p class="mb-0 trial-description">
@@ -84,8 +84,7 @@
                                 <div class="col-md-4 text-md-end">
                                     <form method="POST" action="{{ route('trial.start') }}">
                                         @csrf
-                                        <button type="submit" 
-                                                class="btn btn-trial btn-lg px-4 fw-bold shadow"
+                                        <button type="submit" class="btn btn-trial btn-lg px-4 fw-bold shadow"
                                                 @if($droneActive) disabled @endif>
                                             @if($droneActive)
                                                 <i class="fas fa-check-circle me-2"></i>Activa
@@ -103,178 +102,172 @@
 
             <!-- Plans Section -->
             <div class="text-center mb-4">
-                <h2 class="fw-bold mb-2" style="color: #FF8C00;">Planes de Suscripción</h2>
-                <p class="text-muted">Elige el plan que mejor se adapte a tu operación apícola</p>
+                <h2 class="fw-bold mb-2" style="color: #FF8C00;">Proceso de Suscripción</h2>
+                <p class="text-muted">Elige cómo deseas realizar tu suscripción</p>
             </div>
 
-            <div class="row g-4">
-                <!-- Plan AFC -->
-                <div class="col-lg-4 col-md-6">
-                    <div class="card plan-card h-100 border-0 shadow-sm">
-                        <div class="plan-header afc-header">
-                            <div class="plan-icon">
-                                <i class="fas fa-cogs"></i>
+            <div class="alert-info d-flex align-items-center justify-content-center w-auto mx-auto mb-3"
+                style="font-size:1rem; gap: 1rem;">
+                <div>
+                    <i class="fas fa-info-circle" style="font-size:1.5rem;"></i>
+                </div>
+                <div>
+                    <span>
+                        <strong>Importante:</strong> Para revisar en detalle todos los planes de suscripción disponibles, así como
+                        sus características y precios, dirígete a la pestaña <strong>“Plan”</strong> ubicada en "Mi Cuenta" → "Configuración de cuenta" de 
+                        la plataforma. Desde allí podrás comparar las distintas opciones y seleccionar la que mejor se adapte a tus
+                        necesidades.
+                    </span>
+                </div>
+            </div>
+
+            <!-- Payment Process Cards -->
+            <div class="payment-process-section">
+                <div class="row g-4">
+                    <!-- Persona Natural Card -->
+                    <div class="col-lg-6">
+                        <div class="process-card natural-card">
+                            <div class="process-header">
+                                <div class="process-icon natural-icon">
+                                    <i class="fas fa-user"></i>
+                                </div>
+                                <h3 class="process-title">Persona Natural</h3>
+                                <p class="process-subtitle">Proceso simplificado para usuarios individuales</p>
                             </div>
-                            <h4 class="plan-title">WorkerBee AFC</h4>
-                        </div>
-                        <div class="card-body p-4">
-                            <div class="plan-features">
-                                <div class="feature-item">
-                                    <i class="fas fa-check feature-check"></i>
-                                    <span>1 Usuario Administrador</span>
+
+                            <div class="process-body">
+                                <div class="process-steps">
+                                    <div class="step-item">
+                                        <div class="step-number">1</div>
+                                        <div class="step-content">
+                                            <h4>Datos Personales</h4>
+                                            <p>Completa tu información básica: nombre, email y teléfono</p>
+                                        </div>
+                                    </div>
+
+                                    <div class="step-item">
+                                        <div class="step-number">2</div>
+                                        <div class="step-content">
+                                            <h4>Seleccionar Plan (AFC, ME o GE)</h4>
+                                            <p>Elige entre nuestros planes: AFC, ME o GE según tus necesidades</p>
+                                        </div>
+                                    </div>
+
+                                    <div class="step-item">
+                                        <div class="step-number">3</div>
+                                        <div class="step-content">
+                                            <h4>Método de Pago</h4>
+                                            <p>Realiza el pago seguro mediante WebPay Plus</p>
+                                        </div>
+                                    </div>
+
+                                    <div class="step-item">
+                                        <div class="step-number">4</div>
+                                        <div class="step-content">
+                                            <h4>¡Listo!</h4>
+                                            <p>Accede inmediatamente a tu plan seleccionado</p>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="feature-item">
-                                    <i class="fas fa-check feature-check"></i>
-                                    <span>Hasta 299 colmenas</span>
-                                </div>
-                                <div class="feature-item">
-                                    <i class="fas fa-check feature-check"></i>
-                                    <span>Funcionalidades básicas</span>
-                                </div>
-                                <div class="feature-item">
-                                    <i class="fas fa-check feature-check"></i>
-                                    <span>Soporte técnico estándar</span>
+
+                                <div class="process-benefits">
+                                    <div class="benefit-tag">
+                                        <i class="fas fa-clock"></i>
+                                        <span>Proceso rápido</span>
+                                    </div>
+                                    <div class="benefit-tag">
+                                        <i class="fas fa-shield-alt"></i>
+                                        <span>100% Seguro</span>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="plan-pricing">
-                                @php
-                                    $isAugust = now()->month == 8;
-                                    $afcPrice = $isAugust ? intval(round(69900 * 0.7)) : 69900;
-                                    $mePrice = $isAugust ? intval(round(87900 * 0.7)) : 87900;
-                                    $gePrice = $isAugust ? intval(round(150900 * 0.7)) : 150900;
-                                @endphp
-                                <div class="price-main">
-                                    @if($isAugust)
-                                        <span style="text-decoration:line-through; color:#888;">$69.900</span>
-                                        <span style="color:#FF8C00; font-weight:bold;">${{ number_format($afcPrice, 0, ',', '.') }} + IVA</span>
-                                        <span class="badge bg-success ms-2">-30% Agosto</span>
-                                    @else
-                                        $69.900 + IVA
-                                    @endif
-                                </div>
-                                <div class="price-details">
-                                    <small>Mensual: $5.825 + IVA</small>
-                                    <small>Por colmena: $234/año</small>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="card-footer bg-transparent border-0 p-4">
-                            <form method="POST" action="{{ route('payment.initiate') }}">
-                                @csrf
-                                <button name="plan" value="afc" class="btn btn-plan-primary w-100 fw-bold">
-                                    <i class="fas fa-credit-card me-2"></i>Seleccionar AFC
+
+                            <div class="process-footer">
+                                <button class="btn btn-process-natural w-100">
+                                    <i class="fas fa-arrow-right me-2"></i>
+                                    Continuar como Persona Natural
                                 </button>
-                            </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Facturación Card -->
+                    <div class="col-lg-6">
+                        <div class="process-card business-card">
+                            <div class="process-header">
+                                <div class="process-icon business-icon">
+                                    <i class="fas fa-building"></i>
+                                </div>
+                                <h3 class="process-title">Con Facturación</h3>
+                                <p class="process-subtitle">Para empresas que requieren factura</p>
+                            </div>
+
+                            <div class="process-body">
+                                <div class="process-steps">
+                                    <div class="step-item">
+                                        <div class="step-number">1</div>
+                                        <div class="step-content">
+                                            <h4>Datos de Facturación</h4>
+                                            <p>RUT, razón social, dirección y giro comercial</p>
+                                        </div>
+                                    </div>
+
+                                    <div class="step-item">
+                                        <div class="step-number">2</div>
+                                        <div class="step-content">
+                                            <h4>Información de Contacto</h4>
+                                            <p>Email corporativo y teléfono de la empresa</p>
+                                        </div>
+                                    </div>
+
+                                    <div class="step-item">
+                                        <div class="step-number">3</div>
+                                        <div class="step-content">
+                                            <h4>Seleccionar Plan (AFC, ME o GE)</h4>
+                                            <p>Elige el plan empresarial que mejor se adapte</p>
+                                        </div>
+                                    </div>
+
+                                    <div class="step-item">
+                                        <div class="step-number">4</div>
+                                        <div class="step-content">
+                                            <h4>Pago y Factura</h4>
+                                            <p>Realiza el pago y recibe tu factura electrónica</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="process-benefits">
+                                    <div class="benefit-tag">
+                                        <i class="fas fa-file-invoice"></i>
+                                        <span>Factura incluida</span>
+                                    </div>
+                                    <div class="benefit-tag">
+                                        <i class="fas fa-certificate"></i>
+                                        <span>Válido para empresas</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="process-footer">
+                                <button class="btn btn-process-business w-100">
+                                    <i class="fas fa-arrow-right me-2"></i>
+                                    Continuar con Facturación
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Plan ME -->
-                <div class="col-lg-4 col-md-6">
-                    <div class="card plan-card featured h-100 border-0 shadow-lg position-relative">
-                        <div class="plan-header me-header">
-                            <div class="plan-icon">
-                                <i class="fas fa-chart-line"></i>
-                            </div>
-                            <h4 class="plan-title">WorkerBee ME</h4>
+                <!-- Info Section -->
+                <div class="process-info-section mt-4">
+                    <div class="info-card">
+                        <div class="info-icon">
+                            <i class="fas fa-info-circle"></i>
                         </div>
-                        <div class="card-body p-4">
-                            <div class="plan-features">
-                                <div class="feature-item">
-                                    <i class="fas fa-check feature-check"></i>
-                                    <span>Todo de AFC incluido</span>
-                                </div>
-                                <div class="feature-item">
-                                    <i class="fas fa-check feature-check"></i>
-                                    <span>Hasta 799 colmenas</span>
-                                </div>
-                                <div class="feature-item">
-                                    <i class="fas fa-check feature-check"></i>
-                                    <span>Analytics avanzados</span>
-                                </div>
-                                <div class="feature-item">
-                                    <i class="fas fa-check feature-check"></i>
-                                    <span>Soporte prioritario</span>
-                                </div>
-                            </div>
-                            <div class="plan-pricing">
-                                <div class="price-main">
-                                    @if($isAugust)
-                                        <span style="text-decoration:line-through; color:#888;">$87.900</span>
-                                        <span style="color:#FF8C00; font-weight:bold;">${{ number_format($mePrice, 0, ',', '.') }} + IVA</span>
-                                        <span class="badge bg-success ms-2">-30% Agosto</span>
-                                    @else
-                                        $87.900 + IVA
-                                    @endif
-                                </div>
-                                <div class="price-details">
-                                    <small>Mensual: $7.325 + IVA</small>
-                                    <small>Por colmena: $110/año</small>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="card-footer bg-transparent border-0 p-4">
-                            <form method="POST" action="{{ route('payment.initiate') }}">
-                                @csrf
-                                <button name="plan" value="me" class="btn btn-plan-featured w-100 fw-bold">
-                                    <i class="fas fa-credit-card me-2"></i>Seleccionar ME
-                                </button>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Plan GE -->
-                <div class="col-lg-4 col-md-6">
-                    <div class="card plan-card h-100 border-0 shadow-sm">
-                        <div class="plan-header ge-header">
-                            <div class="plan-icon">
-                                <i class="fas fa-crown"></i>
-                            </div>
-                            <h4 class="plan-title">WorkerBee GE</h4>
-                        </div>
-                        <div class="card-body p-4">
-                            <div class="plan-features">
-                                <div class="feature-item">
-                                    <i class="fas fa-check feature-check"></i>
-                                    <span>Todo de ME incluido</span>
-                                </div>
-                                <div class="feature-item">
-                                    <i class="fas fa-check feature-check"></i>
-                                    <span>Colmenas ilimitadas</span>
-                                </div>
-                                <div class="feature-item">
-                                    <i class="fas fa-check feature-check"></i>
-                                    <span>Soporte 24/7 dedicado</span>
-                                </div>
-                                <div class="feature-item">
-                                    <i class="fas fa-check feature-check"></i>
-                                    <span>Personalización completa</span>
-                                </div>
-                            </div>
-                            <div class="plan-pricing">
-                                <div class="price-main">
-                                    @if($isAugust)
-                                        <span style="text-decoration:line-through; color:#888;">$150.900</span>
-                                        <span style="color:#FF8C00; font-weight:bold;">${{ number_format($gePrice, 0, ',', '.') }} + IVA</span>
-                                        <span class="badge bg-success ms-2">-30% Agosto</span>
-                                    @else
-                                        $150.900 + IVA
-                                    @endif
-                                </div>
-                                <div class="price-details">
-                                    <small>Mensual: $12.575 + IVA</small>
-                                    <small>Por colmena: $86/año</small>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="card-footer bg-transparent border-0 p-4">
-                            <form method="POST" action="{{ route('payment.initiate') }}">
-                                @csrf
-                                <button name="plan" value="ge" class="btn btn-plan-premium w-100 fw-bold">
-                                    <i class="fas fa-credit-card me-2"></i>Seleccionar GE
-                                </button>
-                            </form>
+                        <div class="info-content">
+                            <h4>¿Necesitas ayuda para decidir?</h4>
+                            <p>Si eres una persona natural que realiza actividades comerciales de apicultura, puedes usar cualquiera de las dos opciones. La facturación es especialmente útil si necesitas el documento para fines contables o tributarios.</p>
                         </div>
                     </div>
                 </div>
@@ -318,4 +311,24 @@
         </div>
     </div>
 </div>
+
+<script>
+            document.addEventListener('DOMContentLoaded', function () {
+    // Botón Persona Natural
+    const btnNatural = document.querySelector('.btn-process-natural');
+            if (btnNatural) {
+                btnNatural.addEventListener('click', function () {
+                    window.location.href = "{{ route('user.settings') }}#user-data";
+                });
+    }
+
+            // Botón Facturación
+            const btnBusiness = document.querySelector('.btn-process-business');
+            if (btnBusiness) {
+                btnBusiness.addEventListener('click', function () {
+                    window.location.href = "{{ route('user.settings') }}#billing";
+                });
+    }
+});
+</script>
 @endsection
