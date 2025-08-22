@@ -741,10 +741,11 @@
                         @endphp
 
                         @php
-                            $datosFacturacionCompletos = $user->datosFacturacion &&
-                                $user->datosFacturacion->razon_social &&
-                                $user->datosFacturacion->rut &&
-                                $user->datosFacturacion->correo_envio_dte;
+                            $datosFacturacionCompletos = $user->datosFacturacion
+                                && $user->datosFacturacion->razon_social
+                                && $user->datosFacturacion->rut
+                                && $user->datosFacturacion->correo_envio_dte;
+                            $datosUsuarioCompletos = $user->name && $user->rut && $user->email;
                         @endphp
 
                         <form action="{{ route('payment.initiate') }}" method="POST" class="plans-form">
@@ -961,6 +962,12 @@
                                         <div id="facturaWarning" class="alert alert-warning d-none mt-3" role="alert">
                                         Para emitir <strong>Factura</strong> debes completar Razón Social, RUT y Correo de envío DTE en
                                         <a href="{{ route('user.settings') }}#billing" class="alert-link">Datos de Facturación</a>.
+                                        </div>
+                                        {{-- Aviso cuando elija boleta y falten datos personales --}}
+                                        <div id="boletaWarning" class="alert alert-warning d-none mt-3" role="alert">
+                                            Para emitir <strong>Boleta / Comprobante</strong> debes completar tus datos personales 
+                                            (Nombre, RUT y Correo electrónico) en 
+                                            <a href="{{ route('user.settings') }}#user-data" class="alert-link">Datos del Usuario/a</a>.
                                         </div>
                                 </div>
                             </div>
@@ -1397,15 +1404,19 @@
             const docBoleta  = document.getElementById('docBoleta');
             const docFactura = document.getElementById('docFactura');
             const facturaWarning = document.getElementById('facturaWarning');
-
+            const boletaWarning = document.getElementById('boletaWarning');
+            
             // viene del blade
             const datosFacturacionCompletos = {!! $datosFacturacionCompletos ? 'true' : 'false' !!};
+            const datosUsuarioCompletos     = {!! $datosUsuarioCompletos ? 'true' : 'false' !!};
 
             function refreshDocTypeUI() {
                 if (docFactura && docFactura.checked) {
                 facturaWarning && facturaWarning.classList.toggle('d-none', datosFacturacionCompletos);
+                boletaWarning && boletaWarning.classList.add('d-none');
                 } else {
-                facturaWarning && facturaWarning.classList.add('d-none');
+                    boletaWarning && boletaWarning.classList.toggle('d-none', datosUsuarioCompletos);
+                    facturaWarning && facturaWarning.classList.add('d-none');
                 }
             }
 
@@ -1417,11 +1428,17 @@
             const plansForm = document.querySelector('form.plans-form');
             if (plansForm) {
                 plansForm.addEventListener('submit', function (e) {
-                if (docFactura && docFactura.checked && !datosFacturacionCompletos) {
-                    e.preventDefault();
-                    facturaWarning && facturaWarning.classList.remove('d-none');
-                    facturaWarning && facturaWarning.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                }
+                    if (docFactura && docFactura.checked && !datosFacturacionCompletos) {
+                        e.preventDefault();
+                        facturaWarning && facturaWarning.classList.remove('d-none');
+                        facturaWarning && facturaWarning.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }
+
+                    if (docBoleta && docBoleta.checked && !datosUsuarioCompletos) {
+                        e.preventDefault();
+                        boletaWarning && boletaWarning.classList.remove('d-none');
+                        boletaWarning && boletaWarning.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }
                 });
             }
         });
