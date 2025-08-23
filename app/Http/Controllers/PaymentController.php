@@ -149,7 +149,7 @@ class PaymentController extends Controller
 
             if ($p) {
                 $p->update(['status' => 'voided']);
-                PaymentMailer::sendVoided($p);
+                //PaymentMailer::sendVoided($p);
             }
             $user = Auth::user();
             \Storage::disk('public')->makeDirectory('comprobantes/' . $user->id);
