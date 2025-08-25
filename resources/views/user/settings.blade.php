@@ -793,8 +793,7 @@
                                             <td><strong>WorkerBee AFC</strong></td>
                                             <td>
                                                 <ul class="plan-features">
-                                                    <li>1 Usuario Administrador</li>
-                                                    <li>Apiarios ilimitados hasta 299 colmenas</li>
+                                                    <li><strong>Apiarios ilimitados hasta 299 colmenas</strong></li>
                                                     <li>Acceso a todas las funcionalidades básicas</li>
                                                     <li>Soporte técnico estándar</li>
                                                 </ul>
@@ -831,8 +830,7 @@
                                             <td><strong>WorkerBee ME</strong></td>
                                             <td>
                                                 <ul class="plan-features">
-                                                    <li>1 Usuario Administrador</li>
-                                                    <li>Apiarios ilimitados hasta 799 colmenas</li>
+                                                    <li><strong>Apiarios ilimitados hasta 799 colmenas</strong></li>
                                                     <li>Acceso a todas las funcionalidades básicas</li>
                                                     <li>Soporte técnico prioritario</li>
                                                 </ul>
@@ -869,8 +867,7 @@
                                             <td><strong>WorkerBee GE</strong></td>
                                             <td>
                                                 <ul class="plan-features">
-                                                    <li>1 Usuario Administrador</li>
-                                                    <li>Apiarios ilimitados y sin límite de colmenas</li>
+                                                    <li><strong>Apiarios ilimitados y sin límite de colmenas</strong></li>
                                                     <li>Acceso a todas las funcionalidades básicas</li>
                                                     <li>Soporte técnico prioritario 24/7</li>
                                                     <li>Capacitación personalizada</li>

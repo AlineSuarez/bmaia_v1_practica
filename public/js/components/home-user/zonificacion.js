@@ -894,65 +894,72 @@ document.addEventListener("DOMContentLoaded", function () {
             map.fitBounds(markers.getBounds(), { padding: [50, 50] });
         }
 
-        // Sistema de pestañas
+        // Sistema de pestañas — default BASE y persistencia con localStorage
+        const DEFAULT_TAB = "base";
         const tabBtns = document.querySelectorAll(".tab-btn");
+
+        function applyActiveTab(tab) {
+            let btn = document.querySelector(`.tab-btn[data-tab="${tab}"]`);
+            if (!btn) {
+                tab = DEFAULT_TAB;
+                btn = document.querySelector(
+                    `.tab-btn[data-tab="${DEFAULT_TAB}"]`
+                );
+            }
+
+            // Limpiar estados
+            tabBtns.forEach((b) => b.classList.remove("active"));
+            document
+                .querySelectorAll(".tab-content")
+                .forEach((c) => c.classList.remove("active"));
+
+            // Activar botón actual
+            if (btn) btn.classList.add("active");
+
+            // Activar contenidos de la pestaña en ambas vistas (tabla y tarjetas)
+            document
+                .querySelectorAll(`.tab-content[data-tab="${tab}"]`)
+                .forEach((content) => content.classList.add("active"));
+
+            // Persistir elección
+            localStorage.setItem("zonifActiveTab", tab);
+        }
+
+        // Aplicar pestaña inicial (BASE por defecto)
+        applyActiveTab(localStorage.getItem("zonifActiveTab") || DEFAULT_TAB);
+
+        // Listeners de pestañas
         tabBtns.forEach((btn) => {
             btn.addEventListener("click", function () {
                 const tab = this.getAttribute("data-tab");
-
-                if (this.classList.contains("active")) return;
-
-                // Remover clase active de todos los botones y contenidos
-                tabBtns.forEach((b) => b.classList.remove("active"));
-                document
-                    .querySelectorAll(".tab-content")
-                    .forEach((t) => t.classList.remove("active"));
-
-                // Activar pestaña seleccionada
-                this.classList.add("active");
-
-                // Activar contenido de pestaña en ambas vistas (tabla y tarjetas)
-                document
-                    .querySelectorAll(`.tab-content[data-tab="${tab}"]`)
-                    .forEach((content) => content.classList.add("active"));
-
-                // Resetear página actual cuando cambie de pestaña
-                currentPages[tab] = 1;
+                applyActiveTab(tab);
+                // Opcional: reset de paginación al cambiar de pestaña
+                if (typeof currentPages !== "undefined" && currentPages[tab]) {
+                    currentPages[tab] = 1;
+                }
             });
         });
 
-        // Cambio entre vistas de tabla y tarjetas
-        const viewBtns = document.querySelectorAll(".view-btn");
-        viewBtns.forEach((btn) => {
+        // Asegurar que al cambiar de vista se respete la pestaña activa
+        document.querySelectorAll(".view-btn").forEach((btn) => {
             btn.addEventListener("click", function () {
                 const view = this.getAttribute("data-view");
-
-                if (this.classList.contains("active")) return;
-
-                viewBtns.forEach((b) => b.classList.remove("active"));
-                document
-                    .querySelectorAll(".view-container")
-                    .forEach((v) => v.classList.remove("active"));
-
-                this.classList.add("active");
-                document.querySelector(`.${view}-view`).classList.add("active");
-
-                // Asegurar que la pestaña activa se mantenga en la nueva vista
-                const activeTab = document.querySelector(".tab-btn.active");
-                if (activeTab) {
-                    const tab = activeTab.getAttribute("data-tab");
-
-                    // Remover active de todos los contenidos
+                if (!this.classList.contains("active")) {
                     document
-                        .querySelectorAll(".tab-content")
-                        .forEach((t) => t.classList.remove("active"));
-
-                    // Activar contenido de la pestaña activa en la nueva vista
+                        .querySelectorAll(".view-btn")
+                        .forEach((b) => b.classList.remove("active"));
                     document
-                        .querySelectorAll(
-                            `.${view}-view .tab-content[data-tab="${tab}"]`
-                        )
-                        .forEach((content) => content.classList.add("active"));
+                        .querySelectorAll(".view-container")
+                        .forEach((v) => v.classList.remove("active"));
+                    this.classList.add("active");
+                    document
+                        .querySelector(`.${view}-view`)
+                        .classList.add("active");
+
+                    // Reaplicar pestaña activa en la nueva vista
+                    applyActiveTab(
+                        localStorage.getItem("zonifActiveTab") || DEFAULT_TAB
+                    );
                 }
             });
         });

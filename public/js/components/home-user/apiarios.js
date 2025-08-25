@@ -233,12 +233,6 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
-    // Inicializar paginación para todas las tablas
-    const fijosPagination = new TablePagination(
-        "apiariosTable",
-        "fijos-pagination",
-        "fijos-pagination-info"
-    );
     const basePagination = new TablePagination(
         "apiariosTableTrashumante",
         "base-pagination",
@@ -347,9 +341,9 @@ document.addEventListener("DOMContentLoaded", function () {
             if (trasladarBtn) {
                 trasladarBtn.disabled = selectedCount === 0;
                 if (selectedCount > 0) {
-                    trasladarBtn.innerHTML = `<i class="fas fa-arrow-right"></i> Trasladar Colmenas (${selectedCount})`;
+                    trasladarBtn.innerHTML = `<i class="fas fa-arrow-right"></i> Crear Apiario Temporal (${selectedCount})`;
                 } else {
-                    trasladarBtn.innerHTML = `<i class="fas fa-arrow-right"></i> Trasladar Colmenas`;
+                    trasladarBtn.innerHTML = `<i class="fas fa-arrow-right"></i> Crear Apiario Temporal`;
                 }
             }
         }
@@ -967,8 +961,6 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         createViewContainers() {
-            // Crear contenedores de tarjetas para cada sección
-            this.createCardContainer("fijos");
             this.createCardContainer("base");
             this.createCardContainer("temporales");
         }
@@ -1018,54 +1010,41 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         setupToggleEvents() {
-            // Crear switches en cada toolbar-right
+            // Solo crear el toggle para la sección base
             document
                 .querySelectorAll(".toolbar-right")
                 .forEach((toolbar, index) => {
+                    // Determinar la sección basada en el contexto
+                    let sectionName = "base";
+                    const parentSection = toolbar.closest("#trashumantes");
+                    if (!parentSection) return; // Solo en base
+
                     if (toolbar.querySelector(".view-toggle-container")) return; // Ya existe
 
                     const toggleContainer = document.createElement("div");
                     toggleContainer.className = "view-toggle-container";
 
-                    // Determinar la sección basada en el contexto
-                    let sectionName = "fijos";
-                    const parentSection = toolbar.closest(
-                        "#fijos, #trashumantes"
-                    );
-                    if (parentSection) {
-                        if (parentSection.id === "trashumantes") {
-                            const subsection = toolbar.closest(".subsection");
-                            const isFirst =
-                                subsection ===
-                                parentSection.querySelector(
-                                    ".subsection:first-child"
-                                );
-                            sectionName = isFirst ? "base" : "temporales";
-                        }
-                    }
-
                     toggleContainer.innerHTML = `
-                    <span class="view-toggle-label">Vista:</span>
-                    <div class="view-switch" data-section="${sectionName}">
-                        <div class="view-switch-slider"></div>
-                        <div class="view-switch-option left">
-                            <i class="fas fa-table"></i>
-                        </div>
-                        <div class="view-switch-option right">
-                            <i class="fas fa-th"></i>
-                        </div>
+                <span class="view-toggle-label">Vista:</span>
+                <div class="view-switch" data-section="base">
+                    <div class="view-switch-slider"></div>
+                    <div class="view-switch-option left">
+                        <i class="fas fa-table"></i>
                     </div>
-                `;
+                    <div class="view-switch-option right">
+                        <i class="fas fa-th"></i>
+                    </div>
+                </div>
+            `;
 
-                    // Insertar al principio del toolbar-right
                     toolbar.insertBefore(toggleContainer, toolbar.firstChild);
 
-                    // Agregar event listener
+                    // Agregar event listener solo para base
                     const viewSwitch =
                         toggleContainer.querySelector(".view-switch");
                     viewSwitch.addEventListener("click", (e) => {
                         e.preventDefault();
-                        this.toggleView(viewSwitch.dataset.section);
+                        this.toggleView("base");
                     });
                 });
         }
@@ -1729,9 +1708,9 @@ document.addEventListener("DOMContentLoaded", function () {
         if (trasladarBtn) {
             trasladarBtn.disabled = selectedCount === 0;
             if (selectedCount > 0) {
-                trasladarBtn.innerHTML = `<i class="fas fa-arrow-right"></i> Trasladar Colmenas (${selectedCount})`;
+                trasladarBtn.innerHTML = `<i class="fas fa-arrow-right"></i> Crear Apiario Temporal (${selectedCount})`;
             } else {
-                trasladarBtn.innerHTML = `<i class="fas fa-arrow-right"></i> Trasladar`;
+                trasladarBtn.innerHTML = `<i class="fas fa-arrow-right"></i> Crear Apiario Temporal`;
             }
         }
     }
@@ -2087,7 +2066,7 @@ document.addEventListener("DOMContentLoaded", function () {
     // esperar un tick para que IndependentViewToggle haya creado contenedores
     setTimeout(() => {
         window.cardPaginators = window.cardPaginators || {};
-        ["fijos", "base", "temporales"].forEach((section) => {
+        ["base", "temporales"].forEach((section) => {
             const gridId = `${section}-cards-grid`;
             if (document.getElementById(gridId)) {
                 // Si ya existe, reutilizar
@@ -2102,33 +2081,4 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         });
     }, 120);
-});
-
-document.addEventListener("DOMContentLoaded", function () {
-    const tabButtons = document.querySelectorAll(
-        '.tab-item[data-bs-toggle="tab"]'
-    );
-    // Usa el ID del usuario en la clave
-    const userId = window.currentUserId || "default";
-    const storageKey = `apiariosTabActive_${userId}`;
-
-    // Restaurar pestaña activa usando Bootstrap Tab API
-    const lastTab = localStorage.getItem(storageKey);
-    if (lastTab) {
-        const targetBtn = Array.from(tabButtons).find(
-            (btn) => btn.getAttribute("data-bs-target") === lastTab
-        );
-        if (targetBtn) {
-            const tab = new bootstrap.Tab(targetBtn);
-            tab.show();
-        }
-    }
-
-    // Guardar pestaña activa al hacer click
-    tabButtons.forEach((btn) => {
-        btn.addEventListener("shown.bs.tab", function () {
-            const target = btn.getAttribute("data-bs-target");
-            localStorage.setItem(storageKey, target);
-        });
-    });
 });

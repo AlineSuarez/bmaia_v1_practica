@@ -19,17 +19,8 @@
                 </div>
                 <div class="stat-content">
                     <h3>Total Apiarios</h3>
-                    <p class="stat-value">{{ count($apiariosFijos) + count($apiariosBase) + count($apiariosTemporales) }}
+                    <p class="stat-value">{{ count($apiariosBase) + count($apiariosTemporales) }}
                     </p>
-                </div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-icon">
-                    <i class="fa-solid fa-home"></i>
-                </div>
-                <div class="stat-content">
-                    <h3>Apiarios Fijos</h3>
-                    <p class="stat-value">{{ count($apiariosFijos) }}</p>
                 </div>
             </div>
             <div class="stat-card">
@@ -74,16 +65,16 @@
                 <div class="map-legend">
                     <h4>Leyenda</h4>
                     <div class="legend-item">
-                        <span class="legend-color" style="background:#f0941b;"></span>
-                        <span>Apiarios Fijos</span>
-                    </div>
-                    <div class="legend-item">
                         <span class="legend-color" style="background:#3498db;"></span>
                         <span>Apiarios Base</span>
                     </div>
                     <div class="legend-item">
                         <span class="legend-color" style="background:#27ae60;"></span>
                         <span>Apiarios Temporales</span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-color" style="background:#ff0000;"></span>
+                        <span>Apiarios Archivados</span>
                     </div>
                 </div>
             </div>
@@ -106,11 +97,6 @@
             <!-- Sistema de pestañas -->
             <div class="tabs-container">
                 <div class="tabs-nav">
-                    <button class="tab-btn active" data-tab="fijos" data-tooltip="Api. Fijos">
-                        <i class="fa-solid fa-home"></i>
-                        <span class="tab-text">Fijos</span>
-                        <span class="tab-count">({{ count($apiariosFijos) }})</span>
-                    </button>
                     <button class="tab-btn" data-tab="base" data-tooltip="Api. Base">
                         <i class="fa-solid fa-truck"></i>
                         <span class="tab-text">Base</span>
@@ -125,29 +111,6 @@
 
                 <!-- Vista de tabla -->
                 <div class="view-container table-view active">
-                    <!-- TAB FIJOS -->
-                    <div class="tab-content active" data-tab="fijos">
-                        <div class="table-responsive">
-                            <table class="apiary-table">
-                                <thead>
-                                    <tr>
-                                        <th>Nombre</th>
-                                        <th>Ubicación</th>
-                                        <th>Colmenas</th>
-                                        <th>Fotografía</th>
-                                        <th>Temperatura</th>
-                                        <th>Humedad</th>
-                                        <th>Clima</th>
-                                        <th>Acciones</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <!-- El contenido será generado por JavaScript -->
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-
                     <!-- TAB BASE -->
                     <div class="tab-content" data-tab="base">
                         <div class="table-responsive">
@@ -195,13 +158,6 @@
 
                 <!-- Vista de tarjetas -->
                 <div class="view-container cards-view">
-                    <!-- TAB FIJOS -->
-                    <div class="tab-content active" data-tab="fijos">
-                        <div class="apiary-cards">
-                            <!-- El contenido será generado por JavaScript -->
-                        </div>
-                    </div>
-
                     <!-- TAB BASE -->
                     <div class="tab-content" data-tab="base">
                         <div class="apiary-cards">

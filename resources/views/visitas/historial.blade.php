@@ -104,12 +104,6 @@
                         <div class="row g-2">
                             <div class="col-4">
                                 <div class="mobile-stat-card">
-                                    <div class="mobile-stat-number">{{ $apiario->visitas->count() }}</div>
-                                    <div class="mobile-stat-label">Total</div>
-                                </div>
-                            </div>
-                            <div class="col-4">
-                                <div class="mobile-stat-card">
                                     <div class="mobile-stat-number">
                                         {{ $apiario->visitas->where('tipo_visita', 'Visita General')->count() }}</div>
                                     <div class="mobile-stat-label">General</div>

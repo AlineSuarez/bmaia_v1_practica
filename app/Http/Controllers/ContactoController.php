@@ -17,7 +17,6 @@ class ContactoController extends Controller
             'telefono' => 'nullable|string|max:20',
             'empresa' => 'nullable|string|max:160',
             'tipo' => 'required|string',
-            'asunto' => 'required|string|max:150',
             'mensaje' => 'required|string|min:10|max:2000',
             'acepta_politica' => 'accepted',
             'website' => 'max:0',
@@ -26,7 +25,6 @@ class ContactoController extends Controller
             'email.required' => 'El correo electrónico es obligatorio.',
             'email.email' => 'El correo electrónico no es válido.',
             'tipo.required' => 'El tipo de consulta es obligatorio.',
-            'asunto.required' => 'El asunto es obligatorio.',
             'mensaje.required' => 'El mensaje es obligatorio.',
             'mensaje.min' => 'El mensaje debe tener al menos :min caracteres.',
             'mensaje.max' => 'El mensaje no puede superar los :max caracteres.',
@@ -41,7 +39,7 @@ class ContactoController extends Controller
         $htmlContent = View::make('emails.contact-base', ['datos' => $data])->render();
 
         // Construir el asunto único
-        $uniqueSubject = $data['asunto'] . ' [' . now()->format('Y-m-d H:i:s') . ']';
+        $uniqueSubject = 'Nuevo mensaje de contacto [' . now()->format('Y-m-d H:i:s') . ']';
 
         // Construir el correo
         $email = new \SendGrid\Mail\Mail();

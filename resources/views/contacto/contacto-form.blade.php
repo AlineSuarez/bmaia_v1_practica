@@ -90,13 +90,6 @@
                                 </select>
                                 @error('tipo')<div class="invalid-feedback">{{ $message }}</div>@enderror
                             </div>
-
-                            <div class="form-group">
-                                <label for="asunto">Asunto <span class="req">*</span></label>
-                                <input type="text" name="asunto" id="asunto" value="{{ old('asunto') }}" required
-                                    minlength="3" maxlength="150" placeholder="Resumen de tu consulta">
-                                @error('asunto')<div class="invalid-feedback">{{ $message }}</div>@enderror
-                            </div>
                         </div>
 
                         <div class="form-group">

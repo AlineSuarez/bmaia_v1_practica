@@ -200,13 +200,6 @@
             </div>
         @endif
 
-        @if(!empty($datos['asunto']))
-            <div class="field">
-                <span class="label">Asunto:</span>
-                <span class="value">{{ $datos['asunto'] }}</span>
-            </div>
-        @endif
-
         <div class="message-box">
             <strong>Mensaje:</strong><br><br>
             {{ $datos['mensaje'] }}

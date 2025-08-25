@@ -26,19 +26,21 @@
                         <div class="stat-icon"><i class="fas fa-cube"></i></div>
                         <span>Total: {{ $colmenasPorApiarioBase->flatten()->count() }} colmenas</span>
                     </div>
-                    <div class="stat-item">
-                        <div class="stat-icon"><i class="fas fa-map-marker-alt"></i></div>
-                        <span>Tipo: {{ ucfirst($apiario->tipo_apiario) }}</span>
-                    </div>
+                    @if($apiario->tipo_apiario === 'trashumante' && !$apiario->es_temporal)
+                        <div class="stat-item">
+                            <div class="stat-icon"><i class="fas fa-layer-group"></i></div>
+                            <span>Apiario Base</span>
+                        </div>
+                    @endif
                     @if($apiario->es_temporal)
                         <div class="stat-item">
                             <div class="stat-icon"><i class="fas fa-clock"></i></div>
-                            <span>Temporal</span>
+                            <span>Apiario Temporal</span>
                         </div>
                     @endif
                     <div class="stat-item">
                         <div class="stat-icon"><i class="fas fa-layer-group"></i></div>
-                        <span>Apiarios Origen: {{ $colmenasPorApiarioBase->count() }}</span>
+                        <span>Apiarios de Origen: {{ $colmenasPorApiarioBase->count() }}</span>
                     </div>
                 </div>
             </div>
@@ -47,7 +49,7 @@
                 <div class="section-group">
                     @if($mostrarTitulos)
                         <h2 class="section-title">
-                            <i class="fas fa-home mr-2"></i>{{ $nombreBase }}
+                            <i class="fas fa-home mr-2"></i>Apiario de Origen: {{ $nombreBase }}
                         </h2>
                     @endif
 

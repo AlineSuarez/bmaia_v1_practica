@@ -193,3 +193,58 @@ document.addEventListener("DOMContentLoaded", () => {
         document.head.appendChild(style);
     }
 });
+
+// --- Mostrar/ocultar botón flotante según dirección de scroll SOLO cuando el sidebar está oculto ---
+let lastScrollY = window.scrollY;
+let ticking = false;
+
+function handleFloatingButtonOnScroll() {
+    const btn = document.getElementById("floatingSidebarToggle");
+    // Solo activar si el sidebar está oculto (collapsed o en móvil)
+    const sidebarHidden =
+        document.body.classList.contains("sidebar-collapsed") ||
+        window.innerWidth <= 992;
+
+    if (!btn || !sidebarHidden) {
+        // Si el sidebar está visible, mostrar el botón y salir
+        if (btn) {
+            btn.style.transform = "translateY(0)";
+            btn.style.opacity = "1";
+            btn.style.pointerEvents = "auto";
+        }
+        ticking = false;
+        lastScrollY = window.scrollY;
+        return;
+    }
+
+    const currentScrollY = window.scrollY;
+
+    if (currentScrollY > lastScrollY && currentScrollY > 40) {
+        // Scroll hacia abajo: ocultar botón
+        btn.style.transform = "translateY(100px)";
+        btn.style.opacity = "0";
+        btn.style.pointerEvents = "none";
+    } else {
+        // Scroll hacia arriba: mostrar botón
+        btn.style.transform = "translateY(0)";
+        btn.style.opacity = "1";
+        btn.style.pointerEvents = "auto";
+    }
+
+    lastScrollY = currentScrollY;
+    ticking = false;
+}
+
+window.addEventListener("scroll", function () {
+    if (!ticking) {
+        window.requestAnimationFrame(handleFloatingButtonOnScroll);
+        ticking = true;
+    }
+});
+
+// Asegúrate de que el botón tenga transición suave
+const btn = document.getElementById("floatingSidebarToggle");
+if (btn) {
+    btn.style.transition =
+        "transform 0.35s cubic-bezier(0.16,1,0.3,1), opacity 0.35s cubic-bezier(0.16,1,0.3,1)";
+}

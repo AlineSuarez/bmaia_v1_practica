@@ -25,29 +25,18 @@
 
         <!-- Tarjetas de información clave -->
         <div class="row mb-4">
-            <div class="col-md-3 animate delay-1">
+            <div class="col-md-4 animate delay-1">
                 <div class="info-card">
                     <div class="info-card-icon">
                         <i class="fas fa-archive"></i>
                     </div>
                     <h3 class="info-card-title">Total de Apiarios</h3>
                     <div class="info-card-value">
-                        {{ $apiariosFijos + $apiariosBase + $apiariosTemporales }}
+                        {{ $apiariosBase + $apiariosTemporales }}
                     </div>
                 </div>
             </div>
-            <div class="col-md-3 animate delay-2">
-                <div class="info-card">
-                    <div class="info-card-icon">
-                        <i class="fas fa-home"></i>
-                    </div>
-                    <h3 class="info-card-title">Apiarios Fijos</h3>
-                    <div class="info-card-value">
-                        {{ $apiariosFijos }}
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3 animate delay-3">
+            <div class="col-md-4 animate delay-3">
                 <div class="info-card">
                     <div class="info-card-icon">
                         <i class="fas fa-route"></i>
@@ -58,7 +47,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-3 animate delay-4">
+            <div class="col-md-4 animate delay-4">
                 <div class="info-card">
                     <div class="info-card-icon">
                         <i class="fas fa-truck-moving"></i>
@@ -131,41 +120,6 @@
             </div>
         </div>
 
-        <!-- Sección educativa -->
-        <!-- <div class="row animate delay-3">
-                    <div class="col-12">
-                        <div class="edu-section">
-                            <h3 class="edu-title">¿Sabías que...?</h3>
-                            <div class="edu-content">
-                                <div class="edu-item">
-                                    <h4 class="edu-item-title"><i class="fas fa-bug"></i> Vida de las Abejas</h4>
-                                    <p class="edu-item-text">
-                                        Una abeja obrera vive aproximadamente 6 semanas durante la temporada activa, mientras que
-                                        las abejas nacidas en otoño pueden vivir hasta 6 meses para mantener la colonia durante el
-                                        invierno.
-                                    </p>
-                                </div>
-                                <div class="edu-item">
-                                    <h4 class="edu-item-title"><i class="fas fa-temperature-high"></i> Temperatura de la Colmena
-                                    </h4>
-                                    <p class="edu-item-text">
-                                        Las abejas mantienen la temperatura de la cámara de cría alrededor de 35°C (95°F),
-                                        independientemente de la temperatura exterior, mediante la vibración de sus músculos
-                                        torácicos.
-                                    </p>
-                                </div>
-                                <div class="edu-item">
-                                    <h4 class="edu-item-title"><i class="fas fa-tint"></i> Producción de Miel</h4>
-                                    <p class="edu-item-text">
-                                        Para producir 1 kg de miel, las abejas deben visitar aproximadamente 4 millones de flores y
-                                        volar el equivalente a 4 veces alrededor del mundo.
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div> -->
-
         <!-- Segunda fila de gráficos -->
         <div class="row">
             <div class="col-md-6 animate delay-3">
@@ -225,33 +179,6 @@
                 </div>
             </div>
         </div>
-
-        <!-- Sección de consejos -->
-        <!-- <div class="row animate delay-4">
-                    <div class="col-12">
-                        <div class="tips-section">
-                            <h3 class="tips-title"><i class="fas fa-lightbulb"></i> Consejos para Optimizar tu Apiario</h3>
-                            <div class="tips-list">
-                                <div class="tip-item">
-                                    <p class="tip-text"><strong>Ubicación:</strong> Coloca tus colmenas en lugares con sombra
-                                        parcial, protegidas del viento y con fácil acceso a fuentes de agua.</p>
-                                </div>
-                                <div class="tip-item">
-                                    <p class="tip-text"><strong>Espacio:</strong> Mantén al menos 2-3 metros entre colmenas para
-                                        reducir la deriva y facilitar el trabajo del apicultor.</p>
-                                </div>
-                                <div class="tip-item">
-                                    <p class="tip-text"><strong>Alimentación:</strong> Proporciona alimentación suplementaria
-                                        durante períodos de escasez de néctar para mantener colonias fuertes.</p>
-                                </div>
-                                <div class="tip-item">
-                                    <p class="tip-text"><strong>Registros:</strong> Mantén registros detallados de cada visita,
-                                        observaciones y tratamientos para tomar decisiones informadas.</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div> -->
     </div>
 
     <script>

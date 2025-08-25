@@ -19,10 +19,6 @@
                 <h1 class="page-title">Gestión de Apiarios</h1>
                 <div class="header-stats">
                     <div class="stat-item">
-                        <span class="stat-number">{{ count($apiariosFijos) }}</span>
-                        <span class="stat-label">Fijos</span>
-                    </div>
-                    <div class="stat-item">
                         <span class="stat-number">{{ count($apiariosBase) }}</span>
                         <span class="stat-label">Base</span>
                     </div>
@@ -41,205 +37,12 @@
             </div>
         </header>
 
-        <!-- Navegación de Pestañas Rediseñada -->
-        <nav class="tabs-nav" id="apiariosTab" role="tablist">
-            <button class="tab-item active" id="fijos-tab" data-bs-toggle="tab" data-bs-target="#fijos" type="button"
-                role="tab" aria-controls="fijos" aria-selected="true">
-                <div class="tab-icon">
-                    <i class="fas fa-warehouse"></i>
-                </div>
-                <div class="tab-content">
-                    <span class="tab-title">Apiarios Fijos</span>
-                </div>
-                <div class="tab-badge">{{ count($apiariosFijos) }}</div>
-            </button>
-
-            <button class="tab-item" id="trashumantes-tab" data-bs-toggle="tab" data-bs-target="#trashumantes" type="button"
-                role="tab" aria-controls="trashumantes" aria-selected="false">
-                <div class="tab-icon">
-                    <i class="fas fa-truck"></i>
-                </div>
-                <div class="tab-content">
-                    <div class="tab-line">
-                        <span class="tab-title" style="font-size: small;">Apiarios Base</span>
-                        <span class="tab-badge">{{ count($apiariosBase) }}</span>
-                    </div>
-                    <div class="tab-line">
-                        <span class="tab-title" style="font-size: small;">Apiarios Temporales</span>
-                        <span class="tab-badge">{{ count($apiariosTemporales) }}</span>
-                    </div>
-                </div>
-            </button>
-        </nav>
-
         <!-- Contenido Principal -->
         <main class="content-area" id="apiariosTabContent">
-
-            <!-- ============================================================
-                            PESTAÑA APIARIOS FIJOS - CON SISTEMA DE TARJETAS
-                    ============================================================ -->
-            <section class="tab-pane active" id="fijos" role="tabpanel" aria-labelledby="fijos-tab">
-
-                <div class="section-toolbar">
-                    <div class="toolbar-left">
-                        <h2 class="section-title">
-                            <i class="fas fa-warehouse"></i>
-                            Apiarios Fijos
-                        </h2>
-                    </div>
-
-                    <div class="toolbar-right">
-                        <!-- EL SWITCH SE AÑADE AUTOMÁTICAMENTE VÍA JAVASCRIPT -->
-                        <a href="{{ route('apiarios.create', ['tipo' => 'fijo']) }}" class="action-btn primary">
-                            <i class="fas fa-plus"></i>
-                            <span>Nuevo Apiario Fijo</span>
-                        </a>
-                    </div>
-                </div>
-
-                @if(count($apiariosFijos) > 0)
-                    <!-- TABLA EXISTENTE (SE MANTIENE INTACTA) -->
-                    <div class="data-container">
-                        <div class="table-container">
-                            <table id="apiariosTable" class="data-table">
-                                <thead>
-                                    <tr>
-                                        <th>Apiario</th>
-                                        <th>Temporada</th>
-                                        <th>Registro SAG</th>
-                                        <th>Colmenas</th>
-                                        <th>Tipo</th>
-                                        <th>Manejo</th>
-                                        <th>Objetivo</th>
-                                        <th>Ubicación</th>
-                                        <th>Coordenadas</th>
-                                        <th>Imagen</th>
-                                        <th>Acciones</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach ($apiariosFijos as $apiario)
-                                        <tr>
-                                            <td>
-                                                <div class="cell-content">
-                                                    <span class="item-id">{{ $apiario->nombre }}</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <span class="badge primary">{{ $apiario->temporada_produccion }}</span>
-                                            </td>
-                                            <td>
-                                                <span class="text-mono">{{ $apiario->registro_sag }}</span>
-                                            </td>
-                                            <td>
-                                                <div class="numeric-cell">{{ $apiario->num_colmenas }}</div>
-                                            </td>
-                                            <td>
-                                                <span class="badge secondary">{{ $apiario->tipo_apiario }}</span>
-                                            </td>
-                                            <td>
-                                                <span class="badge info">{{ $apiario->tipo_manejo }}</span>
-                                            </td>
-                                            <td>
-                                                <span class="badge warning">{{ $apiario->objetivo_produccion }}</span>
-                                            </td>
-                                            <td>
-                                                <div class="location-cell">
-                                                    {{ $apiario->comuna && $apiario->comuna->nombre ? $apiario->comuna->nombre : '-' }}
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div class="coords-cell">
-                                                    <span class="coords">{{ $apiario->latitud }}, {{ $apiario->longitud }}</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                @php $fotoPath = public_path('storage/' . $apiario->foto); @endphp
-                                                @if($apiario->foto && file_exists($fotoPath))
-                                                    <div class="image-cell">
-                                                        <img src="{{ asset('storage/' . $apiario->foto) }}"
-                                                            alt="Apiario {{ $apiario->nombre }}" class="preview-image"
-                                                            data-bs-toggle="modal" data-bs-target="#imageModal{{ $apiario->id }}">
-                                                    </div>
-                                                @else
-                                                    <span class="no-image">Sin imagen</span>
-                                                @endif
-                                            </td>
-                                            <td>
-                                                <div class="action-group">
-                                                    <a href="{{ route('apiarios.editar', $apiario->id) }}" class="action-icon edit"
-                                                        title="Editar">
-                                                        <i class="fas fa-edit"></i>
-                                                    </a>
-                                                    <a href="{{ route('colmenas.index', $apiario->id) }}" class="action-icon view"
-                                                        title="Ver Colmenas">
-                                                        <i class="fas fa-cubes"></i>
-                                                    </a>
-                                                    <a href="{{ route('generate.document', $apiario->id) }}"
-                                                        class="action-icon download" title="Descargar Detalle del Apiario">
-                                                        <i class="fas fa-download"></i>
-                                                    </a>
-                                                    <button class="action-icon delete" data-bs-toggle="modal"
-                                                        data-bs-target="#deleteModal{{ $apiario->id }}" title="Eliminar">
-                                                        <i class="fas fa-trash"></i>
-                                                    </button>
-                                                    <form action="{{ route('apiarios.convertirBase', $apiario->id) }}" method="POST"
-                                                        class="d-inline"
-                                                        onsubmit="return confirm('¿Estás seguro de convertir este apiario a trashumante base?');">
-                                                        @csrf
-                                                        <button type="submit" class="action-icon exchange"
-                                                            title="Convertir a Trashumante Base">
-                                                            <i class="fas fa-exchange-alt"></i>
-                                                        </button>
-                                                    </form>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
-                        </div>
-
-                        <!-- Paginación Mejorada -->
-                        <div class="pagination-container">
-                            <div class="pagination-info">
-                                <div class="pagination-info-main">
-                                    <span class="pagination-summary">
-                                        <span id="fijos-pagination-info">1-{{ count($apiariosFijos) }} de
-                                            {{ count($apiariosFijos) }}</span>
-                                    </span>
-                                </div>
-                            </div>
-                            <div class="pagination-controls">
-                                <div class="pagination-nav" id="fijos-pagination">
-                                    <!-- Generado por JavaScript -->
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- CONTENEDOR DE TARJETAS (SE CREA AUTOMÁTICAMENTE VÍA JAVASCRIPT) -->
-                    <!-- Las tarjetas se generan dinámicamente desde los datos de la tabla -->
-
-                @else
-                    <div class="empty-section">
-                        <div class="empty-icon">
-                            <i class="fas fa-warehouse"></i>
-                        </div>
-                        <h3 class="empty-title">No hay apiarios fijos</h3>
-                        <p class="empty-description">Comienza creando tu primer apiario fijo</p>
-                        <a href="{{ route('apiarios.create', ['tipo' => 'fijo']) }}" class="action-btn primary large">
-                            <i class="fas fa-plus"></i>
-                            <span>Crear Apiario Fijo</span>
-                        </a>
-                    </div>
-                @endif
-            </section>
-
             <!-- ============================================================
                         PESTAÑA TRASHUMANCIA - CON SISTEMA DE TARJETAS
                     ============================================================ -->
-            <section class="tab-pane" id="trashumantes" role="tabpanel" aria-labelledby="trashumantes-tab">
+            <section class="panel" id="trashumantes">
 
                 <!-- Sección Apiarios Base -->
                 <div class="subsection">
@@ -364,15 +167,6 @@
                                                             data-bs-target="#deleteModal{{ $apiario->id }}" title="Eliminar">
                                                             <i class="fas fa-trash"></i>
                                                         </button>
-                                                        <form action="{{ route('apiarios.convertirFijo', $apiario->id) }}"
-                                                            method="POST" class="d-inline"
-                                                            onsubmit="return confirm('¿Estás seguro de convertir este apiario a fijo?');">
-                                                            @csrf
-                                                            <button type="submit" class="action-icon exchange"
-                                                                title="Mover a Apiario Fijo">
-                                                                <i class="fas fa-exchange-alt"></i>
-                                                            </button>
-                                                        </form>
                                                     </div>
                                                 </td>
                                             </tr>
@@ -707,59 +501,6 @@
     <!-- ============================================================
                             MODALES FUNCIONALES
         ============================================================ -->
-
-    <!-- Modales de eliminación para apiarios fijos -->
-    @foreach ($apiariosFijos as $apiario)
-        <div class="modal fade" id="deleteModal{{ $apiario->id }}" tabindex="-1" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content modern-modal">
-                    <div class="modal-header">
-                        <div class="modal-title-group">
-                            <h5 class="modal-title">
-                                <i class="fas fa-exclamation-triangle"></i>
-                                Confirmar Eliminación
-                            </h5>
-                        </div>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <p>¿Está seguro de que desea eliminar el apiario <strong>{{ $apiario->nombre }}</strong>?</p>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="action-btn secondary" data-bs-dismiss="modal">
-                            <span>Cancelar</span>
-                        </button>
-                        <form action="{{ route('apiarios.destroy', $apiario->id) }}" method="POST" style="display: inline;">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="action-btn danger">
-                                <span>Eliminar</span>
-                            </button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Modal de imagen -->
-        @if($apiario->foto)
-            <div class="modal fade" id="imageModal{{ $apiario->id }}" tabindex="-1" aria-hidden="true">
-                <div class="modal-dialog modal-lg">
-                    <div class="modal-content modern-modal">
-                        <div class="modal-header">
-                            <div class="modal-title-group">
-                                <h5 class="modal-title">Fotografía del Apiario {{ $apiario->nombre }}</h5>
-                            </div>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body text-center">
-                            <img src="{{ asset('storage/' . $apiario->foto) }}" alt="Fotografía del Apiario" class="modal-image">
-                        </div>
-                    </div>
-                </div>
-            </div>
-        @endif
-    @endforeach
 
     <!-- Modales para apiarios base -->
     @foreach ($apiariosBase as $apiario)

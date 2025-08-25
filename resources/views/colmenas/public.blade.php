@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Colmena #{{ $colmena->numero }}</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@flaticon/flaticon-uicons/css/all/all.css">
     <link href="{{ asset('./css/components/home-user/show/show-colmenas.css') }}" rel="stylesheet">
 </head>
 
@@ -157,9 +158,9 @@ $url = route('colmenas.public', ['colmena' => $colmena->id]);
                             <div class="pcc-card">
                                 <div class="pcc-header">
                                     <div class="pcc-icon">
-                                        <i class="fas fa-baby"></i>
+                                        <i class="fi fi-rr-bee"></i>
                                     </div>
-                                    <h6 class="pcc-title">Desarrollo de la Cámara de Cría</h6>
+                                    <h6 class="pcc-title">Cámara de Cría</h6>
                                 </div>
                                 <div class="pcc-content">
                                     @if($pcc1)
@@ -286,7 +287,7 @@ $url = route('colmenas.public', ['colmena' => $colmena->id]);
                             <div class="pcc-card">
                                 <div class="pcc-header">
                                     <div class="pcc-icon">
-                                        <i class="fas fa-utensils"></i>
+                                        <i class="fas fa-apple-whole"></i>
                                     </div>
                                     <h6 class="pcc-title">Estado Nutricional</h6>
                                 </div>
@@ -357,7 +358,7 @@ $url = route('colmenas.public', ['colmena' => $colmena->id]);
                             <div class="pcc-card">
                                 <div class="pcc-header">
                                     <div class="pcc-icon">
-                                        <i class="fas fa-microscope"></i>
+                                        <i class="fi fi-rr-microscope"></i>
                                     </div>
                                     <h6 class="pcc-title">Control de Nosema</h6>
                                 </div>
@@ -398,7 +399,7 @@ $url = route('colmenas.public', ['colmena' => $colmena->id]);
                             <div class="pcc-card">
                                 <div class="pcc-header">
                                     <div class="pcc-icon">
-                                        <i class="fas fa-tractor"></i>
+                                        <i class="fi fi-rr-box"></i>
                                     </div>
                                     <h6 class="pcc-title">Índice de Cosecha</h6>
                                 </div>

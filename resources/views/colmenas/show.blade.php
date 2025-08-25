@@ -173,7 +173,7 @@
                                                 <div class="pcc-icon">
                                                     <i class="fi fi-rr-bee"></i>
                                                 </div>
-                                                <h6 class="pcc-title">Desarrollo de la Cámara de Cría</h6>
+                                                <h6 class="pcc-title">Cámara de Cría</h6>
                                             </div>
                                             <div class="pcc-content">
                                                 @if($pcc1)
@@ -417,10 +417,10 @@
                                 <div class="card-footer">
                                     <div class="flex items-center gap-3">
                                         @php
-    $visitaId = optional($pcc2)->visita_id
-        ?? optional($pcc3)->visita_id
-        ?? optional($pcc4)->visita_id
-        ?? optional($pcc5)->visita_id;
+                                            $visitaId = optional($pcc2)->visita_id
+                                                ?? optional($pcc3)->visita_id
+                                                ?? optional($pcc4)->visita_id
+                                                ?? optional($pcc5)->visita_id;
                                         @endphp
 
                                         @if($visitaId)
@@ -433,7 +433,7 @@
                                             </a>
                                         @else
                                             <span class="text-amber-600 font-bold flex items-center">
-                                                <i class="fas fa-exclamation-triangle mr-2"></i>
+                                                <i class="fas fa-exclamation-triangle" style="margin-right: 0.5rem;"></i>
                                                 Debes ingresar datos en el Cuaderno de Campo
                                             </span>
                                         @endif
