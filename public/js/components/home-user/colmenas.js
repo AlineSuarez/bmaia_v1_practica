@@ -73,8 +73,7 @@ document.addEventListener("DOMContentLoaded", function () {
             const dataTooltip = card.getAttribute("data-tooltip");
             if (dataTooltip && !qrCache.has(dataTooltip)) {
                 setTimeout(() => {
-                    preloadQR(dataTooltip).catch(() => {
-                    });
+                    preloadQR(dataTooltip).catch(() => {});
                 }, Math.random() * 2000);
             }
         });

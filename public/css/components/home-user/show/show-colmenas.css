@@ -509,16 +509,22 @@
 }
 
 .pcc-icon {
-    width: 28px;
-    height: 28px;
-    background: rgba(255, 255, 255, 0.2);
-    border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: var(--font-sm);
-    backdrop-filter: blur(10px);
-    flex-shrink: 0;
+    margin: 0 auto 0.5rem auto;
+    background-color: rgba(255, 255, 255, 0.274);
+    border: 1px solid var(--color-white);
+    border-radius: 50%;
+    box-shadow: 0 2px 8px rgba(37, 99, 235, 0.07);
+}
+
+.pcc-icon i {
+    color: #ffffff;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .pcc-title {
@@ -561,7 +567,6 @@
     color: var(--color-amber-700);
     font-weight: 600;
     text-transform: uppercase;
-    letter-spacing: 0.5px;
 }
 
 .pcc-list-value {

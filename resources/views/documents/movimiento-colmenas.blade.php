@@ -341,7 +341,6 @@
 
     <div class="footer">
         <p><strong>Documento generado el {{ $fechaGeneracion }}</strong></p>
-        <p>Sistema de Gestión Apícola - Reporte de Historial de Movimientos</p>
     </div>
 </body>
 

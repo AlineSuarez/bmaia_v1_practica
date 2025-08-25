@@ -9,6 +9,7 @@ use App\Models\Comuna;
 use App\Models\Region;
 use Illuminate\Support\Facades\Auth;
 use App\Models\MovimientoColmena;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class ApiarioController extends Controller
 {
@@ -22,17 +23,18 @@ class ApiarioController extends Controller
             ->get();
 
         // 2) Trashumantes “base” (NO temporales)
-        $apiariosBase = Apiario::where('user_id', $userId)
+        $apiariosBase = Apiario::with('colmenas')
+            ->where('user_id', $userId)
             ->where('tipo_apiario', 'trashumante')
             ->where('activo', 1)
-            ->where('es_temporal', false)    // ← filtrar aquí
+            ->where('es_temporal', false)
             ->get();
 
         // 3) Apiarios temporales (los que creaste con el wizard)
         $apiariosTemporales = Apiario::where('user_id', $userId)
             ->where('tipo_apiario', 'trashumante')
             ->where('activo', 1)
-            ->where('es_temporal', true)  // ← y aquí
+            ->where('es_temporal', true)
             ->get();
 
         // 4) Apiarios Archivados → aquellos que ya no estén activos (activo = 0)
@@ -71,7 +73,7 @@ class ApiarioController extends Controller
         $limite_colmenas = $user->colmenaLimit();     // Método definido en User.php
         $plan = $user->plan;
 
-        return view('apiarios.create', compact('regiones', 'comunasCoordenadas','colmenas_actuales', 'limite_colmenas','plan'));
+        return view('apiarios.create', compact('regiones', 'comunasCoordenadas', 'colmenas_actuales', 'limite_colmenas', 'plan'));
     }
 
     // Guardar un nuevo apiario
@@ -289,7 +291,7 @@ class ApiarioController extends Controller
 
         // Obtener los datos de los apiarios seleccionados
         $apiariosData = Apiario::whereIn('id', $apiarioIds)->get();
-        $regiones     = Region::all();       
+        $regiones = Region::all();
         if ($apiariosData->isEmpty()) {
             return redirect()->route('apiarios.index')->with('error', 'No se encontraron los apiarios seleccionados.');
         }
@@ -351,7 +353,7 @@ class ApiarioController extends Controller
 
         return view('apiarios.detalle-movimiento', compact('apiario', 'mov', 'colmenasPorOrigen'));
     }
-    
+
     public function convertirEnTrashumanteBase($id)
     {
         $apiario = Apiario::where('user_id', Auth::id())->findOrFail($id);
@@ -378,6 +380,39 @@ class ApiarioController extends Controller
         }
 
         return redirect()->route('apiarios')->with('error', 'Solo puedes convertir apiarios trashumantes base a fijos.');
+    }
+
+    public function exportarHistorial(Apiario $apiario)
+    {
+        // Obtener movimientos y colmenas igual que en detalleMovimiento
+        $movimientos = MovimientoColmena::where('apiario_destino_id', $apiario->id)
+            ->orWhere('apiario_origen_id', $apiario->id)
+            ->with(['apiarioOrigen', 'colmena'])
+            ->orderByDesc('fecha_movimiento')
+            ->get();
+
+        $colmenas = $movimientos
+            ->groupBy(fn($mov) => $mov->colmena->id)
+            ->map(function ($movs) {
+                $col = $movs->first()->colmena;
+                $col->movimientos_list = $movs;
+                return $col;
+            })
+            ->sortBy('numero')
+            ->values();
+
+        $colmenasPorOrigen = $colmenas->groupBy(fn($col) => optional($col->movimientos_list->first()->apiarioOrigen)->nombre ?? 'Sin origen');
+
+        $mov = $movimientos->first();
+
+        // Generar PDF usando la misma vista
+        $pdf = Pdf::loadView('apiarios.detalle-movimiento', [
+            'apiario' => $apiario,
+            'mov' => $mov,
+            'colmenasPorOrigen' => $colmenasPorOrigen,
+        ]);
+
+        return $pdf->download('historial_apiario_' . $apiario->id . '.pdf');
     }
 
 }

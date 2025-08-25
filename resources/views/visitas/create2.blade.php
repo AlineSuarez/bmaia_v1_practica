@@ -5,8 +5,8 @@
 @section('content')
     @php
         $visita = $visita ?? null;
-        $pcc4   = $pcc4   ?? [];
-        $pcc5   = $pcc5   ?? [];
+        $pcc4 = $pcc4 ?? [];
+        $pcc5 = $pcc5 ?? [];
     @endphp
     <div class="medication-container">
         <header class="medication-header">
@@ -21,11 +21,7 @@
             <div class="alert alert-danger">{{ session('error') }}</div>
         @endif
 
-        <form
-            action="{{ route('apiarios.medicamentos-registro.store', $apiario) }}"
-            method="POST"
-            class="medication-form"
-        >
+        <form action="{{ route('apiarios.medicamentos-registro.store', $apiario) }}" method="POST" class="medication-form">
             @csrf
             @if(isset($visita))
                 <input type="hidden" name="visita_id" value="{{ $visita->id }}">
@@ -75,21 +71,16 @@
                         <label for="motivo_tratamiento" class="field-label">Motivo del Tratamiento</label>
 
                         <select id="motivo_tratamiento" name="motivo_tratamiento" class="field-input text-input" required>
-                            <option value="">Seleccione...</option>
-                            <option value="varroa" {{ old('motivo_tratamiento',$visita->motivo_tratamiento??'')=='varroa'   ? 'selected':'' }}>Varroa</option>
-                            <option value="nosema" {{ old('motivo_tratamiento',$visita->motivo_tratamiento??'')=='nosema'   ? 'selected':'' }}>Nosema</option>
-                            <option value="otro" {{ old('motivo_tratamiento',$visita->motivo_tratamiento??'')=='otro'     ? 'selected':'' }}>Otro</option>
+                            <option value="" disabled selected>-- Elija una opción --</option>
+                            <option value="varroa" {{ old('motivo_tratamiento', $visita->motivo_tratamiento ?? '') == 'varroa' ? 'selected' : '' }}>Varroa</option>
+                            <option value="nosema" {{ old('motivo_tratamiento', $visita->motivo_tratamiento ?? '') == 'nosema' ? 'selected' : '' }}>Nosema</option>
+                            <option value="otro" {{ old('motivo_tratamiento', $visita->motivo_tratamiento ?? '') == 'otro' ? 'selected' : '' }}>Otro</option>
                         </select>
 
-                        <input
-                            id="motivo_otro"
-                            name="motivo_otro"
-                            type="text"
-                            class="field-input text-input mt-2"
+                        <input id="motivo_otro" name="motivo_otro" type="text" class="field-input text-input mt-2"
                             placeholder="Especifique otro motivo"
                             value="{{ old('motivo_otro', (isset($visita) && $visita->motivo_tratamiento === 'otro' ? $visita->motivo : '')) }}"
-                            style="display:none;"
-                        >
+                            style="display:none;">
                         @error('motivo_otro')
                             <div class="text-red-600 text-sm mt-1">{{ $message }}</div>
                         @enderror
@@ -118,92 +109,93 @@
                             Responsable
                         </label>
                         <input type="text" id="responsable" name="responsable" class="field-input text-input"
-                            placeholder="Nombre del responsable del tratamiento" value="{{ old('responsable',$visita->responsable??'') }}">
+                            placeholder="Nombre del responsable del tratamiento"
+                            value="{{ old('responsable', $visita->responsable ?? '') }}">
                         <span class="field-helper">Persona que aplicó o supervisó el tratamiento</span>
                     </div>
                 </div>
             </section>
 
             <!-- Información del Medicamento
-            
-            <section class="form-section medication-info">
-                <div class="section-header">
-                    <div class="section-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path
-                                d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z" />
-                            <path d="M12 15l8.5-8.5a2.83 2.83 0 0 0-4-4L8 11" />
-                            <path d="M9 12l-2 2" />
-                            <path d="M16 16l-2 2" />
-                        </svg>
-                    </div>
-                    <h2 class="section-title">Información del Medicamento</h2>
-                    <div class="section-decoration"></div>
-                </div>
-                <div class="medication-grid">
-                    <div class="medication-card commercial">
-                        <div class="card-header">
-                            <div class="card-icon">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-                                    <polyline points="14,2 14,8 20,8" />
-                                    <line x1="16" y1="13" x2="8" y2="13" />
-                                    <line x1="16" y1="17" x2="8" y2="17" />
-                                    <polyline points="10,9 9,9 8,9" />
-                                </svg>
-                            </div>
-                            <span class="card-badge commercial-badge">Comercial</span>
-                        </div>
-                        <div class="form-field">
-                            <label for="nombre_comercial_medicamento" class="field-label">Nombre Comercial</label>
-                            <input type="text" id="nombre_comercial_medicamento" name="nombre_comercial_medicamento"
-                                class="field-input text-input" placeholder="Ej: Apistan, CheckMite+, etc."
-                                value="{{ old('nombre_comercial_medicamento',$visita->nombre_comercial_medicamento??'') }}">
-                        </div>
-                    </div>
 
-                    <div class="medication-card active">
-                        <div class="card-header">
-                            <div class="card-icon">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <circle cx="12" cy="12" r="3" />
-                                    <path d="M12 1v6m0 6v6" />
-                                    <path d="M1 12h6m6 0h6" />
-                                </svg>
-                            </div>
-                            <span class="card-badge active-badge">Principio Activo</span>
+                <section class="form-section medication-info">
+                    <div class="section-header">
+                        <div class="section-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path
+                                    d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z" />
+                                <path d="M12 15l8.5-8.5a2.83 2.83 0 0 0-4-4L8 11" />
+                                <path d="M9 12l-2 2" />
+                                <path d="M16 16l-2 2" />
+                            </svg>
                         </div>
-                        <div class="form-field">
-                            <label for="principio_activo_medicamento" class="field-label">Principio Activo</label>
-                            <input type="text" id="principio_activo_medicamento" name="principio_activo_medicamento"
-                                class="field-input text-input" placeholder="Ej: Fluvalinato, Coumafos, etc."
-                                value="{{ old('principio_activo_medicamento',$visita->principio_activo_medicamento??'') }}">
-                        </div>
+                        <h2 class="section-title">Información del Medicamento</h2>
+                        <div class="section-decoration"></div>
                     </div>
+                    <div class="medication-grid">
+                        <div class="medication-card commercial">
+                            <div class="card-header">
+                                <div class="card-icon">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                                        <polyline points="14,2 14,8 20,8" />
+                                        <line x1="16" y1="13" x2="8" y2="13" />
+                                        <line x1="16" y1="17" x2="8" y2="17" />
+                                        <polyline points="10,9 9,9 8,9" />
+                                    </svg>
+                                </div>
+                                <span class="card-badge commercial-badge">Comercial</span>
+                            </div>
+                            <div class="form-field">
+                                <label for="nombre_comercial_medicamento" class="field-label">Nombre Comercial</label>
+                                <input type="text" id="nombre_comercial_medicamento" name="nombre_comercial_medicamento"
+                                    class="field-input text-input" placeholder="Ej: Apistan, CheckMite+, etc."
+                                    value="{{ old('nombre_comercial_medicamento',$visita->nombre_comercial_medicamento??'') }}">
+                            </div>
+                        </div>
 
-                    <div class="medication-card safety">
-                        <div class="card-header">
-                            <div class="card-icon">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-                                    <path d="M9 12l2 2 4-4" />
-                                </svg>
+                        <div class="medication-card active">
+                            <div class="card-header">
+                                <div class="card-icon">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <circle cx="12" cy="12" r="3" />
+                                        <path d="M12 1v6m0 6v6" />
+                                        <path d="M1 12h6m6 0h6" />
+                                    </svg>
+                                </div>
+                                <span class="card-badge active-badge">Principio Activo</span>
                             </div>
-                            <span class="card-badge safety-badge">Seguridad</span>
+                            <div class="form-field">
+                                <label for="principio_activo_medicamento" class="field-label">Principio Activo</label>
+                                <input type="text" id="principio_activo_medicamento" name="principio_activo_medicamento"
+                                    class="field-input text-input" placeholder="Ej: Fluvalinato, Coumafos, etc."
+                                    value="{{ old('principio_activo_medicamento',$visita->principio_activo_medicamento??'') }}">
+                            </div>
                         </div>
-                        <div class="form-field">
-                            <label for="periodo_resguardo" class="field-label">Período de Resguardo</label>
-                            <input type="text" id="periodo_resguardo" name="periodo_resguardo"
-                                class="field-input text-input" placeholder="Ej: 30, 45, etc."
-                                value="{{ old('periodo_resguardo',$visita->periodo_resguardo??'') }}">
-                            <span class="field-helper">Tiempo de espera en días antes de cosechar miel</span>
+
+                        <div class="medication-card safety">
+                            <div class="card-header">
+                                <div class="card-icon">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                                        <path d="M9 12l2 2 4-4" />
+                                    </svg>
+                                </div>
+                                <span class="card-badge safety-badge">Seguridad</span>
+                            </div>
+                            <div class="form-field">
+                                <label for="periodo_resguardo" class="field-label">Período de Resguardo</label>
+                                <input type="text" id="periodo_resguardo" name="periodo_resguardo"
+                                    class="field-input text-input" placeholder="Ej: 30, 45, etc."
+                                    value="{{ old('periodo_resguardo',$visita->periodo_resguardo??'') }}">
+                                <span class="field-helper">Tiempo de espera en días antes de cosechar miel</span>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </section>
-            
-            -->
-            
+                </section>
+
+                -->
+
 
             <!-- Observaciones Adicionales -->
             <section class="form-section observations-info">
@@ -231,7 +223,7 @@
                             Observaciones
                         </label>
                         <textarea id="observaciones" name="observaciones" class="field-textarea" rows="4"
-                            placeholder="Anote cualquier observación relevante sobre la aplicación del medicamento, condiciones climáticas, reacciones observadas, etc.">{{ old('observaciones',$visita->observaciones??'') }}</textarea>
+                            placeholder="Anote cualquier observación relevante sobre la aplicación del medicamento, condiciones climáticas, reacciones observadas, etc.">{{ old('observaciones', $visita->observaciones ?? '') }}</textarea>
                         <span class="field-helper">Información adicional que considere relevante para el registro</span>
                     </div>
                 </div>
@@ -277,10 +269,10 @@
             document.addEventListener('DOMContentLoaded', function () {
                 const form = document.querySelector('.medication-form');
                 const numberInputs = form.querySelectorAll('.number-input');
-                const motivo      = document.getElementById('motivo_tratamiento');
-                const pcc4        = document.getElementById('pcc4-form');
-                const pcc5        = document.getElementById('pcc5-form');
-                const motivoOtro  = document.getElementById('motivo_otro');
+                const motivo = document.getElementById('motivo_tratamiento');
+                const pcc4 = document.getElementById('pcc4-form');
+                const pcc5 = document.getElementById('pcc5-form');
+                const motivoOtro = document.getElementById('motivo_otro');
 
                 // Validación de números
                 numberInputs.forEach(input => {
@@ -319,14 +311,14 @@
                 });
 
                 function toggleSections() {
-                const val = motivo.value;
-                pcc4.style.display       = (val === 'varroa') ? 'block' : 'none';
-                pcc5.style.display       = (val === 'nosema') ? 'block' : 'none';
-                motivoOtro.style.display = (val === 'otro')   ? 'block' : 'none';
-            }
+                    const val = motivo.value;
+                    pcc4.style.display = (val === 'varroa') ? 'block' : 'none';
+                    pcc5.style.display = (val === 'nosema') ? 'block' : 'none';
+                    motivoOtro.style.display = (val === 'otro') ? 'block' : 'none';
+                }
 
-            motivo.addEventListener('change', toggleSections);
-            toggleSections(); // Mostrar según old()
+                motivo.addEventListener('change', toggleSections);
+                toggleSections(); // Mostrar según old()
             });
         </script>
     @endpush

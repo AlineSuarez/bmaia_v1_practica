@@ -302,7 +302,7 @@ class DocumentController extends Controller
             'latitude' => $apiario->latitud ?? '',
             'longitude' => $apiario->longitud ?? '',
             'nomadic' => $apiario->trashumante ? 'Sí' : 'No',
-            'hive_count' => $apiario->num_colmenas ?? '',
+            'hive_count' => $apiario->colmenas->count() ?? '',
             'foto' => $apiario->foto ?? '',
             'foto_base64' => $fotoBase64,
         ];

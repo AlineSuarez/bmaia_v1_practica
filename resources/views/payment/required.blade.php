@@ -106,21 +106,6 @@
                 <p class="text-muted">Elige cómo deseas realizar tu suscripción</p>
             </div>
 
-            <div class="alert-info d-flex align-items-center justify-content-center w-auto mx-auto mb-3"
-                style="font-size:1rem; gap: 1rem;">
-                <div>
-                    <i class="fas fa-info-circle" style="font-size:1.5rem;"></i>
-                </div>
-                <div>
-                    <span>
-                        <strong>Importante:</strong> Para revisar en detalle todos los planes de suscripción disponibles, así como
-                        sus características y precios, dirígete a la pestaña <strong>“Plan”</strong> ubicada en "Mi Cuenta" → "Configuración de cuenta" de 
-                        la plataforma. Desde allí podrás comparar las distintas opciones y seleccionar la que mejor se adapte a tus
-                        necesidades.
-                    </span>
-                </div>
-            </div>
-
             <!-- Payment Process Cards -->
             <div class="payment-process-section">
                 <div class="row g-4">

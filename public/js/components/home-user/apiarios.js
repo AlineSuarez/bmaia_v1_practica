@@ -1803,6 +1803,47 @@ document.addEventListener("DOMContentLoaded", function () {
             modal.classList.add("d-none");
         }
     };
+
+    // ==============================
+    // LÓGICA PARA MODAL DE OPCIONES
+    // ==============================
+
+    let apiarioIdSeleccionado = null;
+
+    // Cuando se abre el modal de opciones, guardar el id del apiario
+    $("#modalOpcionesApiario").on("show.bs.modal", function (event) {
+        const button = event.relatedTarget;
+        apiarioIdSeleccionado = null;
+        // Puede venir de un <a> o <button> con data-id
+        if (button && button.getAttribute("data-id")) {
+            apiarioIdSeleccionado = button.getAttribute("data-id");
+        }
+    });
+
+    // Botón Ver Detalle Movimiento
+    const btnVerDetalle = document.getElementById("btnVerDetalleMovimiento");
+    if (btnVerDetalle) {
+        btnVerDetalle.addEventListener("click", function () {
+            if (apiarioIdSeleccionado) {
+                // Abre el modal de detalle usando la función global ya definida
+                openDetalleMovimientoModal(apiarioIdSeleccionado);
+                // Cierra el modal de opciones
+                $("#modalOpcionesApiario").modal("hide");
+            }
+        });
+    }
+
+    // Botón Exportar Historial
+    const btnExportar = document.getElementById("btnExportarHistorial");
+    if (btnExportar) {
+        btnExportar.addEventListener("click", function (e) {
+            e.preventDefault();
+            if (apiarioIdSeleccionado) {
+                window.location.href = `/apiarios-temporales/${apiarioIdSeleccionado}/exportar-historial`;
+                $("#modalOpcionesApiario").modal("hide");
+            }
+        });
+    }
 });
 
 /*
@@ -2061,4 +2102,33 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         });
     }, 120);
+});
+
+document.addEventListener("DOMContentLoaded", function () {
+    const tabButtons = document.querySelectorAll(
+        '.tab-item[data-bs-toggle="tab"]'
+    );
+    // Usa el ID del usuario en la clave
+    const userId = window.currentUserId || "default";
+    const storageKey = `apiariosTabActive_${userId}`;
+
+    // Restaurar pestaña activa usando Bootstrap Tab API
+    const lastTab = localStorage.getItem(storageKey);
+    if (lastTab) {
+        const targetBtn = Array.from(tabButtons).find(
+            (btn) => btn.getAttribute("data-bs-target") === lastTab
+        );
+        if (targetBtn) {
+            const tab = new bootstrap.Tab(targetBtn);
+            tab.show();
+        }
+    }
+
+    // Guardar pestaña activa al hacer click
+    tabButtons.forEach((btn) => {
+        btn.addEventListener("shown.bs.tab", function () {
+            const target = btn.getAttribute("data-bs-target");
+            localStorage.setItem(storageKey, target);
+        });
+    });
 });

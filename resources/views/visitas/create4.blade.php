@@ -66,7 +66,7 @@
                         </label>
                         <div class="select-wrapper">
                             <select name="calidad_reina[postura_reina]" class="field-select" required>
-                                <option value="">Seleccione el tipo de postura</option>
+                                <option value="" disabled selected>Seleccione el tipo de postura</option>
                                 <option value="Irregular" {{ old('calidad_reina.postura_reina', $calidadReina->postura_reina ?? '') == 'Irregular' ? 'selected' : '' }}>
                                     Irregular - Postura dispersa e inconsistente
                                 </option>
@@ -97,7 +97,7 @@
                         </label>
                         <div class="select-wrapper">
                             <select name="calidad_reina[estado_cria]" class="field-select" required>
-                                <option value="">Seleccione el estado de la cría</option>
+                                <option value="" disabled selected>Seleccione el estado de la cría</option>
                                 <option value="Compacta" {{ old('calidad_reina.estado_cria', $calidadReina->estado_cria ?? '') == 'Compacta' ? 'selected' : '' }}>
                                     Compacta - Cría uniforme y densa
                                 </option>
@@ -131,7 +131,7 @@
                         </label>
                         <div class="select-wrapper">
                             <select name="calidad_reina[postura_zanganos]" class="field-select">
-                                <option value="">Seleccione el nivel de postura</option>
+                                <option value="" disabled selected>Seleccione el nivel de postura</option>
                                 <option value="Normal" {{ old('calidad_reina.postura_zanganos', $calidadReina->postura_zanganos ?? '') == 'Normal' ? 'selected' : '' }}>
                                     Normal - Cantidad apropiada de zánganos
                                 </option>
@@ -177,7 +177,7 @@
                         </label>
                         <div class="select-wrapper">
                             <select name="calidad_reina[origen_reina]" class="field-select">
-                                <option value="">Seleccione el origen</option>
+                                <option value="" disabled selected>Seleccione el origen</option>
                                 <option value="natural" {{ old('calidad_reina.origen_reina', $calidadReina->origen_reina ?? '') == 'natural' ? 'selected' : '' }}>
                                     Natural - Criada por la colonia
                                 </option>
@@ -282,7 +282,7 @@
                         </label>
                         <div class="select-wrapper">
                             <select name="calidad_reina[estado_actual]" class="field-select">
-                                <option value="">Seleccione el estado actual</option>
+                                <option value="" disabled selected>Seleccione el estado actual</option>
                                 <option value="activa" {{ old('calidad_reina.estado_actual', $calidadReina->estado_actual ?? '') == 'activa' ? 'selected' : '' }}>
                                     Activa - Funcionando normalmente
                                 </option>

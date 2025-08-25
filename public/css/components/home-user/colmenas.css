@@ -214,6 +214,12 @@
     background: linear-gradient(135deg, var(--gray-50) 0%, #ffffff 100%);
     border-radius: 0.75rem;
     border: 1px solid var(--gray-200);
+    justify-items: center;
+}
+
+.colmenas-grid > .empty-state {
+    grid-column: 1 / -1;
+    justify-self: center;
 }
 
 .colmena-card {
@@ -302,14 +308,15 @@
     color: var(--gray-500);
     font-style: italic;
     background: linear-gradient(135deg, var(--gray-50) 0%, #ffffff 100%);
-    border-radius: 0.75rem;
-    border: 2px dashed var(--gray-300);
     transition: all 0.3s ease;
-}
-
-.empty-state:hover {
-    border-color: var(--primary-alpha);
-    background: linear-gradient(135deg, var(--primary-light) 0%, #ffffff 100%);
+    margin: 2rem auto;
+    min-width: 220px;
+    max-width: 500px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 }
 
 .empty-state-icon {
@@ -318,10 +325,6 @@
     color: var(--gray-400);
     transition: color 0.3s ease;
     filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
-}
-
-.empty-state:hover .empty-state-icon {
-    color: var(--primary);
 }
 
 .qr-tooltip {
@@ -692,16 +695,6 @@
 
 .compact-view .colmena-number {
     font-size: 0.6rem;
-}
-
-.empty-state {
-    text-align: center;
-    padding: 4rem 2rem;
-    color: var(--gray-500);
-    background: linear-gradient(135deg, var(--gray-50) 0%, #ffffff 100%);
-    border-radius: 0.75rem;
-    border: 2px dashed var(--gray-300);
-    transition: all 0.3s ease;
 }
 
 .empty-state .btn-primary {

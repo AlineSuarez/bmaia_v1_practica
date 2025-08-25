@@ -85,13 +85,12 @@
                             </span>
                             Fecha de la Visita
                         </label>
-                        <input type="date" id="fecha" name="fecha" class="form-control" required
-                            value="{{ old(
-                                'fecha',
-                                isset($visita)
-                                ? \Carbon\Carbon::parse($visita->fecha_visita)->format('Y-m-d')
-                                : ''
-                            ) }}">
+                        <input type="date" id="fecha" name="fecha" class="form-control" required value="{{ old(
+        'fecha',
+        isset($visita)
+        ? \Carbon\Carbon::parse($visita->fecha_visita)->format('Y-m-d')
+        : ''
+    ) }}">
                         <span class="field-helper">Seleccione la fecha de su visita al apiario</span>
                         @error('fecha')
                             <small class="text-danger">{{ $message }}</small>
@@ -109,7 +108,7 @@
                             Motivo de la Visita
                         </label>
                         <select id="motivo" name="motivo" class="field-input text-input" required>
-                            <option value="">Seleccione una opción</option>
+                            <option value="" disabled selected>-- Elija una opción --</option>
                             <option value="Inspección de rutina" {{ old('motivo', $visitaGeneral->motivo ?? '') == 'Inspección de rutina' ? 'selected' : '' }}>
                                 Inspección de rutina
                             </option>
@@ -224,7 +223,7 @@
                                     value="{{ old('telefono', auth()->user()->telefono) }}" required>
                             </div>
 
-                            
+
                         </div>
                     </div>
                 </div>

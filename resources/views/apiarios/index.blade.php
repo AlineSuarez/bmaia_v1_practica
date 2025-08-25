@@ -76,8 +76,8 @@
         <main class="content-area" id="apiariosTabContent">
 
             <!-- ============================================================
-                                                    PESTAÑA APIARIOS FIJOS - CON SISTEMA DE TARJETAS
-                                                    ============================================================ -->
+                            PESTAÑA APIARIOS FIJOS - CON SISTEMA DE TARJETAS
+                    ============================================================ -->
             <section class="tab-pane active" id="fijos" role="tabpanel" aria-labelledby="fijos-tab">
 
                 <div class="section-toolbar">
@@ -183,10 +183,13 @@
                                                         data-bs-target="#deleteModal{{ $apiario->id }}" title="Eliminar">
                                                         <i class="fas fa-trash"></i>
                                                     </button>
-                                                    <form action="{{ route('apiarios.convertirBase', $apiario->id) }}" method="POST" class="d-inline" onsubmit="return confirm('¿Estás seguro de convertir este apiario a trashumante base?');">
+                                                    <form action="{{ route('apiarios.convertirBase', $apiario->id) }}" method="POST"
+                                                        class="d-inline"
+                                                        onsubmit="return confirm('¿Estás seguro de convertir este apiario a trashumante base?');">
                                                         @csrf
-                                                        <button type="submit" class="action-icon exchange" title="Convertir a Trashumante Base">
-                                                            <i class="fas fa-exchange-alt"></i> 
+                                                        <button type="submit" class="action-icon exchange"
+                                                            title="Convertir a Trashumante Base">
+                                                            <i class="fas fa-exchange-alt"></i>
                                                         </button>
                                                     </form>
                                                 </div>
@@ -234,8 +237,8 @@
             </section>
 
             <!-- ============================================================
-                    PESTAÑA TRASHUMANCIA - CON SISTEMA DE TARJETAS
-            ============================================================ -->
+                        PESTAÑA TRASHUMANCIA - CON SISTEMA DE TARJETAS
+                    ============================================================ -->
             <section class="tab-pane" id="trashumantes" role="tabpanel" aria-labelledby="trashumantes-tab">
 
                 <!-- Sección Apiarios Base -->
@@ -309,7 +312,7 @@
                                                     <span class="text-mono">{{ $apiario->registro_sag }}</span>
                                                 </td>
                                                 <td>
-                                                    <div class="numeric-cell">{{ $apiario->num_colmenas }}</div>
+                                                    <div class="numeric-cell">{{ $apiario->colmenas->count() }}</div>
                                                 </td>
                                                 <td>
                                                     <span class="badge secondary">{{ $apiario->tipo_apiario }}</span>
@@ -361,10 +364,13 @@
                                                             data-bs-target="#deleteModal{{ $apiario->id }}" title="Eliminar">
                                                             <i class="fas fa-trash"></i>
                                                         </button>
-                                                        <form action="{{ route('apiarios.convertirFijo', $apiario->id) }}" method="POST" class="d-inline" onsubmit="return confirm('¿Estás seguro de convertir este apiario a fijo?');">
+                                                        <form action="{{ route('apiarios.convertirFijo', $apiario->id) }}"
+                                                            method="POST" class="d-inline"
+                                                            onsubmit="return confirm('¿Estás seguro de convertir este apiario a fijo?');">
                                                             @csrf
-                                                            <button type="submit"  class="action-icon exchange" title="Mover a Apiario Fijo">
-                                                                 <i class="fas fa-exchange-alt"></i>
+                                                            <button type="submit" class="action-icon exchange"
+                                                                title="Mover a Apiario Fijo">
+                                                                <i class="fas fa-exchange-alt"></i>
                                                             </button>
                                                         </form>
                                                     </div>
@@ -402,7 +408,8 @@
                             </div>
                             <h3 class="empty-title">No hay apiarios base</h3>
                             <p class="empty-description">Crea un apiario base para comenzar la trashumancia</p>
-                            <a href="{{ route('apiarios.create', ['tipo' => 'trashumante']) }}" class="action-btn primary large">
+                            <a href="{{ route('apiarios.create', ['tipo' => 'trashumante']) }}"
+                                class="action-btn primary large">
                                 <i class="fas fa-plus"></i>
                                 <span>Crear Apiario Base</span>
                             </a>
@@ -421,7 +428,9 @@
                         </div>
                         <div class="toolbar-right">
                             <!-- Botón Trasladar (ahora aquí) -->
-                            <button id="trasladarColmenasButton" class="action-btn warning" title="Para crear un apiario temporal debes seleccionar los apiarios bases que usarás" disabled>
+                            <button id="trasladarColmenasButton" class="action-btn warning"
+                                title="Para crear un apiario temporal debes seleccionar los apiarios bases que usarás"
+                                disabled>
                                 <i class="fas fa-arrow-right"></i>
                                 <span>Trasladar</span>
                             </button>
@@ -460,8 +469,8 @@
                                 <tbody>
                                     @forelse($apiariosTemporales as $apiario)
                                         @php
-    $mov = $apiario->ultimoMovimientoDestino;
-    $apiarioOrigen = $mov ? $mov->apiarioOrigen : null;
+                                            $mov = $apiario->ultimoMovimientoDestino;
+                                            $apiarioOrigen = $mov ? $mov->apiarioOrigen : null;
                                         @endphp
                                         <tr>
                                             <td>
@@ -540,7 +549,8 @@
                                                         <i class="fas fa-route"></i>
                                                     </div>
                                                     <h4 class="empty-title">No hay apiarios temporales</h4>
-                                                    <p class="empty-description">Los apiarios temporales creados para trashumancia aparecerán aquí</p>
+                                                    <p class="empty-description">Los apiarios temporales creados para
+                                                        trashumancia aparecerán aquí</p>
                                                 </div>
                                             </td>
                                         </tr>
@@ -576,8 +586,8 @@
     </div>
 
     <!-- ============================================================
-                                        MODAL ARCHIVADOS
-                    ============================================================ -->
+                                MODAL ARCHIVADOS
+            ============================================================ -->
     <div class="modal fade" id="archivedModal" tabindex="-1" aria-labelledby="archivedModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-xl">
             <div class="modal-content modern-modal">
@@ -644,11 +654,8 @@
                                                             class="action-icon view" title="Ver Colmenas Historicas">
                                                             <i class="fas fa-cubes"></i>
                                                         </a>
-                                                        <a href="#" 
-                                                            class="action-icon view cogs"
-                                                            title="Opciones del Apiario"
-                                                            data-bs-toggle="modal"
-                                                            data-bs-target="#modalOpcionesApiario"
+                                                        <a href="#" class="action-icon view cogs" title="Opciones del Apiario"
+                                                            data-bs-toggle="modal" data-bs-target="#modalOpcionesApiario"
                                                             data-id="{{ $apiario->id }}">
                                                             <i class="fas fa-cogs"></i>
                                                         </a>
@@ -698,8 +705,8 @@
     </div>
 
     <!-- ============================================================
-                                MODALES FUNCIONALES
-                    ============================================================ -->
+                            MODALES FUNCIONALES
+        ============================================================ -->
 
     <!-- Modales de eliminación para apiarios fijos -->
     @foreach ($apiariosFijos as $apiario)
@@ -775,7 +782,8 @@
         @endif
 
         <!-- Modal de Eliminación -->
-        <div class="modal fade" id="deleteModal{{ $apiario->id }}" tabindex="-1" aria-labelledby="deleteModalLabel{{ $apiario->id }}" aria-hidden="true">
+        <div class="modal fade" id="deleteModal{{ $apiario->id }}" tabindex="-1"
+            aria-labelledby="deleteModalLabel{{ $apiario->id }}" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content modern-modal">
                     <div class="modal-header">
