@@ -195,6 +195,28 @@
         </a>
       </div>
 
+      <!-- 6. Actualizar Plan Card -->
+      <div class="metric-card actualizar-plan">
+        <a href="{{ route('user.settings') }}#plans" class="metric-link">
+          <div class="metric-header">
+            <div class="metric-icon">
+              <i class="fas fa-crown"></i>
+            </div>
+          </div>
+          <div class="metric-content">
+            <div class="metric-title">Mi Plan</div>
+            <div class="metric-value">{{ strtoupper(Auth::user()->plan ?? 'Drone') }}</div>
+            <div class="metric-progress">
+              <div class="progress-bar" style="width: 100%"></div>
+            </div>
+            <div class="metric-detail">
+              <span class="metric-badge">Actualizar</span> suscripción
+            </div>
+          </div>
+        </a>
+      </div>
+
+
       </div>
     </div>
 

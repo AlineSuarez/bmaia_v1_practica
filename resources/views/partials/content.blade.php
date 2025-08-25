@@ -378,7 +378,7 @@
 
       <h2>¿Qué es B-MaiA Plus?</h2>
       <p>
-        B-MaiA Plus es nuestra solución avanzada para apicultores que buscan ir más allá en la gestión de sus colmenas.
+        B-MAIA Plus es nuestra solución avanzada para apicultores que buscan ir más allá en la gestión de sus colmenas.
         No solo accedes a herramientas inteligentes y modelos predictivos, sino también a nuestro acompañamiento experto
         en
         cada etapa de tu producción.
@@ -388,7 +388,7 @@
       </p>
     </div>
 
-    <!-- Sección de B-MaiA PRO -->
+    <!-- Sección de B-MAIA PRO -->
 
     <div class="herramientas-grid-container">
       <!-- Sección Superior: Imagen, Título y Botón -->
@@ -488,7 +488,7 @@
 
       <h2>¿Qué es B-MaiA <span class="highlight">PRO</span>?</h2>
       <p>
-        B-MaiA PRO es nuestra solución más avanzada, pensada para apicultores profesionales que buscan llevar su
+        B-MAIA PRO es nuestra solución más avanzada, pensada para apicultores profesionales que buscan llevar su
         producción
         al siguiente nivel.
         Integra inteligencia artificial, análisis avanzados y asesoría experta para optimizar cada aspecto de tu gestión
@@ -593,7 +593,7 @@
               <i class="fa-solid fa-microphone-lines"></i>
             </div>
             <div class="step-content">
-              <h3>Registro por voz <span class="proximamente-pro">(próximamente en B-MaiA PRO)</span></h3>
+              <h3>Registro por voz <span class="proximamente-pro">(próximamente en B-MAIA PRO)</span></h3>
               <p>A través de la App registra conversaciones, agenda tareas, agrega información de tus manejos y registra
                 observaciones de
                 tus visitas de inspección, todo mediante comandos de voz.</p>
@@ -639,7 +639,7 @@
               <i class="fa-solid fa-brain"></i>
             </div>
             <div class="step-content">
-              <h3>Análisis avanzado <span class="proximamente-pro">(próximamente en B-MaiA Pro)</span></h3>
+              <h3>Análisis avanzado <span class="proximamente-pro">(próximamente en B-MAIA PRO)</span></h3>
               <p>B-MaiA integra y analiza los datos registrados, correlacionando el estado de desarrollo de las
                 colmenas,
                 las
@@ -672,7 +672,7 @@
               <i class="fa-solid fa-mobile-screen-button"></i>
             </div>
             <div class="step-content">
-              <h3>Información accionable <span class="proximamente-pro">(próximamente en B-MaiA Pro)</span></h3>
+              <h3>Información accionable <span class="proximamente-pro">(próximamente en B-MAIA PRO)</span></h3>
               <p>Recibe notificaciones de tareas pendientes, alertas de eventos críticos y recomendaciones
                 personalizadas
                 en
@@ -1098,13 +1098,26 @@
               <h3>¡Prueba Gratuita de 16 Días!</h3>
               <p>Accede a todas las funciones del plan Drone completamente gratis</p>
             </div>
-            <a href="{{ route('register') }}" class="planes-cta-button" style="display: inline-block;">
-              Comienza Ya
-            </a>
+            <div class="trial-badge">
+              <span>GRATIS</span>
+            </div>
           </div>
         </div>
 
         <!-- Grid de planes -->
+          @php
+            $isAugust = now()->month == 8;
+
+            $afcPrice = $isAugust ? intval(round(69900 * 0.7)) : 69900;
+            $mePrice  = $isAugust ? intval(round(87900 * 0.7)) : 87900;
+            $gePrice  = $isAugust ? intval(round(150900 * 0.7)) : 150900;
+
+            $iva = 0.19;
+            $afcTotal = (int) round($afcPrice * (1 + $iva));
+            $meTotal  = (int) round($mePrice * (1 + $iva));
+            $geTotal  = (int) round($gePrice * (1 + $iva));
+          @endphp
+
         <div class="contacto-planes-grid">
           <!-- Plan Drone (Prueba Gratuita) -->
           <div class="contacto-plan-card trial-card">
@@ -1133,18 +1146,22 @@
                 <i class="fas fa-cogs"></i>
               </div>
               <h3 class="plan-title">WorkerBee AFC</h3>
-              <div class="plan-subtitle">Agricultura Familiar Campesina</div>
+              <div class="plan-subtitle">Apicultor Familiar Comercial</div>
             </div>
             <div class="plan-body">
               <div class="plan-price">
-                <span class="price-main">$69.900</span>
+                <span class="price-main">${{ number_format($afcPrice, 0, ',', '.') }}</span>
                 <span class="price-period">+ IVA/año</span>
               </div>
               <div class="price-breakdown">
-                <small>$5.825/mes</small>
+                <small>$5.825/mes • $234 por colmena/año</small><br>
+                <span style="color:#198754; font-weight:bold;">
+                  Total con IVA: ${{ number_format($afcTotal, 0, ',', '.') }}
+                </span>
               </div>
               <ul class="plan-features">
-                <li><i class="fas fa-check"></i><strong>Hasta 299 colmenas</strong></li>
+                <li><i class="fas fa-check"></i>1 Usuario Administrador</li>
+                <li><i class="fas fa-check"></i>Hasta 299 colmenas</li>
                 <li><i class="fas fa-check"></i>Funcionalidades básicas</li>
                 <li><i class="fas fa-check"></i>Soporte técnico estándar</li>
               </ul>
@@ -1163,15 +1180,18 @@
             </div>
             <div class="plan-body">
               <div class="plan-price">
-                <span class="price-main">$87.900</span>
+                <span class="price-main">${{ number_format($mePrice, 0, ',', '.') }}</span>
                 <span class="price-period">+ IVA/año</span>
               </div>
               <div class="price-breakdown">
-                <small>$7.325/mes</small>
+                <small>$7.325/mes • $110 por colmena/año</small><br>
+                <span style="color:#198754; font-weight:bold;">
+                  Total con IVA: ${{ number_format($meTotal, 0, ',', '.') }}
+                </span>
               </div>
               <ul class="plan-features">
                 <li><i class="fas fa-check"></i>Todo de AFC incluido</li>
-                <li><i class="fas fa-check"></i><strong>Hasta 799 colmenas</strong></li>
+                <li><i class="fas fa-check"></i>Hasta 799 colmenas</li>
                 <li><i class="fas fa-check"></i>Analytics avanzados</li>
                 <li><i class="fas fa-check"></i>Soporte prioritario</li>
               </ul>
@@ -1189,20 +1209,40 @@
             </div>
             <div class="plan-body">
               <div class="plan-price">
-                <span class="price-main">$150.900</span>
+                <span class="price-main">${{ number_format($gePrice, 0, ',', '.') }}</span>
                 <span class="price-period">+ IVA/año</span>
               </div>
               <div class="price-breakdown">
-                <small>$12.575/mes</small>
+                <small>$12.575/mes • $86 por colmena/año</small><br>
+                <span style="color:#198754; font-weight:bold;">
+                  Total con IVA: ${{ number_format($geTotal, 0, ',', '.') }}
+                </span>
               </div>
+
               <ul class="plan-features">
                 <li><i class="fas fa-check"></i>Todo de ME incluido</li>
-                <li><i class="fas fa-check"></i><strong>Colmenas ilimitadas</strong></li>
+                <li><i class="fas fa-check"></i>Colmenas ilimitadas</li>
                 <li><i class="fas fa-check"></i>Soporte 24/7 dedicado</li>
                 <li><i class="fas fa-check"></i>Personalización completa</li>
               </ul>
             </div>
           </div>
+        </div>
+
+        <!-- Botón de llamada a la acción -->
+        <div class="planes-cta-section">
+          <a href="{{ route('register') }}" class="planes-cta-button">
+            <div class="btn-icon">
+              <i class="fas fa-rocket"></i>
+            </div>
+            <div class="btn-text">
+              <span class="btn-label">Comienza Ya</span>
+              <span class="btn-description">Inicia tu prueba gratuita de 16 días</span>
+            </div>
+            <div class="btn-arrow">
+              <i class="fas fa-arrow-right"></i>
+            </div>
+          </a>
         </div>
       </div>
 
@@ -1245,8 +1285,7 @@
       </p>
       <div class="footer-social">
         <a href="#" class="social-link"><i class="fab fa-facebook-f"></i></a>
-        <a href="https://www.instagram.com/bmaia2025/" target="_blank" class="social-link"><i
-            class="fab fa-instagram"></i></a>
+        <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
         <a href="#" class="social-link"><i class="fab fa-linkedin-in"></i></a>
         <a href="#" class="social-link"><i class="fab fa-youtube"></i></a>
       </div>

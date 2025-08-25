@@ -206,6 +206,9 @@
                                             ({{ $apiario->visitas->where('tipo_visita', 'Visita General')->count() }} registros)
                                         </h5>
                                         <small class="text-muted">Registro de todas las visitas generales al apiario</small>
+                                        <a href="{{ route('visitas.visitas-general', $apiario->id) }}" class="btn btn-primary btn-sm">
+                                            <i class="fas fa-plus me-1"></i> Nuevo Registro
+                                        </a>
                                     </div>
                                     <div class="table-responsive">
                                         <table class="custom-table" id="generalTable">
@@ -284,6 +287,9 @@
                                             ({{ $apiario->visitas->where('tipo_visita', 'Inspección de Visita')->count() }}
                                             registros)</h5>
                                         <small class="text-muted">Control y seguimiento del estado de las colmenas</small>
+                                        <a href="{{ route('visitas.create', $apiario->id) }}" class="btn btn-sm btn-primary">
+                                            <i class="fas fa-plus me-1"></i> Nuevo Registro
+                                        </a>
                                     </div>
                                     <div class="table-responsive">
                                         <table class="custom-table inspection-table" id="inspectionTable">
@@ -403,6 +409,9 @@
                                             <h5><i class="fas fa-pills me-2"></i>Uso de Medicamentos - Con Detalle
                                                 ({{ $conDetalle->count() }} registros)</h5>
                                             <small class="text-muted">Tratamientos específicos para Varroa y Nosemosis</small>
+                                            <a href="{{ route('visitas.medicamentos-registro', $apiario->id) }}" class="btn btn-sm btn-primary">
+                                                <i class="fas fa-plus me-1"></i> Nuevo Tratamiento
+                                            </a>
                                         </div>
                                         <div class="table-responsive">
                                             <table class="custom-table medication-table">
@@ -480,6 +489,10 @@
                                             <h5><i class="fas fa-pills me-2"></i>Uso de Medicamentos - Otros Motivos
                                                 ({{ $otros->count() }} registros)</h5>
                                             <small class="text-muted">Otros tratamientos y medicamentos aplicados</small>
+                                            <a href="{{ route('visitas.medicamentos-registro', $apiario->id) }}" class="btn btn-sm btn-primary">
+                                                <i class="fas fa-plus me-1"></i> Nuevo Registro
+                                            </a>
+
                                         </div>
                                         <div class="table-responsive">
                                             <table class="custom-table">
@@ -544,6 +557,10 @@
                                         <h5><i class="fas fa-utensils me-2"></i>Alimentación
                                             ({{ $apiario->visitas->where('tipo_visita', 'Alimentación')->count() }} registros)</h5>
                                         <small class="text-muted">Historial de alimentos e insumos utilizados en el apiario</small>
+                                        <a href="{{ route('visitas.create3', $apiario->id) }}" class="btn btn-sm btn-primary">
+                                            <i class="fas fa-plus me-1"></i> Nuevo Registro
+                                        </a>
+
                                     </div>
                                     <div class="table-responsive">
                                         <table class="custom-table" id="alimentacionTable">
@@ -626,6 +643,10 @@
                                             ({{ $apiario->visitas->where('tipo_visita', 'Inspección de Reina')->count() }}
                                             registros)</h5>
                                         <small class="text-muted">Historial de inspecciones de reina y reemplazos realizados</small>
+                                        <a href="{{ route('visitas.create4', $apiario->id) }}" class="btn btn-sm btn-primary">
+                                            <i class="fas fa-plus me-1"></i> Nuevo Registro
+                                        </a>
+
                                     </div>
                                     <div class="table-responsive">
                                         <table class="custom-table" id="reinaTable">

@@ -684,7 +684,7 @@
             </section>
 
             <!-- SECCIÓN: PLANES -->
-             @if ($errors->plans->any())
+            @if ($errors->plans->any())
                 <div class="alert alert-danger">
                     <ul class="mb-0">
                         @foreach ($errors->plans->all() as $error)
@@ -761,6 +761,14 @@
                                 </div>
                             @endif
 
+                            @php
+                                $iva = 0.19;
+
+                                $afcTotal = (int) round($afcPrice * (1 + $iva));
+                                $meTotal  = (int) round($mePrice * (1 + $iva));
+                                $geTotal  = (int) round($gePrice * (1 + $iva));
+                            @endphp
+
                             <div class="table-responsive mb-4">
                                 <table class="table table-bordered plans-table">
                                     <thead class="table-light">
@@ -789,6 +797,8 @@
                                                 </div>
                                             </td>
                                         </tr>
+
+                                        {{-- WorkerBee AFC --}}
                                         <tr class="{{ $user->plan == 'afc' ? 'current-plan' : '' }}">
                                             <td><strong>WorkerBee AFC</strong></td>
                                             <td>
@@ -802,19 +812,22 @@
                                                 <div class="price-info">
                                                     <div class="main-price">
                                                         @if($isAugust)
-                                                            <span
-                                                                style="text-decoration:line-through; color:#888;">$69.900</span>
-                                                            <span
-                                                                style="color:#FF8C00; font-weight:bold;">${{ number_format($afcPrice, 0, ',', '.') }}
-                                                                + IVA</span>
+                                                            <span style="text-decoration:line-through; color:#888;">$69.900</span>
+                                                            <span style="color:#FF8C00; font-weight:bold;">
+                                                                ${{ number_format($afcPrice, 0, ',', '.') }} + IVA
+                                                            </span>
                                                             <span class="badge bg-success ms-2">-30% Agosto</span>
                                                         @else
                                                             $69.900 + IVA
                                                         @endif
                                                     </div>
-                                                    <div class="price-details">
-                                                        <small>*Costo Mensual: $5.825 + IVA</small>
-                                                        <small>*Costo Anual por Colmena: $234</small>
+                                                    <div class="price-details mt-2">
+                                                        <small>*Costo Mensual: $5.825 + IVA</small><br>
+                                                        <small>*Costo Anual por Colmena: $234</small><br>
+                                                        {{-- 🔥 NUEVO: Total con IVA en verde grande --}}
+                                                        <span style="font-size:1.2rem; font-weight:bold; color:#198754;">
+                                                            Total con IVA: ${{ number_format($afcTotal, 0, ',', '.') }}
+                                                        </span>
                                                     </div>
                                                 </div>
                                             </td>
@@ -826,6 +839,8 @@
                                                 </div>
                                             </td>
                                         </tr>
+
+                                        {{-- WorkerBee ME --}}
                                         <tr class="{{ $user->plan == 'me' ? 'current-plan' : '' }}">
                                             <td><strong>WorkerBee ME</strong></td>
                                             <td>
@@ -839,19 +854,22 @@
                                                 <div class="price-info">
                                                     <div class="main-price">
                                                         @if($isAugust)
-                                                            <span
-                                                                style="text-decoration:line-through; color:#888;">$87.900</span>
-                                                            <span
-                                                                style="color:#FF8C00; font-weight:bold;">${{ number_format($mePrice, 0, ',', '.') }}
-                                                                + IVA</span>
+                                                            <span style="text-decoration:line-through; color:#888;">$87.900</span>
+                                                            <span style="color:#FF8C00; font-weight:bold;">
+                                                                ${{ number_format($mePrice, 0, ',', '.') }} + IVA
+                                                            </span>
                                                             <span class="badge bg-success ms-2">-30% Agosto</span>
                                                         @else
                                                             $87.900 + IVA
                                                         @endif
                                                     </div>
-                                                    <div class="price-details">
-                                                        <small>*Costo Mensual: $7.325 + IVA</small>
-                                                        <small>*Costo Anual por Colmena: $110</small>
+                                                    <div class="price-details mt-2">
+                                                        <small>*Costo Mensual: $7.325 + IVA</small><br>
+                                                        <small>*Costo Anual por Colmena: $110</small><br>
+                                                        {{-- 🔥 NUEVO: Total con IVA en verde grande --}}
+                                                        <span style="font-size:1.2rem; font-weight:bold; color:#198754;">
+                                                            Total con IVA: ${{ number_format($meTotal, 0, ',', '.') }}
+                                                        </span>
                                                     </div>
                                                 </div>
                                             </td>
@@ -863,6 +881,8 @@
                                                 </div>
                                             </td>
                                         </tr>
+
+                                        {{-- WorkerBee GE --}}
                                         <tr class="{{ $user->plan == 'ge' ? 'current-plan' : '' }}">
                                             <td><strong>WorkerBee GE</strong></td>
                                             <td>
@@ -877,19 +897,22 @@
                                                 <div class="price-info">
                                                     <div class="main-price">
                                                         @if($isAugust)
-                                                            <span
-                                                                style="text-decoration:line-through; color:#888;">$150.900</span>
-                                                            <span
-                                                                style="color:#FF8C00; font-weight:bold;">${{ number_format($gePrice, 0, ',', '.') }}
-                                                                + IVA</span>
+                                                            <span style="text-decoration:line-through; color:#888;">$150.900</span>
+                                                            <span style="color:#FF8C00; font-weight:bold;">
+                                                                ${{ number_format($gePrice, 0, ',', '.') }} + IVA
+                                                            </span>
                                                             <span class="badge bg-success ms-2">-30% Agosto</span>
                                                         @else
                                                             $150.900 + IVA
                                                         @endif
                                                     </div>
-                                                    <div class="price-details">
-                                                        <small>*Costo Mensual: $12.575 + IVA</small>
-                                                        <small>*Costo Anual por Colmena: $86</small>
+                                                    <div class="price-details mt-2">
+                                                        <small>*Costo Mensual: $12.575 + IVA</small><br>
+                                                        <small>*Costo Anual por Colmena: $86</small><br>
+                                                        {{-- 🔥 NUEVO: Total con IVA en verde grande --}}
+                                                        <span style="font-size:1.2rem; font-weight:bold; color:#198754;">
+                                                            Total con IVA: ${{ number_format($geTotal, 0, ',', '.') }}
+                                                        </span>
                                                     </div>
                                                 </div>
                                             </td>
@@ -901,6 +924,8 @@
                                                 </div>
                                             </td>
                                         </tr>
+
+                                        {{-- Queen --}}
                                         <tr>
                                             <td><strong>Queen</strong></td>
                                             <td>
@@ -922,6 +947,8 @@
                                             </td>
                                         </tr>
                                     </tbody>
+
+
                                 </table>
                             </div>
 
