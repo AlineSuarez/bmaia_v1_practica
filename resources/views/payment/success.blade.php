@@ -212,7 +212,7 @@
                                 {{-- enlace a comprobante --}}
                                 @if(!empty($receiptUrl))
                                     <a class="btn btn-outline-primary" href="{{ $receiptUrl }}" target="_blank">
-                                        Descargar comprobante (PDF)
+                                        Ver Comprobante (PDF)
                                     </a>
                                 @else
                                     <span class="no-document"><i class="fas fa-exclamation-triangle"></i> Sin documento disponible</span>
