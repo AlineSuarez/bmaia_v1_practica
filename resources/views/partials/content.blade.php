@@ -1080,140 +1080,6 @@
           </div>
         </a>
       </div>
-      <!-- Sección de Planes en Contacto -->
-      <div class="contacto-planes-section" id="planes" >
-        <!-- Header de la sección -->
-        <div class="planes-header">
-          <h2 class="section-title" style="color: #333;">¡Comienza tu experiencia B-MaiA!</h2>
-          <p class="section-description">Elige el plan perfecto para tu operación apícola</p>
-        </div>
-
-        <!-- Alerta de prueba gratuita -->
-        <div class="trial-alert">
-          <div class="trial-content">
-            <div class="trial-icon">
-              <i class="fas fa-rocket"></i>
-            </div>
-            <div class="trial-text">
-              <h3>¡Prueba Gratuita de 16 Días!</h3>
-              <p>Accede a todas las funciones del plan Drone completamente gratis</p>
-            </div>
-            <a href="{{ route('register') }}" class="planes-cta-button" style="display: inline-block;">
-              Comienza Ya
-            </a>
-          </div>
-        </div>
-
-        <!-- Grid de planes -->
-        @php
-          $isAugust = now()->month == 8;
-
-          $afcPrice = $isAugust ? intval(round(69900 * 0.7)) : 69900;
-          $mePrice = $isAugust ? intval(round(87900 * 0.7)) : 87900;
-          $gePrice = $isAugust ? intval(round(150900 * 0.7)) : 150900;
-
-          $iva = 0.19;
-          $afcTotal = (int) round($afcPrice * (1 + $iva));
-          $meTotal = (int) round($mePrice * (1 + $iva));
-          $geTotal = (int) round($gePrice * (1 + $iva));
-        @endphp
-
-        <div class="contacto-planes-grid">
-          <!-- Plan Drone (Prueba Gratuita) -->
-          <div class="contacto-plan-card trial-card">
-            <div class="plan-header">
-              <div class="plan-icon trial-icon">
-                <i class="fas fa-rocket"></i>
-              </div>
-              <h3 class="plan-title">Drone</h3>
-              <div class="plan-subtitle">Prueba Gratuita</div>
-            </div>
-            <div class="plan-body">
-              <div class="plan-price">
-                <span class="price-main">$0</span>
-                <span class="price-period">16 días</span>
-              </div>
-              <ul class="plan-features">
-                <li><i class="fas fa-check"></i>Todas las funciones básicas</li>
-              </ul>
-            </div>
-          </div>
-
-          <!-- Plan AFC -->
-          <div class="contacto-plan-card">
-            <div class="plan-header">
-              <div class="plan-icon afc-icon">
-                <i class="fas fa-cogs"></i>
-              </div>
-              <h3 class="plan-title">WorkerBee AFC</h3>
-              <div class="plan-subtitle">Apicultor Familiar Comercial</div>
-            </div>
-            <div class="plan-body">
-              <div class="plan-price">
-                <span class="price-main">${{ number_format($afcPrice, 0, ',', '.') }}</span>
-                <span class="price-period">+ IVA/año</span>
-              </div>
-              <x-plan-card plan="afc" />
-              <ul class="plan-features">
-                <li><i class="fas fa-check"></i>1 Usuario Administrador</li>
-                <li><i class="fas fa-check"></i>Hasta 299 colmenas</li>
-                <li><i class="fas fa-check"></i>Funcionalidades básicas</li>
-                <li><i class="fas fa-check"></i>Soporte técnico estándar</li>
-              </ul>
-            </div>
-          </div>
-
-          <!-- Plan ME -->
-          <div class="contacto-plan-card featured">
-            <div class="featured-badge">Más Popular</div>
-            <div class="plan-header">
-              <div class="plan-icon me-icon">
-                <i class="fas fa-chart-line"></i>
-              </div>
-              <h3 class="plan-title">WorkerBee ME</h3>
-              <div class="plan-subtitle">Mediana Empresa</div>
-            </div>
-            <div class="plan-body">
-              <div class="plan-price">
-                <span class="price-main">${{ number_format($mePrice, 0, ',', '.') }}</span>
-                <span class="price-period">+ IVA/año</span>
-              </div>
-              <x-plan-card plan="me" />
-              <ul class="plan-features">
-                <li><i class="fas fa-check"></i>Todo de AFC incluido</li>
-                <li><i class="fas fa-check"></i>Hasta 799 colmenas</li>
-                <li><i class="fas fa-check"></i>Analytics avanzados</li>
-                <li><i class="fas fa-check"></i>Soporte prioritario</li>
-              </ul>
-            </div>
-          </div>
-
-          <!-- Plan GE -->
-          <div class="contacto-plan-card premium">
-            <div class="plan-header">
-              <div class="plan-icon ge-icon">
-                <i class="fas fa-crown"></i>
-              </div>
-              <h3 class="plan-title">WorkerBee GE</h3>
-              <div class="plan-subtitle">Gran Empresa</div>
-            </div>
-            <div class="plan-body">
-              <div class="plan-price">
-                <span class="price-main">${{ number_format($gePrice, 0, ',', '.') }}</span>
-                <span class="price-period">+ IVA/año</span>
-              </div>
-              <x-plan-card plan="ge" />
-
-              <ul class="plan-features">
-                <li><i class="fas fa-check"></i>Todo de ME incluido</li>
-                <li><i class="fas fa-check"></i>Colmenas ilimitadas</li>
-                <li><i class="fas fa-check"></i>Soporte 24/7 dedicado</li>
-                <li><i class="fas fa-check"></i>Personalización completa</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </div>
 
       <p class="section-description" style="text-align: center; font-weight: bold; margin-top: 2rem;">B-MaiA:
         Inteligencia Artificial al
@@ -1225,6 +1091,149 @@
   </div>
 
   <div class="contacto-decoration">
+    <div class="hex-decoration hex-1"></div>
+    <div class="hex-decoration hex-2"></div>
+    <div class="hex-decoration hex-3"></div>
+  </div>
+</section>
+
+<!-- Sección de Planes -->
+<section id="planes" class="planes-section">
+  <div class="container">
+    <!-- Header de la sección -->
+    <div class="planes-header">
+      <h2 class="section-title" style="color: #333;">¡Comienza tu experiencia B-MaiA!</h2>
+      <p class="section-description">Elige el plan perfecto para tu operación apícola</p>
+    </div>
+
+    <!-- Alerta de prueba gratuita -->
+    <div class="trial-alert">
+      <div class="trial-content">
+        <div class="trial-icon">
+          <i class="fas fa-rocket"></i>
+        </div>
+        <div class="trial-text">
+          <h3>¡Prueba Gratuita de 16 Días!</h3>
+          <p>Accede a todas las funciones del plan Drone completamente gratis</p>
+        </div>
+        <a href="{{ route('register') }}" class="planes-cta-button" style="display: inline-block;">
+          Comienza Ya
+        </a>
+      </div>
+    </div>
+
+    <!-- Grid de planes -->
+    @php
+      $isAugust = now()->month == 8;
+
+      $afcPrice = $isAugust ? intval(round(69900 * 0.7)) : 69900;
+      $mePrice = $isAugust ? intval(round(87900 * 0.7)) : 87900;
+      $gePrice = $isAugust ? intval(round(150900 * 0.7)) : 150900;
+
+      $iva = 0.19;
+      $afcTotal = (int) round($afcPrice * (1 + $iva));
+      $meTotal = (int) round($mePrice * (1 + $iva));
+      $geTotal = (int) round($gePrice * (1 + $iva));
+    @endphp
+
+    <div class="contacto-planes-grid">
+      <!-- Plan Drone (Prueba Gratuita) -->
+      <div class="contacto-plan-card trial-card">
+        <div class="plan-header">
+          <div class="plan-icon trial-icon">
+            <i class="fas fa-rocket"></i>
+          </div>
+          <h3 class="plan-title">Drone</h3>
+          <div class="plan-subtitle">Prueba Gratuita</div>
+        </div>
+        <div class="plan-body">
+          <div class="plan-price">
+            <span class="price-main">$0</span>
+            <span class="price-period">16 días</span>
+          </div>
+          <ul class="plan-features">
+            <li><i class="fas fa-check"></i>Todas las funciones básicas</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Plan AFC -->
+      <div class="contacto-plan-card">
+        <div class="plan-header">
+          <div class="plan-icon afc-icon">
+            <i class="fas fa-cogs"></i>
+          </div>
+          <h3 class="plan-title">WorkerBee AFC</h3>
+          <div class="plan-subtitle">Apicultor Familiar Comercial</div>
+        </div>
+        <div class="plan-body">
+          <div class="plan-price">
+            <span class="price-main">${{ number_format($afcPrice, 0, ',', '.') }}</span>
+            <span class="price-period">+ IVA/año</span>
+          </div>
+          <x-plan-card plan="afc" />
+          <ul class="plan-features">
+            <li><i class="fas fa-check"></i>1 Usuario Administrador</li>
+            <li><i class="fas fa-check"></i>Hasta 299 colmenas</li>
+            <li><i class="fas fa-check"></i>Funcionalidades básicas</li>
+            <li><i class="fas fa-check"></i>Soporte técnico estándar</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Plan ME -->
+      <div class="contacto-plan-card featured">
+        <div class="featured-badge">Más Popular</div>
+        <div class="plan-header">
+          <div class="plan-icon me-icon">
+            <i class="fas fa-chart-line"></i>
+          </div>
+          <h3 class="plan-title">WorkerBee ME</h3>
+          <div class="plan-subtitle">Mediana Empresa</div>
+        </div>
+        <div class="plan-body">
+          <div class="plan-price">
+            <span class="price-main">${{ number_format($mePrice, 0, ',', '.') }}</span>
+            <span class="price-period">+ IVA/año</span>
+          </div>
+          <x-plan-card plan="me" />
+          <ul class="plan-features">
+            <li><i class="fas fa-check"></i>Todo de AFC incluido</li>
+            <li><i class="fas fa-check"></i>Hasta 799 colmenas</li>
+            <li><i class="fas fa-check"></i>Analytics avanzados</li>
+            <li><i class="fas fa-check"></i>Soporte prioritario</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Plan GE -->
+      <div class="contacto-plan-card premium">
+        <div class="plan-header">
+          <div class="plan-icon ge-icon">
+            <i class="fas fa-crown"></i>
+          </div>
+          <h3 class="plan-title">WorkerBee GE</h3>
+          <div class="plan-subtitle">Gran Empresa</div>
+        </div>
+        <div class="plan-body">
+          <div class="plan-price">
+            <span class="price-main">${{ number_format($gePrice, 0, ',', '.') }}</span>
+            <span class="price-period">+ IVA/año</span>
+          </div>
+          <x-plan-card plan="ge" />
+          <ul class="plan-features">
+            <li><i class="fas fa-check"></i>Todo de ME incluido</li>
+            <li><i class="fas fa-check"></i>Colmenas ilimitadas</li>
+            <li><i class="fas fa-check"></i>Soporte 24/7 dedicado</li>
+            <li><i class="fas fa-check"></i>Personalización completa</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mantener solo elementos decorativos sutiles -->
+  <div class="planes-decoration">
     <div class="hex-decoration hex-1"></div>
     <div class="hex-decoration hex-2"></div>
     <div class="hex-decoration hex-3"></div>

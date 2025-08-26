@@ -152,15 +152,17 @@
         const mobileLinks = document.querySelectorAll('.mobile-nav-link');
 
         function onScroll() {
-            const scrollPosition = window.scrollY + window.innerHeight / 2;
+            const scrollPosition = window.scrollY + 120; // Ajusta el offset según tu navbar
             let currentSection = sections[0];
 
             for (let i = 0; i < sections.length; i++) {
                 const section = document.getElementById(sections[i]);
                 if (section) {
                     const sectionTop = section.offsetTop;
-                    if (scrollPosition >= sectionTop) {
+                    const sectionHeight = section.offsetHeight;
+                    if (scrollPosition >= sectionTop && scrollPosition < sectionTop + sectionHeight) {
                         currentSection = sections[i];
+                        break;
                     }
                 }
             }

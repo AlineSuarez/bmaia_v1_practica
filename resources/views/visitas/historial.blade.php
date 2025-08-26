@@ -202,13 +202,18 @@
                             @else
                                 <div class="table-container">
                                     <div class="table-header">
-                                        <h5><i class="fas fa-users me-2"></i>Visitas Generales
-                                            ({{ $apiario->visitas->where('tipo_visita', 'Visita General')->count() }} registros)
-                                        </h5>
-                                        <small class="text-muted">Registro de todas las visitas generales al apiario</small>
-                                        <a href="{{ route('visitas.visitas-general', $apiario->id) }}" class="btn btn-primary btn-sm">
-                                            <i class="fas fa-plus me-1"></i> Nuevo Registro
-                                        </a>
+                                        <div class="table-header-content">
+                                            <h5><i class="fas fa-users me-2"></i>Visitas Generales
+                                                ({{ $apiario->visitas->where('tipo_visita', 'Visita General')->count() }} registros)
+                                            </h5>
+                                            <small class="text-muted">Registro de todas las visitas generales al apiario</small>
+                                        </div>
+                                        <div class="table-header-actions">
+                                            <a href="{{ route('visitas.visitas-general', $apiario->id) }}" class="custom-action-btn btn-sm">
+                                                <i class="fas fa-plus"></i>
+                                                <span>Nuevo Registro</span>
+                                            </a>
+                                        </div>
                                     </div>
                                     <div class="table-responsive">
                                         <table class="custom-table" id="generalTable">
@@ -283,13 +288,18 @@
                             @else
                                 <div class="table-container">
                                     <div class="table-header">
-                                        <h5><i class="fas fa-search me-2"></i>Inspecciones
-                                            ({{ $apiario->visitas->where('tipo_visita', 'Inspección de Visita')->count() }}
-                                            registros)</h5>
-                                        <small class="text-muted">Control y seguimiento del estado de las colmenas</small>
-                                        <a href="{{ route('visitas.create', $apiario->id) }}" class="btn btn-sm btn-primary">
-                                            <i class="fas fa-plus me-1"></i> Nuevo Registro
-                                        </a>
+                                        <div class="table-header-content">
+                                            <h5><i class="fas fa-search me-2"></i>Inspecciones
+                                                ({{ $apiario->visitas->where('tipo_visita', 'Inspección de Visita')->count() }}
+                                                registros)</h5>
+                                            <small class="text-muted">Control y seguimiento del estado de las colmenas</small>
+                                        </div>
+                                        <div class="table-header-actions">
+                                            <a href="{{ route('visitas.create', $apiario->id) }}" class="custom-action-btn btn-sm">
+                                                <i class="fas fa-plus"></i>
+                                                <span>Nuevo Registro</span>
+                                            </a>
+                                        </div>
                                     </div>
                                     <div class="table-responsive">
                                         <table class="custom-table inspection-table" id="inspectionTable">
@@ -406,12 +416,17 @@
                                 @if($conDetalle->isNotEmpty())
                                     <div class="table-container mb-4">
                                         <div class="table-header">
-                                            <h5><i class="fas fa-pills me-2"></i>Uso de Medicamentos - Con Detalle
-                                                ({{ $conDetalle->count() }} registros)</h5>
-                                            <small class="text-muted">Tratamientos específicos para Varroa y Nosemosis</small>
-                                            <a href="{{ route('visitas.medicamentos-registro', $apiario->id) }}" class="btn btn-sm btn-primary">
-                                                <i class="fas fa-plus me-1"></i> Nuevo Tratamiento
-                                            </a>
+                                            <div class="table-header-content">
+                                                <h5><i class="fas fa-pills me-2"></i>Uso de Medicamentos - Con Detalle
+                                                    ({{ $conDetalle->count() }} registros)</h5>
+                                                <small class="text-muted">Tratamientos específicos para Varroa y Nosemosis</small>
+                                            </div>
+                                            <div class="table-header-actions">
+                                                <a href="{{ route('visitas.medicamentos-registro', $apiario->id) }}" class="custom-action-btn btn-sm">
+                                                    <i class="fas fa-plus"></i>
+                                                    <span>Nuevo Tratamiento</span>
+                                                </a>
+                                            </div>
                                         </div>
                                         <div class="table-responsive">
                                             <table class="custom-table medication-table">
@@ -486,13 +501,17 @@
                                 @if($otros->isNotEmpty())
                                     <div class="table-container">
                                         <div class="table-header">
-                                            <h5><i class="fas fa-pills me-2"></i>Uso de Medicamentos - Otros Motivos
-                                                ({{ $otros->count() }} registros)</h5>
-                                            <small class="text-muted">Otros tratamientos y medicamentos aplicados</small>
-                                            <a href="{{ route('visitas.medicamentos-registro', $apiario->id) }}" class="btn btn-sm btn-primary">
-                                                <i class="fas fa-plus me-1"></i> Nuevo Registro
-                                            </a>
-
+                                            <div class="table-header-content">
+                                                <h5><i class="fas fa-pills me-2"></i>Uso de Medicamentos - Otros Motivos
+                                                    ({{ $otros->count() }} registros)</h5>
+                                                <small class="text-muted">Otros tratamientos y medicamentos aplicados</small>
+                                            </div>
+                                            <div class="table-header-actions">
+                                                <a href="{{ route('visitas.medicamentos-registro', $apiario->id) }}" class="custom-action-btn btn-sm">
+                                                    <i class="fas fa-plus"></i>
+                                                    <span>Nuevo Registro</span>
+                                                </a>
+                                            </div>
                                         </div>
                                         <div class="table-responsive">
                                             <table class="custom-table">
@@ -554,13 +573,17 @@
                             @else
                                 <div class="table-container">
                                     <div class="table-header">
-                                        <h5><i class="fas fa-utensils me-2"></i>Alimentación
-                                            ({{ $apiario->visitas->where('tipo_visita', 'Alimentación')->count() }} registros)</h5>
-                                        <small class="text-muted">Historial de alimentos e insumos utilizados en el apiario</small>
-                                        <a href="{{ route('visitas.create3', $apiario->id) }}" class="btn btn-sm btn-primary">
-                                            <i class="fas fa-plus me-1"></i> Nuevo Registro
-                                        </a>
-
+                                        <div class="table-header-content">
+                                            <h5><i class="fas fa-utensils me-2"></i>Alimentación
+                                                ({{ $apiario->visitas->where('tipo_visita', 'Alimentación')->count() }} registros)</h5>
+                                            <small class="text-muted">Historial de alimentos e insumos utilizados en el apiario</small>
+                                        </div>
+                                        <div class="table-header-actions">
+                                            <a href="{{ route('visitas.create3', $apiario->id) }}" class="custom-action-btn btn-sm">
+                                                <i class="fas fa-plus"></i>
+                                                <span>Nuevo Registro</span>
+                                            </a>
+                                        </div>
                                     </div>
                                     <div class="table-responsive">
                                         <table class="custom-table" id="alimentacionTable">
@@ -639,14 +662,18 @@
                             @else
                                 <div class="table-container">
                                     <div class="table-header">
-                                        <h5><i class="fas fa-crown me-2"></i>Inspección de Reina
-                                            ({{ $apiario->visitas->where('tipo_visita', 'Inspección de Reina')->count() }}
-                                            registros)</h5>
-                                        <small class="text-muted">Historial de inspecciones de reina y reemplazos realizados</small>
-                                        <a href="{{ route('visitas.create4', $apiario->id) }}" class="btn btn-sm btn-primary">
-                                            <i class="fas fa-plus me-1"></i> Nuevo Registro
-                                        </a>
-
+                                        <div class="table-header-content">
+                                            <h5><i class="fas fa-crown me-2"></i>Inspección de Reina
+                                                ({{ $apiario->visitas->where('tipo_visita', 'Inspección de Reina')->count() }}
+                                                registros)</h5>
+                                            <small class="text-muted">Historial de inspecciones de reina y reemplazos realizados</small>
+                                        </div>
+                                        <div class="table-header-actions">
+                                            <a href="{{ route('visitas.create4', $apiario->id) }}" class="custom-action-btn btn-sm">
+                                                <i class="fas fa-plus"></i>
+                                                <span>Nuevo Registro</span>
+                                            </a>
+                                        </div>
                                     </div>
                                     <div class="table-responsive">
                                         <table class="custom-table" id="reinaTable">

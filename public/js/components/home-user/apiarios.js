@@ -1010,43 +1010,47 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         setupToggleEvents() {
-            // Solo crear el toggle para la sección base
-            document
-                .querySelectorAll(".toolbar-right")
-                .forEach((toolbar, index) => {
-                    // Determinar la sección basada en el contexto
-                    let sectionName = "base";
-                    const parentSection = toolbar.closest("#trashumantes");
-                    if (!parentSection) return; // Solo en base
+            // Crear el toggle para ambas secciones: base y temporales
+            document.querySelectorAll(".toolbar-right").forEach((toolbar) => {
+                const parentSection = toolbar.closest("#trashumantes");
+                if (!parentSection) return;
 
-                    if (toolbar.querySelector(".view-toggle-container")) return; // Ya existe
+                // Detectar si es base o temporales según el título de la sección
+                const sectionTitle = toolbar.parentElement.querySelector(".section-title")?.textContent || "";
+                let sectionName = null;
+                if (sectionTitle.includes("Base")) {
+                    sectionName = "base";
+                } else if (sectionTitle.includes("Temporales")) {
+                    sectionName = "temporales";
+                } else {
+                    return;
+                }
 
-                    const toggleContainer = document.createElement("div");
-                    toggleContainer.className = "view-toggle-container";
+                if (toolbar.querySelector(".view-toggle-container")) return; // Ya existe
 
-                    toggleContainer.innerHTML = `
-                <span class="view-toggle-label">Vista:</span>
-                <div class="view-switch" data-section="base">
-                    <div class="view-switch-slider"></div>
-                    <div class="view-switch-option left">
-                        <i class="fas fa-table"></i>
+                const toggleContainer = document.createElement("div");
+                toggleContainer.className = "view-toggle-container";
+                toggleContainer.innerHTML = `
+                    <span class="view-toggle-label">Vista:</span>
+                    <div class="view-switch" data-section="${sectionName}">
+                        <div class="view-switch-slider"></div>
+                        <div class="view-switch-option left">
+                            <i class="fas fa-table"></i>
+                        </div>
+                        <div class="view-switch-option right">
+                            <i class="fas fa-th"></i>
+                        </div>
                     </div>
-                    <div class="view-switch-option right">
-                        <i class="fas fa-th"></i>
-                    </div>
-                </div>
-            `;
+                `;
+                toolbar.insertBefore(toggleContainer, toolbar.firstChild);
 
-                    toolbar.insertBefore(toggleContainer, toolbar.firstChild);
-
-                    // Agregar event listener solo para base
-                    const viewSwitch =
-                        toggleContainer.querySelector(".view-switch");
-                    viewSwitch.addEventListener("click", (e) => {
-                        e.preventDefault();
-                        this.toggleView("base");
-                    });
+                // Agregar event listener para cada sección
+                const viewSwitch = toggleContainer.querySelector(".view-switch");
+                viewSwitch.addEventListener("click", (e) => {
+                    e.preventDefault();
+                    this.toggleView(sectionName);
                 });
+            });
         }
 
         toggleView(section) {

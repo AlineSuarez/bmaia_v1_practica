@@ -364,7 +364,7 @@ body {
 
 .plan-free {
     background-color: rgba(33, 150, 243, 0.2);
-    color: var(--primary-dark);
+    color: blue;
 }
 
 .plan-premium {
@@ -1317,4 +1317,19 @@ table {
         line-height: 1.2;
         word-wrap: break-word;
     }
+}
+
+.btn-icon {
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+}
+
+.invoice-table .btn-icon i {
+    font-size: 1rem;
+    line-height: 1;
 }

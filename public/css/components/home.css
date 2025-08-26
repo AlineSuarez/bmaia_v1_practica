@@ -4969,6 +4969,13 @@ body {
     margin: 0 auto 40px;
 }
 
+.planes-section {
+    position: relative;
+    padding: 120px 0px;
+    background: linear-gradient(360deg, var(--amber-50) 0%, #fff 100%);
+    overflow: hidden;
+}
+
 /* Tarjetas de información de contacto */
 .contacto-cards-container {
     display: grid;

@@ -10,6 +10,8 @@ use App\Models\Task;
 use App\Models\SubTarea;
 use App\Models\Visita;
 use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
+use App\Models\Payment;
 
 class DashboardController extends Controller
 {
@@ -108,9 +110,9 @@ class DashboardController extends Controller
     {
         $user = Auth::user();
         if (!$user) {
-            // Redirigimos a la página de login o mostramos un mensaje de error, según prefieras
             return redirect()->route('welcome')->with('error', 'Debe iniciar sesión para acceder al dashboard.');
         }
+
         // Obtenemos la cantidad de apiarios y reemplazamos con 0 si es null
         $totalApiarios = Apiario::where('user_id', $user->id)->count() ?? 0;
 
@@ -141,7 +143,62 @@ class DashboardController extends Controller
                 'season' => $apiario->temporada_produccion
             ];
         });
-        return view('home', compact('totalApiarios', 'totalColmenas', 'ubicacionApiarios', 'clima', 'apiarioEnUso', 'visitas', 't_progreso', 't_pendientes', 't_urgentes', 'dataApiarios', 't_completadas', 'user'));
+
+        // Cálculo de la fecha de vencimiento del plan
+        $ultimaFactura = $user->facturas()
+            ->where('estado', 'emitida')
+            ->latest('fecha_emision')
+            ->first();
+
+        $plan_end_date = $ultimaFactura
+            ? Carbon::parse($ultimaFactura->fecha_emision)->addDays(365)
+            : null;
+
+        // Busca el último pago "paid"
+        $payment = Payment::where('user_id', $user->id)
+            ->where('status', 'paid')
+            ->latest()
+            ->first();
+
+        $planLabel = 'Sin plan activo';
+        $plan_end_date = null;
+        $plan_active = false;
+
+        if ($payment) {
+            if ($payment->plan === 'drone') {
+                $trialEnd = $payment->created_at->copy()->addDays(16);
+                if (now()->lessThan($trialEnd)) {
+                    $planLabel = 'Drone';
+                    $plan_end_date = $trialEnd;
+                    $plan_active = true;
+                }
+            } else {
+                $expiresAt = $payment->expires_at ?? $payment->created_at->copy()->addYear();
+                if (now()->lessThan($expiresAt)) {
+                    $planLabel = strtoupper($payment->plan);
+                    $plan_end_date = $expiresAt;
+                    $plan_active = true;
+                }
+            }
+        }
+
+        return view('home', compact(
+            'totalApiarios',
+            'totalColmenas',
+            'ubicacionApiarios',
+            'clima',
+            'apiarioEnUso',
+            'visitas',
+            't_progreso',
+            't_pendientes',
+            't_urgentes',
+            'dataApiarios',
+            't_completadas',
+            'user',
+            'planLabel',
+            'plan_end_date',
+            'plan_active'
+        ));
     }
 
     //cantidad de apiarios:

@@ -35,7 +35,7 @@ class UserController extends Controller
         $user = auth()->user()->load('datosFacturacion');
         $datosFacturacion = DatoFacturacion::where('user_id', $user->id)->first();
         $regiones = Region::with('comunas')->get();
-        $filled = fn($v) => !is_null($v) && trim((string)$v) !== '';
+        $filled = fn($v) => !is_null($v) && trim((string) $v) !== '';
         $datosUsuarioCompletos = $user->name && $user->email;
         $datosFacturacionCompletos = $datosFacturacion
             && $filled($datosFacturacion->razon_social)
@@ -44,17 +44,42 @@ class UserController extends Controller
         // Progreso plan (tu mismo código resumido)
         $plan = $user->plan ?? 'drone';
         $payment = Payment::where('user_id', $user->id)->where('plan', $plan)->where('status', 'paid')->latest()->first();
-        if ($plan === 'drone' && $payment) { $start = $payment->created_at; $end = $start->copy()->addDays(16); $totalDays = 16; }
-        elseif ($payment) { $start = $payment->created_at; $end = $payment->expires_at ?? $start->copy()->addYear(); $totalDays = $start->diffInDays($end); }
-        else { $start = null; $end = null; $totalDays = 0; }
+        if ($plan === 'drone' && $payment) {
+            $start = $payment->created_at;
+            $end = $start->copy()->addDays(16);
+            $totalDays = 16;
+        } elseif ($payment) {
+            $start = $payment->created_at;
+            $end = $payment->expires_at ?? $start->copy()->addYear();
+            $totalDays = $start->diffInDays($end);
+        } else {
+            $start = null;
+            $end = null;
+            $totalDays = 0;
+        }
         $now = now();
-        if ($end && $now < $end) { $totalHours = $now->diffInHours($end); $plan_days_left = intdiv($totalHours, 24); $plan_hours_left = $totalHours % 24; }
-        else { $plan_days_left = 0; $plan_hours_left = 0; }
+        if ($end && $now < $end) {
+            $plan_days_left = (int) $now->diffInDays($end); // Días completos restantes
+
+            // Calcula la fecha después de sumar los días completos
+            $after_days = $now->copy()->addDays($plan_days_left);
+
+            // Horas restantes después de los días completos
+            $plan_hours_left = (int) $after_days->diffInHours($end);
+
+            // Minutos restantes después de los días y horas completos
+            $after_hours = $after_days->copy()->addHours($plan_hours_left);
+            $plan_minutes_left = (int) $after_hours->diffInMinutes($end);
+        } else {
+            $plan_days_left = 0;
+            $plan_hours_left = 0;
+            $plan_minutes_left = 0;
+        }
         $plan_start_date = $start ? $start->format('d-m-Y') : 'N/A';
-        $plan_end_date   = $end ? $end->format('d-m-Y') : 'N/A';
-        $plan_progress   = $totalDays > 0 ? round(100 - (($plan_days_left + ($plan_hours_left/24)) / $totalDays * 100)) : 0;
+        $plan_end_date = $end ? $end->format('d-m-Y') : 'N/A';
+        $plan_progress = $totalDays > 0 ? round(100 - (($plan_days_left + ($plan_hours_left / 24)) / $totalDays * 100)) : 0;
         // ====== FACTURAS: filtros + paginación ======
-        $selectedYear   = $request->query('year', 'all');      // 'all' | 2024 | 2025 ...
+        $selectedYear = $request->query('year', 'all');      // 'all' | 2024 | 2025 ...
         $selectedEstado = $request->query('estado', 'all');    // 'all' | emitida | pendiente | anulada | ajustada
         $years = Factura::where('user_id', $user->id)
             ->whereNotNull('fecha_emision')
@@ -67,17 +92,32 @@ class UserController extends Controller
             $years = [now()->year];
         }
         $facturasQuery = Factura::where('user_id', $user->id)->with('payment');
-        if ($selectedYear !== 'all')   $facturasQuery->whereYear('fecha_emision', (int)$selectedYear);
-        if ($selectedEstado !== 'all') $facturasQuery->where('estado', $selectedEstado);
+        if ($selectedYear !== 'all')
+            $facturasQuery->whereYear('fecha_emision', (int) $selectedYear);
+        if ($selectedEstado !== 'all')
+            $facturasQuery->where('estado', $selectedEstado);
         $facturas = $facturasQuery
             ->orderByDesc('fecha_emision')
             ->orderByDesc('id')
-            ->paginate(10)                   // 👈 pagina 10 por página
-            ->appends($request->query());    // mantiene filtros en links
+            ->paginate(10)
+            ->appends($request->query());
         return view('user.settings', compact(
-            'user','regiones','datosFacturacion','datosUsuarioCompletos','datosFacturacionCompletos',
-            'plan_start_date','plan_end_date','plan_days_left','plan_hours_left','plan_progress',
-            'facturas','years','selectedYear','selectedEstado'
+            'user',
+            'regiones',
+            'datosFacturacion',
+            'datosUsuarioCompletos',
+            'datosFacturacionCompletos',
+            'plan_start_date',
+            'plan_end_date',
+            'plan_days_left',
+            'plan_hours_left',
+            'plan_minutes_left',
+            'plan_progress',
+            'facturas',
+            'years',
+            'selectedYear',
+            'selectedEstado',
+            'payment'
         ));
     }
 
