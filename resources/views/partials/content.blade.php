@@ -1153,12 +1153,7 @@
                 <span class="price-main">${{ number_format($afcPrice, 0, ',', '.') }}</span>
                 <span class="price-period">+ IVA/año</span>
               </div>
-              <div class="price-breakdown">
-                <small>$5.825/mes • $234 por colmena/año</small><br>
-                <span style="color:#198754; font-weight:bold;">
-                  Total con IVA: ${{ number_format($afcTotal, 0, ',', '.') }}
-                </span>
-              </div>
+              <x-plan-card plan="afc" />
               <ul class="plan-features">
                 <li><i class="fas fa-check"></i>1 Usuario Administrador</li>
                 <li><i class="fas fa-check"></i>Hasta 299 colmenas</li>
@@ -1183,12 +1178,7 @@
                 <span class="price-main">${{ number_format($mePrice, 0, ',', '.') }}</span>
                 <span class="price-period">+ IVA/año</span>
               </div>
-              <div class="price-breakdown">
-                <small>$7.325/mes • $110 por colmena/año</small><br>
-                <span style="color:#198754; font-weight:bold;">
-                  Total con IVA: ${{ number_format($meTotal, 0, ',', '.') }}
-                </span>
-              </div>
+              <x-plan-card plan="me" />
               <ul class="plan-features">
                 <li><i class="fas fa-check"></i>Todo de AFC incluido</li>
                 <li><i class="fas fa-check"></i>Hasta 799 colmenas</li>
@@ -1212,12 +1202,7 @@
                 <span class="price-main">${{ number_format($gePrice, 0, ',', '.') }}</span>
                 <span class="price-period">+ IVA/año</span>
               </div>
-              <div class="price-breakdown">
-                <small>$12.575/mes • $86 por colmena/año</small><br>
-                <span style="color:#198754; font-weight:bold;">
-                  Total con IVA: ${{ number_format($geTotal, 0, ',', '.') }}
-                </span>
-              </div>
+              <x-plan-card plan="ge" />
 
               <ul class="plan-features">
                 <li><i class="fas fa-check"></i>Todo de ME incluido</li>

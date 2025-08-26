@@ -821,14 +821,7 @@
                                                             $69.900 + IVA
                                                         @endif
                                                     </div>
-                                                    <div class="price-details mt-2">
-                                                        <small>*Costo Mensual: $5.825 + IVA</small><br>
-                                                        <small>*Costo Anual por Colmena: $234</small><br>
-                                                        {{-- 🔥 NUEVO: Total con IVA en verde grande --}}
-                                                        <span style="font-size:1.2rem; font-weight:bold; color:#198754;">
-                                                            Total con IVA: ${{ number_format($afcTotal, 0, ',', '.') }}
-                                                        </span>
-                                                    </div>
+                                                    <x-plan-card plan="afc" type="settings" />
                                                 </div>
                                             </td>
                                             <td>
@@ -863,14 +856,7 @@
                                                             $87.900 + IVA
                                                         @endif
                                                     </div>
-                                                    <div class="price-details mt-2">
-                                                        <small>*Costo Mensual: $7.325 + IVA</small><br>
-                                                        <small>*Costo Anual por Colmena: $110</small><br>
-                                                        {{-- 🔥 NUEVO: Total con IVA en verde grande --}}
-                                                        <span style="font-size:1.2rem; font-weight:bold; color:#198754;">
-                                                            Total con IVA: ${{ number_format($meTotal, 0, ',', '.') }}
-                                                        </span>
-                                                    </div>
+                                                    <x-plan-card plan="me" type="settings" />
                                                 </div>
                                             </td>
                                             <td>
@@ -906,14 +892,7 @@
                                                             $150.900 + IVA
                                                         @endif
                                                     </div>
-                                                    <div class="price-details mt-2">
-                                                        <small>*Costo Mensual: $12.575 + IVA</small><br>
-                                                        <small>*Costo Anual por Colmena: $86</small><br>
-                                                        {{-- 🔥 NUEVO: Total con IVA en verde grande --}}
-                                                        <span style="font-size:1.2rem; font-weight:bold; color:#198754;">
-                                                            Total con IVA: ${{ number_format($geTotal, 0, ',', '.') }}
-                                                        </span>
-                                                    </div>
+                                                    <x-plan-card plan="ge" type="settings" />
                                                 </div>
                                             </td>
                                             <td>
@@ -947,8 +926,6 @@
                                             </td>
                                         </tr>
                                     </tbody>
-
-
                                 </table>
                             </div>
 
