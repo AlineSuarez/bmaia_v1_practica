@@ -30,6 +30,9 @@
             <li class="nav-item">
                 <a href="#contacto" style="color: rgb(212, 159, 0); font-weight: bold;" class="nav-link">Contacto</a>
             </li>
+            <li class="nav-item">
+                <a href="#planes" style="color: rgb(212, 159, 0); font-weight: bold;" class="nav-link">Planes</a>
+            </li>
         </ul>
     </nav>
 
@@ -100,6 +103,9 @@
         <li class="mobile-nav-item">
             <a href="#contacto" class="mobile-nav-link" style="font-weight: bold;">Contacto</a>
         </li>
+        <li class="mobile-nav-item">
+            <a href="#planes" class="mobile-nav-link" style="font-weight: bold;">Planes</a>
+        </li>
     </ul>
 
     <div class="mobile-actions">
@@ -141,7 +147,7 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        const sections = ['inicio', 'herramientas', 'como-funciona', 'logros', 'contacto'];
+        const sections = ['inicio', 'herramientas', 'como-funciona', 'logros', 'contacto', 'planes'];
         const navLinks = document.querySelectorAll('.nav-link');
         const mobileLinks = document.querySelectorAll('.mobile-nav-link');
 

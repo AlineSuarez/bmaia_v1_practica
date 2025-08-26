@@ -1081,7 +1081,7 @@
         </a>
       </div>
       <!-- Sección de Planes en Contacto -->
-      <div class="contacto-planes-section">
+      <div class="contacto-planes-section" id="planes" >
         <!-- Header de la sección -->
         <div class="planes-header">
           <h2 class="section-title" style="color: #333;">¡Comienza tu experiencia B-MaiA!</h2>
@@ -1458,5 +1458,28 @@
         document.getElementById('register-modal').style.display = 'block';
       });
     }
+  });
+</script>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const OFFSET = 100; // altura aproximada del navbar fijo
+
+    // Selecciona todos los links internos (#secciones)
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const targetId = this.getAttribute('href');
+        const targetEl = document.querySelector(targetId);
+
+        if (targetEl) {
+          const elementTop = targetEl.getBoundingClientRect().top + window.scrollY;
+          window.scrollTo({
+            top: elementTop - OFFSET,
+            behavior: 'smooth'
+          });
+        }
+      });
+    });
   });
 </script>
