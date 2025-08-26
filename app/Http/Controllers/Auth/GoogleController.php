@@ -19,27 +19,25 @@ class GoogleController extends Controller
     public function handleGoogleCallback()
     {
         try {
-            $googleUser = Socialite::driver('google')->user();
+            $googleUser = Socialite::driver('google')->stateless()->user();
             $user = User::where('email', $googleUser->getEmail())->first();
 
             if ($user) {
                 // Si el usuario ya existe, solo iniciar sesión
                 Auth::login($user);
+                request()->session()->regenerate();
             } else {
                 // Si el usuario no existe, crear uno nuevo
                 $user = User::create([
                     'name' => $googleUser->getName(),
                     'email' => $googleUser->getEmail(),
-                    'password' => bcrypt(Str::random(16)),
+                    'password' => bcrypt(Str::random(16)), // Contraseña aleatoria
                 ]);
                 Auth::login($user);
             }
 
-            // Regenerar la sesión SIEMPRE después de login
-            request()->session()->regenerate();
-
             return redirect()->intended('/home');
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return redirect('/login')->with('error', 'No se pudo iniciar sesión con Google.');
         }
     }

@@ -51,17 +51,17 @@
                         aria-selected="false">Planes</a>
                 </li>
                 <!--<li class="nav-item" role="presentation">
-                            <a class="nav-link" id="permissions-tab" data-bs-toggle="tab" href="#permissions" role="tab"
-                                aria-controls="permissions" aria-selected="false">Permisos</a>
-                        </li>
-                        <li class="nav-item" role="presentation">
-                            <a class="nav-link" id="preferences-tab" data-bs-toggle="tab" href="#preferences" role="tab"
-                                aria-controls="preferences" aria-selected="false">Preferencias</a>
-                        </li>
-                        <li class="nav-item" role="presentation">
-                            <a class="nav-link" id="utilities-tab" data-bs-toggle="tab" href="#utilities" role="tab"
-                                aria-controls="utilities" aria-selected="false">Utilidades</a>
-                        </li>-->
+                                    <a class="nav-link" id="permissions-tab" data-bs-toggle="tab" href="#permissions" role="tab"
+                                        aria-controls="permissions" aria-selected="false">Permisos</a>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <a class="nav-link" id="preferences-tab" data-bs-toggle="tab" href="#preferences" role="tab"
+                                        aria-controls="preferences" aria-selected="false">Preferencias</a>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <a class="nav-link" id="utilities-tab" data-bs-toggle="tab" href="#utilities" role="tab"
+                                        aria-controls="utilities" aria-selected="false">Utilidades</a>
+                                </li>-->
             </ul>
         </nav>
 
@@ -162,7 +162,8 @@
                                     <div class="form-group">
                                         <label for="email">Correo Electrónico</label>
                                         <input type="email" class="form-control" id="email" name="email"
-                                            placeholder="Ingrese su correo electrónico" required value='{{ $user->email}}' readonly>
+                                            placeholder="Ingrese su correo electrónico" required value='{{ $user->email}}'
+                                            readonly>
                                         <small class="form-text text-muted">Recibirás notificaciones en este correo</small>
                                     </div>
                                 </div>
@@ -333,7 +334,8 @@
                                     <div class="form-group">
                                         <input type="email" class="form-control" id="correo" name="correo"
                                             value="{{ old('correo', $datosFacturacion->correo ?? $user->email) }}">
-                                        <small class="form-text text-muted">Puedes usar un correo distinto al de tu cuenta para recibir facturación.</small>
+                                        <small class="form-text text-muted">Puedes usar un correo distinto al de tu cuenta
+                                            para recibir facturación.</small>
                                     </div>
                                 </div>
                             </div>
@@ -396,7 +398,8 @@
                                         <select class="form-select" id="invoice-status" name="estado">
                                             @php $estados = ['all' => 'Todos', 'emitida' => 'Emitida', 'pendiente' => 'Pendiente', 'anulada' => 'Anulada', 'ajustada' => 'Ajustada']; @endphp@foreach($estados as $k => $label)
                                                 <option value="{{ $k }}" {{ $selectedEstado === $k ? 'selected' : '' }}>Estado:
-                                                    {{ $label }}</option>
+                                                    {{ $label }}
+                                                </option>
                                             @endforeach
                                         </select>
                                     </div>
@@ -557,7 +560,7 @@
             </section>
 
             <!-- SECCIÓN: SEGURIDAD -->
-             @if ($errors->password->any())
+            @if ($errors->password->any())
                 <div class="alert alert-danger">
                     <ul class="mb-0">
                         @foreach ($errors->password->all() as $error)
@@ -765,10 +768,16 @@
                                 $iva = 0.19;
 
                                 $afcTotal = (int) round($afcPrice * (1 + $iva));
-                                $meTotal  = (int) round($mePrice * (1 + $iva));
-                                $geTotal  = (int) round($gePrice * (1 + $iva));
+                                $meTotal = (int) round($mePrice * (1 + $iva));
+                                $geTotal = (int) round($gePrice * (1 + $iva));
                             @endphp
-
+                            <!-- Aviso para dispositivos móviles -->
+                            <div class="mobile-scroll-notice d-block d-md-none mb-3">
+                                <div class="alert alert-info d-flex align-items-center" role="alert">
+                                    <i class="bi bi-arrow-left-right me-2"></i>
+                                    <span>Desliza horizontalmente para ver más contenido de la tabla</span>
+                                </div>
+                            </div>
                             <div class="table-responsive mb-4">
                                 <table class="table table-bordered plans-table">
                                     <thead class="table-light">
@@ -812,7 +821,8 @@
                                                 <div class="price-info">
                                                     <div class="main-price">
                                                         @if($isAugust)
-                                                            <span style="text-decoration:line-through; color:#888;">$69.900</span>
+                                                            <span
+                                                                style="text-decoration:line-through; color:#888;">$69.900</span>
                                                             <span style="color:#FF8C00; font-weight:bold;">
                                                                 ${{ number_format($afcPrice, 0, ',', '.') }} + IVA
                                                             </span>
@@ -847,7 +857,8 @@
                                                 <div class="price-info">
                                                     <div class="main-price">
                                                         @if($isAugust)
-                                                            <span style="text-decoration:line-through; color:#888;">$87.900</span>
+                                                            <span
+                                                                style="text-decoration:line-through; color:#888;">$87.900</span>
                                                             <span style="color:#FF8C00; font-weight:bold;">
                                                                 ${{ number_format($mePrice, 0, ',', '.') }} + IVA
                                                             </span>
@@ -883,7 +894,8 @@
                                                 <div class="price-info">
                                                     <div class="main-price">
                                                         @if($isAugust)
-                                                            <span style="text-decoration:line-through; color:#888;">$150.900</span>
+                                                            <span
+                                                                style="text-decoration:line-through; color:#888;">$150.900</span>
                                                             <span style="color:#FF8C00; font-weight:bold;">
                                                                 ${{ number_format($gePrice, 0, ',', '.') }} + IVA
                                                             </span>
@@ -942,41 +954,49 @@
                             {{-- ✨ Tipo de documento tributario --}}
                             <div class="card mb-4">
                                 <div class="card-body">
-                                        <h5 class="mb-2">Documento tributario</h5>
-                                        <p class="text-muted mb-3">Elige si quieres boleta/comprobante (persona natural) o factura (empresa).</p>
+                                    <h5 class="mb-2">Documento tributario</h5>
+                                    <p class="text-muted mb-3">Elige si quieres boleta/comprobante (persona natural) o
+                                        factura (empresa).</p>
 
-                                        <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="doc_type" id="docBoleta" value="boleta" {{ old('doc_type', 'boleta') == 'boleta' ? 'checked' : '' }}>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="doc_type" id="docBoleta"
+                                            value="boleta" {{ old('doc_type', 'boleta') == 'boleta' ? 'checked' : '' }}>
                                         <label class="form-check-label" for="docBoleta">
-                                            Pagar como persona natural <span class="text-muted">(Boleta / Comprobante)</span>
+                                            Pagar como persona natural <span class="text-muted">(Boleta /
+                                                Comprobante)</span>
                                         </label>
-                                        </div>
+                                    </div>
 
-                                        <div class="form-check mt-2">
-                                        <input class="form-check-input" type="radio" name="doc_type" id="docFactura" value="factura" {{ old('doc_type') == 'factura' ? 'checked' : '' }}>
+                                    <div class="form-check mt-2">
+                                        <input class="form-check-input" type="radio" name="doc_type" id="docFactura"
+                                            value="factura" {{ old('doc_type') == 'factura' ? 'checked' : '' }}>
                                         <label class="form-check-label" for="docFactura">
                                             Pagar como empresa <span class="text-muted">(Factura)</span>
                                         </label>
-                                        </div>
+                                    </div>
 
-                                        {{-- Aviso cuando elija factura y falten datos --}}
-                                        <div id="facturaWarning" class="alert alert-warning d-none mt-3" role="alert">
-                                        Para emitir <strong>Factura</strong> debes completar Razón Social, RUT y Correo de envío DTE en
-                                        <a href="{{ route('user.settings') }}#billing" class="alert-link">Datos de Facturación</a>.
-                                        </div>
-                                        {{-- Aviso cuando elija boleta y falten datos personales --}}
-                                        <div id="boletaWarning" class="alert alert-warning d-none mt-3" role="alert">
-                                            Para emitir <strong>Boleta / Comprobante</strong> debes completar tus datos personales 
-                                            (Nombre, RUT y Correo electrónico) en 
-                                            <a href="{{ route('user.settings') }}#user-data" class="alert-link">Datos del Usuario/a</a>.
-                                        </div>
+                                    {{-- Aviso cuando elija factura y falten datos --}}
+                                    <div id="facturaWarning" class="alert alert-warning d-none mt-3" role="alert">
+                                        Para emitir <strong>Factura</strong> debes completar Razón Social, RUT y Correo de
+                                        envío DTE en
+                                        <a href="{{ route('user.settings') }}#billing" class="alert-link">Datos de
+                                            Facturación</a>.
+                                    </div>
+                                    {{-- Aviso cuando elija boleta y falten datos personales --}}
+                                    <div id="boletaWarning" class="alert alert-warning d-none mt-3" role="alert">
+                                        Para emitir <strong>Boleta / Comprobante</strong> debes completar tus datos
+                                        personales
+                                        (Nombre, RUT y Correo electrónico) en
+                                        <a href="{{ route('user.settings') }}#user-data" class="alert-link">Datos del
+                                            Usuario/a</a>.
+                                    </div>
                                 </div>
                             </div>
 
                             <div class="form-actions mt-4">
                                 <button type="submit" class="btn btn-success">Suscribirse Ahora</button>
                                 <!--<a href="#" class="btn btn-outline-primary ms-2" data-bs-toggle="modal"
-                                                data-bs-target="#planComparisonModal">Comparar Planes</a> -->
+                                                        data-bs-target="#planComparisonModal">Comparar Planes</a> -->
                             </div>
                         </form>
                     </div>
@@ -1402,26 +1422,26 @@
             });
 
             // --- Selector Boleta/Factura ---
-            const docBoleta  = document.getElementById('docBoleta');
+            const docBoleta = document.getElementById('docBoleta');
             const docFactura = document.getElementById('docFactura');
             const facturaWarning = document.getElementById('facturaWarning');
             const boletaWarning = document.getElementById('boletaWarning');
-            
+
             // viene del blade
             const datosFacturacionCompletos = {!! $datosFacturacionCompletos ? 'true' : 'false' !!};
-            const datosUsuarioCompletos     = {!! $datosUsuarioCompletos ? 'true' : 'false' !!};
+            const datosUsuarioCompletos = {!! $datosUsuarioCompletos ? 'true' : 'false' !!};
 
             function refreshDocTypeUI() {
                 if (docFactura && docFactura.checked) {
-                facturaWarning && facturaWarning.classList.toggle('d-none', datosFacturacionCompletos);
-                boletaWarning && boletaWarning.classList.add('d-none');
+                    facturaWarning && facturaWarning.classList.toggle('d-none', datosFacturacionCompletos);
+                    boletaWarning && boletaWarning.classList.add('d-none');
                 } else {
                     boletaWarning && boletaWarning.classList.toggle('d-none', datosUsuarioCompletos);
                     facturaWarning && facturaWarning.classList.add('d-none');
                 }
             }
 
-            if (docBoleta)  docBoleta.addEventListener('change', refreshDocTypeUI);
+            if (docBoleta) docBoleta.addEventListener('change', refreshDocTypeUI);
             if (docFactura) docFactura.addEventListener('change', refreshDocTypeUI);
             refreshDocTypeUI();
 

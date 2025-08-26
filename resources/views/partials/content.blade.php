@@ -1098,25 +1098,25 @@
               <h3>¡Prueba Gratuita de 16 Días!</h3>
               <p>Accede a todas las funciones del plan Drone completamente gratis</p>
             </div>
-            <div class="trial-badge">
-              <span>GRATIS</span>
-            </div>
+            <a href="{{ route('register') }}" class="planes-cta-button" style="display: inline-block;">
+              Comienza Ya
+            </a>
           </div>
         </div>
 
         <!-- Grid de planes -->
-          @php
-            $isAugust = now()->month == 8;
+        @php
+          $isAugust = now()->month == 8;
 
-            $afcPrice = $isAugust ? intval(round(69900 * 0.7)) : 69900;
-            $mePrice  = $isAugust ? intval(round(87900 * 0.7)) : 87900;
-            $gePrice  = $isAugust ? intval(round(150900 * 0.7)) : 150900;
+          $afcPrice = $isAugust ? intval(round(69900 * 0.7)) : 69900;
+          $mePrice = $isAugust ? intval(round(87900 * 0.7)) : 87900;
+          $gePrice = $isAugust ? intval(round(150900 * 0.7)) : 150900;
 
-            $iva = 0.19;
-            $afcTotal = (int) round($afcPrice * (1 + $iva));
-            $meTotal  = (int) round($mePrice * (1 + $iva));
-            $geTotal  = (int) round($gePrice * (1 + $iva));
-          @endphp
+          $iva = 0.19;
+          $afcTotal = (int) round($afcPrice * (1 + $iva));
+          $meTotal = (int) round($mePrice * (1 + $iva));
+          $geTotal = (int) round($gePrice * (1 + $iva));
+        @endphp
 
         <div class="contacto-planes-grid">
           <!-- Plan Drone (Prueba Gratuita) -->
@@ -1213,22 +1213,6 @@
             </div>
           </div>
         </div>
-
-        <!-- Botón de llamada a la acción -->
-        <div class="planes-cta-section">
-          <a href="{{ route('register') }}" class="planes-cta-button">
-            <div class="btn-icon">
-              <i class="fas fa-rocket"></i>
-            </div>
-            <div class="btn-text">
-              <span class="btn-label">Comienza Ya</span>
-              <span class="btn-description">Inicia tu prueba gratuita de 16 días</span>
-            </div>
-            <div class="btn-arrow">
-              <i class="fas fa-arrow-right"></i>
-            </div>
-          </a>
-        </div>
       </div>
 
       <p class="section-description" style="text-align: center; font-weight: bold; margin-top: 2rem;">B-MaiA:
@@ -1270,7 +1254,8 @@
       </p>
       <div class="footer-social">
         <a href="#" class="social-link"><i class="fab fa-facebook-f"></i></a>
-        <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
+        <a href="https://www.instagram.com/bmaia2025/" target="_blank" class="social-link"><i
+            class="fab fa-instagram"></i></a>
         <a href="#" class="social-link"><i class="fab fa-linkedin-in"></i></a>
         <a href="#" class="social-link"><i class="fab fa-youtube"></i></a>
       </div>

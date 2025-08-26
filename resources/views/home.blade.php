@@ -210,7 +210,7 @@
               <div class="progress-bar" style="width: 100%"></div>
             </div>
             <div class="metric-detail">
-              <span class="metric-badge">Actualizar</span> suscripción
+              <span class="metric-badge">Actualizar suscripción</span>
             </div>
           </div>
         </a>
