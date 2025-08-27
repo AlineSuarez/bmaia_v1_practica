@@ -187,8 +187,13 @@ class ApiarioController extends Controller
         $comunasCoordenadas = $comunas->mapWithKeys(function ($comuna) {
             return [$comuna->nombre => ['lat' => $comuna->lat, 'lon' => $comuna->lon]];
         })->toArray();
+        // 🚀 Agregar control de límites
+        $user = Auth::user();
+        $colmenas_actuales = $user->totalColmenas();
+        $limite_colmenas = $user->colmenaLimit();
+        $plan = $user->plan;
 
-        return view('apiarios.edit', compact('apiario', 'regiones', 'comunas', 'comunasCoordenadas'));
+        return view('apiarios.edit', compact('apiario', 'regiones', 'comunas', 'comunasCoordenadas','colmenas_actuales', 'limite_colmenas', 'plan'));
     }
 
     public function update(Request $request, $id)
@@ -206,7 +211,6 @@ class ApiarioController extends Controller
             'comuna' => 'required|integer',
             'latitud' => 'required|numeric',
             'longitud' => 'required|numeric',
-            // VALIDACIÓN CORREGIDA - acepta todos los formatos y tamaño mayor
             'foto' => 'nullable|image|mimes:jpeg,jpg,png,gif,webp,bmp,svg|max:10240' // 10MB
         ]);
 
@@ -218,12 +222,9 @@ class ApiarioController extends Controller
             if ($apiario->foto && Storage::disk('public')->exists($apiario->foto)) {
                 Storage::disk('public')->delete($apiario->foto);
             }
-
             $file = $request->file('foto');
-
             // Generar nombre único
             $filename = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
-
             // Guardar la nueva foto
             $path = $file->storeAs('fotos_apiarios', $filename, 'public');
             $apiario->foto = $path;
@@ -241,9 +242,32 @@ class ApiarioController extends Controller
         $apiario->comuna_id = $request->comuna;
         $apiario->latitud = $request->latitud;
         $apiario->longitud = $request->longitud;
-
         $apiario->save();
 
+        // 🔥 SINCRONIZAR COLMENAS
+    $colmenasActuales = $apiario->colmenas()->count();
+    $colmenasDeseadas = (int) $request->num_colmenas;
+
+    if ($colmenasDeseadas > $colmenasActuales) {
+        // ➕ CREAR NUEVAS COLMENAS
+        for ($i = $colmenasActuales + 1; $i <= $colmenasDeseadas; $i++) {
+            $apiario->colmenas()->create([
+                'nombre' => "Colmena {$i}",
+                'numero' => (string) $i,
+                'color_etiqueta' => 'Amarillo',
+                'codigo_qr' => (string) \Str::uuid(), // mantiene QR único
+            ]);
+        }
+    } elseif ($colmenasDeseadas < $colmenasActuales) {
+        // ➖ ARCHIVAR SOBRANTES (soft delete, NO eliminar datos históricos)
+        $apiario->colmenas()
+            ->where('numero', '>', $colmenasDeseadas)
+            ->get()
+            ->each(function ($colmena) {
+                $colmena->delete(); // soft delete
+            });
+    }
+    
         return redirect()->route('apiarios')->with('success', 'Apiario actualizado exitosamente.');
     }
 

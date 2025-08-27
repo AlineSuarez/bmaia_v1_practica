@@ -80,11 +80,14 @@ class ColmenaController extends Controller
             ->with('success', 'Colmena creada correctamente.');
     }
 
-    public function show(Apiario $apiario, Colmena $colmena)
+    public function show(Apiario $apiario, $colmenaId)
     {
         if (!Auth::check()) {
-            return redirect()->route('colmenas.public', ['colmena' => $colmena->id]);
+            return redirect()->route('colmenas.public', ['colmena' => $colmenaId]);
         }
+
+        // Buscar colmena incluyendo archivadas
+        $colmena = Colmena::withTrashed()->where('apiario_id', $apiario->id)->findOrFail($colmenaId);
 
         // 1) Cada tabla hija usando colmena_id
         $pcc1 = DB::table('desarrollo_cria')
