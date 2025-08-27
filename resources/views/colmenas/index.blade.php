@@ -111,9 +111,16 @@
                         <!-- Botón después de las colmenas -->
                         <div class="print-qr-container">
                             <button class="print-qr-button"
-                                onclick="openQrModal('{{ $nombreBase }}', {{ $colmenas->toJson() }})">
+                                onclick="openQrModal('{{ $nombreBase }}', {{ $colmenas->toJson() }}, 'pdf')">
                                 <i class="fas fa-qrcode"></i>
                                 <span>Imprimir QR</span>
+                            </button>
+
+                            <!-- Botón para eliminar (mismo modal, modo 'delete') -->
+                            <button class="print-qr-button" style="margin-left:0.75rem; background:#ef4444; border-color:#ef4444;"
+                                onclick="openQrModal('{{ $nombreBase }}', {{ $colmenas->toJson() }}, 'delete')">
+                                <i class="fas fa-trash-alt"></i>
+                                <span>Eliminar colmenas</span>
                             </button>
                         </div>
                     </div>
@@ -143,9 +150,10 @@
                     Seleccionadas: <span id="selectedCount">0</span>
                 </div>
 
-                <button class="generate-pdf-btn" onclick="generateQrPdf()" id="generateBtn" disabled>
-                    <i class="fas fa-file-pdf"></i>
-                    Generar PDF
+                <!-- Botón principal dinámico -->
+                <button class="generate-pdf-btn" id="primaryActionBtn" disabled>
+                    <i id="primaryActionIcon" class="fas fa-file-pdf"></i>
+                    <span id="primaryActionText">Generar PDF</span>
                 </button>
             </div>
         </div>
@@ -168,13 +176,17 @@
         let selectedColmenas = [];
         let allColmenas = [];
         let currentGrupo = '';
+        let modalMode = 'pdf'; // 'pdf' o 'delete'
 
-        function openQrModal(grupo, colmenas) {
+        function openQrModal(grupo, colmenas, mode = 'pdf') {
             currentGrupo = grupo;
             allColmenas = colmenas;
             selectedColmenas = [];
+            modalMode = mode;
 
-            document.getElementById('modalTitle').textContent = `Seleccionar Colmenas - ${grupo}`;
+            document.getElementById('modalTitle').textContent = mode === 'delete'
+                ? `Seleccionar Colmenas para Eliminar - ${grupo}`
+                : `Seleccionar Colmenas - ${grupo}`;
 
             const container = document.getElementById('colmenasSelection');
             container.innerHTML = '';
@@ -199,6 +211,26 @@
             });
 
             updateUI();
+
+            // Ajustar texto y evento del botón principal según modo
+            const primaryBtn = document.getElementById('primaryActionBtn');
+            const primaryText = document.getElementById('primaryActionText');
+            const primaryIcon = document.getElementById('primaryActionIcon');
+
+            if (mode === 'delete') {
+                primaryText.textContent = 'Eliminar seleccionadas';
+                primaryIcon.className = 'fas fa-trash-alt';
+                primaryBtn.onclick = deleteSelectedColmenas;
+                primaryBtn.classList.add('delete-action-btn');
+                primaryBtn.classList.remove('generate-pdf-btn');
+            } else {
+                primaryText.textContent = 'Generar PDF';
+                primaryIcon.className = 'fas fa-file-pdf';
+                primaryBtn.onclick = generateQrPdf;
+                primaryBtn.classList.remove('delete-action-btn');
+                primaryBtn.classList.add('generate-pdf-btn');
+            }
+
             document.getElementById('qrModal').style.display = 'block';
         }
 
@@ -226,7 +258,6 @@
             const selectAllBtn = document.getElementById('selectAllText');
 
             if (selectedColmenas.length === allColmenas.length) {
-                // Deseleccionar todas
                 selectedColmenas = [];
                 document.querySelectorAll('.colmena-checkbox').forEach(el => {
                     el.classList.remove('selected');
@@ -234,7 +265,6 @@
                 });
                 selectAllBtn.textContent = 'Seleccionar Todas';
             } else {
-                // Seleccionar todas
                 selectedColmenas = allColmenas.map(c => c.id);
                 document.querySelectorAll('.colmena-checkbox').forEach(el => {
                     el.classList.add('selected');
@@ -250,8 +280,8 @@
             const count = selectedColmenas.length;
             document.getElementById('selectedCount').textContent = count;
 
-            const generateBtn = document.getElementById('generateBtn');
-            generateBtn.disabled = count === 0;
+            const primaryBtn = document.getElementById('primaryActionBtn');
+            primaryBtn.disabled = count === 0;
 
             const selectAllBtn = document.getElementById('selectAllText');
             selectAllBtn.textContent = count === allColmenas.length ? 'Deseleccionar Todas' : 'Seleccionar Todas';
@@ -288,7 +318,7 @@
                     const url = window.URL.createObjectURL(blob);
                     const a = document.createElement('a');
                     a.href = url;
-                    a.download = 'Colmenas_QR_{{ $apiario->nombre }}.pdf';
+                    a.download = 'Colmenas_QR_{{ Str::slug($apiario->nombre, "_") }}_{{ date("Ymd_His") }}.pdf';
                     document.body.appendChild(a);
                     a.click();
                     a.remove();
@@ -301,6 +331,52 @@
                     document.getElementById('loadingOverlay').classList.remove('active');
                     closeQrModal();
                 });
+        }
+
+        function deleteSelectedColmenas() {
+            if (selectedColmenas.length === 0) {
+                alert('Por favor selecciona al menos una colmena a eliminar');
+                return;
+            }
+
+            if (!confirm('¿Estás seguro de eliminar las colmenas seleccionadas? Esta acción no se puede deshacer.')) {
+                return;
+            }
+
+            // Mostrar pantalla de carga
+            document.getElementById('loadingOverlay').classList.add('active');
+
+            const formData = new FormData();
+            formData.append('_token', '{{ csrf_token() }}');
+            selectedColmenas.forEach(colmenaId => formData.append('colmenas[]', colmenaId));
+            formData.append('grupo', currentGrupo);
+
+            fetch('{{ route("colmenas.delete.multiple", $apiario->id) }}', {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'Accept': 'application/json'
+                }
+            })
+            .then(response => {
+                if (!response.ok) throw new Error('Error al eliminar');
+                return response.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    // Recargar la página para reflejar cambios (opcional: eliminar los elementos del DOM en lugar de reload)
+                    location.reload();
+                } else {
+                    alert('No se pudieron eliminar las colmenas');
+                }
+            })
+            .catch(() => {
+                alert('Ocurrió un error al eliminar las colmenas');
+            })
+            .finally(() => {
+                document.getElementById('loadingOverlay').classList.remove('active');
+                closeQrModal();
+            });
         }
 
         // Cerrar modal al hacer clic fuera

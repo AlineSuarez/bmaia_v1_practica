@@ -610,4 +610,27 @@ class ColmenaController extends Controller
 
         return $pdf->download($filename);
     }
+
+    public function deleteMultiple(Request $request, Apiario $apiario)
+    {
+        $request->validate([
+            'colmenas' => 'required|array|min:1',
+            'colmenas.*' => 'exists:colmenas,id',
+            'grupo' => 'nullable|string'
+        ]);
+
+        // Asegurarse de que pertenezcan al apiario
+        $toDelete = Colmena::whereIn('id', $request->colmenas)
+            ->where('apiario_id', $apiario->id);
+
+        $count = $toDelete->count();
+
+        if ($count === 0) {
+            return response()->json(['success' => false, 'deleted' => 0], 422);
+        }
+
+        $toDelete->delete();
+
+        return response()->json(['success' => true, 'deleted' => $count]);
+    }
 }
