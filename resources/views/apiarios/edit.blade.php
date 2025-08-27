@@ -13,8 +13,7 @@
 
 @section('content')
 
-<<<<<<< HEAD
-        @if (!is_null($limite_colmenas))
+    @if (!is_null($limite_colmenas))
             @php
                 $restantes = $limite_colmenas - $colmenas_actuales;
             @endphp
@@ -31,14 +30,9 @@
             </div>
         @endif
 
-        <head>
-            <link href="{{ asset('./css/components/home-user/create/create-apiario.css') }}" rel="stylesheet">
-        </head>
-=======
     <head>
         <link href="{{ asset('./css/components/home-user/create/create-apiario.css') }}" rel="stylesheet">
     </head>
->>>>>>> 1c925d7ecb6a448559af75a328ecafdbb31c8771
 
     <div class="container">
         <!-- Efectos de fondo -->
