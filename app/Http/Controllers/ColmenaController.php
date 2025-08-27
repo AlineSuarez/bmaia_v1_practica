@@ -631,6 +631,10 @@ class ColmenaController extends Controller
 
         $toDelete->delete();
 
+        // ACTUALIZAR el número de colmenas del apiario
+        $colmenasRestantes = $apiario->colmenas()->count();
+        $apiario->update(['num_colmenas' => $colmenasRestantes]);
+
         return response()->json(['success' => true, 'deleted' => $count]);
     }
 }
