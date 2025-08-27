@@ -226,6 +226,7 @@ Route::middleware(['auth', 'check.payment'])->group(function () {
         Route::get('/{colmena}/historial', [ColmenaController::class, 'historial'])->name('historial');
         Route::get('/{colmena}/historial/export', [ColmenaController::class, 'exportHistorial'])->name('historial.export');
         Route::get('/{colmena}/qr-pdf', [DocumentController::class, 'qrPdf'])->name('qr-pdf');
+        Route::post('/qr-multiple', [ColmenaController::class, 'qrMultiplePdf'])->name('qr.multiple');
         Route::get('/{colmena}/pcc/pdf', [ColmenaController::class, 'generarPccPdf'])->name('pcc.pdf');
         Route::put('/{colmena}/color', [ColmenaController::class, 'updateColor'])->name('updateColor');
     });

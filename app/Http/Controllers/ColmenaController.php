@@ -61,10 +61,10 @@ class ColmenaController extends Controller
         if (!is_null($user->colmenaLimit()) && $user->totalColmenas() >= $user->colmenaLimit()) {
             return redirect()->back()->with('error', 'Has alcanzado el límite de colmenas permitido por tu plan.');
         }
-        
+
         $data = $request->validate([
             'color_etiqueta' => 'required|string|max:20',
-            'numero' => 'required|string|max:10',
+            'numero' => 'required|integer|min:1|max:10000|unique:colmenas,numero,NULL,id,apiario_id,' . $apiario->id,
             'estado_inicial' => 'nullable|string|max:50',
             'numero_marcos' => 'nullable|integer|min:0',
             'observaciones' => 'nullable|string|max:255',
@@ -172,7 +172,7 @@ class ColmenaController extends Controller
     {
         $data = $request->validate([
             'nombre' => 'nullable|string|max:255',
-            'numero' => 'nullable|string',
+            'numero' => 'required|integer|min:1|max:10000|unique:colmenas,numero,' . $colmena->id . ',id,apiario_id,' . $apiario->id,
         ]);
         $colmena->update($data);
         return redirect()->route('colmenas.show', [$apiario->id, $colmena->id])->with('success', 'Colmena actualizada.');
@@ -374,30 +374,30 @@ class ColmenaController extends Controller
     }
 
     private function getBeekeeperData()
-        {
-            $user = Auth::user();
+    {
+        $user = Auth::user();
 
-            // Convertir firma a base64 (con o sin GD)
-            $firmaBase64 = null;
-            if ($user->firma) {
-                $firmaPath = storage_path('app/public/firmas/' . $user->firma);
-                $firmaBase64 = $this->prepareImageForPdf($firmaPath);
-            }
-
-            return [
-                'legal_representative' => $user->name,
-                'last_name' => $user->last_name ?? '',
-                'registration_number' => $user->numero_registro ?? '',
-                'email' => $user->email,
-                'rut' => $user->rut ?? '',
-                'phone' => $user->telefono ?? '',
-                'address' => $user->direccion ?? '',
-                'region' => optional($user->region)->nombre ?? '',
-                'commune' => optional($user->comuna)->nombre ?? '',
-                'firma' => $user->firma ?? '',
-                'firma_base64' => $firmaBase64,
-            ];
+        // Convertir firma a base64 (con o sin GD)
+        $firmaBase64 = null;
+        if ($user->firma) {
+            $firmaPath = storage_path('app/public/firmas/' . $user->firma);
+            $firmaBase64 = $this->prepareImageForPdf($firmaPath);
         }
+
+        return [
+            'legal_representative' => $user->name,
+            'last_name' => $user->last_name ?? '',
+            'registration_number' => $user->numero_registro ?? '',
+            'email' => $user->email,
+            'rut' => $user->rut ?? '',
+            'phone' => $user->telefono ?? '',
+            'address' => $user->direccion ?? '',
+            'region' => optional($user->region)->nombre ?? '',
+            'commune' => optional($user->comuna)->nombre ?? '',
+            'firma' => $user->firma ?? '',
+            'firma_base64' => $firmaBase64,
+        ];
+    }
 
     private function getApiaryData(Apiario $apiario)
     {
@@ -414,7 +414,8 @@ class ColmenaController extends Controller
                         $imageData = file_get_contents($fotoPath);
                         $fotoBase64 = 'data:' . $mimeType . ';base64,' . base64_encode($imageData);
                     }
-                } catch (\Exception $e) {}
+                } catch (\Exception $e) {
+                }
             }
         }
 
@@ -546,11 +547,64 @@ class ColmenaController extends Controller
         $lastFecha = $pcc2->created_at ?? $pcc3->created_at ?? $pcc4->created_at ?? null;
 
         $pdf = Pdf::loadView('documents.colmena-pcc-pdf', compact(
-            'colmena', 'apiario',
-            'pcc1', 'pcc2', 'pcc3', 'pcc4', 'pcc5', 'pcc6', 'pcc7',
+            'colmena',
+            'apiario',
+            'pcc1',
+            'pcc2',
+            'pcc3',
+            'pcc4',
+            'pcc5',
+            'pcc6',
+            'pcc7',
             'lastFecha'
         ));
 
         return $pdf->download('detalle-colmena-' . $colmena->nombre . '-' . $apiario->nombre . '.pdf');
+    }
+
+    public function qrMultiplePdf(Request $request, Apiario $apiario)
+    {
+        $request->validate([
+            'colmenas' => 'required|array|min:1',
+            'colmenas.*' => 'exists:colmenas,id',
+            'grupo' => 'required|string'
+        ]);
+
+        // Obtener las colmenas seleccionadas
+        $colmenas = Colmena::whereIn('id', $request->colmenas)
+            ->where('apiario_id', $apiario->id)
+            ->orderBy('numero')
+            ->get();
+
+        if ($colmenas->isEmpty()) {
+            return back()->with('error', 'No se encontraron colmenas válidas.');
+        }
+
+        // Generar URLs para cada colmena
+        $qrData = $colmenas->map(function ($colmena) use ($apiario) {
+            return [
+                'colmena' => $colmena,
+                'url' => route('colmenas.show', [
+                    'apiario' => $apiario->id,
+                    'colmena' => $colmena->id,
+                ])
+            ];
+        });
+
+        $data = [
+            'apiario' => $apiario,
+            'grupo' => $request->grupo,
+            'qrData' => $qrData,
+            'fechaGeneracion' => $this->obtenerFechaHoraLocal(),
+            'totalColmenas' => $colmenas->count()
+        ];
+
+        $pdf = Pdf::setOptions([
+            'isRemoteEnabled' => true,
+        ])->loadView('documents.colmenas-qr-multiple', $data);
+
+        $filename = "qr_colmenas_{$request->grupo}_{$apiario->nombre}_" . now()->format('Y-m-d') . ".pdf";
+
+        return $pdf->download($filename);
     }
 }

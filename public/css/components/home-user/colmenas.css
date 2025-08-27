@@ -152,6 +152,7 @@
     color: white;
     position: relative;
     overflow: hidden;
+    border-radius: 1rem 1rem 0 0;
 }
 
 .section-title::before {
@@ -759,5 +760,800 @@
         width: 48px;
         height: 48px;
         justify-content: center;
+    }
+}
+
+/* ==================== BOTÓN IMPRIMIR QR AL FINAL ==================== */
+.group-header {
+    position: relative;
+    padding: 0;
+    margin-bottom: 0;
+}
+
+.section-title {
+    font-size: 1.375rem;
+    font-weight: 700;
+    color: var(--gray-800);
+    margin: 0;
+    padding: 2rem 2.5rem;
+    background: var(--primary-gradient);
+    color: white;
+    position: relative;
+    overflow: hidden;
+    border-radius: 1rem 1rem 0 0;
+}
+
+.print-qr-container {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 1rem;
+}
+
+.print-qr-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.875rem 2rem;
+    background: var(--primary-gradient);
+    color: white;
+    border: none;
+    border-radius: 0.75rem;
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: var(--shadow-md);
+    overflow: hidden;
+    position: relative;
+}
+
+.print-qr-button::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.3),
+        transparent
+    );
+    transition: left 0.5s ease;
+}
+
+.print-qr-button:hover::before {
+    left: 100%;
+}
+
+.print-qr-button:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+}
+
+.print-qr-button:active {
+    transform: translateY(0);
+    box-shadow: var(--shadow-md);
+}
+
+.print-qr-button i {
+    font-size: 1.1rem;
+    transition: transform 0.3s ease;
+}
+
+.print-qr-button:hover i {
+    transform: scale(1.1) rotate(5deg);
+}
+
+/* ==================== RESPONSIVE DESIGN PARA BOTÓN ==================== */
+@media (max-width: 768px) {
+    .print-qr-container {
+        padding: 1.5rem 2rem;
+    }
+
+    .print-qr-button {
+        width: 100%;
+        justify-content: center;
+        padding: 0.75rem 1.5rem;
+        font-size: 0.875rem;
+    }
+
+    .print-qr-button i {
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .print-qr-container {
+        padding: 1.25rem 1.5rem;
+    }
+
+    .print-qr-button {
+        padding: 0.625rem 1.25rem;
+        font-size: 0.8rem;
+    }
+
+    .print-qr-button i {
+        font-size: 0.9rem;
+    }
+}
+
+/* ==================== MODAL ESTILOS ==================== */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(5px);
+    animation: fadeIn 0.3s ease-out;
+}
+
+.modal.show {
+    display: block;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+.modal-content {
+    background: linear-gradient(135deg, #ffffff 0%, var(--gray-50) 100%);
+    margin: 2% auto;
+    padding: 0;
+    border-radius: 1.25rem;
+    width: 90%;
+    max-width: 800px;
+    max-height: 90vh;
+    overflow: hidden;
+    box-shadow: var(--shadow-xl);
+    border: 1px solid var(--gray-200);
+    position: relative;
+    animation: slideInDown 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes slideInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-50px) scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.modal-header {
+    background: var(--primary-gradient);
+    color: white;
+    padding: 2rem 2.5rem;
+    border-radius: 1.25rem 1.25rem 0 0;
+    position: relative;
+    overflow: hidden;
+}
+
+.modal-header::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 120px;
+    height: 120px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    transform: translate(40px, -40px);
+}
+
+.modal-header h3 {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 700;
+    position: relative;
+    z-index: 1;
+}
+
+.close {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    color: white;
+    font-size: 2rem;
+    font-weight: bold;
+    cursor: pointer;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+    z-index: 2;
+}
+
+.close:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: scale(1.1) rotate(90deg);
+}
+
+/* ==================== SELECCIÓN DE COLMENAS EN GRID ==================== */
+.colmenas-selection {
+    padding: 2.5rem;
+    max-height: 400px;
+    overflow-y: auto;
+    background: linear-gradient(135deg, var(--gray-50) 0%, #ffffff 100%);
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 0.75rem;
+}
+
+/* Desktop: mínimo 3 columnas */
+@media (min-width: 1200px) {
+    .colmenas-selection {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+/* Tablet: mínimo 2 columnas */
+@media (min-width: 768px) and (max-width: 1199px) {
+    .colmenas-selection {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* Mobile: 1 columna */
+@media (max-width: 767px) {
+    .colmenas-selection {
+        grid-template-columns: 1fr;
+        gap: 0.5rem;
+        padding: 2rem;
+    }
+}
+
+.colmenas-selection::-webkit-scrollbar {
+    width: 8px;
+}
+
+.colmenas-selection::-webkit-scrollbar-track {
+    background: var(--gray-100);
+    border-radius: 4px;
+}
+
+.colmenas-selection::-webkit-scrollbar-thumb {
+    background: var(--primary);
+    border-radius: 4px;
+    transition: background 0.3s ease;
+}
+
+.colmenas-selection::-webkit-scrollbar-thumb:hover {
+    background: var(--primary-dark);
+}
+
+.colmena-checkbox {
+    display: flex;
+    align-items: center;
+    padding: 1rem 1.25rem;
+    background: white;
+    border: 2px solid var(--gray-200);
+    border-radius: 0.75rem;
+    cursor: pointer;
+    transition: all 0.15s ease; /* Animación más rápida */
+    position: relative;
+    overflow: hidden;
+}
+
+.colmena-checkbox::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(245, 167, 0, 0.1),
+        transparent
+    );
+    transition: left 0.3s ease; /* Reducido de 0.5s */
+}
+
+.colmena-checkbox:hover::before {
+    left: 100%;
+}
+
+.colmena-checkbox:hover {
+    border-color: var(--primary);
+    transform: translateX(5px);
+    box-shadow: var(--shadow-md);
+}
+
+.colmena-checkbox.selected {
+    background: linear-gradient(135deg, var(--primary-light) 0%, #ffffff 100%);
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px var(--primary-alpha);
+    transform: translateX(5px);
+}
+
+.colmena-checkbox input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    accent-color: var(--primary);
+    cursor: pointer;
+    transition: transform 0.1s ease; /* Muy rápido */
+}
+
+.colmena-checkbox.selected input[type="checkbox"] {
+    transform: scale(1.1);
+}
+
+.colmena-checkbox > div {
+    display: flex;
+    align-items: center;
+    font-weight: 500;
+    color: var(--gray-700);
+    transition: color 0.15s ease; /* Más rápido */
+}
+
+.colmena-checkbox.selected > div {
+    color: var(--primary-dark);
+    font-weight: 600;
+}
+
+/* ==================== ACCIONES DEL MODAL ==================== */
+.modal-actions {
+    background: white;
+    padding: 2rem 2.5rem;
+    border-top: 2px solid var(--gray-100);
+    display: flex;
+    gap: 1.5rem;
+    align-items: center;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+.select-all-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.25rem;
+    background: white;
+    border: 2px solid var(--gray-300);
+    border-radius: 0.75rem;
+    color: var(--gray-700);
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: var(--shadow-sm);
+}
+
+.select-all-btn:hover {
+    background: var(--gray-50);
+    border-color: var(--primary);
+    color: var(--primary-dark);
+    box-shadow: var(--shadow-md);
+}
+
+.selected-count {
+    padding: 0.75rem 1.25rem;
+    background: linear-gradient(
+        135deg,
+        var(--gray-100) 0%,
+        var(--gray-50) 100%
+    );
+    border-radius: 0.75rem;
+    font-weight: 600;
+    color: var(--gray-700);
+    border: 2px solid var(--gray-200);
+    transition: all 0.3s ease;
+}
+
+.selected-count span {
+    color: var(--primary-dark);
+    font-size: 1.1rem;
+}
+
+.generate-pdf-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.875rem 1.5rem;
+    background: var(--primary-gradient);
+    color: white;
+    border: none;
+    border-radius: 0.75rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: var(--shadow-md);
+    position: relative;
+    overflow: hidden;
+}
+
+.generate-pdf-btn::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.3),
+        transparent
+    );
+    transition: left 0.5s ease;
+}
+
+.generate-pdf-btn:hover::before {
+    left: 100%;
+}
+
+.generate-pdf-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+}
+
+.generate-pdf-btn:active {
+    transform: translateY(0);
+}
+
+.generate-pdf-btn:disabled {
+    background: var(--gray-300);
+    color: var(--gray-500);
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: var(--shadow-sm);
+}
+
+.generate-pdf-btn:disabled::before {
+    display: none;
+}
+
+.generate-pdf-btn i {
+    font-size: 1.1rem;
+    transition: transform 0.3s ease;
+}
+
+.generate-pdf-btn:hover:not(:disabled) i {
+    transform: scale(1.1);
+}
+
+/* ==================== RESPONSIVE DESIGN PARA MODAL ==================== */
+@media (max-width: 992px) {
+    .print-qr-button {
+        font-size: 0.8rem;
+        gap: 0.5rem;
+    }
+
+    .print-qr-button i {
+        font-size: 0.9rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .close {
+        top: 0.5rem;
+    }
+
+    .print-qr-button i {
+        font-size: 0.85rem;
+    }
+
+    .modal-content {
+        width: 95%;
+        margin: 5% auto;
+        max-height: 85vh;
+    }
+
+    .modal-header {
+        padding: 1.25rem 1.75rem;
+    }
+
+    .modal-header h3 {
+        font-size: 1.125rem;
+        margin-right: 2rem;
+    }
+
+    .colmenas-selection {
+        padding: 1.5rem;
+        max-height: 300px;
+    }
+
+    .modal-actions {
+        padding: 1.25rem 1.75rem;
+        flex-direction: column;
+        gap: 0.875rem;
+    }
+
+    .select-all-btn,
+    .generate-pdf-btn {
+        width: 100%;
+        justify-content: center;
+        padding: 0.625rem 1rem;
+        font-size: 0.875rem;
+    }
+
+    .selected-count {
+        width: 100%;
+        text-align: center;
+        padding: 0.625rem 1rem;
+        font-size: 0.875rem;
+    }
+
+    .selected-count span {
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 600px) {
+    .print-qr-button i {
+        font-size: 0.8rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .print-qr-button i {
+        font-size: 0.75rem;
+    }
+
+    .modal-content {
+        width: 98%;
+        margin: 2% auto;
+        border-radius: 1rem;
+    }
+
+    .modal-header {
+        padding: 1rem 1.25rem;
+        border-radius: 1rem 1rem 0 0;
+    }
+
+    .modal-header h3 {
+        font-size: 1rem;
+        margin-right: 1.5rem;
+    }
+
+    .close {
+        right: 1rem;
+        width: 32px;
+        height: 32px;
+        font-size: 1.5rem;
+    }
+
+    .colmenas-selection {
+        padding: 1rem;
+    }
+
+    .colmena-checkbox {
+        padding: 0.75rem 0.875rem;
+    }
+
+    .modal-actions {
+        padding: 1rem 1.25rem;
+        gap: 0.75rem;
+    }
+
+    .select-all-btn,
+    .generate-pdf-btn {
+        padding: 0.5rem 0.875rem;
+        font-size: 0.8rem;
+    }
+
+    .selected-count {
+        padding: 0.5rem 0.875rem;
+        font-size: 0.8rem;
+    }
+
+    .selected-count span {
+        font-size: 0.9rem;
+    }
+}
+
+/* ==================== ANIMACIONES RÁPIDAS ==================== */
+@keyframes pulse {
+    0%,
+    100% {
+        transform: translateX(5px) scale(1);
+    }
+    50% {
+        transform: translateX(5px) scale(1.02);
+    }
+}
+
+.colmena-checkbox.selected {
+    animation: pulse 0.2s ease-out; /* Animación más rápida */
+}
+
+.generate-pdf-btn.loading {
+    pointer-events: none;
+}
+
+.generate-pdf-btn.loading::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 20px;
+    height: 20px;
+    border: 2px solid transparent;
+    border-top: 2px solid white;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% {
+        transform: translate(-50%, -50%) rotate(0deg);
+    }
+    100% {
+        transform: translate(-50%, -50%) rotate(360deg);
+    }
+}
+
+/* Pantalla de carga profesional */
+.loading-overlay {
+    display: none;
+    position: fixed;
+    z-index: 2000;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(255, 255, 255, 0.92);
+    backdrop-filter: blur(2px);
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.3s;
+}
+
+.loading-overlay.active {
+    display: flex;
+    opacity: 1;
+}
+
+.loading-content {
+    background: #fff;
+    border-radius: 1.5rem;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+    padding: 2.5rem 2.5rem 2rem 2.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 320px;
+    animation: popIn 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+}
+
+@keyframes popIn {
+    0% {
+        transform: scale(0.85);
+        opacity: 0;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+.loading-spinner {
+    margin-bottom: 1.5rem;
+}
+
+.spinner-svg {
+    width: 64px;
+    height: 64px;
+    animation: rotate 1.2s linear infinite;
+}
+
+@keyframes rotate {
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.spinner-bg {
+    stroke: #f3f3f3;
+}
+
+.spinner-fg {
+    stroke: #f5a700;
+    stroke-linecap: round;
+    stroke-dasharray: 90, 150;
+    stroke-dashoffset: 0;
+    animation: dash 1.2s ease-in-out infinite;
+}
+
+@keyframes dash {
+    0% {
+        stroke-dasharray: 1, 150;
+        stroke-dashoffset: 0;
+    }
+    50% {
+        stroke-dasharray: 90, 150;
+        stroke-dashoffset: -35;
+    }
+    100% {
+        stroke-dasharray: 90, 150;
+        stroke-dashoffset: -124;
+    }
+}
+
+.loading-title {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #f5a700;
+    margin-bottom: 0.5rem;
+    letter-spacing: 0.5px;
+}
+
+.loading-text {
+    color: #444;
+    font-size: 1.05rem;
+    text-align: center;
+    margin-bottom: 0.5rem;
+    line-height: 1.5;
+}
+
+/* Responsive para pantalla de carga profesional */
+@media (max-width: 900px) {
+    .loading-content {
+        min-width: 240px;
+        padding: 2rem 1.5rem 1.5rem 1.5rem;
+    }
+    .loading-title {
+        font-size: 1.1rem;
+    }
+    .loading-text {
+        font-size: 0.98rem;
+    }
+    .spinner-svg {
+        width: 48px;
+        height: 48px;
+    }
+}
+
+@media (max-width: 600px) {
+    .loading-content {
+        min-width: 0;
+        width: 90vw;
+        max-width: 340px;
+        padding: 1.5rem 1rem 1rem 1rem;
+    }
+    .loading-title {
+        font-size: 1rem;
+    }
+    .loading-text {
+        font-size: 0.93rem;
+    }
+    .spinner-svg {
+        width: 40px;
+        height: 40px;
+    }
+}
+
+@media (max-width: 400px) {
+    .loading-content {
+        max-width: 98vw;
+        padding: 1rem 0.5rem 0.5rem 0.5rem;
+        border-radius: 1rem;
+    }
+    .loading-title {
+        font-size: 0.95rem;
+    }
+    .loading-text {
+        font-size: 0.85rem;
+    }
+    .spinner-svg {
+        width: 32px;
+        height: 32px;
     }
 }
