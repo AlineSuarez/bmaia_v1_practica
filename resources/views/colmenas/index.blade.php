@@ -69,24 +69,24 @@
                         <div class="colmenas-grid">
                             @forelse($colmenas as $colmena)
                                 @php
-        $url = route('colmenas.show', [
-            'apiario' => $apiario->id,
-            'colmena' => $colmena->id,
-        ]);
-        $color = $colmena->color_etiqueta ?? 'transparent';
-        if ($colmena->color_etiqueta) {
-            $hex = ltrim($colmena->color_etiqueta, '#');
-            if (strlen($hex) === 6) {
-                $r = hexdec(substr($hex, 0, 2));
-                $g = hexdec(substr($hex, 2, 2));
-                $b = hexdec(substr($hex, 4, 2));
-                $color = "rgba($r, $g, $b, 0.47)";
-            } else {
-                $color = $colmena->color_etiqueta;
-            }
-        } else {
-            $color = 'transparent';
-        }
+                                    $url = route('colmenas.show', [
+                                        'apiario' => $apiario->id,
+                                        'colmena' => $colmena->id,
+                                    ]);
+                                    $color = $colmena->color_etiqueta ?? 'transparent';
+                                    if ($colmena->color_etiqueta) {
+                                        $hex = ltrim($colmena->color_etiqueta, '#');
+                                        if (strlen($hex) === 6) {
+                                            $r = hexdec(substr($hex, 0, 2));
+                                            $g = hexdec(substr($hex, 2, 2));
+                                            $b = hexdec(substr($hex, 4, 2));
+                                            $color = "rgba($r, $g, $b, 0.47)";
+                                        } else {
+                                            $color = $colmena->color_etiqueta;
+                                        }
+                                    } else {
+                                        $color = 'transparent';
+                                    }
                                 @endphp
 
                                 <div class="colmena-card"
@@ -116,12 +116,15 @@
                                 <span>Imprimir QR</span>
                             </button>
 
-                            <!-- Botón para eliminar (mismo modal, modo 'delete') -->
-                            <button class="print-qr-button" style="margin-left:0.75rem; background:#ef4444; border-color:#ef4444;"
-                                onclick="openQrModal('{{ $nombreBase }}', {{ $colmenas->toJson() }}, 'delete')">
-                                <i class="fas fa-trash-alt"></i>
-                                <span>Eliminar colmenas</span>
-                            </button>
+                            @if(!$apiario->es_temporal)
+                                <!-- Botón para eliminar (solo si NO es temporal) -->
+                                <button class="print-qr-button"
+                                    style="margin-left:0.75rem; background:#ef4444; border-color:#ef4444;"
+                                    onclick="openQrModal('{{ $nombreBase }}', {{ $colmenas->toJson() }}, 'delete')">
+                                    <i class="fas fa-trash-alt"></i>
+                                    <span>Eliminar colmenas</span>
+                                </button>
+                            @endif
                         </div>
                     </div>
                 </div>
@@ -159,16 +162,33 @@
         </div>
     </div>
 
+    <!-- Overlay de carga para imprimir QR -->
     <div id="loadingOverlay" class="loading-overlay">
         <div class="loading-content">
             <div class="loading-spinner">
                 <svg class="spinner-svg" viewBox="0 0 50 50">
-                    <circle class="spinner-bg" cx="25" cy="25" r="20" fill="none" stroke="#f3f3f3" stroke-width="5"/>
-                    <circle class="spinner-fg" cx="25" cy="25" r="20" fill="none" stroke="#f5a700" stroke-width="5"/>
+                    <circle class="spinner-bg" cx="25" cy="25" r="20" fill="none" stroke="#f3f3f3" stroke-width="5" />
+                    <circle class="spinner-fg" cx="25" cy="25" r="20" fill="none" stroke="#f5a700" stroke-width="5" />
                 </svg>
             </div>
             <div class="loading-title">Generando PDF</div>
-            <div class="loading-text">Por favor espera mientras preparamos tu archivo.<br>¡Esto puede tardar un momento!</div>
+            <div class="loading-text">Por favor espera mientras preparamos tu archivo.<br>¡Esto puede tardar un momento!
+            </div>
+        </div>
+    </div>
+
+    <!-- Overlay para eliminación -->
+    <div id="deleteLoadingOverlay" class="loading-overlay">
+        <div class="loading-content">
+            <div class="loading-spinner">
+                <svg class="spinner-svg" viewBox="0 0 50 50">
+                    <circle class="spinner-bg" cx="25" cy="25" r="20" fill="none" stroke="#f3f3f3" stroke-width="5" />
+                    <circle class="spinner-fg" cx="25" cy="25" r="20" fill="none" stroke="#ef4444" stroke-width="5" />
+                </svg>
+            </div>
+            <div class="loading-title" style="color:#ef4444;">Eliminando colmenas</div>
+            <div class="loading-text">Por favor espera mientras eliminamos las colmenas seleccionadas.<br>¡Esto puede tardar
+                un momento!</div>
         </div>
     </div>
 
@@ -200,12 +220,12 @@
                 const color = colmena.color_etiqueta || '#f5f5f5';
 
                 div.innerHTML = `
-                                    <input type="checkbox" style="margin-right: 8px;">
-                                    <div style="display: flex; align-items: center;">
-                                        <div style="width: 20px; height: 20px; background-color: ${color}; border: 1px solid #ccc; border-radius: 50px; margin-right: 8px;"></div>
-                                        <span>#${colmena.numero}</span>
-                                    </div>
-                                `;
+                                            <input type="checkbox" style="margin-right: 8px;">
+                                            <div style="display: flex; align-items: center;">
+                                                <div style="width: 20px; height: 20px; background-color: ${color}; border: 1px solid #ccc; border-radius: 50px; margin-right: 8px;"></div>
+                                                <span>#${colmena.numero}</span>
+                                            </div>
+                                        `;
 
                 container.appendChild(div);
             });
@@ -343,8 +363,8 @@
                 return;
             }
 
-            // Mostrar pantalla de carga
-            document.getElementById('loadingOverlay').classList.add('active');
+            // Mostrar pantalla de carga de eliminación
+            document.getElementById('deleteLoadingOverlay').classList.add('active');
 
             const formData = new FormData();
             formData.append('_token', '{{ csrf_token() }}');
@@ -358,25 +378,24 @@
                     'Accept': 'application/json'
                 }
             })
-            .then(response => {
-                if (!response.ok) throw new Error('Error al eliminar');
-                return response.json();
-            })
-            .then(data => {
-                if (data.success) {
-                    // Recargar la página para reflejar cambios (opcional: eliminar los elementos del DOM en lugar de reload)
-                    location.reload();
-                } else {
-                    alert('No se pudieron eliminar las colmenas');
-                }
-            })
-            .catch(() => {
-                alert('Ocurrió un error al eliminar las colmenas');
-            })
-            .finally(() => {
-                document.getElementById('loadingOverlay').classList.remove('active');
-                closeQrModal();
-            });
+                .then(response => {
+                    if (!response.ok) throw new Error('Error al eliminar');
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.success) {
+                        location.reload();
+                    } else {
+                        alert('No se pudieron eliminar las colmenas');
+                    }
+                })
+                .catch(() => {
+                    alert('Ocurrió un error al eliminar las colmenas');
+                })
+                .finally(() => {
+                    document.getElementById('deleteLoadingOverlay').classList.remove('active');
+                    closeQrModal();
+                });
         }
 
         // Cerrar modal al hacer clic fuera

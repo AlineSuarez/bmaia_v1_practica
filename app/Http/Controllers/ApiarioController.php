@@ -193,12 +193,12 @@ class ApiarioController extends Controller
 
     public function update(Request $request, $id)
     {
-        // VALIDACIÓN CORREGIDA - ahora acepta todos los formatos
-        $request->validate([
+        // VALIDACIÓN
+        $data = $request->validate([
             'nombre' => 'required|string|max:255',
             'temporada_produccion' => 'required|string',
             'registro_sag' => 'required|string',
-            'num_colmenas' => 'required|integer',
+            'num_colmenas' => 'required|integer|min:1',
             'tipo_apiario' => 'required|string',
             'tipo_manejo' => 'required|string',
             'objetivo_produccion' => 'required|string',
@@ -206,13 +206,22 @@ class ApiarioController extends Controller
             'comuna' => 'required|integer',
             'latitud' => 'required|numeric',
             'longitud' => 'required|numeric',
-            // VALIDACIÓN CORREGIDA - acepta todos los formatos y tamaño mayor
-            'foto' => 'nullable|image|mimes:jpeg,jpg,png,gif,webp,bmp,svg|max:10240' // 10MB
+            'foto' => 'nullable|image|mimes:jpeg,jpg,png,gif,webp,bmp,svg|max:10240'
         ]);
 
         $apiario = Apiario::findOrFail($id);
 
-        // Manejo mejorado de la nueva foto
+        // Verificar límites del usuario
+        $user = Auth::user();
+        $limite = $user->colmenaLimit();
+        $colmenasActuales = $apiario->colmenas()->count();
+        $colmenasSolicitadas = $data['num_colmenas'];
+
+        if (!is_null($limite) && $colmenasSolicitadas > $limite) {
+            return redirect()->back()->with('error', "No puedes tener más de {$limite} colmenas según tu plan.");
+        }
+
+        // Manejo de la foto
         if ($request->hasFile('foto')) {
             // Eliminar la foto anterior si existe
             if ($apiario->foto && Storage::disk('public')->exists($apiario->foto)) {
@@ -220,20 +229,15 @@ class ApiarioController extends Controller
             }
 
             $file = $request->file('foto');
-
-            // Generar nombre único
             $filename = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
-
-            // Guardar la nueva foto
             $path = $file->storeAs('fotos_apiarios', $filename, 'public');
             $apiario->foto = $path;
         }
 
-        // Actualizar otros campos del apiario
+        // Actualizar campos básicos del apiario
         $apiario->nombre = $request->nombre;
         $apiario->temporada_produccion = $request->temporada_produccion;
         $apiario->registro_sag = $request->registro_sag;
-        $apiario->num_colmenas = $request->num_colmenas;
         $apiario->tipo_apiario = $request->tipo_apiario;
         $apiario->tipo_manejo = $request->tipo_manejo;
         $apiario->objetivo_produccion = $request->objetivo_produccion;
@@ -242,6 +246,37 @@ class ApiarioController extends Controller
         $apiario->latitud = $request->latitud;
         $apiario->longitud = $request->longitud;
 
+        // GESTIÓN DE COLMENAS
+        if ($colmenasSolicitadas > $colmenasActuales) {
+            // CREAR colmenas faltantes
+            for ($i = $colmenasActuales + 1; $i <= $colmenasSolicitadas; $i++) {
+                $numero = $i;
+                // Asegurar número único
+                while ($apiario->colmenas()->where('numero', $numero)->exists()) {
+                    $numero++;
+                }
+
+                // Usar UUID para evitar duplicados en codigo_qr
+                $codigo = (string) \Illuminate\Support\Str::uuid();
+
+                $apiario->colmenas()->create([
+                    'nombre' => 'Colmena ' . $numero,
+                    'numero' => (string) $numero,
+                    'color_etiqueta' => 'Amarillo',
+                    'codigo_qr' => $codigo,
+                ]);
+            }
+        } elseif ($colmenasSolicitadas < $colmenasActuales) {
+            // ELIMINAR colmenas sobrantes (las más recientes)
+            $colmenasAEliminar = $colmenasActuales - $colmenasSolicitadas;
+            $apiario->colmenas()
+                ->orderBy('created_at', 'desc')
+                ->limit($colmenasAEliminar)
+                ->delete();
+        }
+
+        // Actualizar el conteo final
+        $apiario->num_colmenas = $colmenasSolicitadas;
         $apiario->save();
 
         return redirect()->route('apiarios')->with('success', 'Apiario actualizado exitosamente.');
