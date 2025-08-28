@@ -693,42 +693,42 @@
                                 suscripción anual, cada uno con 12 meses de acceso garantizado.</p>
                         </div>
                         <div class="card-body">
-    <div class="plan-status mb-4">
-        <h4>Tu Plan Actual</h4>
-        <div class="current-plan-info">
-            @if(!$payment || ($plan_end_date !== 'N/A' && \Carbon\Carbon::createFromFormat('d-m-Y', $plan_end_date)->isPast()))
-                <div class="alert alert-warning mb-0">
-                    No tienes ningún plan activo actualmente. Por favor, selecciona un plan para comenzar a usar el sistema.
-                </div>
-            @else
-                <div class="plan-badge {{ $user->plan == 'drone' ? 'plan-free' : 'plan-premium' }}">
-                    <span>{{ ucfirst($user->plan ?? 'drone') }}</span>
-                </div>
-                <div class="plan-details">
-                    <p><strong>Fecha de inicio:</strong> {{ $plan_start_date ?? 'N/A' }}</p>
-                    <p><strong>Fecha de vencimiento:</strong> {{ $plan_end_date ?? 'N/A' }}</p>
-                    <div class="plan-progress">
-                        <div class="progress">
-                            <div class="progress-bar" role="progressbar" style="width: {{ $plan_progress ?? 0 }}%;"
-                                aria-valuenow="{{ $plan_progress ?? 0 }}" aria-valuemin="0" aria-valuemax="100">
-                                {{ $plan_progress ?? 0 }}%
+                            <div class="plan-status mb-4">
+                                <h4>Tu Plan Actual</h4>
+                                <div class="current-plan-info">
+                                    @if(!$payment || ($plan_end_date !== 'N/A' && \Carbon\Carbon::createFromFormat('d-m-Y', $plan_end_date)->isPast()))
+                                        <div class="alert alert-warning mb-0">
+                                            No tienes ningún plan activo actualmente. Por favor, selecciona un plan para comenzar a usar el sistema.
+                                        </div>
+                                    @else
+                                        <div class="plan-badge {{ $user->plan == 'drone' ? 'plan-free' : 'plan-premium' }}">
+                                            <span>{{ ucfirst($user->plan ?? 'drone') }}</span>
+                                        </div>
+                                        <div class="plan-details">
+                                            <p><strong>Fecha de inicio:</strong> {{ $plan_start_date ?? 'N/A' }}</p>
+                                            <p><strong>Fecha de vencimiento:</strong> {{ $plan_end_date ?? 'N/A' }}</p>
+                                            <div class="plan-progress">
+                                                <div class="progress">
+                                                    <div class="progress-bar" role="progressbar" style="width: {{ $plan_progress ?? 0 }}%;"
+                                                        aria-valuenow="{{ $plan_progress ?? 0 }}" aria-valuemin="0" aria-valuemax="100">
+                                                        {{ $plan_progress ?? 0 }}%
+                                                    </div>
+                                                </div>
+                                                <small>
+                                                    {{ $plan_days_left }} días
+                                                    @if($plan_hours_left > 0)
+                                                        y {{ $plan_hours_left }} horas
+                                                    @endif
+                                                    @if($plan_minutes_left > 0)
+                                                        y {{ $plan_minutes_left }} minutos
+                                                    @endif
+                                                    restantes
+                                                </small>
+                                            </div>
+                                        </div>
+                                    @endif
+                                </div>
                             </div>
-                        </div>
-                        <small>
-                            {{ $plan_days_left }} días
-                            @if($plan_hours_left > 0)
-                                y {{ $plan_hours_left }} horas
-                            @endif
-                            @if($plan_minutes_left > 0)
-                                y {{ $plan_minutes_left }} minutos
-                            @endif
-                            restantes
-                        </small>
-                    </div>
-                </div>
-            @endif
-        </div>
-    </div>
 
                             @php
                                 $isAugust = now()->month == 8;
@@ -772,6 +772,15 @@
                                         <span>Desliza horizontalmente para ver más contenido de la tabla</span>
                                     </div>
                                 </div>
+                                <form action="{{ route('payment.initiate') }}" method="POST">
+                                    @csrf
+                                    <input type="hidden" name="plan" value="test">
+                                    <input type="hidden" name="doc_type" value="boleta">
+                                    <input type="hidden" name="prod_test" value="1">
+                                    <button type="submit" class="btn btn-warning">
+                                        Pago de prueba $50
+                                    </button>
+                                </form>
                                 <div class="table-responsive mb-4">
                                     <table class="table table-bordered plans-table">
                                         <thead class="table-light">
