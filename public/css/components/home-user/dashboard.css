@@ -3313,11 +3313,10 @@
 
 /* Estilo especial para la tarjeta "Mi Plan" */
 #dashboard-container .metric-card.actualizar-plan {
-    background: linear-gradient(135deg, #ffe082 0%, #ffd54f 60%, #ffb300 100%);
+    background: #ffffff;
     color: #7c5700;
     border: 2px solid #ffca28;
-    box-shadow: 0 6px 24px 0 rgba(255, 193, 7, 0.18),
-        0 1.5px 8px 0 rgba(255, 193, 7, 0.12);
+    box-shadow: 0 6px 24px 0 rgba(255, 193, 7, 0.18), 0 1.5px 8px 0 rgba(255, 193, 7, 0.12);
     position: relative;
     overflow: hidden;
 }
