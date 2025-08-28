@@ -17,10 +17,8 @@ use Illuminate\Support\Str;
 use \App\Models\Factura;
 use App\Models\Region;
 use App\Models\Comuna;
-use App\Services\PlanService;
 use App\Services\PaymentMailer;
 use Carbon\Carbon;
-use Illuminate\Session\Store;
 
 
 class PaymentController extends Controller
@@ -49,10 +47,10 @@ class PaymentController extends Controller
     {
         $this->configureWebpay();
         $allowTestPlan = $request->boolean('prod_test');
-        $allowedPlans  = $allowTestPlan ? 'afc,me,ge,test' : 'afc,me,ge';
+        $allowedPlans = $allowTestPlan ? 'afc,me,ge,test' : 'afc,me,ge';
         // Validar plan
         $request->validateWithBag('plans', [
-            'plan'     => "required|in:{$allowedPlans}",
+            'plan' => "required|in:{$allowedPlans}",
             'doc_type' => 'required|in:boleta,factura',
         ]);
 
@@ -91,9 +89,11 @@ class PaymentController extends Controller
             'test' => 50,
             default => 0,
         };
-        if (now()->month == 8)
+        // Solo aplica descuento de agosto a afc, me, ge
+        if (now()->month == 8 && in_array($plan, ['afc', 'me', 'ge'])) {
             $amount = (int) round($amount * 0.7);
-        
+        }
+
         // ---- OVERRIDE solo si es PRODUCCIÓN y está habilitado ----
         $prodOverride = (env('WEBPAY_ENVIRONMENT') === 'PRODUCTION')
             && filter_var(env('WEBPAY_PROD_TEST_MODE', false), FILTER_VALIDATE_BOOLEAN)
@@ -104,18 +104,18 @@ class PaymentController extends Controller
         if ($prodOverride) {
             $allowed = array_filter(array_map('trim', explode(',', (string) env('WEBPAY_PROD_TEST_ALLOWED'))));
             if (empty($allowed) || in_array(strtolower($user->email), array_map('strtolower', $allowed), true)) {
-                $amount  = (int) env('WEBPAY_PROD_TEST_AMOUNT', 50); // monto final con IVA incluido
-                $plan    = 'test';
+                $amount = (int) env('WEBPAY_PROD_TEST_AMOUNT', 50); // monto final con IVA incluido
+                $plan = 'test';
                 $docType = 'boleta'; // evitar facturas reales en prueba
                 $skipIva = false;
             }
         }
 
         // ---- Aplica IVA solo si no es override ----
-        if (!$skipIva) {
+        if (!$skipIva && $plan !== 'test') {
             $amount = (int) round($amount * 1.19);
         }
-        
+
         // Aplica IVA 19% (total final)
         //$amount = $amount * 1.19;
         // Redondear a entero
@@ -147,13 +147,13 @@ class PaymentController extends Controller
         // 5) Guardar Payment (dejamos el token inmediatamente)
         Payment::create([
             'user_id' => $user->id,
-            'dato_facturacion_id' => $datoFacturacionId,  
+            'dato_facturacion_id' => $datoFacturacionId,
             'transaction_id' => $response->getToken(),
             'status' => 'pending',
             'amount' => $amount,
             'plan' => $plan,
             'doc_type' => $docType,
-            'billing_snapshot' => $billingSnapshot,  
+            'billing_snapshot' => $billingSnapshot,
             'buy_order' => $buyOrder,
             'session_id' => $sessionId,
         ]);
