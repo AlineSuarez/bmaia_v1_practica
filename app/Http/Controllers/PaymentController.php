@@ -48,28 +48,14 @@ class PaymentController extends Controller
     public function initiatePayment(Request $request)
     {
         $this->configureWebpay();
-        $allowTestPlan = $request->boolean('prod_test');
-        $allowedPlans  = $allowTestPlan ? 'afc,me,ge,test' : 'afc,me,ge';
         // Validar plan
         $request->validateWithBag('plans', [
-            'plan'     => "required|in:{$allowedPlans}",
+            'plan' => 'required|in:afc,me,ge',
             'doc_type' => 'required|in:boleta,factura',
         ]);
-
         $user = Auth::user();
         $plan = $request->input('plan');
         $docType = $request->input('doc_type');
-
-        // ---- Validar datos si pidió FACTURA ----
-        $df = $user->datosFacturacion;
-        if ($docType === 'factura') {
-            if (!$df || !$df->razon_social || !$df->rut || !$df->correo_envio_dte) {
-                return back()->with(
-                    'error',
-                    'Para factura, completa Razón Social, RUT y Correo de envío DTE en tus Datos de Facturación.'
-                );
-            }
-        }
         // 1) Verificar datos de facturación mínimos
         $df = $user->datosFacturacion;
         $billingSnapshot = null;
@@ -88,44 +74,20 @@ class PaymentController extends Controller
             'afc' => 69900,
             'me' => 87900,
             'ge' => 150900,
-            'test' => 50,
-            default => 0,
         };
         if (now()->month == 8)
             $amount = (int) round($amount * 0.7);
         
-        // ---- OVERRIDE solo si es PRODUCCIÓN y está habilitado ----
-        $prodOverride = (env('WEBPAY_ENVIRONMENT') === 'PRODUCTION')
-            && filter_var(env('WEBPAY_PROD_TEST_MODE', false), FILTER_VALIDATE_BOOLEAN)
-            && $request->boolean('prod_test');
-
-        $skipIva = false;
-
-        if ($prodOverride) {
-            $allowed = array_filter(array_map('trim', explode(',', (string) env('WEBPAY_PROD_TEST_ALLOWED'))));
-            if (empty($allowed) || in_array(strtolower($user->email), array_map('strtolower', $allowed), true)) {
-                $amount  = (int) env('WEBPAY_PROD_TEST_AMOUNT', 50); // monto final con IVA incluido
-                $plan    = 'test';
-                $docType = 'boleta'; // evitar facturas reales en prueba
-                $skipIva = false;
-            }
-        }
-
-        // ---- Aplica IVA solo si no es override ----
-        if (!$skipIva) {
-            $amount = (int) round($amount * 1.19);
-        }
-        
         // Aplica IVA 19% (total final)
-        //$amount = $amount * 1.19;
+        $amount = $amount * 1.19;
         // Redondear a entero
-        //$amount = (int) round($amount);
+        $amount = (int) round($amount);
         // Transacción
         $buyOrder = uniqid('ORDER_');
         $sessionId = session()->getId();
         $response = (new Transaction())->create($buyOrder, $sessionId, $amount, route('payment.response'));
 
-        // ⚠️ Solo setear snapshot si es FACTURA
+        // ⚠ Solo setear snapshot si es FACTURA
         $billingSnapshot = null;
         $datoFacturacionId = null;
         if ($docType === 'factura' && $df) {
@@ -147,13 +109,13 @@ class PaymentController extends Controller
         // 5) Guardar Payment (dejamos el token inmediatamente)
         Payment::create([
             'user_id' => $user->id,
-            'dato_facturacion_id' => $datoFacturacionId,  
+            'dato_facturacion_id' => $datoFacturacionId,   // ✅ null si es boleta
             'transaction_id' => $response->getToken(),
             'status' => 'pending',
             'amount' => $amount,
             'plan' => $plan,
             'doc_type' => $docType,
-            'billing_snapshot' => $billingSnapshot,  
+            'billing_snapshot' => $billingSnapshot,     // ✅ null si es boleta
             'buy_order' => $buyOrder,
             'session_id' => $sessionId,
         ]);

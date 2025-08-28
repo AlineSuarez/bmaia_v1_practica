@@ -772,15 +772,7 @@
                                         <span>Desliza horizontalmente para ver más contenido de la tabla</span>
                                     </div>
                                 </div>
-                                <form action="{{ route('payment.initiate') }}" method="POST">
-                                    @csrf
-                                    <input type="hidden" name="plan" value="test">
-                                    <input type="hidden" name="doc_type" value="boleta">
-                                    <input type="hidden" name="prod_test" value="1">
-                                    <button type="submit" class="btn btn-warning">
-                                        Pago de prueba $50
-                                    </button>
-                                </form>
+                                
                                 <div class="table-responsive mb-4">
                                     <table class="table table-bordered plans-table">
                                         <thead class="table-light">
