@@ -30,35 +30,41 @@ class DashboardController extends Controller
             'Uso de Medicamentos',
         ];
 
-        // Conteo de apiarios por tipo
-        $apiariosFijos = Apiario::where('user_id', $user->id)
-            ->where('tipo_apiario', 'fijo')
-            ->count();
-
+        // Apiarios base (trashumantes activos y no temporales)
         $apiariosBase = Apiario::where('user_id', $user->id)
             ->where('tipo_apiario', 'trashumante')
             ->where('activo', 1)
             ->where('es_temporal', false)
             ->count();
 
+        // Apiarios temporales (trashumantes activos y temporales)
         $apiariosTemporales = Apiario::where('user_id', $user->id)
             ->where('tipo_apiario', 'trashumante')
             ->where('activo', 1)
             ->where('es_temporal', true)
             ->count();
 
-        // 2. Conteo total de apiarios y colmenas (igual que antes)
-        $totalApiarios = Apiario::where('user_id', $user->id)->count();
-        $totalColmenas = Apiario::where('user_id', $user->id)->sum('num_colmenas');
+        // Totales (solo trashumantes activos)
+        $totalApiarios = Apiario::where('user_id', $user->id)
+            ->where('tipo_apiario', 'trashumante')
+            ->where('activo', 1)
+            ->count();
 
-        // 3. Ahora cuento SOLO las visitas de esos tipos
+        $totalColmenas = Apiario::where('user_id', $user->id)
+            ->where('tipo_apiario', 'trashumante')
+            ->where('activo', 1)
+            ->sum('num_colmenas');
+
+        // Visitas (solo en trashumantes activos)
         $visitas = Visita::whereHas('apiario', function ($q) use ($user) {
-            $q->where('user_id', $user->id);
+            $q->where('user_id', $user->id)
+            ->where('tipo_apiario', 'trashumante')
+            ->where('activo', 1);
         })
             ->whereIn('tipo_visita', $tiposOk)
             ->count();
 
-        // 4. El resto de tu lógica (tasks, dataApiarios, etc.) no cambia
+        // Tareas
         $tasks = SubTarea::where('user_id', $user->id)->get();
         $t_progreso = $tasks->where('estado', 'En progreso')->count();
         $t_pendientes = $tasks->where('estado', 'Pendiente')->count();
@@ -67,24 +73,29 @@ class DashboardController extends Controller
             ->count();
         $t_completadas = $tasks->where('estado', 'Completada')->count();
 
-        $apiarios = Apiario::where('user_id', $user->id)->get();
+        // Apiarios para data gráfica (solo trashumantes activos)
+        $apiarios = Apiario::where('user_id', $user->id)
+            ->where('tipo_apiario', 'trashumante')
+            ->where('activo', 1)
+            ->get();
+
         $dataApiarios = $apiarios->map(fn($a) => [
             'name' => $a->nombre,
             'count' => $a->num_colmenas,
             'season' => $a->temporada_produccion,
         ]);
 
-        // Si necesitas usar el detalle de visitas en gráficos, corrige también el mapeo:
-        $dataVisitas = Visita::whereHas(
-            'apiario',
-            fn($q) =>
+        // Data visitas
+        $dataVisitas = Visita::whereHas('apiario', function ($q) use ($user) {
             $q->where('user_id', $user->id)
-        )
-            ->whereIn('tipo_visita', $tiposOk)    // opcional: solo pasar esos tres tipos
+            ->where('tipo_apiario', 'trashumante')
+            ->where('activo', 1);
+        })
+            ->whereIn('tipo_visita', $tiposOk)
             ->get()
             ->map(fn($v) => [
                 'apiario' => $v->apiario->nombre,
-                'tipo_visita' => $v->tipo_visita,   // aquí estaba '$v->tipo'
+                'tipo_visita' => $v->tipo_visita,
             ]);
 
         return view('dashboard', compact(
@@ -98,13 +109,10 @@ class DashboardController extends Controller
             'dataApiarios',
             'dataVisitas',
             'user',
-            // Agrega los nuevos conteos
-            'apiariosFijos',
             'apiariosBase',
             'apiariosTemporales'
         ));
     }
-
 
     public function home()
     {
@@ -113,29 +121,43 @@ class DashboardController extends Controller
             return redirect()->route('welcome')->with('error', 'Debe iniciar sesión para acceder al dashboard.');
         }
 
-        // Obtenemos la cantidad de apiarios y reemplazamos con 0 si es null
-        $totalApiarios = Apiario::where('user_id', $user->id)->count() ?? 0;
+        // Total de apiarios (solo trashumantes activos)
+        $totalApiarios = Apiario::where('user_id', $user->id)
+            ->where('tipo_apiario', 'trashumante')
+            ->where('activo', 1)
+            ->count();
 
-        // Obtenemos la cantidad de colmenas asociadas al usuario, reemplazando con 0 si es null
-        $totalColmenas = Apiario::where('user_id', $user->id)->sum('num_colmenas');
+        // Total de colmenas (solo trashumantes activos)
+        $totalColmenas = Apiario::where('user_id', $user->id)
+            ->where('tipo_apiario', 'trashumante')
+            ->where('activo', 1)
+            ->sum('num_colmenas');
 
-        // Definimos valores predeterminados para variables que podrían ser nulas
-        $ubicacionApiarios = 'Zona Norte'; // Modifica esto según tu lógica de ubicación
-        $clima = 'Soleado'; // Puedes integrar una API para obtener el clima real si es necesario
-        $apiarioEnUso = 'Apiario 1'; // Debe ser dinámico según tus necesidades
-        $visitas = 0; // Valor predeterminado para visitas si no existen
+        // Variables predeterminadas
+        $ubicacionApiarios = 'Zona Norte';
+        $clima = 'Soleado';
+        $apiarioEnUso = 'Apiario 1';
+
+        // Tareas
         $tasks = SubTarea::where('user_id', $user->id)->get();
-        // Contar tareas con manejo de casos donde no haya tareas
-        $t_progreso = $tasks->where('estado', 'En progreso')->count() ?? 0;
-        $t_pendientes = $tasks->where('estado', 'Pendiente')->count() ?? 0;
-        $t_urgentes = $tasks->where('prioridad', 'urgente')->where('estado', '!=', 'Completada')->count() ?? 0;
-        $t_completadas = $tasks->where('estado', 'Completada')->count() ?? 0;
-        // Retornamos la vista 'dashboard' con las variables aseguradas
+        $t_progreso = $tasks->where('estado', 'En progreso')->count();
+        $t_pendientes = $tasks->where('estado', 'Pendiente')->count();
+        $t_urgentes = $tasks->where('prioridad', 'urgente')->where('estado', '!=', 'Completada')->count();
+        $t_completadas = $tasks->where('estado', 'Completada')->count();
+
+        // Visitas (solo trashumantes activos)
         $totalVisitas = Visita::whereHas('apiario', function ($query) use ($user) {
-            $query->where('user_id', $user->id);
+            $query->where('user_id', $user->id)
+                ->where('tipo_apiario', 'trashumante')
+                ->where('activo', 1);
         })->count();
         $visitas = $totalVisitas ?? 0;
-        $apiarios = Apiario::where('user_id', $user->id)->get();
+
+        // Apiarios para data gráfica (solo trashumantes activos)
+        $apiarios = Apiario::where('user_id', $user->id)
+            ->where('tipo_apiario', 'trashumante')
+            ->where('activo', 1)
+            ->get();
         $dataApiarios = $apiarios->map(function ($apiario) {
             return [
                 'name' => $apiario->nombre,
@@ -144,7 +166,7 @@ class DashboardController extends Controller
             ];
         });
 
-        // Cálculo de la fecha de vencimiento del plan
+        // Plan del usuario
         $ultimaFactura = $user->facturas()
             ->where('estado', 'emitida')
             ->latest('fecha_emision')
@@ -154,7 +176,6 @@ class DashboardController extends Controller
             ? Carbon::parse($ultimaFactura->fecha_emision)->addDays(365)
             : null;
 
-        // Busca el último pago "paid"
         $payment = Payment::where('user_id', $user->id)
             ->where('status', 'paid')
             ->latest()
@@ -200,6 +221,7 @@ class DashboardController extends Controller
             'plan_active'
         ));
     }
+
 
     //cantidad de apiarios:
     public function cantidadApiarios()

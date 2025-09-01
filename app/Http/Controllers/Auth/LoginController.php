@@ -28,7 +28,8 @@ class LoginController extends Controller
         ]);
         $remember = $request->filled('remember');
         if (Auth::attempt($credentials, $remember)) {
-            $defaultView = Auth::user()->preference->default_view ?? 'dashboard';
+            $user = Auth::user();
+            $defaultView = Auth::user()->preference->default_view ?? 'home';
             // Mapa de keys → route names (falta analizar que los nombres coincidan)
             $map = [
                 'dashboard' => 'dashboard',
@@ -41,13 +42,9 @@ class LoginController extends Controller
                 'zonificacion' => 'zonificacion',
                 'sistemaexperto' => 'sistemaexperto',
             ];
-            // Si por alguna razón no existe en el mapa, vamos a dashboard
             $routeName = $map[$defaultView] ?? 'home';
-            // redirect()->intended() usa la "intended URL" si venías de un middleware auth,
-            // Redirigir a la página de inicio si las credenciales son correctas
-            return redirect()->route($routeName); // valor calculado 
+            return redirect()->route($routeName);
         }
-        // Si falla, redirigir de nuevo al formulario con un mensaje de error
         return back()->withErrors([
             'email' => 'Las credenciales proporcionadas son incorrectas.',
         ]);

@@ -13,6 +13,7 @@ use Illuminate\Http\Request;
 use SendGrid;
 use Illuminate\Support\Facades\View;
 use Exception;
+use App\Models\Preference;
 
 class RegisterController extends Controller
 {
@@ -75,10 +76,22 @@ class RegisterController extends Controller
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
         ]);
-
+        Preference::firstOrCreate(
+            ['user_id' => $user->id],
+            [
+                'language'        => 'es_CL',
+                'date_format'     => 'DD/MM/YYYY',
+                'theme'           => 'light',
+                'voice_preference'=> 'female_1',
+                'default_view'    => 'home',
+                'voice_match'     => false,
+                'calendar_email'  => false,
+                'calendar_push'   => false,
+                'reminder_time'   => 15,
+            ]
+        );
         // Renderiza la vista Blade como HTML
         $htmlContent = View::make('emails.welcome', ['user' => $user])->render();
-
         // Construir el correo
         $email = new \SendGrid\Mail\Mail();
         $email->setFrom("soporte@bmaia.cl", "B-MaiA");
@@ -110,4 +123,26 @@ class RegisterController extends Controller
         return $user;
     }
 
+    protected function redirectTo()
+    {
+        $user = auth()->user();
+
+        if ($user && $user->preference && $user->preference->default_view) {
+            $map = [
+                'dashboard'     => 'dashboard',
+                'apiaries'      => 'apiarios',
+                'calendar'      => 'tareas.calendario',
+                'reports'       => 'dashboard',
+                'home'          => 'home',
+                'cuaderno'      => 'visitas.index',
+                'tareas'        => 'tareas',
+                'zonificacion'  => 'zonificacion',
+                'sistemaexperto'=> 'sistemaexperto',
+            ];
+
+            return route($map[$user->preference->default_view] ?? 'home');
+        }
+
+        return '/home';
+    }
 }
