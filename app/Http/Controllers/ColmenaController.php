@@ -82,12 +82,12 @@ class ColmenaController extends Controller
 
     public function show(Apiario $apiario, $colmenaId)
     {
-        if (!Auth::check()) {
+        $colmena = Colmena::withTrashed()->where('apiario_id', $apiario->id)->findOrFail($colmenaId);
+
+        // Si no está autenticado o no es el dueño del apiario, mostrar vista pública
+        if (!Auth::check() || Auth::id() !== $apiario->user_id) {
             return redirect()->route('colmenas.public', ['colmena' => $colmenaId]);
         }
-
-        // Buscar colmena incluyendo archivadas
-        $colmena = Colmena::withTrashed()->where('apiario_id', $apiario->id)->findOrFail($colmenaId);
 
         // 1) Cada tabla hija usando colmena_id
         $pcc1 = DB::table('desarrollo_cria')
