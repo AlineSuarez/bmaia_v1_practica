@@ -77,7 +77,30 @@ class PaymentController extends Controller
         };
         if (now()->month == 8)
             $amount = (int) round($amount * 0.7);
-        
+        }
+
+        // ---- OVERRIDE solo si es PRODUCCIÓN y está habilitado ----
+        $prodOverride = (env('WEBPAY_ENVIRONMENT') === 'PRODUCTION')
+            && filter_var(env('WEBPAY_PROD_TEST_MODE', false), FILTER_VALIDATE_BOOLEAN)
+            && $request->boolean('prod_test');
+
+        $skipIva = false;
+
+        if ($prodOverride) {
+            $allowed = array_filter(array_map('trim', explode(',', (string) env('WEBPAY_PROD_TEST_ALLOWED'))));
+            if (empty($allowed) || in_array(strtolower($user->email), array_map('strtolower', $allowed), true)) {
+                $amount = (int) env('WEBPAY_PROD_TEST_AMOUNT', 50); // monto final con IVA incluido
+                $plan = 'test';
+                $docType = 'boleta'; // evitar facturas reales en prueba
+                $skipIva = false;
+            }
+        }
+
+        // ---- Aplica IVA solo si no es override ----
+        if (!$skipIva && $plan !== 'test') {
+            $amount = (int) round($amount * 1.19);
+        }
+
         // Aplica IVA 19% (total final)
         $amount = $amount * 1.19;
         // Redondear a entero
