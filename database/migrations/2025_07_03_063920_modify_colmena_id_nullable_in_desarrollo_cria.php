@@ -9,6 +9,10 @@ class ModifyColmenaIdNullableInDesarrolloCria extends Migration
 {
     public function up()
     {
+        // ⛔️ Saltar en SQLite (testing): no hay MODIFY/CHECKS y ->change() no funciona
+        if (Schema::getConnection()->getDriverName() === 'sqlite') {
+            return;
+        }
         // Desactivamos temporalmente las restricciones de clave foránea para cambiar la columna
         DB::statement('SET FOREIGN_KEY_CHECKS = 0');
 

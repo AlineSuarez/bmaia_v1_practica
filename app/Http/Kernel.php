@@ -59,14 +59,7 @@ class Kernel extends HttpKernel
         'signed' => \Illuminate\Routing\Middleware\ValidateSignature::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
+        'idempotency' => \App\Http\Middleware\Idempotency::class,
     ];
 
-    protected $commands = [
-        \App\Console\Commands\BackfillFacturasCommand::class,
-    ];
-
-    protected function commands()
-    {
-        $this->load(__DIR__.'/Commands');
-    }
 }

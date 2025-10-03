@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Laravel\Socialite\Facades\Socialite;
 use Illuminate\Support\Str;
+use Exception;
 
 class GoogleController extends Controller
 {
@@ -19,22 +20,18 @@ class GoogleController extends Controller
     public function handleGoogleCallback()
     {
         try {
-            $googleUser = Socialite::driver('google')->stateless()->user();
-            $user = User::where('email', $googleUser->getEmail())->first();
+            $googleUser = Socialite::driver('google')->user();
 
-            if ($user) {
-                // Si el usuario ya existe, solo iniciar sesión
-                Auth::login($user);
-                request()->session()->regenerate();
-            } else {
-                // Si el usuario no existe, crear uno nuevo
-                $user = User::create([
-                    'name' => $googleUser->getName(),
-                    'email' => $googleUser->getEmail(),
-                    'password' => bcrypt(Str::random(16)), // Contraseña aleatoria
-                ]);
-                Auth::login($user);
-            }
+            $user = User::firstOrCreate(
+                ['email' => $googleUser->getEmail()],
+                [
+                    'name' => $googleUser->getName() ?: 'Usuario',
+                    'password' => bcrypt(Str::random(32)),
+                ]
+            );
+
+            Auth::login($user, true);
+            request()->session()->regenerate();
 
             return redirect()->intended('/home');
         } catch (Exception $e) {

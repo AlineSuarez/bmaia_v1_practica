@@ -14,11 +14,12 @@ use App\Models\Reminder;
 use App\Models\Alert;
 use App\Models\ImportantDate;
 use App\Models\Preference;
+use Laravel\Sanctum\HasApiTokens;
 //use Illuminate\Contracts\Auth\MustVerifyEmail;
 
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable;
+    use HasFactory, HasApiTokens, Notifiable;
 
     /**
      * The attributes that are mass assignable.

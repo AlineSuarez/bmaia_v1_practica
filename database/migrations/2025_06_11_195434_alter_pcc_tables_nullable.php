@@ -7,6 +7,10 @@ class Alterpcctablesnullable extends Migration
 {
     public function up()
     {
+        // 🚧 Saltar en SQLite (testing) porque no soporta MODIFY/CHANGE COLUMN
+          if (Schema::getConnection()->getDriverName() === 'sqlite') {
+              return;
+          }
         // Desarrollo de Cría
         DB::statement("
             ALTER TABLE `desarrollo_cria`
@@ -107,6 +111,6 @@ class Alterpcctablesnullable extends Migration
 
     public function down()
     {
-        
+        //
     }
 }

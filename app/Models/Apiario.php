@@ -31,6 +31,17 @@ class Apiario extends Model
         'foto'
     ];
 
+    protected static function booted()
+    {
+        static::creating(function ($apiario) {
+            if (is_null($apiario->temporada_produccion)) {
+                $apiario->temporada_produccion = (int) now()->year;
+            }
+        });
+    }
+
+    protected $casts = ['activo' => 'boolean'];
+
     /**
      * Relación: Un apiario pertenece a un usuario.
      */

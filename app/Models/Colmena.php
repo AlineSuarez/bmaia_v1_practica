@@ -3,6 +3,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Str;
 
 class Colmena extends Model
 {
@@ -24,6 +25,38 @@ class Colmena extends Model
     protected $casts = [
         'historial' => 'array',
     ];
+
+    
+    // escribe en 'numero' cuando te mandan 'identificador'
+    public function setIdentificadorAttribute($value)
+    {
+        $this->attributes['numero'] = $value;
+    }
+
+    // lee 'identificador' desde 'numero'
+    public function getIdentificadorAttribute()
+    {
+        return $this->attributes['numero'] ?? null;
+    }
+
+    protected static function booted()
+    {
+        static::creating(function (Colmena $colmena) {
+            // Autogenera QR si no se envió
+            if (empty($colmena->codigo_qr)) {
+                $n = $colmena->numero ?? 'X';
+                $a = $colmena->apiario_id ?? 'X';
+                $colmena->codigo_qr = "QR-{$a}-{$n}-" . Str::upper(Str::random(6));
+            }
+
+            // Opcional: autogenera nombre si no viene
+            if (empty($colmena->nombre)) {
+                $colmena->nombre = isset($colmena->numero)
+                    ? "Colmena {$colmena->numero}"
+                    : "Colmena";
+            }
+        });
+    }
 
     public function apiario()
     {
@@ -78,4 +111,5 @@ class Colmena extends Model
     {
         return $this->hasOne(\App\Models\DesarrolloCria::class)->latestOfMany();
     }
+
 }

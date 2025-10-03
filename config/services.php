@@ -50,7 +50,9 @@ return [
     'sendgrid' => [
         'api_key' => env('SENDGRID_API_KEY'),
     ],
-
-
-
+    'n8n' => [
+        'base_url'    => env('N8N_BASE_URL', 'https://n8n.bmaia.cl'),
+        'hmac_secret' => env('N8N_HMAC_SECRET', ''),
+        'callback_key'=> env('N8N_CALLBACK_KEY', ''),
+    ]
 ];

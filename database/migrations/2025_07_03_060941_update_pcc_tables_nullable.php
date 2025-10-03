@@ -52,18 +52,18 @@ class UpdatePccTablesNullable extends Migration
             'preparacion_invernada',
         ];
 
-        // Hacemos el down en orden inverso
         foreach (array_reverse($tables) as $table) {
-            Schema::table($table, function (Blueprint $t) use ($table) {
-                if (Schema::hasColumn($table, 'visita_id')) {
-                    $t->dropForeign([$t->getTable().'_visita_id_foreign'] ?? ['visita_id']);
+            Schema::table($table, function (Blueprint $t) {
+                if (Schema::hasColumn($t->getTable(), 'visita_id')) {
+                    $t->dropForeign(['visita_id']);
                     $t->dropColumn('visita_id');
                 }
-                if (Schema::hasColumn($table, 'colmena_id')) {
-                    $t->dropForeign([$t->getTable().'_colmena_id_foreign'] ?? ['colmena_id']);
+                if (Schema::hasColumn($t->getTable(), 'colmena_id')) {
+                    $t->dropForeign(['colmena_id']);
                     $t->dropColumn('colmena_id');
                 }
             });
         }
     }
+
 }
