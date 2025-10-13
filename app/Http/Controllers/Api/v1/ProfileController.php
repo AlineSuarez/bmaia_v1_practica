@@ -95,11 +95,9 @@ class ProfileController extends Controller
     private function serializeUser($user): array
     {
         $avatarUrl = null;
-        if ($user->avatar_path) {
-            // Requiere: php artisan storage:link
-            $avatarUrl = asset('storage/'.$user->avatar_path);
-            // Si prefieres Storage y tu versión lo soporta:
-            // $avatarUrl = Storage::disk('public')->url($user->avatar_path);
+        if ($user->profile_picture) {
+            $publicPath = Storage::url($user->profile_picture);
+            $avatarUrl  = request()->getSchemeAndHttpHost() . $publicPath;
         }
 
         return [
@@ -108,6 +106,8 @@ class ProfileController extends Controller
             'email'  => $user->email,
             'phone'  => $user->phone ?? null,
             'avatar' => $avatarUrl,
+            'profile_picture' => $user->profile_picture,
+            'avatar_url'      => $avatarUrl, 
         ];
     }
 }

@@ -22,6 +22,8 @@ use App\Http\Controllers\Api\v1\MovimientoController;
 use App\Http\Controllers\Api\v1\ProfileController;
 use App\Models\Region;
 use App\Models\Comuna;
+use App\Http\Controllers\Api\v1\ForgotPasswordController;
+
 use App\Http\Controllers\Api\v1\VisitaInspeccionApiController;
 use App\Http\Controllers\Api\v1\VisitaMedicamentosApiController;
 use App\Http\Controllers\Api\v1\VisitaAlimentacionApiController;
@@ -39,6 +41,8 @@ Route::prefix('v1')->name('api.')->group(function () {
 
     Route::get('health', fn () => response()->json(['ok' => true, 'time' => now()->toIso8601String()]))->name('health');
 
+    Route::post('password/forgot', [ForgotPasswordController::class, 'sendResetLinkEmail'])->middleware('throttle:5,1');
+    Route::post('password/reset',  [ForgotPasswordController::class, 'reset'])->middleware('throttle:5,1');
 
     // ---- Rutas autenticadas ----
     Route::middleware('auth:sanctum')->group(function () {

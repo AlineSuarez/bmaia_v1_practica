@@ -41,6 +41,7 @@ return [
         'client_id' => env('GOOGLE_CLIENT_ID'),
         'client_secret' => env('GOOGLE_CLIENT_SECRET'),
         'redirect' => env('GOOGLE_REDIRECT_URL'),
+        'client_id_mobile'  => env('GOOGLE_CLIENT_ID_MOBILE', env('GOOGLE_CLIENT_ID')),
     ],
     'webpay' => [
         'commerce_code' => env('WEBPAY_COMMERCE_CODE'),

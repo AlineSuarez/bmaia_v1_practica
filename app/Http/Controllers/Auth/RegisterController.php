@@ -74,22 +74,34 @@ class RegisterController extends Controller
         $user = User::create([
             'name' => $data['name'],
             'email' => $data['email'],
-            'password' => Hash::make($data['password']),
+            'password' => \Hash::make($data['password']),
         ]);
         Preference::firstOrCreate(
             ['user_id' => $user->id],
             [
-                'language'        => 'es_CL',
-                'date_format'     => 'DD/MM/YYYY',
-                'theme'           => 'light',
-                'voice_preference'=> 'female_1',
-                'default_view'    => 'home',
-                'voice_match'     => false,
-                'calendar_email'  => false,
-                'calendar_push'   => false,
-                'reminder_time'   => 15,
+                'language' => 'es_CL',
+                'date_format' => 'DD/MM/YYYY',
+                'theme' => 'light',
+                'voice_preference' => 'female_1',
+                'default_view' => 'home',
+                'voice_match' => false,
+                'calendar_email' => false,
+                'calendar_push' => false,
+                'reminder_time' => 15,
             ]
         );
+
+        // === Asignar prueba gratuita al usuario recién registrado ===
+        \App\Models\Payment::create([
+            'user_id' => $user->id,
+            'transaction_id' => 'trial-' . uniqid(),
+            'status' => 'paid',
+            'amount' => 0,
+            'plan' => 'drone',
+        ]);
+        $user->fecha_vencimiento = now()->addDays(16);
+        $user->save();
+
         // Renderiza la vista Blade como HTML
         $htmlContent = View::make('emails.welcome', ['user' => $user])->render();
         // Construir el correo
@@ -129,15 +141,15 @@ class RegisterController extends Controller
 
         if ($user && $user->preference && $user->preference->default_view) {
             $map = [
-                'dashboard'     => 'dashboard',
-                'apiaries'      => 'apiarios',
-                'calendar'      => 'tareas.calendario',
-                'reports'       => 'dashboard',
-                'home'          => 'home',
-                'cuaderno'      => 'visitas.index',
-                'tareas'        => 'tareas',
-                'zonificacion'  => 'zonificacion',
-                'sistemaexperto'=> 'sistemaexperto',
+                'dashboard' => 'dashboard',
+                'apiaries' => 'apiarios',
+                'calendar' => 'tareas.calendario',
+                'reports' => 'dashboard',
+                'home' => 'home',
+                'cuaderno' => 'visitas.index',
+                'tareas' => 'tareas',
+                'zonificacion' => 'zonificacion',
+                'sistemaexperto' => 'sistemaexperto',
             ];
 
             return route($map[$user->preference->default_view] ?? 'home');
