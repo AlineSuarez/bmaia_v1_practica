@@ -20,14 +20,37 @@ use App\Models\{
 
 class VisitaApiController extends Controller
 {
-    /**
-     * --------------------- CRUD mínimo (tests actuales) ---------------------
-     * POST /api/v1/visitas  (name: api.visitas.store)
-     * PUT  /api/v1/visitas/{visita} (name: api.visitas.update)
-     * DELETE /api/v1/visitas/{visita} (name: api.visitas.destroy)
-     */
 
-    // Crea una "Visita General" mínima (usa 'fecha' -> 'fecha_visita')
+    public function index(Request $request)
+    {
+        $q = Visita::query()->latest('fecha_visita');
+
+        if ($request->filled('apiario_id')) {
+            $q->where('apiario_id', $request->integer('apiario_id'));
+        }
+
+        // tipos esperados:
+        // 'Visita General', 'Inspección de Visita', 'Uso de Medicamentos', 'Alimentación', 'Inspección de Reina'
+        if ($request->filled('tipo')) {
+            $q->where('tipo_visita', $request->string('tipo'));
+        }
+
+        return response()->json(['data' => $q->get()], 200);
+    }
+
+    // GET /api/v1/apiarios/{apiario}/visitas?tipo=...
+    public function indexByApiario(Request $request, Apiario $apiario)
+    {
+        $q = Visita::where('apiario_id', $apiario->id)->latest('fecha_visita');
+
+        if ($request->filled('tipo')) {
+            $q->where('tipo_visita', $request->string('tipo'));
+        }
+
+        return response()->json(['data' => $q->get()], 200);
+    }
+   
+    
     public function store(Request $request)
     {
         $data = $request->validate([
@@ -47,8 +70,6 @@ class VisitaApiController extends Controller
 
         return response()->json(['data' => $visita], 201);
     }
-
-    // Actualiza campos básicos de visita
     public function update(Request $request, Visita $visita)
     {
         $data = $request->validate([
@@ -73,13 +94,6 @@ class VisitaApiController extends Controller
         return response()->json(['ok' => true], 200);
     }
 
-    /**
-     * --------------------- Visita General (detalle) ---------------------
-     * Crea/actualiza la visita + la fila en visita_generales
-     * Útil para el formulario “Registro General de Visitas”.
-     */
-
-    // POST /api/v1/visitas/general
     public function storeGeneral(Request $request)
     {
         $data = $request->validate([
@@ -94,8 +108,6 @@ class VisitaApiController extends Controller
         ]);
 
         $apiario = Apiario::findOrFail($data['apiario_id']);
-
-        // crear o actualizar visita
         $visita = $data['visita_id']
             ? tap(Visita::where('id', $data['visita_id'])
                     ->where('apiario_id', $apiario->id)->firstOrFail()
@@ -109,8 +121,6 @@ class VisitaApiController extends Controller
                 'fecha_visita' => $data['fecha'],
                 'tipo_visita'  => 'Visita General',
             ]);
-
-        // upsert detalle
         $visita->visitaGeneral()->updateOrCreate([], [
             'motivo'    => $data['motivo'],
             'nombres'   => $data['nombres'],
@@ -122,7 +132,6 @@ class VisitaApiController extends Controller
         return response()->json(['data' => $visita->load('visitaGeneral')], 201);
     }
 
-    // PUT /api/v1/visitas/general/{visita}
     public function updateGeneral(Request $request, Visita $visita)
     {
         $data = $request->validate([
@@ -148,11 +157,6 @@ class VisitaApiController extends Controller
         return response()->json(['data' => $visita->load('visitaGeneral')], 200);
     }
 
-    /**
-     * --------------------- Inspección (resumen de apiario) ---------------------
-     */
-
-    // POST /api/v1/visitas/inspeccion
     public function storeInspeccion(Request $request)
     {
         $data = $request->validate([
@@ -199,7 +203,6 @@ class VisitaApiController extends Controller
         return response()->json(['data' => $visita->load('inspeccion')], 201);
     }
 
-    // PUT /api/v1/visitas/inspeccion/{visita}
     public function updateInspeccion(Request $request, Visita $visita)
     {
         $data = $request->validate([
@@ -226,11 +229,6 @@ class VisitaApiController extends Controller
         return response()->json(['data' => $visita->load('inspeccion')], 200);
     }
 
-    /**
-     * --------------------- Uso de Medicamentos ---------------------
-     */
-
-    // POST /api/v1/visitas/medicamentos
     public function storeMedicamentos(Request $request)
     {
         $common = $request->validate([
@@ -245,7 +243,6 @@ class VisitaApiController extends Controller
 
         $apiario = Apiario::with('colmenas')->findOrFail($common['apiario_id']);
 
-        // Reglas específicas
         $rulesVarroa = [
             'varroa_metodo_diagnostico'            => 'nullable|string',
             'varroa_diagnostico_visual'            => 'nullable|string',
@@ -357,18 +354,12 @@ class VisitaApiController extends Controller
         return response()->json(['data' => $visita->fresh()], 201);
     }
 
-    // PUT /api/v1/visitas/medicamentos/{visita}
     public function updateMedicamentos(Request $request, Visita $visita)
     {
         $request->merge(['visita_id' => $visita->id, 'apiario_id' => $visita->apiario_id]);
         return $this->storeMedicamentos($request);
     }
 
-    /**
-     * --------------------- Alimentación ---------------------
-     */
-
-    // POST /api/v1/visitas/alimentacion
     public function storeAlimentacion(Request $request)
     {
         $data = $request->validate([
@@ -415,18 +406,12 @@ class VisitaApiController extends Controller
         return response()->json(['data' => $visita->fresh()], 201);
     }
 
-    // PUT /api/v1/visitas/alimentacion/{visita}
     public function updateAlimentacion(Request $request, Visita $visita)
     {
         $request->merge(['visita_id' => $visita->id, 'apiario_id' => $visita->apiario_id]);
         return $this->storeAlimentacion($request);
     }
 
-    /**
-     * --------------------- Reina ---------------------
-     */
-
-    // POST /api/v1/visitas/reina
     public function storeReina(Request $request)
     {
         $data = $request->validate([
@@ -493,7 +478,6 @@ class VisitaApiController extends Controller
         return response()->json(['data' => $visita->fresh()], 201);
     }
 
-    // PUT /api/v1/visitas/reina/{visita}
     public function updateReina(Request $request, Visita $visita)
     {
         $request->merge(['visita_id' => $visita->id, 'apiario_id' => $visita->apiario_id]);

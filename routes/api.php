@@ -111,11 +111,6 @@ Route::prefix('v1')->name('api.')->group(function () {
         Route::apiResource('colmenas', ColmenaApiController::class);
         Route::apiResource('visitas',  VisitaApiController::class);
 
-        // ---- Rutas genéricas mínimas (las que exige VisitasGeneralesApiTest) ----
-        Route::post('visitas', [VisitaApiController::class, 'store'])->name('visitas.store');
-        Route::put('visitas/{visita}', [VisitaApiController::class, 'update'])->name('visitas.update');
-        Route::delete('visitas/{visita}', [VisitaApiController::class, 'destroy'])->name('visitas.destroy');
-
         // ---- Visita GENERAL (formulario específico) ----
         Route::post('visitas/general', [VisitaApiController::class, 'storeGeneral'])->name('visitas.general.store');
         Route::put('visitas/general/{visita}', [VisitaApiController::class, 'updateGeneral'])->name('visitas.general.update');
