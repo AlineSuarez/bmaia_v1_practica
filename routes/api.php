@@ -23,6 +23,7 @@ use App\Http\Controllers\Api\v1\ProfileController;
 use App\Models\Region;
 use App\Models\Comuna;
 use App\Http\Controllers\Api\v1\ForgotPasswordController;
+use App\Http\Controllers\Api\v1\GeoController;
 
 use App\Http\Controllers\Api\v1\VisitaInspeccionApiController;
 use App\Http\Controllers\Api\v1\VisitaMedicamentosApiController;
@@ -81,6 +82,7 @@ Route::prefix('v1')->name('api.')->group(function () {
         Route::post('me/avatar', [ProfileController::class, 'uploadAvatar']);
         Route::patch('me/password', [ProfileController::class, 'updatePassword']);
 
+        Route::get('geo/resolve', [GeoController::class, 'resolve'])->name('geo.resolve');
 
         // ===== Lookups para la app móvil =====
         Route::get('/regiones', function () {
@@ -182,8 +184,6 @@ Route::prefix('v1')->name('api.')->group(function () {
         Route::post('notificaciones/push',     [NotificacionController::class, 'push'])->name('notificaciones.push');
     });
 
-    // Healthcheck
-    Route::get('health', fn () => response()->json(['ok' => true, 'time' => now()->toIso8601String()]))->name('health');
 });
 
 // Fallback JSON

@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\Rule;
 
 
 class ApiarioApiController extends Controller
@@ -51,77 +52,94 @@ class ApiarioApiController extends Controller
 
     public function store(Request $request)
     {
+        // 1) Si llegan nombres y faltan IDs, resuélvelos antes de validar
+        if ((!$request->filled('region_id') || !$request->filled('comuna_id'))
+            && ($request->filled('region') || $request->filled('comuna'))) {
+
+            [$rid, $cid] = $this->geo->resolve(
+                $request->input('region'),
+                $request->input('comuna'),
+                $request->input('region_id'),
+                $request->input('comuna_id')
+            );
+
+            if ($rid) $request->merge(['region_id' => $rid]);
+            if ($cid) $request->merge(['comuna_id' => $cid]);
+        }
+
+        // 2) Validar. Ahora puede venir por nombres o IDs, pero al final exigimos los IDs.
         $validator = Validator::make($request->all(), [
-            'nombre' => 'required|string|max:255',
+            'nombre'               => 'required|string|max:255',
             'temporada_produccion' => 'nullable|string|max:100',
-            'registro_sag' => 'nullable|string|max:255',
-            'num_colmenas' => 'required|integer|min:0',
-            'tipo_apiario' => 'required|in:trashumante,temporal',
-            'tipo_manejo' => 'required|in:orgánico,convencional',
-            'objetivo_produccion' => 'required|in:producción,polinización,cría,mixto',
-            'pais' => 'nullable|string|max:255',
-            'localizacion' => 'nullable|string|max:255',
-            'region_id' => 'required|exists:regiones,id',
-            'comuna_id' => 'required|exists:comunas,id',
-            'latitud' => 'nullable|numeric|between:-90,90',
-            'longitud' => 'nullable|numeric|between:-180,180',
-            'foto' => 'nullable|image|max:5120', // 5MB
-            'activo' => 'boolean',
-            'es_temporal' => 'boolean',
+            'registro_sag'         => 'nullable|string|max:255',
+            'num_colmenas'         => 'required|integer|min:0',
+            'tipo_apiario'         => ['required', Rule::in(['trashumante','temporal'])],
+            'tipo_manejo'          => ['required', Rule::in(['orgánico','convencional'])],
+            'objetivo_produccion'  => ['required', Rule::in(['producción','polinización','cría','mixto'])],
+            'pais'                 => 'nullable|string|max:255',
+            'localizacion'         => 'nullable|string|max:255',
+
+            // ← los IDs deben existir al validar (porque ya “mergemos” lo resuelto)
+            'region_id'            => 'required|exists:regiones,id',
+            'comuna_id'            => 'required|exists:comunas,id',
+
+            'latitud'              => 'nullable|numeric|between:-90,90',
+            'longitud'             => 'nullable|numeric|between:-180,180',
+            'foto'                 => 'nullable|image|max:5120',
+            'activo'               => 'boolean',
+            'es_temporal'          => 'boolean',
+
+            // aceptamos también los nombres (no obligatorios) para UX/voz
+            'region'               => 'sometimes|string|max:255',
+            'comuna'               => 'sometimes|string|max:255',
         ]);
 
         if ($validator->fails()) {
-            return response()->json([
-                'success' => false,
-                'errors' => $validator->errors(),
-            ], 422);
+            return response()->json(['success'=>false, 'errors'=>$validator->errors()], 422);
         }
 
         try {
             $data = $validator->validated();
             $data['user_id'] = auth()->id();
 
-            // Manejar upload de foto
             if ($request->hasFile('foto')) {
                 $data['foto'] = $request->file('foto')->store('apiarios', 'public');
             }
 
-            // Crear apiario
             $apiario = Apiario::create($data);
-
-            // Cargar relaciones
             $apiario->load(['region', 'comuna']);
 
-            Log::info('Apiario creado', [
-                'user_id' => auth()->id(),
-                'apiario_id' => $apiario->id,
-                'nombre' => $apiario->nombre,
-            ]);
+            \Log::info('Apiario creado', ['user_id'=>auth()->id(),'apiario_id'=>$apiario->id]);
 
             return response()->json([
-                'success' => true,
-                'message' => 'Apiario creado exitosamente',
-                'data' => $apiario,
+                'success'=>true,
+                'message'=>'Apiario creado exitosamente',
+                'data'=>$apiario,
             ], 201);
 
-        } catch (\Exception $e) {
-            Log::error('Error al crear apiario', [
-                'user_id' => auth()->id(),
-                'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString(),
-            ]);
-
-            return response()->json([
-                'success' => false,
-                'error' => 'Error al crear apiario',
-                'message' => $e->getMessage(),
-            ], 500);
+        } catch (\Throwable $e) {
+            \Log::error('Error al crear apiario', ['user_id'=>auth()->id(),'error'=>$e->getMessage()]);
+            return response()->json(['success'=>false, 'error'=>'Error al crear apiario'], 500);
         }
     }
-
     public function update(Request $request, $id)
     {
         $apiario = Apiario::where('user_id', auth()->id())->findOrFail($id);
+
+        // Resolver nombres → IDs si hiciera falta
+        if (($request->filled('region') || $request->filled('comuna')) &&
+            (!$request->filled('region_id') || !$request->filled('comuna_id'))) {
+
+            [$rid, $cid] = $this->geo->resolve(
+                $request->input('region'),
+                $request->input('comuna'),
+                $request->input('region_id'),
+                $request->input('comuna_id')
+            );
+
+            if ($rid) $request->merge(['region_id' => $rid]);
+            if ($cid) $request->merge(['comuna_id' => $cid]);
+        }
 
         $validator = Validator::make($request->all(), [
             'nombre' => 'sometimes|string|max:255',
@@ -137,56 +155,35 @@ class ApiarioApiController extends Controller
             'longitud' => 'nullable|numeric|between:-180,180',
             'activo' => 'sometimes|boolean',
             'es_temporal' => 'sometimes|boolean',
+            'region'               => 'sometimes|string|max:255',
+            'comuna'               => 'sometimes|string|max:255',
         ]);
 
         if ($validator->fails()) {
-            return response()->json([
-                'success' => false,
-                'errors' => $validator->errors(),
-            ], 422);
+            return response()->json(['success'=>false, 'errors'=>$validator->errors()], 422);
         }
 
         DB::beginTransaction();
-        
         try {
-            $dataAntes = $apiario->toArray();
-            
+            $antes = $apiario->toArray();
             $apiario->update($validator->validated());
-            $apiario->load(['region', 'comuna']);
+            $apiario->load(['region','comuna']);
 
-            // Auditoría
             $this->audit($request, 'apiario.update', $apiario->id, [
-                'antes' => $dataAntes,
-                'despues' => $apiario->toArray(),
+                'antes'=>$antes, 'despues'=>$apiario->toArray()
             ]);
 
-            DB::commit();
+            \DB::commit();
+            \Log::info('Apiario actualizado', ['user_id'=>auth()->id(),'apiario_id'=>$apiario->id]);
 
-            Log::info('Apiario actualizado', [
-                'user_id' => auth()->id(),
-                'apiario_id' => $apiario->id,
-            ]);
+            \Cache::forget('user_apiarios_'.auth()->id());
 
-            Cache::forget('user_apiarios_' . auth()->id());
+            return response()->json(['success'=>true,'message'=>'Apiario actualizado exitosamente','data'=>$apiario]);
 
-            return response()->json([
-                'success' => true,
-                'message' => 'Apiario actualizado exitosamente',
-                'data' => $apiario,
-            ]);
-
-        } catch (\Exception $e) {
-            DB::rollBack();
-            
-            Log::error('Error al actualizar apiario', [
-                'apiario_id' => $id,
-                'error' => $e->getMessage(),
-            ]);
-
-            return response()->json([
-                'success' => false,
-                'error' => 'Error al actualizar apiario',
-            ], 500);
+        } catch (\Throwable $e) {
+            \DB::rollBack();
+            \Log::error('Error al actualizar apiario', ['apiario_id'=>$id,'error'=>$e->getMessage()]);
+            return response()->json(['success'=>false,'error'=>'Error al actualizar apiario'], 500);
         }
     }
 
