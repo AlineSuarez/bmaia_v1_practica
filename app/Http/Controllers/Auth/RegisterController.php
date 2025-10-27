@@ -75,7 +75,10 @@ class RegisterController extends Controller
             'name' => $data['name'],
             'email' => $data['email'],
             'password' => \Hash::make($data['password']),
+            'plan' => 'drone',
+            'fecha_vencimiento' => now()->addDays(16),
         ]);
+
         Preference::firstOrCreate(
             ['user_id' => $user->id],
             [
@@ -91,41 +94,32 @@ class RegisterController extends Controller
             ]
         );
 
-        // === Asignar prueba gratuita al usuario recién registrado ===
+        // Crear registro de pago gratuito
         \App\Models\Payment::create([
             'user_id' => $user->id,
             'transaction_id' => 'trial-' . uniqid(),
             'status' => 'paid',
             'amount' => 0,
             'plan' => 'drone',
+            'doc_type' => 'boleta',
+            'expires_at' => now()->addDays(16),
         ]);
-        $user->fecha_vencimiento = now()->addDays(16);
-        $user->save();
 
-        // Renderiza la vista Blade como HTML
+        // Envío de correo de bienvenida
         $htmlContent = View::make('emails.welcome', ['user' => $user])->render();
-        // Construir el correo
         $email = new \SendGrid\Mail\Mail();
         $email->setFrom("soporte@bmaia.cl", "B-MaiA");
         $email->setSubject("¡Bienvenido a B-MaiA, {$user->name}!");
         $email->addTo($user->email, $user->name);
-        $email->addContent(
-            "text/plain",
-            "¡Bienvenido a B-MaiA, {$user->name}!"
-        );
-        $email->addContent(
-            "text/html",
-            $htmlContent
-        );
+        $email->addContent("text/plain", "¡Bienvenido a B-MaiA, {$user->name}!");
+        $email->addContent("text/html", $htmlContent);
 
-        // Envía el correo usando la API de SendGrid
         $sendgrid = new SendGrid(config('services.sendgrid.api_key'));
         try {
             $response = $sendgrid->send($email);
             \Log::info('SendGrid welcome response', [
                 'status' => $response->statusCode(),
                 'body' => $response->body(),
-                'headers' => $response->headers(),
             ]);
         } catch (Exception $e) {
             \Log::error('SendGrid welcome error: ' . $e->getMessage());

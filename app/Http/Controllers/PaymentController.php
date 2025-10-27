@@ -413,32 +413,32 @@ class PaymentController extends Controller
     {
         $user = Auth::user();
 
+        // Verificar si ya tuvo prueba gratuita
         $dronePayment = Payment::where('user_id', $user->id)
             ->where('plan', 'drone')
             ->orderByDesc('created_at')
             ->first();
 
-        if ($dronePayment && now()->diffInDays($dronePayment->created_at) < 16) {
-            return redirect()->route('home')->with('error', 'Ya tienes una prueba gratuita activa.');
+        if ($dronePayment) {
+            return redirect()->route('home')->with('error', 'Ya has usado tu prueba gratuita anteriormente.');
         }
 
-        if ($dronePayment && now()->diffInDays($dronePayment->created_at) >= 16) {
-            $request->session()->put('payment_required', true);
-            return redirect()->route('payment.required')->with('error', 'Ya usaste tu prueba gratuita.');
-        }
-
+        // Crear pago gratuito
         Payment::create([
             'user_id' => $user->id,
-            'transaction_id' => 'trial-' . uniqid(),
+            'transaction_id' => 'trial-manual-' . uniqid(),
             'status' => 'paid',
             'amount' => 0,
             'plan' => 'drone',
+            'doc_type' => 'boleta',
+            'expires_at' => now()->addDays(16),
         ]);
 
+        $user->plan = 'drone';
         $user->fecha_vencimiento = now()->addDays(16);
         $user->save();
 
-        // Envío con SDK SendGrid (opcional)
+        // Envío de correo de activación
         $htmlContent = View::make('emails.free-trial-activated', ['user' => $user])->render();
         $email = new \SendGrid\Mail\Mail();
         $email->setFrom("soporte@bmaia.cl", "B-MaiA - Prueba Gratuita");
@@ -542,9 +542,16 @@ class PaymentController extends Controller
     {
         $user = Auth::user();
 
+        // Si el usuario tiene plan 'drone' activo, no mostrar esta vista
+        if ($user->plan === 'drone' && $user->fecha_vencimiento && now()->lessThanOrEqualTo($user->fecha_vencimiento)) {
+            return redirect()->route('home');
+        }
+
+        // Solo mostrar si no tiene plan o está vencido (excepto drone activo)
         if (!$user->plan || ($user->fecha_vencimiento && now()->greaterThan($user->fecha_vencimiento))) {
             return view('payment.required');
         }
+
         return redirect()->route('home');
     }
 }
