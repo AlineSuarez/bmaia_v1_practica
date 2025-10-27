@@ -55,6 +55,7 @@
                             <span class="info-text" style="margin-left: 1rem; color: #888; font-size: 0.95em;">
                                 <i class="fas fa-info-circle"></i>
                                 Selecciona un apiario base para crear un apiario temporal
+                                Selecciona un apiario base para crear un apiario temporal
                             </span>
                         </div>
 
@@ -263,8 +264,8 @@
                                 <tbody>
                                     @forelse($apiariosTemporales as $apiario)
                                         @php
-                                            $mov = $apiario->ultimoMovimientoDestino;
-                                            $apiarioOrigen = $mov ? $mov->apiarioOrigen : null;
+    $mov = $apiario->ultimoMovimientoDestino;
+    $apiarioOrigen = $mov ? $mov->apiarioOrigen : null;
                                         @endphp
                                         <tr>
                                             <td>
