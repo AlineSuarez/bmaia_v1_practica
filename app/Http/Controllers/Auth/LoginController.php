@@ -1,6 +1,5 @@
 <?php
 
-
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
@@ -16,7 +15,7 @@ class LoginController extends Controller
 
     public function showLoginForm()
     {
-        return view('auth.login'); // Asegúrate de que esta vista existe
+        return view('auth.login');
     }
 
     public function login(Request $request)
@@ -26,25 +25,13 @@ class LoginController extends Controller
             'email' => 'required|email',
             'password' => 'required',
         ]);
+
         $remember = $request->filled('remember');
+
         if (Auth::attempt($credentials, $remember)) {
-            $user = Auth::user();
-            $defaultView = Auth::user()->preference->default_view ?? 'home';
-            // Mapa de keys → route names (falta analizar que los nombres coincidan)
-            $map = [
-                'dashboard' => 'dashboard',
-                'apiaries' => 'apiarios',
-                'calendar' => 'tareas.calendario',
-                'reports' => 'dashboard',
-                'home' => 'home',
-                'cuaderno' => 'visitas.index',
-                'tareas' => 'tareas',
-                'zonificacion' => 'zonificacion',
-                'sistemaexperto' => 'sistemaexperto',
-            ];
-            $routeName = $map[$defaultView] ?? 'home';
-            return redirect()->route($routeName);
+            return redirect()->route('home');
         }
+
         return back()->withErrors([
             'email' => 'Las credenciales proporcionadas son incorrectas.',
         ]);
@@ -55,6 +42,6 @@ class LoginController extends Controller
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
-        return redirect('/'); // Redirige al inicio
+        return redirect('/');
     }
 }
