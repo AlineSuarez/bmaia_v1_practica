@@ -11,6 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
+        // 🔒 Evita el error en producción si la tabla ya existe
+        if (Schema::hasTable('personal_access_tokens')) {
+            return;
+        }
+
         Schema::create('personal_access_tokens', function (Blueprint $table) {
             $table->id();
             $table->morphs('tokenable');
@@ -28,6 +33,9 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('personal_access_tokens');
+        // Si quieres ser ultra seguro, puedes chequear antes de dropear:
+        if (Schema::hasTable('personal_access_tokens')) {
+            Schema::dropIfExists('personal_access_tokens');
+        }
     }
 };
