@@ -129,32 +129,8 @@ class RegisterController extends Controller
             ]);
         } catch (Exception $e) {
             \Log::error('SendGrid welcome error: ' . $e->getMessage());
-            // Opcional: puedes decidir si lanzar una excepción o solo registrar el error
         }
 
         return $user;
-    }
-
-    protected function redirectTo()
-    {
-        $user = auth()->user();
-
-        if ($user && $user->preference && $user->preference->default_view) {
-            $map = [
-                'dashboard' => 'dashboard',
-                'apiaries' => 'apiarios',
-                'calendar' => 'tareas.calendario',
-                'reports' => 'dashboard',
-                'home' => 'home',
-                'cuaderno' => 'visitas.index',
-                'tareas' => 'tareas',
-                'zonificacion' => 'zonificacion',
-                'sistemaexperto' => 'sistemaexperto',
-            ];
-
-            return route($map[$user->preference->default_view] ?? 'home');
-        }
-
-        return '/home';
     }
 }
