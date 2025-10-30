@@ -24,8 +24,9 @@ const TaskConfig = {
 // Estado global de la aplicación
 const AppState = {
     filtroActivo: "all",
+    filtroActivoPrioridad: "all", // Nuevo estado para filtrar por prioridad
     paginacion: {
-        porPagina: 8,
+        porPagina: 15,
         paginaActual: 1,
         totalPaginas: 1,
     },
@@ -64,8 +65,16 @@ function inicializarApp() {
         $(`.filter-btn[data-filter="${filtroGuardado}"]`).addClass("active");
     }
 
+    // Recuperar filtro de prioridad guardado
+    const filtroPrioridadGuardado = localStorage.getItem("tareas_filtro_prioridad");
+    if (filtroPrioridadGuardado && filtroPrioridadGuardado !== "all") {
+        AppState.filtroActivoPrioridad = filtroPrioridadGuardado;
+        $(`.priority-filter[data-priority="${filtroPrioridadGuardado}"]`).addClass("active");
+    }
+
     configurarEventListeners();
     configurarFiltros();
+    configurarFiltrosPrioridad(); // Nueva función para filtros de prioridad
     configurarSelect2();
     cargarTareasIniciales();
 }
@@ -160,6 +169,9 @@ function crearFilaTarea(task) {
     row.setAttribute("data-task-id", task.id);
     row.setAttribute("data-status", task.estado);
     row.setAttribute("data-priority", task.prioridad);
+    row.setAttribute("data-fecha-inicio", formatDateForInput(task.fecha_inicio));
+    row.setAttribute("data-fecha-limite", formatDateForInput(task.fecha_limite));
+
 
     row.innerHTML = `
         <td class="task-name-cell">
@@ -224,6 +236,9 @@ function paginarTabla() {
     // Aplicar filtros
     const rowsFiltradas = filtrarFilas(allRows);
 
+    // Ordenar filas filtradas
+    const rowsOrdenadas = ordenarFilas(rowsFiltradas);
+
     const { porPagina, paginaActual } = AppState.paginacion;
     const totalPaginas = Math.ceil(rowsFiltradas.length / porPagina) || 1;
 
@@ -249,13 +264,18 @@ function paginarTabla() {
 }
 
 function filtrarFilas(filas) {
-    if (AppState.filtroActivo === "all") {
-        return filas;
-    }
-
     return filas.filter((row) => {
         const estado = row.getAttribute("data-status");
-        return estado === AppState.filtroActivo;
+        const prioridad = row.getAttribute("data-priority");
+        
+        // Verificar filtro de estado
+        const cumpleEstado = AppState.filtroActivo === "all" || estado === AppState.filtroActivo;
+        
+        // Verificar filtro de prioridad
+        const cumplePrioridad = AppState.filtroActivoPrioridad === "all" || prioridad === AppState.filtroActivoPrioridad;
+        
+        // La fila debe cumplir AMBOS filtros
+        return cumpleEstado && cumplePrioridad;
     });
 }
 
@@ -318,6 +338,45 @@ function renderizarPaginacion() {
 
 /**
  * ================================================================
+ * ORDENAMIENTO DE FILAS
+ * ================================================================ */
+
+function ordenarFilas(filas) {
+    // Definir orden de prioridad de los estados
+    const ordenEstados = {
+        Pendiente: 1,
+        "En progreso": 2,
+        Completada: 3,
+    };
+
+    return filas.sort((a, b) => {
+        const estadoA = a.getAttribute("data-status");
+        const estadoB = b.getAttribute("data-status");
+
+        //Primer criterio: ordenar por estado
+        const prioridadEstadoA = ordenEstados[estadoA] || 999; 
+        const prioridadEstadoB = ordenEstados[estadoB] || 999; 
+
+        if (prioridadEstadoA !== prioridadEstadoB) { 
+            return prioridadEstadoA - prioridadEstadoB; 
+        }
+
+        //Segundo criterio: ordenar por Fecha de inicio (ascendente)
+        const fechaA = a.getAttribute('data-fecha-inicio') || a.querySelector('.fecha-inicio')?.value || "";
+        const fechaB = b.getAttribute('data-fecha-limite') || b.querySelector('.fecha-inicio')?.value || "";
+
+        //Aqui se convierte el Date para comparar correctamente
+        const dateA = new Date(fechaA);
+        const dateB = new Date(fechaB);
+
+        return dateA - dateB; //Orden ascendente (las más antiguas primero)
+    });
+
+
+}
+
+/**
+ * ================================================================
  * SISTEMA DE FILTROS
  * ================================================================ */
 
@@ -343,6 +402,44 @@ function aplicarFiltro(filtro) {
 function aplicarFiltros() {
     paginarTabla();
 }
+
+
+/**
+ * ================================================================
+ * CONFIGURACIÓN DE FILTROS DE PRIORIDAD
+ * ================================================================ */
+
+// Configurar eventos para filtros de prioridad
+function configurarFiltrosPrioridad() {
+    $(document).on("click", ".priority-filter", function () {
+        const prioridad = $(this).data("priority");
+        aplicarFiltroPrioridad(prioridad);
+        
+        // Actualizar UI
+        $(".priority-filter").removeClass("active");
+        if (AppState.filtroActivoPrioridad !== "all") {
+            $(this).addClass("active");
+        }
+    });
+}
+
+// Función para aplicar el filtro de prioridad
+function aplicarFiltroPrioridad(prioridad) {
+    // Si se hace clic en el mismo filtro, se desactiva
+    if (AppState.filtroActivoPrioridad === prioridad) {
+        AppState.filtroActivoPrioridad = "all";
+    } else {
+        AppState.filtroActivoPrioridad = prioridad;
+    }
+    
+    AppState.paginacion.paginaActual = 1; // Reiniciar a primera página
+    paginarTabla();
+    actualizarContadores();
+    
+    // Guardar filtro en localStorage
+    localStorage.setItem("tareas_filtro_prioridad", AppState.filtroActivoPrioridad);
+}
+
 
 /**
  * ================================================================
@@ -378,10 +475,10 @@ function formatPriorityOption(option) {
     if (!option.id) return option.text;
 
     const icons = {
-        baja: '<i class="fa fa-flag text-success"></i>',
-        media: '<i class="fa fa-flag text-info"></i>',
-        alta: '<i class="fa fa-flag text-warning"></i>',
-        urgente: '<i class="fa fa-flag text-danger"></i>',
+        baja: '<i class="fa fa-circle "style="color: #ADD8E6;"></i>',
+        media: '<i class="fa fa-circle text-success"></i>',
+        alta: '<i class="fa fa-circle "style="color: #FFFF00;"></i>',
+        urgente: '<i class="fa fa-circle text-danger"></i>',
     };
 
     return $(`<span>${icons[option.id] || ""} ${option.text}</span>`);
@@ -392,8 +489,8 @@ function formatStatusOption(option) {
 
     const icons = {
         Pendiente: '<i class="fa fa-hourglass-start text-secondary"></i>',
-        "En progreso": '<i class="fa fa-spinner text-primary"></i>',
-        Completada: '<i class="fa fa-check-circle text-success"></i>',
+        "En progreso": '<i class="fa fa-spinner text-secondary"></i>',
+        Completada: '<i class="fa fa-check-circle text-secondary"></i>',
     };
 
     return $(`<span>${icons[option.id] || ""} ${option.text}</span>`);
@@ -517,15 +614,14 @@ async function manejarGuardarCambios(event) {
 
             // Actualizar atributos de la fila
             $row.attr("data-status", taskData.estado);
-            $row.attr("data-priority", taskData.prioridad);
+            $row.attr("data-priority", taskData.prioridad); // Actualizar atributo de prioridad
+            $row.attr("data-fecha-inicio", taskData.fecha_inicio); // Actualizar atributo de fecha inicio
+            $row.attr("data-fecha-limite", taskData.fecha_limite); // Actualizar atributo de fecha límite
 
             // Actualizar contadores
-            actualizarContadores();
+            actualizarContadores(); // Actualizar contadores después de guardar
+            paginarTabla(); // Reaplicar paginación para reflejar cambios
 
-            // Reaplicar filtros por si cambió el estado
-            if (AppState.filtroActivo !== "all") {
-                paginarTabla();
-            }
         } else {
             throw new Error(`Error HTTP: ${response.status}`);
         }
@@ -640,11 +736,15 @@ function escapeHtml(text) {
     return div.innerHTML;
 }
 
-function actualizarContadores() {
-    const rows = document.querySelectorAll(".task-row");
-    const contadores = { Completada: 0, "En progreso": 0, Pendiente: 0 };
 
-    rows.forEach((row) => {
+// Actualizar contadores de tareas según filtros activos
+function actualizarContadores() {
+    const allRows = Array.from(document.querySelectorAll(".task-row")); // Todas las filas
+    const rowsFiltradas = filtrarFilas(allRows); // Filas que cumplen los filtros activos
+    const contadores = { Completada: 0, "En progreso": 0, Pendiente: 0 }; // Reiniciar contadores
+
+    // Contar estados en las filas filtradas
+    rowsFiltradas.forEach((row) => {
         const estado = row.getAttribute("data-status");
         if (contadores.hasOwnProperty(estado)) {
             contadores[estado]++;

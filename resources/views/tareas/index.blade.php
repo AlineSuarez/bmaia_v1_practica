@@ -19,10 +19,15 @@
             </div>
         </div>
 
+        @php
+            $year = now()->year;
+        @endphp
+
         <div class="apiario-wrapper">
             <!-- Encabezado principal -->
             <header class="apiario-header">
                 <h1 class="apiario-title"><span>Plan de Trabajo Anual</span></h1>
+                <h2 class="apiario-title-h2">Temporada {{ $year }} - {{ $year + 1 }} </h2>
             </header>
 
             <!-- Controles de vista y administración -->
@@ -33,6 +38,7 @@
                         title="Ver en formato tablero">Tablero</button>
                     <button class="btn-panal view-toggler" data-view="timeline" title="Ver en línea temporal">Línea de
                         Tiempo</button>
+                    <button class="btn-panal view-toggler" data-view="agenda" title="Ver en formato agenda">Agenda</button>
                 </div>
 
                 <!-- Nuevos botones separados -->
@@ -41,10 +47,25 @@
                         title="Crear tareas personalizadas">
                         <i class="fa fa-plus-circle"></i> Crear Tareas
                     </button>
+
                     <button id="btn-ver-archivadas" class="btn-miel" type="button" title="Ver tareas archivadas"
                         data-url="{{ route('tareas.archivadas') }}">
                         <i class="fa fa-archive"></i> Ver Tareas Descartadas
                     </button>
+
+                    <!-- Segunda linea de botones (total y Imprimir) -->
+                    <div class="task-stats">
+                        <span class="stat-item">
+                            <i class="fa-solid fa-tasks"></i>
+                            <span>{{ $subtareas->count() }} tareas</span>
+                        </span>
+                    </div>
+
+                    <a href="{{ route('tareas.imprimirTodas') }}" target="_blank" class="print-button">
+                        <i class="fa fa-print"></i>
+                        <span>Imprimir</span>
+                    </a>
+                    
                 </div>
             </section>
 
@@ -68,6 +89,11 @@
                 <!-- Vista Timeline -->
                 <div class="view timeline">
                     @include('tareas.timeline')
+                </div>
+
+                <!-- Vista Agenda -->
+                <div class="view agenda">
+                    @include('tareas.agenda')
                 </div>
 
                 <!-- Consejo final -->
@@ -140,7 +166,7 @@
                                                         <th><i class="fa fa-tasks me-1"></i>Nombre de la Tarea</th>
                                                         <th><i class="fa fa-calendar-day me-1"></i>Fecha Inicio</th>
                                                         <th><i class="fa fa-calendar-check me-1"></i>Fecha Límite</th>
-                                                        <th><i class="fa fa-flag me-1"></i>Prioridad</th>
+                                                        <th><i class="fa fa-circle me-1"></i>Prioridad</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>

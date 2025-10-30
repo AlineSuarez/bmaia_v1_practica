@@ -21,12 +21,12 @@
         <div class="timeline-container">
             <div class="etapas-grid">
                 @foreach ($tareasGenerales as $tareaGeneral)
-                                                    @php
-                    $subtareas = $tareaGeneral->subtareas;
-                    $completadas = $subtareas->where('estado', 'Completada')->count();
-                    $total = $subtareas->count();
-                    $progreso = $total > 0 ? round(($completadas / $total) * 100) : 0;
-                                                    @endphp
+                    @php
+                        $subtareas = $tareaGeneral->subtareas;
+                        $completadas = $subtareas->where('estado', 'Completada')->count();
+                        $total = $subtareas->count();
+                        $progreso = $total > 0 ? round(($completadas / $total) * 100) : 0;
+                    @endphp
 
                     <div class="etapa-card fade-in collapsed">
                         <!-- Header de la etapa -->
@@ -61,34 +61,33 @@
                                         <div class="task-name {{ $subtarea->estado === 'Completada' ? 'completed' : '' }}">
                                             {{ $subtarea->nombre }}
                                         </div>
-                                    </div>
+                                        <div class="task-meta">
+                                            <div class="task-badges">
+                                                <span class="prioridad-badge" data-prioridad="{{ strtolower($subtarea->prioridad) }}">
+                                                    {{ ucfirst($subtarea->prioridad) }}
+                                                </span>
 
-                                    <div class="task-meta">
-                                        <div class="task-badges">
-                                            <span class="prioridad-badge" data-prioridad="{{ strtolower($subtarea->prioridad) }}">
-                                                {{ ucfirst($subtarea->prioridad) }}
-                                            </span>
-
-                                            <span class="estado-badge estado-{{ strtolower(str_replace(' ', '', $subtarea->estado)) }}"
-                                                data-id="{{ $subtarea->id }}" data-current-state="{{ $subtarea->estado }}">
-                                                {{ $subtarea->estado }}
-                                            </span>
-                                        </div>
-
-                                        @if ($subtarea->fecha_inicio || $subtarea->fecha_fin)
-                                            <div class="task-dates">
-                                                @if ($subtarea->fecha_inicio)
-                                                    <div class="date-item">
-                                                        <span>{{ \Carbon\Carbon::parse($subtarea->fecha_inicio)->format('d/m/Y') }}</span>
-                                                    </div>
-                                                @endif
-                                                @if ($subtarea->fecha_fin)
-                                                    <div class="date-item">
-                                                        <span>{{ \Carbon\Carbon::parse($subtarea->fecha_fin)->format('d/m/Y') }}</span>
-                                                    </div>
-                                                @endif
+                                                <span class="estado-badge estado-{{ strtolower(str_replace(' ', '', $subtarea->estado)) }}"
+                                                    data-id="{{ $subtarea->id }}" data-current-state="{{ $subtarea->estado }}">
+                                                    {{ $subtarea->estado }}
+                                                </span>
                                             </div>
-                                        @endif
+
+                                            @if ($subtarea->fecha_inicio || $subtarea->fecha_fin)
+                                                <div class="task-dates">
+                                                    @if ($subtarea->fecha_inicio)
+                                                        <div class="date-item">
+                                                            <span>{{ \Carbon\Carbon::parse($subtarea->fecha_inicio)->format('d/m/Y') }}</span>
+                                                        </div>
+                                                    @endif
+                                                    @if ($subtarea->fecha_fin)
+                                                        <div class="date-item">
+                                                            <span>{{ \Carbon\Carbon::parse($subtarea->fecha_fin)->format('d/m/Y') }}</span>
+                                                        </div>
+                                                    @endif
+                                                </div>
+                                            @endif
+                                        </div>  
                                     </div>
                                 </div>
                             @empty

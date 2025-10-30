@@ -174,6 +174,13 @@
     border-radius: 2px;
 }
 
+.apiario-title-h2 {
+    transform: translateY(60px);
+    font-size: var(--font-size-2xl);
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
 .apiario-subtitle {
     font-size: var(--font-size-base);
     color: var(--text-secondary);
@@ -185,9 +192,14 @@
 .apiario-controls {
     display: flex;
     flex-direction: column;
+    position: sticky;
+    z-index: 12;
+    top: 0;
     gap: var(--spacing-lg);
-    margin-bottom: var(--spacing-xl);
-    padding: 0 var(--spacing-sm);
+    margin-bottom: var(--spacing-xs);
+    padding: var(--spacing-sm) var(--spacing-sm);
+    background-color: var(--bg-secondary);
+    border-bottom: 1px solid var(--border-light);
 }
 
 .view-controls {
@@ -227,23 +239,22 @@
 
 /* ===== CONTROLES DE ADMINISTRACIÓN ===== */
 .admin-controls {
-    display: flex;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
     gap: var(--spacing-md);
-    flex-wrap: wrap;
     justify-content: center;
     align-items: center;
 }
 
 .admin-controls .btn-miel {
     min-width: 180px;
-    padding: var(--spacing-md) var(--spacing-lg);
+    padding: var(--spacing-md) var(--spacing-sm);
     font-size: var(--font-size-sm);
     font-weight: 600;
     white-space: nowrap;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: var(--spacing-sm);
 }
 
 .btn-miel {

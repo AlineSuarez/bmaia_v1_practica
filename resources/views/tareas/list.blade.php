@@ -14,22 +14,31 @@
             <div class="header-left">
                 <h1 class="header-title">
                     <i class="fa-solid fa-list-check"></i>
-                    Lista de Tareas
+                    Lista de Tareas 
+                    <i class="fa-solid fa-circle-question"></i>
                 </h1>
-                <p class="header-subtitle">Gestiona y organiza tus tareas de manera eficiente</p>
+                
+                <p class="header-subtitle"> Gestiona y organiza de manera eficiente que tareas son relevantes para su Plan de Trabajo Anual</p>
+                
             </div>
-            <div class="header-actions">
-                <div class="task-stats">
-                    <span class="stat-item">
-                        <i class="fa-solid fa-tasks"></i>
-                        <span>{{ $subtareas->count() }} tareas</span>
-                    </span>
+                <div class="header-semaphore">
+                    @php
+                        $prioridades = [
+                            ['color' => 'red', 'label' => 'Urgentes', 'value' => 'urgente'],
+                            ['color' => 'yellow', 'label' => 'Alta', 'value' => 'alta'],
+                            ['color' => 'green', 'label' => 'Media', 'value' => 'media'],
+                            ['color' => 'lightblue', 'label' => 'Baja', 'value' => 'baja'],
+                        ];
+                    @endphp
+
+                    @foreach($prioridades as $prioridad)
+                        <div class="task-semaphore priority-filter" data-priority="{{ $prioridad['value'] }}" style="cursor: pointer;">
+                            <i class="fa-solid fa-circle priority-light" style="color: {{ $prioridad['color'] }}"></i>
+                            <span class="stat-semaphore">{{ $prioridad['label'] }}</span>
+                            <span class="task-text">{{ $subtareas->where('prioridad', $prioridad['value'])->count() }}</span>
+                        </div>
+                    @endforeach
                 </div>
-                <a href="{{ route('tareas.imprimirTodas') }}" target="_blank" class="print-button">
-                    <i class="fa fa-print"></i>
-                    <span>Imprimir</span>
-                </a>
-            </div>
         </div>
     </div>
 
@@ -90,8 +99,10 @@
                 <tbody id="tasksTableBody">
                     @foreach ($subtareas->filter() as $task)
                         <tr class="task-row" data-task-id="{{ $task->id }}" data-status="{{ $task->estado }}"
-                            data-priority="{{ $task->prioridad }}">
-
+                        data-priority="{{ $task->prioridad }}"
+                        data-fecha-inicio ="{{ \Carbon\Carbon::parse($task->fecha_inicio)->format('d-m-Y') }}"
+                        data-fecha-limite ="{{ \Carbon\Carbon::parse($task->fecha_limite)->format('d-m-Y') }}"
+                        >
                             {{-- Nombre de la tarea --}}
                             <td class="task-name-cell">
                                 <div class="task-name-content">
