@@ -193,7 +193,7 @@ Route::middleware(['auth', 'check.payment'])->group(function () {
     Route::resource('apiarios', ApiarioController::class)->except(['show']);
     Route::get('/apiarios', [ApiarioController::class, 'index'])->name('apiarios');
     Route::get('apiarios/create', [ApiarioController::class, 'create'])->name('apiarios.create');
-//    Route::post('apiarios/store', [ApiarioController::class, 'store'])->name('apiarios.store');
+    Route::post('apiarios/store', [ApiarioController::class, 'store'])->name('apiarios.store');
     Route::get('apiarios/editar/{id}', [ApiarioController::class, 'edit'])->name('apiarios.edit');
     Route::post('apiarios/editar/{id}', [ApiarioController::class, 'update'])->name('apiarios.editar');
     Route::get('comunas/{region}', [ApiarioController::class, 'getComunas']);
