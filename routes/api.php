@@ -45,9 +45,9 @@ Route::prefix('v1')->name('api.')->group(function () {
     Route::post('password/forgot', [ForgotPasswordController::class, 'sendResetLinkEmail'])->middleware('throttle:5,1');
     Route::post('password/reset',  [ForgotPasswordController::class, 'reset'])->middleware('throttle:5,1');
 
-    Route::get('debug-user', function (Request $r) {
-        return response()->json(['received' => true, 'headers' => $r->headers->all()]);
-    });
+    //Route::get('debug-user', function (Request $r) {
+    //    return response()->json(['received' => true, 'headers' => $r->headers->all()]);
+    //});
 
 
     // ---- Rutas autenticadas ----
