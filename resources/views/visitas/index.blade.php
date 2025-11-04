@@ -264,13 +264,15 @@
                                                         </div>
                                                         <div class="option-indicator"><i class="fas fa-chevron-right"></i></div>
                                                     </a>
-                                                    <a href="{{ route('visitas.create5', $apiario) }}" class="registration-option">
+                                                    <a href="{{ route('visitas.create5', $apiario) }}" class="registration-option harvest" data-type="cosecha">
                                                         <div class="option-icon"><i class="fas fa-droplet"></i></div>
                                                         <div class="option-content">
                                                             <span class="option-title">Cosecha de Miel</span>
                                                             <p class="option-description">Cantidad y Calidad de miel</p>
                                                         </div>
-                                                        <div class="option-indicator"><i class="fas fa-chevron-right"></i></div>
+                                                        <div class="option-indicator">
+                                                            <i class="fas fa-chevron-right"></i>
+                                                        </div>
                                                     </a>
                                                 </div>
                                             </div>
@@ -476,13 +478,15 @@
                                                         </div>
                                                         <div class="option-indicator"><i class="fas fa-chevron-right"></i></div>
                                                     </a>
-                                                    <a href="{{ route('visitas.create5', $apiario) }}" class="registration-option">
-                                                        <div class="option-icon"><i class="fas fa-crown"></i></div>
+                                                    <a href="{{ route('visitas.create5', $apiario) }}" class="registration-option harvest" data-type="cosecha">
+                                                        <div class="option-icon"><i class="fas fa-droplet"></i></div>
                                                         <div class="option-content">
                                                             <span class="option-title">Cosecha de Miel</span>
                                                             <p class="option-description">Cantidad y Calidad de miel</p>
                                                         </div>
-                                                        <div class="option-indicator"><i class="fas fa-droplet"></i></div>
+                                                        <div class="option-indicator">
+                                                            <i class="fas fa-chevron-right"></i>
+                                                        </div>
                                                     </a>
                                                 </div>
                                             </div>

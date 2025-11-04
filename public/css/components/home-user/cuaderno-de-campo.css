@@ -1134,8 +1134,8 @@ button {
 .registration-option .option-icon {
     width: 48px;
     height: 48px;
-    background-color: white;
-    border-radius: var (--radius-lg);
+    background-color: rgb(255 242 228);
+    border-radius: var(--radius-lg);
     display: flex;
     align-items: center;
     justify-content: center;

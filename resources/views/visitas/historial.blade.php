@@ -203,7 +203,7 @@
                             <li class="custom-nav-item" role="presentation">
                                 <button class="custom-nav-link" id="cosecha-tab" data-bs-toggle="tab"
                                     data-bs-target="#cosecha" type="button" role="tab">
-                                    <i class="fas fa-droplet me-2 text-warning"></i>
+                                    <i class="fas fa-droplet me-2"></i>
                                     <span class="tab-text">Cosecha</span>
                                     <span class="tab-badge">{{ $apiario->visitas->where('tipo_visita', 'Cosecha de Miel')->count() }}</span>
                                 </button>
@@ -830,7 +830,7 @@
                                     <div class="table-header">
                                         <div class="table-header-content">
                                             <h5>
-                                                <i class="fas fa-droplet me-2 text-warning"></i>
+                                                <i class="fas fa-droplet me-2"></i>
                                                 Cosecha de Miel
                                                 ({{ $cosechas->count() }} registros)
                                             </h5>
