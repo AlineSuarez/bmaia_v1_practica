@@ -50,6 +50,11 @@
                                     {{ $apiario->visitas->where('tipo_visita', 'Inspección de Reina')->count() }}</div>
                                 <div class="stat-label">Reina</div>
                             </div>
+                            <div class="stat-card">
+                                <div class="stat-number">
+                                    {{ $apiario->visitas->where('tipo_visita', 'Cosecha de Miel')->count() }}</div>
+                                <div class="stat-label">Cosecha</div>
+                            </div>
                         </div>
                     </div>
 
@@ -137,6 +142,13 @@
                                     <div class="mobile-stat-label">Reina</div>
                                 </div>
                             </div>
+                            <div class="col-4">
+                                <div class="mobile-stat-card">
+                                    <div class="mobile-stat-number">
+                                        {{ $apiario->visitas->where('tipo_visita', 'Cosecha de Miel')->count() }}</div>
+                                    <div class="mobile-stat-label">Cosecha</div>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
@@ -186,6 +198,14 @@
                                     <span class="tab-text">Reina</span>
                                     <span
                                         class="tab-badge">{{ $apiario->visitas->where('tipo_visita', 'Inspección de Reina')->count() }}</span>
+                                </button>
+                            </li>
+                            <li class="custom-nav-item" role="presentation">
+                                <button class="custom-nav-link" id="cosecha-tab" data-bs-toggle="tab"
+                                    data-bs-target="#cosecha" type="button" role="tab">
+                                    <i class="fas fa-droplet me-2 text-warning"></i>
+                                    <span class="tab-text">Cosecha</span>
+                                    <span class="tab-badge">{{ $apiario->visitas->where('tipo_visita', 'Cosecha de Miel')->count() }}</span>
                                 </button>
                             </li>
                         </ul>
@@ -789,6 +809,97 @@
                                 </div>
                             @endif
                         </div>
+
+                        <!-- Cosecha Tab -->
+                        <div class="tab-pane fade" id="cosecha" role="tabpanel">
+                            @php
+                                $colmenasIds = $apiario->colmenas->pluck('id');
+                                $cosechas = \App\Models\IndiceCosecha::whereIn('colmena_id', $colmenasIds)
+                                    ->orderByDesc('fecha_cosecha')
+                                    ->get()
+                                    ->groupBy('visita_id');
+                            @endphp
+
+                            @if($cosechas->isEmpty())
+                                <div class="no-data-message">
+                                    <i class="fas fa-info-circle me-2"></i>
+                                    No hay registros de cosecha de miel.
+                                </div>
+                            @else
+                                <div class="table-container">
+                                    <div class="table-header">
+                                        <div class="table-header-content">
+                                            <h5>
+                                                <i class="fas fa-droplet me-2 text-warning"></i>
+                                                Cosecha de Miel
+                                                ({{ $cosechas->count() }} registros)
+                                            </h5>
+                                            <small class="text-muted">Historial de cosechas y extracciones realizadas en el apiario</small>
+                                        </div>
+                                        <div class="table-header-actions">
+                                            <a href="{{ route('visitas.create5', $apiario->id) }}" class="custom-action-btn btn-sm">
+                                                <i class="fas fa-plus"></i>
+                                                <span>Nuevo Registro</span>
+                                            </a>
+                                        </div>
+                                    </div>
+
+                                    <div class="table-responsive">
+                                        <table class="custom-table" id="cosechaTable">
+                                            <thead>
+                                                <tr>
+                                                    <th><i class="fas fa-calendar me-1"></i> Fecha de Cosecha</th>
+                                                    <th><i class="fas fa-jar me-1"></i> Lote</th>
+                                                    <th><i class="fas fa-location-dot me-1"></i> Lugar Extracción</th>
+                                                    <th><i class="fas fa-thermometer-half me-1"></i> Temp. (°C)</th>
+                                                    <th><i class="fas fa-percentage me-1"></i> Madurez (%)</th>
+                                                    <th><i class="fas fa-water me-1"></i> Humedad (%)</th>
+                                                    <th><i class="fas fa-layer-group me-1"></i> Alzas</th>
+                                                    <th><i class="fas fa-grip-horizontal me-1"></i> Marcos</th>
+                                                    <th><i class="fas fa-user me-1"></i> Responsable</th>
+                                                    <th><i class="fas fa-comment me-1"></i> Notas</th>
+                                                    <th><i class="fas fa-cogs me-1"></i> Acciones</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach($cosechas as $visitaId => $grupo)
+                                                    @php
+                                                        $c = $grupo->first();
+                                                    @endphp
+                                                    <tr class="table-row" data-date="{{ $c->fecha_cosecha }}">
+                                                        <td>
+                                                            {{ $c->fecha_cosecha ? \Carbon\Carbon::parse($c->fecha_cosecha)->format('d/m/Y') : 'N/A' }}
+                                                        </td>
+                                                        <td>{{ $c->id_lote_cosecha ?? '-' }}</td>
+                                                        <td>{{ $c->lugar_extraccion ?? '-' }}</td>
+                                                        <td>{{ $c->temperatura_ambiente ?? '-' }}</td>
+                                                        <td>{{ $c->madurez_miel ?? '-' }}</td>
+                                                        <td>{{ $c->humedad_miel ?? '-' }}</td>
+                                                        <td>{{ $c->num_alzadas ?? '-' }}</td>
+                                                        <td>{{ $c->marcos_miel ?? '-' }}</td>
+                                                        <td>{{ $c->responsable_cosecha ?? '-' }}</td>
+                                                        <td>{{ $c->notas ?? '-' }}</td>
+                                                        <td class="actions-cell">
+                                                            <div class="btn-group" role="group">
+                                                                <a href="{{ route('generate.document.cosecha', $apiario->id) }}"
+                                                                    class="btn btn-outline-secondary btn-sm" title="Generar PDF" target="_blank">
+                                                                    <i class="fas fa-file-pdf"></i>
+                                                                </a>
+                                                                <a href="{{ route('visitas.cosecha.edit', $apiario->id) }}?visita_id={{ $visitaId }}"
+                                                                    class="btn btn-outline-primary btn-sm" title="Editar">
+                                                                    <i class="fas fa-edit"></i>
+                                                                </a>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                @endforeach
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            @endif
+                        </div>
+
                     </div>
                 @endif
 

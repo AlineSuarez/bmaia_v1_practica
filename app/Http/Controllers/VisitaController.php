@@ -605,6 +605,85 @@ class VisitaController extends Controller
         return view('visitas.create4', compact('apiario', 'visita', 'calidadReina'));
     }
 
+    public function createCosecha($id_apiario)
+    {
+        $apiario = Apiario::with('colmenas')
+            ->where('user_id', auth()->id())
+            ->findOrFail($id_apiario);
+
+        return view('visitas.create5', compact('apiario'));
+    }
+
+    public function storeCosecha(Request $request, Apiario $apiario)
+    {
+        $data = $request->validate([
+            'madurez_miel' => 'required|string|max:255',
+            'num_alzadas' => 'required|numeric|min:0',
+            'marcos_miel' => 'required|numeric|min:0',
+            'id_lote_cosecha' => 'nullable|string|max:255',
+            'fecha_cosecha' => 'nullable|date',
+            'fecha_extraccion' => 'nullable|date|after_or_equal:fecha_cosecha',
+            'lugar_extraccion' => 'nullable|string|max:255',
+            'humedad_miel' => 'nullable|numeric|min:0|max:100',
+            'temperatura_ambiente' => 'nullable|numeric',
+            'responsable_cosecha' => 'nullable|string|max:255',
+            'notas' => 'nullable|string',
+            'indice_cosecha_id' => 'nullable|exists:indice_cosecha,id',
+        ]);
+
+        DB::transaction(function () use ($data, $apiario) {
+
+            // 🟢 Si viene 'indice_cosecha_id', actualizamos el registro existente
+            if (!empty($data['indice_cosecha_id'])) {
+                $indice = IndiceCosecha::find($data['indice_cosecha_id']);
+                if ($indice) {
+                    $indice->update($data);
+                }
+                return;
+            }
+
+            // 🟡 Si NO hay id, entonces es una nueva visita y nuevos registros
+            $visita = Visita::create([
+                'apiario_id' => $apiario->id,
+                'user_id' => auth()->id(),
+                'fecha_visita' => now(),
+                'tipo_visita' => 'Cosecha de Miel',
+            ]);
+
+            foreach ($apiario->colmenas as $colmena) {
+                IndiceCosecha::create([
+                    'colmena_id' => $colmena->id,
+                    'visita_id' => $visita->id,
+                    'madurez_miel' => $data['madurez_miel'],
+                    'num_alzadas' => $data['num_alzadas'],
+                    'marcos_miel' => $data['marcos_miel'],
+                    'id_lote_cosecha' => $data['id_lote_cosecha'] ?? null,
+                    'fecha_cosecha' => $data['fecha_cosecha'] ?? null,
+                    'fecha_extraccion' => $data['fecha_extraccion'] ?? null,
+                    'lugar_extraccion' => $data['lugar_extraccion'] ?? null,
+                    'humedad_miel' => $data['humedad_miel'] ?? null,
+                    'temperatura_ambiente' => $data['temperatura_ambiente'] ?? null,
+                    'responsable_cosecha' => $data['responsable_cosecha'] ?? null,
+                    'notas' => $data['notas'] ?? null,
+                ]);
+            }
+        });
+
+        return redirect()
+            ->route('visitas.historial', $apiario)
+            ->with('success', !empty($data['indice_cosecha_id'])
+                ? 'Registro de Cosecha de Miel actualizado correctamente.'
+                : 'Registro de Cosecha de Miel creado correctamente.');
+    }
+
+    public function editCosecha(Apiario $apiario)
+    {
+        $indiceCosecha = IndiceCosecha::whereIn('colmena_id', $apiario->colmenas->pluck('id'))
+            ->orderByDesc('created_at')
+            ->first();
+
+        return view('visitas.create5', compact('apiario', 'indiceCosecha'));
+    }
 
     public function showHistorial($apiarioId)
     {

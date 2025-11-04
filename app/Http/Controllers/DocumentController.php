@@ -511,6 +511,57 @@ class DocumentController extends Controller
         return $pdf->download('registro-reina-' . \Str::slug($apiario->nombre) . '.pdf');
     }
 
+    public function generateCosechaDocument($apiarioId)
+    {
+        $apiario = Apiario::with(['region', 'comuna', 'colmenas'])
+            ->findOrFail($apiarioId);
+
+        // 🟡 Obtenemos solo las visitas de tipo “Cosecha de Miel”
+        $visitasCosecha = Visita::where('apiario_id', $apiario->id)
+            ->where('tipo_visita', 'Cosecha de Miel')
+            ->orderByDesc('fecha_visita')
+            ->get();
+
+        // 🟢 Tomamos solo un registro por visita (la primera colmena es suficiente)
+        $cosechas = collect();
+        foreach ($visitasCosecha as $visita) {
+            $registro = \App\Models\IndiceCosecha::where('visita_id', $visita->id)->first();
+            if ($registro) {
+                $cosechas->push($registro);
+            }
+        }
+
+        $data = [
+            'legal_representative' => auth()->user()->name,
+            'last_name' => auth()->user()->last_name ?? '',
+            'registration_number' => auth()->user()->registration_number ?? '',
+            'email' => auth()->user()->email,
+            'rut' => auth()->user()->rut ?? '',
+            'phone' => auth()->user()->phone ?? '',
+            'address' => auth()->user()->address ?? '',
+            'region' => $apiario->region->nombre ?? '',
+            'commune' => $apiario->comuna->nombre ?? '',
+            'apiary_name' => $apiario->nombre,
+            'apiary_number' => $apiario->id,
+            'activity' => $apiario->actividad ?? '',
+            'installation_date' => $apiario->created_at->format('d/m/Y'),
+            'utm_x' => $apiario->utm_x ?? '',
+            'utm_y' => $apiario->utm_y ?? '',
+            'utm_huso' => $apiario->utm_huso ?? '',
+            'latitude' => $apiario->latitud ?? '',
+            'longitude' => $apiario->longitud ?? '',
+            'nomadic' => $apiario->tipo_apiario ?? '',
+            'hive_count' => $apiario->colmenas->count(),
+            'cosechas' => $cosechas,
+        ];
+
+        $pdf = PDF::loadView('documents.cosecha-record', compact('data'))
+            ->setPaper('a4', 'portrait');
+
+        return $pdf->download('registro-cosecha-miel.pdf');
+    }
+
+
 
     public function qrPdf(Apiario $apiario, Colmena $colmena)
     {

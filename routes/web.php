@@ -266,6 +266,12 @@ Route::middleware(['auth', 'check.payment'])->group(function () {
     Route::get('/generate-document/reina-record/{apiarioId}', [DocumentController::class, 'generateReinaDocument'])->name('generate.document.reina');
     Route::get('visitas/create4/{apiario}/{visita}/edit', [VisitaController::class, 'editReina'])->name('visitas.reina.edit');
 
+    // Rutas para registro de Cosecha de Miel
+    Route::get('visitas/create5/{apiario}', [VisitaController::class, 'createCosecha'])->name('visitas.create5');
+    Route::post('visitas/create5/{apiario}', [VisitaController::class, 'storeCosecha'])->name('visitas.store5');
+    Route::get('/generate-document/cosecha-record/{apiarioId}', [DocumentController::class, 'generateCosechaDocument'])->name('generate.document.cosecha');
+    Route::get('/visitas/{apiario}/cosecha/edit', [VisitaController::class, 'editCosecha'])->name('visitas.cosecha.edit');
+
     // PCCs para colmenas
     Route::prefix('visitas')->name('visitas.')->group(function () {
         Route::get('{visita}/pcc/create', [VisitaController::class, 'createPcc'])->name('pcc.create');

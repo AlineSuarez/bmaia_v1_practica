@@ -180,6 +180,14 @@
                                                                 <span class="option-desc">Calidad y reemplazos de reina</span>
                                                             </div>
                                                         </a>
+                                                        <a href="{{ route('generate.document.cosecha', $apiario->id) }}"
+                                                            class="dropdown-option">
+                                                            <div class="option-icon"><i class="fas fa-droplet"></i></div>
+                                                            <div class="option-content">
+                                                                <span class="option-title">Registro de Cosecha de Miel</span>
+                                                                <span class="option-desc">Cantidad y Calidad de miel</span>
+                                                            </div>
+                                                        </a>
                                                     </div>
                                                 </div>
                                             </div>
@@ -253,6 +261,14 @@
                                                         <div class="option-content">
                                                             <span class="option-title">Reina</span>
                                                             <p class="option-description">Calidad y reemplazos de reina</p>
+                                                        </div>
+                                                        <div class="option-indicator"><i class="fas fa-chevron-right"></i></div>
+                                                    </a>
+                                                    <a href="{{ route('visitas.create5', $apiario) }}" class="registration-option">
+                                                        <div class="option-icon"><i class="fas fa-droplet"></i></div>
+                                                        <div class="option-content">
+                                                            <span class="option-title">Cosecha de Miel</span>
+                                                            <p class="option-description">Cantidad y Calidad de miel</p>
                                                         </div>
                                                         <div class="option-indicator"><i class="fas fa-chevron-right"></i></div>
                                                     </a>
@@ -376,6 +392,14 @@
                                                                 <span class="option-desc">Calidad y reemplazos de reina</span>
                                                             </div>
                                                         </a>
+                                                        <a href="{{ route('generate.document.cosecha', $apiario->id) }}"
+                                                            class="dropdown-option">
+                                                            <div class="option-icon"><i class="fas fa-droplet"></i></div>
+                                                            <div class="option-content">
+                                                                <span class="option-title">Registro de Cosecha de Miel</span>
+                                                                <span class="option-desc">Cantidad y Calidad de miel</span>
+                                                            </div>
+                                                        </a>
                                                     </div>
                                                 </div>
                                             </div>
@@ -451,6 +475,14 @@
                                                             <p class="option-description">Calidad y reemplazos de reina</p>
                                                         </div>
                                                         <div class="option-indicator"><i class="fas fa-chevron-right"></i></div>
+                                                    </a>
+                                                    <a href="{{ route('visitas.create5', $apiario) }}" class="registration-option">
+                                                        <div class="option-icon"><i class="fas fa-crown"></i></div>
+                                                        <div class="option-content">
+                                                            <span class="option-title">Cosecha de Miel</span>
+                                                            <p class="option-description">Cantidad y Calidad de miel</p>
+                                                        </div>
+                                                        <div class="option-indicator"><i class="fas fa-droplet"></i></div>
                                                     </a>
                                                 </div>
                                             </div>
