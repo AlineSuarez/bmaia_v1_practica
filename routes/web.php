@@ -29,6 +29,7 @@ use App\Http\Controllers\SistemaExpertoController;
 use App\Http\Controllers\DatoFacturacionController;
 use App\Http\Controllers\FacturaController;
 use Illuminate\Support\Facades\Http;
+use App\Http\Controllers\TareaApiarioController;
 
 Auth::routes();
 
@@ -231,6 +232,19 @@ Route::middleware(['auth', 'check.payment'])->group(function () {
         Route::get('/{colmena}/pcc/pdf', [ColmenaController::class, 'generarPccPdf'])->name('pcc.pdf');
         Route::put('/{colmena}/color', [ColmenaController::class, 'updateColor'])->name('updateColor');
     });
+
+    // CRUD principal
+    Route::prefix('apiarios/{apiarioId}/tareas')->group(function () {
+        Route::get('/', [TareaApiarioController::class, 'index'])->name('tareas-apiario.index');
+        Route::get('/crear', [TareaApiarioController::class, 'create'])->name('tareas-apiario.create');
+        Route::get('/{id}/editar', [TareaApiarioController::class, 'create'])->name('tareas-apiario.edit');
+        Route::post('/', [TareaApiarioController::class, 'store'])->name('tareas-apiario.store');
+        Route::put('/{id}', [TareaApiarioController::class, 'update'])->name('tareas-apiario.update');
+        Route::delete('/{id}', [TareaApiarioController::class, 'destroy'])->name('tareas-apiario.destroy');
+    });
+
+    // Documento PDF de tareas
+    Route::get('/generate-document/tareas-apiario/{apiarioId}', [DocumentController::class, 'generateTareasApiarioDocument'])->name('generate.document.tareas-apiario');
 
     // Visitas
     Route::resource('visita', VisitaController::class);

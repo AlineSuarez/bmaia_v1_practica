@@ -55,6 +55,11 @@
                                     {{ $apiario->visitas->where('tipo_visita', 'Cosecha de Miel')->count() }}</div>
                                 <div class="stat-label">Cosecha</div>
                             </div>
+                            <div class="stat-card">
+                                <div class="stat-number">
+                                    {{ $tareas->count() }} </div>
+                                <div class="stat-label">Tareas Apiario</div>
+                            </div>
                         </div>
                     </div>
 
@@ -149,6 +154,14 @@
                                     <div class="mobile-stat-label">Cosecha</div>
                                 </div>
                             </div>
+                            <div class="col-4">
+                                <div class="mobile-stat-card">
+                                    <div class="mobile-stat-number">
+                                        {{ $tareas->count() }}
+                                    </div>
+                                    <div class="mobile-stat-label">Tareas</div>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
@@ -206,6 +219,14 @@
                                     <i class="fas fa-droplet me-2"></i>
                                     <span class="tab-text">Cosecha</span>
                                     <span class="tab-badge">{{ $apiario->visitas->where('tipo_visita', 'Cosecha de Miel')->count() }}</span>
+                                </button>
+                            </li>
+                            <li class="custom-nav-item" role="presentation">
+                                <button class="custom-nav-link" id="tareas-tab" data-bs-toggle="tab"
+                                    data-bs-target="#tareas" type="button" role="tab">
+                                    <i class="fas fa-tasks me-2"></i>
+                                    <span class="tab-text">Tareas del Apiario</span>
+                                    <span class="tab-badge">{{ $tareas->count() }}</span>
                                 </button>
                             </li>
                         </ul>
@@ -889,6 +910,77 @@
                                                                     class="btn btn-outline-primary btn-sm" title="Editar">
                                                                     <i class="fas fa-edit"></i>
                                                                 </a>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                @endforeach
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            @endif
+                        </div>
+
+                        <!-- Tareas del Apiario Tab -->
+                        <div class="tab-pane fade" id="tareas" role="tabpanel">
+                            @if($tareas->isEmpty())
+                                <div class="no-data-message">
+                                    <i class="fas fa-info-circle me-2"></i>
+                                    No hay tareas registradas para este apiario.
+                                </div>
+                            @else
+                                <div class="table-container">
+                                    <div class="table-header">
+                                        <div class="table-header-content">
+                                            <h5><i class="fas fa-tasks me-2"></i>Tareas del Apiario ({{ $tareas->count() }} registros)</h5>
+                                            <small class="text-muted">Registro de actividades generales aplicadas al apiario completo</small>
+                                        </div>
+                                        <div class="table-header-actions">
+                                            <a href="{{ route('tareas-apiario.create', $apiario->id) }}" class="custom-action-btn btn-sm">
+                                                <i class="fas fa-plus"></i>
+                                                <span>Nueva Tarea</span>
+                                            </a>
+                                        </div>
+                                    </div>
+
+                                    <div class="table-responsive">
+                                        <table class="custom-table">
+                                            <thead>
+                                                <tr>
+                                                    <th><i class="fas fa-calendar me-1"></i> Fecha Inicio</th>
+                                                    <th><i class="fas fa-calendar-check me-1"></i> Fecha Término</th>
+                                                    <th><i class="fas fa-folder-open me-1"></i> Categoría</th>
+                                                    <th><i class="fas fa-tasks me-1"></i> Tarea Específica</th>
+                                                    <th><i class="fas fa-comment-dots me-1"></i> Observaciones</th>
+                                                    <th><i class="fas fa-clock me-1"></i> Próximo Seguimiento</th>
+                                                    <th><i class="fas fa-cogs me-1"></i> Acciones</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach($tareas as $tarea)
+                                                    <tr>
+                                                        <td>{{ $tarea->fecha_inicio ? \Carbon\Carbon::parse($tarea->fecha_inicio)->format('d/m/Y') : '-' }}</td>
+                                                        <td>{{ $tarea->fecha_termino ? \Carbon\Carbon::parse($tarea->fecha_termino)->format('d/m/Y') : '-' }}</td>
+                                                        <td>{{ $tarea->categoria_tarea }}</td>
+                                                        <td>{{ $tarea->tarea_especifica ?? '-' }}</td>
+                                                        <td>{{ $tarea->observaciones ?? '-' }}</td>
+                                                        <td>{{ $tarea->proximo_seguimiento ?? '-' }}</td>
+                                                        <td class="actions-cell">
+                                                            <div class="btn-group" role="group">
+                                                                <a href="{{ route('generate.document.tareas-apiario', $apiario->id) }}" 
+                                                                    class="btn btn-outline-secondary btn-sm" title="Generar PDF" target="_blank">
+                                                                        <i class="fas fa-file-pdf"></i>
+                                                                </a>
+                                                                <a href="{{ route('tareas-apiario.edit', [$apiario->id, $tarea->id]) }}" class="btn btn-outline-primary btn-sm" title="Editar">
+                                                                    <i class="fas fa-edit"></i>
+                                                                </a>
+                                                                <form action="{{ route('tareas-apiario.destroy', [$apiario->id, $tarea->id]) }}" method="POST" style="display:inline;">
+                                                                    @csrf
+                                                                    @method('DELETE')
+                                                                    <button type="submit" class="btn btn-outline-danger btn-sm" title="Eliminar" onclick="return confirm('¿Seguro que deseas eliminar esta tarea?')">
+                                                                        <i class="fas fa-trash"></i>
+                                                                    </button>
+                                                                </form>
                                                             </div>
                                                         </td>
                                                     </tr>

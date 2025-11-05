@@ -188,6 +188,13 @@
                                                                 <span class="option-desc">Cantidad y Calidad de miel</span>
                                                             </div>
                                                         </a>
+                                                        <a href="{{ route('generate.document.tareas-apiario', $apiario->id) }}" class="dropdown-option">
+                                                            <div class="option-icon"><i class="fas fa-tasks"></i></div>
+                                                            <div class="option-content">
+                                                                <span class="option-title">Registro de Tareas del Apiario</span>
+                                                                <span class="option-desc">Listado de acciones y trabajos realizados</span>
+                                                            </div>
+                                                        </a>
                                                     </div>
                                                 </div>
                                             </div>
@@ -274,6 +281,21 @@
                                                             <i class="fas fa-chevron-right"></i>
                                                         </div>
                                                     </a>
+                                                    <a href="{{ route('tareas-apiario.create', $apiario->id) }}" class="registration-option">
+                                                        <div class="option-icon">
+                                                            <i class="fas fa-tasks"></i>
+                                                        </div>
+                                                        <div class="option-content">
+                                                            <span class="option-title">Tareas del Apiario</span>
+                                                            <p class="option-description">
+                                                                Planificación y registro de acciones realizadas en el apiario
+                                                            </p>
+                                                        </div>
+                                                        <div class="option-indicator">
+                                                            <i class="fas fa-chevron-right"></i>
+                                                        </div>
+                                                    </a>
+
                                                 </div>
                                             </div>
                                             <div class="modal-footer">
@@ -402,6 +424,13 @@
                                                                 <span class="option-desc">Cantidad y Calidad de miel</span>
                                                             </div>
                                                         </a>
+                                                        <a href="{{ route('generate.document.tareas-apiario', $apiario->id) }}" class="dropdown-option">
+                                                            <div class="option-icon"><i class="fas fa-tasks"></i></div>
+                                                            <div class="option-content">
+                                                                <span class="option-title">Registro de Tareas del Apiario</span>
+                                                                <span class="option-desc">Listado de acciones y trabajos realizados</span>
+                                                            </div>
+                                                        </a>
                                                     </div>
                                                 </div>
                                             </div>
@@ -488,6 +517,21 @@
                                                             <i class="fas fa-chevron-right"></i>
                                                         </div>
                                                     </a>
+                                                    <a href="{{ route('tareas-apiario.create', $apiario->id) }}" class="registration-option">
+                                                        <div class="option-icon">
+                                                            <i class="fas fa-tasks"></i>
+                                                        </div>
+                                                        <div class="option-content">
+                                                            <span class="option-title">Tareas del Apiario</span>
+                                                            <p class="option-description">
+                                                                Planificación y registro de acciones realizadas en el apiario
+                                                            </p>
+                                                        </div>
+                                                        <div class="option-indicator">
+                                                            <i class="fas fa-chevron-right"></i>
+                                                        </div>
+                                                    </a>
+
                                                 </div>
                                             </div>
                                             <div class="modal-footer">

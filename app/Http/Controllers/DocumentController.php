@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\SubTarea;
 use Carbon\Carbon;
 use Illuminate\Support\Str;
+use App\Models\TareaApiario;
 
 class DocumentController extends Controller
 {
@@ -561,7 +562,15 @@ class DocumentController extends Controller
         return $pdf->download('registro-cosecha-miel.pdf');
     }
 
-
+    public function generateTareasApiarioDocument($apiarioId)
+    {
+        $apiario = Apiario::findOrFail($apiarioId);
+        $tareas = TareaApiario::where('apiario_id', $apiarioId)->orderByDesc('fecha_inicio')->get();
+        $user = auth()->user();
+        $pdf = Pdf::loadView('documents.tareas-apiario', compact('apiario', 'tareas', 'user'))->setPaper('a4', 'portrait'); // formato horizontal
+        $nombreArchivo = 'Registro_Tareas_Apiario_' . $apiario->nombre . '.pdf';
+        return $pdf->download($nombreArchivo);
+    }
 
     public function qrPdf(Apiario $apiario, Colmena $colmena)
     {

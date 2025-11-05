@@ -693,8 +693,12 @@ class VisitaController extends Controller
             'visitas.presenciaVarroa',
             'visitas.presenciaNosemosis',
         ])->findOrFail($apiarioId);
+
+        $tareas = \App\Models\TareaApiario::where('apiario_id', $apiarioId)
+                ->orderByDesc('fecha_inicio')
+                ->get();
         // Retornar la vista de historial con los datos del apiario y sus visitas
-        return view('visitas.historial', compact('apiario'));
+        return view('visitas.historial', compact('apiario', 'tareas'));
     }
 
     public function createPcc(Visita $visita)
