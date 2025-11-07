@@ -105,24 +105,28 @@ class RegisterController extends Controller
             'expires_at' => now()->addDays(16),
         ]);
 
-        // Envío de correo de bienvenida
-        $htmlContent = View::make('emails.welcome', ['user' => $user])->render();
-        $email = new \SendGrid\Mail\Mail();
-        $email->setFrom("soporte@bmaia.cl", "B-MaiA");
-        $email->setSubject("¡Bienvenido a B-MaiA, {$user->name}!");
-        $email->addTo($user->email, $user->name);
-        $email->addContent("text/plain", "¡Bienvenido a B-MaiA, {$user->name}!");
-        $email->addContent("text/html", $htmlContent);
+        // Envío de correo de bienvenida (solo si no es API ni consola)
+        if (!app()->runningInConsole() && !request()->is('api/*')) {
+            try {
+                $htmlContent = View::make('emails.welcome', ['user' => $user])->render();
 
-        $sendgrid = new SendGrid(config('services.sendgrid.api_key'));
-        try {
-            $response = $sendgrid->send($email);
-            \Log::info('SendGrid welcome response', [
-                'status' => $response->statusCode(),
-                'body' => $response->body(),
-            ]);
-        } catch (Exception $e) {
-            \Log::error('SendGrid welcome error: ' . $e->getMessage());
+                $email = new \SendGrid\Mail\Mail();
+                $email->setFrom("soporte@bmaia.cl", "B-MaiA");
+                $email->setSubject("¡Bienvenido a B-MaiA, {$user->name}!");
+                $email->addTo($user->email, $user->name);
+                $email->addContent("text/plain", "¡Bienvenido a B-MaiA, {$user->name}!");
+                $email->addContent("text/html", $htmlContent);
+
+                $sendgrid = new \SendGrid(config('services.sendgrid.api_key'));
+                $response = $sendgrid->send($email);
+
+                \Log::info('SendGrid welcome response', [
+                    'status' => $response->statusCode(),
+                    'body' => $response->body(),
+                ]);
+            } catch (\Throwable $e) {
+                \Log::error('SendGrid welcome error: ' . $e->getMessage());
+            }
         }
 
         return $user;
