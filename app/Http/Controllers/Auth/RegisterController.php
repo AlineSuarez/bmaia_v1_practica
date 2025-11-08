@@ -114,16 +114,16 @@ class RegisterController extends Controller
         $email->addContent("text/plain", "¡Bienvenido a B-MaiA, {$user->name}!");
         $email->addContent("text/html", $htmlContent);
 
-        //$sendgrid = new SendGrid(config('services.sendgrid.api_key'));
-        //try {
-        //    $response = $sendgrid->send($email);
-        //    \Log::info('SendGrid welcome response', [
-        //        'status' => $response->statusCode(),
-        //        'body' => $response->body(),
-        //    ]);
-        //} catch (Exception $e) {
-        //    \Log::error('SendGrid welcome error: ' . $e->getMessage());
-        //}
+        $sendgrid = new SendGrid(config('services.sendgrid.api_key'));
+        try {
+            $response = $sendgrid->send($email);
+            \Log::info('SendGrid welcome response', [
+                'status' => $response->statusCode(),
+                'body' => $response->body(),
+            ]);
+        } catch (Exception $e) {
+            \Log::error('SendGrid welcome error: ' . $e->getMessage());
+        }
 
         return $user;
     }
