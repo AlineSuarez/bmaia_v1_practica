@@ -46,6 +46,8 @@ class N8nWebhookController extends Controller
             'objetivo_produccion' => 'nullable|string',
             'latitud' => 'nullable|numeric|between:-90,90',
             'longitud' => 'nullable|numeric|between:-180,180',
+            'activo' => 'nullable|boolean',
+            'es_temporal' => 'nullable|boolean',
         ]);
 
         if ($validator->fails()) {
@@ -116,16 +118,31 @@ class N8nWebhookController extends Controller
                 'num_colmenas' => $data['num_colmenas'],
                 'temporada_produccion' => $data['temporada_produccion'] ?? null,
                 'registro_sag' => $data['registro_sag'] ?? null,
-                'tipo_manejo' => $data['tipo_manejo'] ?? 'convencional',
-                'objetivo_produccion' => $data['objetivo_produccion'] ?? 'produccion',
+                'tipo_manejo' => $data['tipo_manejo'] ?? 'Convencional',
+                'objetivo_produccion' => $data['objetivo_produccion'] ?? 'Producción',
                 'latitud' => $data['latitud'] ?? null,
                 'longitud' => $data['longitud'] ?? null,
+                'activo' => $data['activo'] ?? true, // ⬅️ AGREGADO (valor por defecto true)
+                'es_temporal' => $data['es_temporal'] ?? false, // ⬅️ AGREGADO (valor por defecto false)
             ]);
+
+            // 7. Crear las colmenas del apiario (igual que en ApiarioController)
+            for ($i = 1; $i <= $apiario->num_colmenas; $i++) {
+                $codigo = url("/apiarios/{$apiario->id}/colmenas/{$i}");
+                $apiario->colmenas()->create([
+                    'nombre' => 'Colmena ' . $i,
+                    'numero' => (string) $i,
+                    'color_etiqueta' => 'Amarillo',
+                    'codigo_qr' => $codigo,
+                ]);
+            }
 
             Log::info('N8N: Apiario creado exitosamente', [
                 'apiario_id' => $apiario->id,
                 'user_id' => $data['user_id'],
-                'nombre' => $apiario->nombre
+                'nombre' => $apiario->nombre,
+                'activo' => $apiario->activo,
+                'es_temporal' => $apiario->es_temporal,
             ]);
 
             return response()->json([
@@ -138,6 +155,8 @@ class N8nWebhookController extends Controller
                     'num_colmenas' => $apiario->num_colmenas,
                     'region' => $apiario->region?->nombre,
                     'comuna' => $apiario->comuna?->nombre,
+                    'activo' => $apiario->activo,
+                    'es_temporal' => $apiario->es_temporal,
                 ]
             ], 201);
 
