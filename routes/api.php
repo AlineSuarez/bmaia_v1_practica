@@ -35,15 +35,15 @@ use App\Models\Apiario;
 Route::prefix('v1')->name('api.')->group(function () {
 
     // ---- Auth públicas ----
-    Route::post('login',    [AuthController::class, 'login'])->middleware('throttle:5,1');
+    Route::post('login', [AuthController::class, 'login'])->middleware('throttle:5,1');
     Route::post('register', [AuthController::class, 'register'])->middleware('throttle:10,1');
 
     Route::post('login/google', [AuthController::class, 'loginWithGoogle'])->middleware('throttle:10,1');
 
-    Route::get('health', fn () => response()->json(['ok' => true, 'time' => now()->toIso8601String()]))->name('health');
+    Route::get('health', fn() => response()->json(['ok' => true, 'time' => now()->toIso8601String()]))->name('health');
 
     Route::post('password/forgot', [ForgotPasswordController::class, 'sendResetLinkEmail'])->middleware('throttle:5,1');
-    Route::post('password/reset',  [ForgotPasswordController::class, 'reset'])->middleware('throttle:5,1');
+    Route::post('password/reset', [ForgotPasswordController::class, 'reset'])->middleware('throttle:5,1');
 
     //Route::get('debug-user', function (Request $r) {
     //    return response()->json(['received' => true, 'headers' => $r->headers->all()]);
@@ -53,33 +53,33 @@ Route::prefix('v1')->name('api.')->group(function () {
     // ---- Rutas autenticadas ----
     Route::middleware('auth:sanctum')->group(function () {
         Route::post('logout', [AuthController::class, 'logout'])->name('auth.logout');
-        
+
         Route::get('user', function (Request $r) {
             $u = $r->user();
 
             return response()->json([
-                'id'              => $u->id,
-                'name'            => $u->name,
-                'last_name'       => $u->last_name,
-                'email'           => $u->email,
-                'telefono'        => $u->telefono,
-                'created_at'      => $u->created_at,
+                'id' => $u->id,
+                'name' => $u->name,
+                'last_name' => $u->last_name,
+                'email' => $u->email,
+                'telefono' => $u->telefono,
+                'created_at' => $u->created_at,
 
-                'rut'             => $u->rut,
-                'razon_social'    => $u->razon_social,
-                'direccion'       => $u->direccion,
+                'rut' => $u->rut,
+                'razon_social' => $u->razon_social,
+                'direccion' => $u->direccion,
                 'numero_registro' => $u->numero_registro,
 
                 // 👉 lo que la app necesita para resolver nombres
-                'id_region'       => $u->id_region,
-                'id_comuna'       => $u->id_comuna,
+                'id_region' => $u->id_region,
+                'id_comuna' => $u->id_comuna,
 
                 // opcional: manda también los nombres
-                'region'          => optional(Region::find($u->id_region))->nombre,
-                'comuna'          => optional(Comuna::find($u->id_comuna))->nombre,
+                'region' => optional(Region::find($u->id_region))->nombre,
+                'comuna' => optional(Comuna::find($u->id_comuna))->nombre,
 
                 // avatar si aplica
-                'avatar_url'      => $u->profile_picture ? asset('storage/'.$u->profile_picture) : null,
+                'avatar_url' => $u->profile_picture ? asset('storage/' . $u->profile_picture) : null,
             ]);
         })->name('auth.me');
 
@@ -106,17 +106,17 @@ Route::prefix('v1')->name('api.')->group(function () {
                     \DB::raw("nombre as name"),
                     'region_id' // ✅ en tu tabla se llama region_id
                 )
-                ->orderBy('nombre')
-                ->get()
+                    ->orderBy('nombre')
+                    ->get()
             );
         });
 
-        Route::get('me/preferences',   [PreferencesController::class, 'show'])->name('me.preferences.show');
+        Route::get('me/preferences', [PreferencesController::class, 'show'])->name('me.preferences.show');
         Route::patch('me/preferences', [PreferencesController::class, 'update'])->name('me.preferences.update');
 
         Route::apiResource('apiarios', ApiarioApiController::class);      // nombres: api.apiarios.index|store|show|update|destroy
         Route::apiResource('colmenas', ColmenaApiController::class);
-        Route::apiResource('visitas',  VisitaApiController::class);
+        Route::apiResource('visitas', VisitaApiController::class);
 
         // ---- Visita GENERAL (formulario específico) ----
         Route::post('visitas/general', [VisitaApiController::class, 'storeGeneral'])->name('visitas.general.store');
@@ -139,7 +139,7 @@ Route::prefix('v1')->name('api.')->group(function () {
         Route::put('visitas/reina/{visita}', [VisitaApiController::class, 'updateReina'])->name('visitas.reina.update');
 
         Route::get('apiarios/{apiario}/colmenas', [ColmenaApiController::class, 'indexByApiario'])->name('apiarios.colmenas');
-        Route::get('apiarios/{apiario}/visitas',  [VisitaApiController::class,  'indexByApiario'])->name('apiarios.visitas');
+        Route::get('apiarios/{apiario}/visitas', [VisitaApiController::class, 'indexByApiario'])->name('apiarios.visitas');
 
         Route::get('apiarios/base', function () {
             return Apiario::where('tipo_apiario', 'trashumante')->where('activo', true)->paginate(50);
@@ -150,45 +150,51 @@ Route::prefix('v1')->name('api.')->group(function () {
         })->name('apiarios.temporales');
 
         Route::post('movimientos/traslado', [MovimientoController::class, 'traslado'])->name('movimientos.traslado');
-        Route::post('movimientos/retorno',  [MovimientoController::class, 'retorno'])->name('movimientos.retorno');
+        Route::post('movimientos/retorno', [MovimientoController::class, 'retorno'])->name('movimientos.retorno');
 
         Route::post('agent/respond', [AssistantApiController::class, 'respond'])
             ->name('agent.respond')
             ->middleware('idempotency');
 
-        Route::post('sync',       [SyncController::class, 'syncData'])->name('sync.data');
-        Route::get('changes',     [SyncController::class, 'changes'])->name('sync.changes');
+        Route::post('sync', [SyncController::class, 'syncData'])->name('sync.data');
+        Route::get('changes', [SyncController::class, 'changes'])->name('sync.changes');
         Route::get('sync-status', [SyncController::class, 'syncStatus'])->name('sync.status');
 
         Route::get('stream', [SyncController::class, 'stream'])->name('stream');
 
         Route::post('voice/recognize', [VoiceController::class, 'recognize'])->name('voice.recognize');
-        Route::post('voice/respond',   [VoiceController::class, 'respond'])->name('voice.respond');
-        Route::post('ask-ai',          [AIController::class, 'ask'])->name('ask-ai');
+        Route::post('voice/respond', [VoiceController::class, 'respond'])->name('voice.respond');
+        Route::post('ask-ai', [AIController::class, 'ask'])->name('ask-ai');
 
-        Route::get('stats/apiarios/count',  [StatsController::class, 'apiariosCount'])->name('stats.apiarios.count');
-        Route::get('stats/colmenas/count',  [StatsController::class, 'colmenasCount'])->name('stats.colmenas.count');
+        Route::get('stats/apiarios/count', [StatsController::class, 'apiariosCount'])->name('stats.apiarios.count');
+        Route::get('stats/colmenas/count', [StatsController::class, 'colmenasCount'])->name('stats.colmenas.count');
         Route::get('stats/colmenas/health', [StatsController::class, 'colmenasHealth'])->name('stats.colmenas.health');
-        Route::get('stats/visitas/semana',  [StatsController::class, 'visitasSemana'])->name('stats.visitas.semana');
+        Route::get('stats/visitas/semana', [StatsController::class, 'visitasSemana'])->name('stats.visitas.semana');
 
-        Route::get('indicadores/produccion',  [IndicadoresController::class, 'produccion'])->name('indicadores.produccion');
+        Route::get('indicadores/produccion', [IndicadoresController::class, 'produccion'])->name('indicadores.produccion');
         Route::get('indicadores/comparativo', [IndicadoresController::class, 'comparativo'])->name('indicadores.comparativo');
 
-        Route::post('devices/register',      [DeviceController::class, 'register'])->name('devices.register');
+        Route::post('devices/register', [DeviceController::class, 'register'])->name('devices.register');
         Route::delete('devices/{device_id}', [DeviceController::class, 'destroy'])->name('devices.destroy');
 
-        Route::post('files',        [FileController::class, 'store'])->name('files.store');
-        Route::get('files',         [FileController::class, 'index'])->name('files.index');
+        Route::post('files', [FileController::class, 'store'])->name('files.store');
+        Route::get('files', [FileController::class, 'index'])->name('files.index');
         Route::delete('files/{id}', [FileController::class, 'destroy'])->name('files.destroy');
 
-        Route::get('clima/actual',     [ClimaController::class, 'actual'])->name('clima.actual');
+        Route::get('clima/actual', [ClimaController::class, 'actual'])->name('clima.actual');
         Route::get('clima/pronostico', [ClimaController::class, 'pronostico'])->name('clima.pronostico');
 
-        Route::post('notificaciones/email',    [NotificacionController::class, 'email'])->name('notificaciones.email');
+        Route::post('notificaciones/email', [NotificacionController::class, 'email'])->name('notificaciones.email');
         Route::post('notificaciones/whatsapp', [NotificacionController::class, 'whatsapp'])->name('notificaciones.whatsapp');
-        Route::post('notificaciones/push',     [NotificacionController::class, 'push'])->name('notificaciones.push');
+        Route::post('notificaciones/push', [NotificacionController::class, 'push'])->name('notificaciones.push');
     });
 
+});
+
+// Rutas públicas para n8n
+Route::prefix('v1/n8n')->name('api.n8n.')->group(function () {
+    Route::get('ping', [\App\Http\Controllers\Api\v1\N8nWebhookController::class, 'ping'])->name('ping');
+    Route::post('create-apiario', [\App\Http\Controllers\Api\v1\N8nWebhookController::class, 'createApiario'])->name('create-apiario');
 });
 
 // Fallback JSON

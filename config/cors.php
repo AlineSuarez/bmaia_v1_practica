@@ -1,7 +1,6 @@
 <?php
 
 return [
-
     /*
     |--------------------------------------------------------------------------
     | Laravel CORS Configuration
@@ -30,9 +29,12 @@ return [
         'http://10.0.3.2:*',        // Genymotion
         'https://www.bmaia.cl',     // Producción
         'https://bmaia.cl',         // Alternativa sin www
+        'https://beefractal.app.n8n.cloud',
     ],
 
-    'allowed_origins_patterns' => [],
+    'allowed_origins_patterns' => [
+        '/^https:\/\/.*\.n8n\.cloud$/',
+    ],
 
     'allowed_headers' => ['*'],
 
@@ -41,5 +43,4 @@ return [
     'max_age' => 0,
 
     'supports_credentials' => true,
-
 ];

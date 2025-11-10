@@ -589,9 +589,9 @@
 
                 // Justo después de cargar el documento, agrega este bloque:
                 // Limitar el input de colmenas según el valor enviado por el backend
-                @if (!is_null($limite_colmenas))
+                @isset($limite_colmenas)
                     $('#num_colmenas').attr('max', {{ $limite_colmenas }});
-                @endif
+                @endisset
 
                 // Función para añadir efectos de brillo
                 function addSparkleEffects() {

@@ -1,7 +1,6 @@
 <?php
 
 return [
-
     /*
     |--------------------------------------------------------------------------
     | Third Party Services
@@ -41,7 +40,7 @@ return [
         'client_id' => env('GOOGLE_CLIENT_ID'),
         'client_secret' => env('GOOGLE_CLIENT_SECRET'),
         'redirect' => env('GOOGLE_REDIRECT_URL'),
-        'client_id_mobile'  => env('GOOGLE_CLIENT_ID_MOBILE', env('GOOGLE_CLIENT_ID')),
+        'client_id_mobile' => env('GOOGLE_CLIENT_ID_MOBILE', env('GOOGLE_CLIENT_ID')),
     ],
     'webpay' => [
         'commerce_code' => env('WEBPAY_COMMERCE_CODE'),
@@ -52,8 +51,8 @@ return [
         'api_key' => env('SENDGRID_API_KEY'),
     ],
     'n8n' => [
-        'base_url'    => env('N8N_BASE_URL', 'https://n8n.bmaia.cl'),
+        'base_url' => env('N8N_BASE_URL', 'https://beefractal.app.n8n.cloud'),
         'hmac_secret' => env('N8N_HMAC_SECRET', ''),
-        'callback_key'=> env('N8N_CALLBACK_KEY', ''),
-    ]
+        'callback_key' => env('N8N_CALLBACK_KEY', ''),
+    ],
 ];
