@@ -118,6 +118,17 @@
                                 <span class="apicola-active-indicator"></span>
                             </a>
                         </li>
+                        <li class="apicola-sidebar-item">
+                            <a class="apicola-sidebar-link {{ request()->routeIs('inventario') ? 'active' : '' }}"
+                                href="{{ route('inventario') }}">
+                                <div class="apicola-icon-container">
+                                    <i class="fa-solid fa-box-open"></i>
+                                    <span class="apicola-icon-background"></span>
+                                </div>
+                                <span class="apicola-menu-text">Inventario</span>
+                                <span class="apicola-active-indicator"></span>
+                            </a>
+                        </li>
                     </ul>
                 </div>
             </nav>

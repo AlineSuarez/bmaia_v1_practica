@@ -9,12 +9,15 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use App\Models\SistemaExperto;
 use App\Models\CalidadReina;
 use App\Models\Comuna;
+use App\Models\HistorialCambios;
+use App\Models\Inventory;
 use App\Models\Region;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use App\Models\SubTarea;
 use Carbon\Carbon;
 use Illuminate\Support\Str;
+use Mockery\Generator\StringManipulation\Pass\Pass;
 
 class DocumentController extends Controller
 {
@@ -560,6 +563,50 @@ class DocumentController extends Controller
         ]);
 
         return $pdf->download('Tareas_Activas.pdf');
+    }
+
+    public function previewTodoInventario()
+    {
+        // 
+        $user = Auth::user();
+
+        $productos = Inventory::where('user_id', $user->id)
+            ->where('archivada', false)
+            ->with(['subcategories', 'category'])
+            ->orderBy('category_id')
+            ->get();
+
+        $fechaGeneracion = $this->obtenerFechaHoraLocal();
+        $pdf = Pdf::loadView('documents.ver-todo-inventario', compact('productos', 'fechaGeneracion'));
+        $pdf->setPaper('A4', 'landscape');
+        $pdf->setOptions([
+            'isHtml5ParserEnabled' => true,
+            'isPhpEnabled' => false,
+            'defaultFont' => 'DejaVu Sans',
+            'enable_remote' => false,
+        ]);
+
+        return $pdf->stream('Inventario_Apicola.pdf');
+    }   
+
+    public function previewHistorialInventario()
+    {
+        //
+        $user = Auth::user();
+
+        $historial = HistorialCambios::where('user_id', $user->id)->get();
+
+        $fechaGeneracion = $this->obtenerFechaHoraLocal();
+        $pdf = Pdf::loadView('documents.historial-inventario', compact('historial', 'fechaGeneracion'));
+        $pdf->setPaper('A4', 'portrait');
+        $pdf->setOptions([
+            'isHtml5ParserEnabled' => true,
+            'isPhpEnabled' => false,
+            'defaultFont' => 'DejaVu Sans',
+            'enable_remote' => false,
+        ]);
+
+        return $pdf->stream('Historial_Inventario.pdf');
     }
 
 }

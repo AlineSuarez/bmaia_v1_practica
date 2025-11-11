@@ -12,6 +12,7 @@ use Laravel\Socialite\Facades\Socialite;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\TaskController;
+use App\Http\Controllers\InventoryController;
 use App\Http\Controllers\ZonificacionController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ChatbotController;
@@ -303,6 +304,25 @@ Route::middleware(['auth', 'check.payment'])->group(function () {
     Route::get('/datos-subtareas', [TaskController::class, 'obtenerSubtareasJson'])->name('tareas.datos');
     Route::get('/tareas/calendario', [TaskController::class, 'calendario'])->name('tareas.calendario');
     Route::post('/tareas-generales', [TaskController::class, 'storeAjax']);
+
+    // Inventario
+    // Route::resource('/inventario', App\Http\Controllers\InventoryController::class);
+    Route::get('/inventario', [App\Http\Controllers\InventoryController::class, 'index'])->name('inventario');
+    Route::match(['get', 'post'], '/inventario/search', [InventoryController::class, 'search'])->name('inventario.search');
+    Route::get('/inventario/archivadas', [\App\Http\Controllers\InventoryController::class, 'verArchivadas'])->name('inventario.archivadas');
+    Route::post('/inventario/archivar/{id?}', [\App\Http\Controllers\InventoryController::class, 'archivar'])->name('inventario.archivar');
+    Route::post('/inventario/restaurar/{id?}', [\App\Http\Controllers\InventoryController::class, 'restaurar'])->name('inventario.restaurar');
+    Route::post('/inventario/store', [\App\Http\Controllers\InventoryController::class, 'store'])->name('inventario.store');
+    Route::delete('/inventario/destroy/{id?}', [\App\Http\Controllers\InventoryController::class, 'destroy'])->name('inventario.destroy');
+    Route::patch('/inventario/update/{id}', [App\Http\Controllers\InventoryController::class, 'update'])->name('inventario.update');
+    Route::patch('/inventario/update-multiple', [InventoryController::class, 'updateMultiple'])->name('inventario.updateMultiple');
+    Route::patch('/inventario/update_observacion/{id}', [App\Http\Controllers\InventoryController::class, 'update_observacion'])->name('inventario.update_observacion');
+    Route::get('/todo-inventario-ver/imprimir', [DocumentController::class, 'previewTodoInventario'])->name('inventario.previewTodo');
+    Route::get('/historial-inventario-ver/imprimir', [DocumentController::class, 'previewHistorialInventario'])->name('inventario.previewHistorial');
+    Route::get('/cotizador', [App\Http\Controllers\InventoryController::class, 'cotizador'])->name('inventario.cotizador');
+    Route::post('/inventario/addPedido', [App\Http\Controllers\InventoryController::class, 'addPedido'])->name('inventario.addPedido');
+    Route::get('/inventario/verPedidos', [App\Http\Controllers\InventoryController::class, 'verPedidos'])->name('inventario.pedidos');
+    Route::delete('/inventario/deletePedido/{id}', [App\Http\Controllers\InventoryController::class, 'deletePedido'])->name('inventario.deletePedido');
 
     // Zonificación
     Route::get('/zonificacion', [ZonificacionController::class, 'index'])->name('zonificacion');

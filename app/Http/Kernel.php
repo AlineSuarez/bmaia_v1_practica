@@ -2,6 +2,7 @@
 
 namespace App\Http;
 
+use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
 class Kernel extends HttpKernel
@@ -63,10 +64,17 @@ class Kernel extends HttpKernel
 
     protected $commands = [
         \App\Console\Commands\BackfillFacturasCommand::class,
+        \App\Console\Commands\EliminarProductosArchivados::class,
     ];
 
     protected function commands()
     {
         $this->load(__DIR__.'/Commands');
     }
+
+    protected function schedule(Schedule $schedule)
+    {
+        $schedule->command('app:eliminar-productos-archivados')->daily();
+    }
+
 }

@@ -1,0 +1,899 @@
+/* Estilos para selección multiple */
+.checkbox-seleccionar-producto {
+    appearance: none;             
+    -webkit-appearance: none;
+    width: 14px;
+    height: 14px;
+    border: 2px solid var(--border-color);
+    border-radius: 4px;           
+    background-color: white;
+    cursor: pointer;
+    position: relative;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+}
+
+/* Resalta el producto en edicion */
+.producto-editando {
+    background-color: #f3f4f6 !important;
+    transition: background-color 0.1s ease;
+}
+
+/* Resalta productos seleccionados */
+.producto-seleccionado {
+    background-color: #e5e7eb !important;
+    transition: background-color 0.1s ease;
+}
+
+.producto-seleccionado, .producto-editando {
+    transition: background-color 0.15s ease-in;
+}
+
+.checkbox-seleccionar-producto:hover {
+    border-color: var(--primary-color);
+    transform: scale(1.15);
+}
+
+/* Estado activo (cuando esta marcado) */
+.checkbox-seleccionar-producto:checked {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+/* Icono de check personalizado */
+.checkbox-seleccionar-producto:checked::after {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 4px;
+    width: 3px;
+    height: 7px;
+    border: solid white;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+}
+
+.btn-eliminar-multiple {
+    background: #ef4444 !important;
+    transition: all 0.2s;
+}
+
+.btn-eliminar-multiple:hover {
+    background: #dc2626 !important;
+}
+
+/* Ajuste para checkboxes de subcategorias */
+.checkbox-group {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 6px;
+    max-height: 100px;
+    overflow-y: auto;
+    padding: 8px;
+    background: white;
+}
+
+.checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    font-size: 12px;
+    white-space: nowrap;
+}
+
+.checkbox-group input[type="checkbox"] {
+    margin: 0;
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+:root {
+    --primary-color: #f89d13;
+    --secondary-color: #fafafa;
+    --border-color: #e5e7eb;
+    --text-dark: #374151;
+    --text-light: #6b7280;
+    --error-color: #ef4444;
+    --success-color: #10b981;
+}
+
+/* Layout Principal */
+.inventory-container {
+    width: 99%;
+    margin: 0 auto;
+    padding: 20px;
+    min-height: 100vh;
+}
+
+/* Header y Controles */
+.inventory-header {
+    background: white;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    position: relative;
+}
+
+.inventory-controls {
+    display: flex;
+    justify-content: space-between;
+    padding: 15px;
+    background: white;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.control-group {
+    display: flex;
+    gap: 10px;
+}
+
+/* Botones */
+.btn-inventory {
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: all 0.2s;
+    text-align: center;
+}
+
+.btn-inventory:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+}
+
+/* Tabla */
+.inventory-table-container {
+    background: white;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    overflow-x: auto;
+}
+
+.inventory-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.inventory-table th {
+    background: var(--secondary-color);
+    padding: 12px 10px;
+    text-align: left;
+    font-weight: 600;
+    color: var(--text-dark);
+    border-bottom: 2px solid var(--border-color);
+}
+
+.inventory-table td {
+    padding: 12px 10px;
+    border-bottom: 1px solid var(--border-color);
+    color: var(--text-light);
+    vertical-align: middle;
+}
+
+/* Anchos especificos para cada columna */
+.inventory-table th:nth-child(1),
+.inventory-table td:nth-child(1) { 
+    width: 14%; 
+    padding-left: 10px;
+    padding-right: 15px;
+}
+
+/* Cantidad mas largo */
+.inventory-table th:nth-child(2),
+.inventory-table td:nth-child(2) { 
+    width: 11%; 
+    padding-right: 10px;
+}
+
+/* Unidad mas corto */
+.inventory-table th:nth-child(3),
+.inventory-table td:nth-child(3) { 
+    width: 7%; 
+    padding-right: 15px;
+}
+
+/* Categoría mas largo */
+.inventory-table th:nth-child(4),
+.inventory-table td:nth-child(4) { 
+    width: 16%; 
+    padding-right: 20px;
+}
+
+.inventory-table th:nth-child(5),
+.inventory-table td:nth-child(5) { 
+    width: 13%; 
+    padding-right: 15px;
+}
+
+/* Precio mas largo, alineado a la izquierda */
+.inventory-table th:nth-child(6),
+.inventory-table td:nth-child(6) { 
+    width: 11%; 
+    padding-right: 15px;
+    text-align: left;
+}
+
+/* Observacion mas larga */
+.inventory-table th:nth-child(7),
+.inventory-table td:nth-child(7) { 
+    width: 22%; 
+    padding-right: 10px;
+}
+
+.inventory-table th:nth-child(8),
+.inventory-table td:nth-child(8) { 
+    width: 6%; 
+    text-align: center;
+}
+
+/* Inputs y Selects con mas altura */
+.input-inventory {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    transition: border-color 0.2s;
+    font-size: 14px;
+    box-sizing: border-box;
+    height: 40px;
+}
+
+/* Inputs para numeros mas largos */
+.input-number-inventory {
+    width: 95%;
+    padding: 10px 12px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    transition: border-color 0.2s;
+    font-size: 14px;
+    box-sizing: border-box;
+    height: 40px;
+}
+
+/* Espaciado adicional en modo edicion */
+.inventory-table tbody tr .edit-mode input[name="nombreProducto"] {
+    width: 120%;
+}
+
+.inventory-table tbody tr .edit-mode select[name="category_id"] {
+    width: 130%;
+}
+
+.inventory-table tbody tr .edit-mode .btn-observacion {
+    width: 115%;
+    min-width: 220px;
+}
+
+.input-inventory:focus,
+.input-number-inventory:focus {
+    border-color: var(--primary-color);
+    outline: none;
+}
+
+select.input-inventory {
+    background-color: white;
+    cursor: pointer;
+}
+
+.inventory-table td .edit-mode {
+    margin: 0;
+    padding: 0;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.edit-mode input,
+.edit-mode select {
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.2;
+}
+
+.edit-mode-active td > div {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+}
+
+/* Header content - Ver detalles debajo del total */
+.header-content {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    grid-template-rows: auto auto;
+    gap: 10px 15px;
+    margin-top: 15px;
+    align-items: start;
+}
+
+.inventory-stats {
+    grid-column: 1;
+    grid-row: 1;
+}
+
+#modal-imprimir {
+    grid-column: 1;
+    grid-row: 2;
+}
+
+/* Container principal para los botones de edicion - esquina derecha */
+.buttons-edit-container {
+    grid-column: 3;
+    grid-row: 1 / 3;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    justify-self: end;
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    flex-direction: row;
+}
+
+/* Wrapper para Editar y Cancelar */
+.edit-cancel-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    align-items: stretch;
+}
+
+/* Botones del wrapper con mismo ancho y texto centrado */
+.edit-cancel-wrapper .btn-inventory {
+    min-width: 140px;
+    text-align: center;
+    justify-content: center;
+}
+
+/* Boton Guardar cambios */
+#btn-guardar-cambios {
+    align-self: flex-start;
+}
+
+/* Centrar acciones en la tabla */
+.actions-cell {
+    text-align: center;
+    vertical-align: middle;
+}
+
+.action-buttons-centered {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Asegurar que el boton de eliminar este centrado */
+.actions-cell .btn-action {
+    margin: 0 auto;
+}
+
+/* Modales */
+.modal-inventory {
+    background: white;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    width: 90%;
+    max-width: 500px;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 99999 !important;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.modal-title {
+    font-size: 1.25rem;
+    color: var(--text-dark);
+    font-weight: 600;
+}
+
+/* Paginacion */
+.pagination {
+    display: flex;
+    justify-content: center;
+    gap: 5px;
+    margin-top: 20px;
+    list-style: none;
+    padding: 0;
+}
+
+.pagination li {
+    display: inline-flex;
+}
+
+.pagination a,
+.pagination span {
+    padding: 8px 12px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    color: var(--text-dark);
+    text-decoration: none;
+    transition: all 0.2s;
+}
+
+.pagination a:hover {
+    background: var(--primary-color);
+    color: white;
+}
+
+.pagination li.active a {
+    background: var(--primary-color);
+    color: white;
+    border-color: var(--primary-color);
+}
+
+.pagination li.disabled span {
+    color: var(--text-light);
+    cursor: not-allowed;
+}
+
+/* Boton Observacion mas largo */
+.btn-observacion {
+    background: transparent;
+    border: 1px solid var(--border-color);
+    padding: 8px 14px;
+    border-radius: 6px;
+    color: var(--text-dark);
+    cursor: pointer;
+    transition: all 0.2s;
+    width: 100%;
+    text-align: left;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    min-height: 38px;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+}
+
+/* Mostrar placeholder cuando el boton esta vacio */
+.btn-observacion:empty::before {
+    content: 'Sin observación...';
+    color: var(--text-light);
+    font-style: italic;
+}
+
+.btn-observacion:hover {
+    background: var(--secondary-color);
+    border-color: var(--primary-color);
+}
+
+/* Modales de observacion mejoradas */
+.modal-observacion {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    border-radius: 12px;
+    padding: 30px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+    width: 90%;
+    max-width: 550px;
+    z-index: 1000;
+    border: none;
+}
+
+.modal-observacion .modal-header-obs {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid var(--border-color);
+}
+
+.modal-observacion .modal-title-obs {
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: var(--text-dark);
+}
+
+.modal-observacion .btn-close-modal {
+    background: transparent;
+    border: none;
+    font-size: 1.3rem;
+    cursor: pointer;
+    color: var(--text-light);
+    transition: color 0.2s, transform 0.2s;
+    padding: 5px 10px;
+    border-radius: 4px;
+}
+
+.modal-observacion .btn-close-modal:hover {
+    color: var(--error-color);
+    background: #fee;
+    transform: scale(1.1);
+}
+
+.modal-observacion .observacion-input {
+    width: 100%;
+    min-height: 140px;
+    padding: 12px 15px;
+    border: 2px solid var(--border-color);
+    border-radius: 8px;
+    background: white;
+    transition: all 0.2s;
+    resize: vertical;
+    font-family: inherit;
+    font-size: 14px;
+    margin-bottom: 20px;
+    line-height: 1.5;
+}
+
+.modal-observacion .observacion-input:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(248, 157, 19, 0.1);
+    outline: none;
+}
+
+.modal-observacion .modal-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+}
+
+.modal-observacion .btn-ok-observacion,
+.modal-observacion .btn-cancel-observacion {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.2s;
+    font-size: 14px;
+    min-width: 100px;
+}
+
+.modal-observacion .btn-ok-observacion {
+    background: var(--primary-color);
+    color: white;
+}
+
+.modal-observacion .btn-ok-observacion:hover {
+    background: #e08b0a;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(248, 157, 19, 0.3);
+}
+
+.modal-observacion .btn-cancel-observacion {
+    background: #e5e7eb;
+    color: var(--text-dark);
+}
+
+.modal-observacion .btn-cancel-observacion:hover {
+    background: #d1d5db;
+}
+
+.btn-filtro {
+    padding: 8px 18px;
+    background: var(--text-dark);
+    color: #e5e7eb;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.2s;
+}
+
+.btn-filtro:hover {
+    background: #d1d5db;
+    color: var(--text-dark);
+    transform: translateY(-1px);
+}
+
+/* Modales mejorados */
+.modal-inventory {
+    background: white;
+    border-radius: 12px;
+    padding: 25px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    width: 90%;
+    max-width: 500px;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1000;
+    border: none;
+}
+
+/* Formularios */
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-label {
+    display: block;
+    margin-bottom: 8px;
+    color: var(--text-dark);
+    font-weight: 500;
+}
+
+.form-input {
+    width: 50%;
+    padding: 8px 12px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    margin-bottom: 10px;
+}
+
+.form-inventory {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.form-input,
+.form-select,
+.form-textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    background: white;
+    transition: all 0.2s;
+}
+
+.form-input:focus,
+.form-select:focus,
+.form-textarea:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 2px rgba(248, 157, 19, 0.1);
+    outline: none;
+}
+
+.form-textarea {
+    min-height: 100px;
+    resize: vertical;
+}
+
+.checkbox-group {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 10px;
+    margin-top: 5px;
+}
+
+.checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+}
+
+/* Botones de accion en tabla */
+.action-buttons {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+}
+
+.btn-action {
+    width: 32px;
+    height: 32px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+    color: white;
+}
+
+.btn-restaurar{
+    background: #10b981;
+}
+
+.btn-action:hover {
+    transform: translateY(-2px);
+    opacity: 0.9;
+}
+
+.btn-action {
+    padding: 6px 12px;
+    border-radius: 4px;
+    border: none;
+    cursor: pointer;
+    color: white;
+    transition: all 0.2s;
+}
+
+.btn-edit {
+    background: var(--success-color);
+}
+
+.btn-delete {
+    background: var(--error-color);
+}
+
+a {
+    text-decoration: none;
+}
+
+/* Truncar texto largo */
+.truncate-text {
+    max-width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Paginacion centrada */
+.pagination-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+    width: 100%;
+}
+
+.pagination {
+    display: flex;
+    gap: 5px;
+    padding: 0;
+    margin: 0;
+    list-style: none;
+}
+
+.pagination li {
+    display: inline-flex;
+}
+
+.pagination a,
+.pagination span {
+    padding: 8px 12px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    color: var(--text-dark);
+    text-decoration: none;
+    transition: all 0.2s;
+    min-width: 40px;
+    text-align: center;
+}
+
+.pagination li.active a {
+    background: var(--primary-color);
+    color: white;
+    border-color: var(--primary-color);
+}
+
+/* Modal header mejorado */
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.modal-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--text-dark);
+}
+
+.modal-close {
+    background: transparent;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: var(--text-light);
+}
+
+/* Form grid para modal Crear */
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    align-items: start;
+}
+
+.form-grid .form-group { 
+    margin-bottom: 0; 
+}
+
+.form-grid .form-input,
+.form-grid .form-select {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* Acciones del formulario */
+.form-actions {
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+    margin-top: 12px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .header-content {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto auto auto;
+    }
+    
+    .inventory-stats {
+        grid-column: 1;
+        grid-row: 1;
+    }
+    
+    #modal-imprimir {
+        grid-column: 1;
+        grid-row: 2;
+    }
+    
+    .buttons-edit-container {
+        grid-column: 1;
+        grid-row: 3;
+        flex-direction: column;
+        width: 100%;
+        justify-self: stretch;
+    }
+    
+    .edit-cancel-wrapper {
+        width: 100%;
+    }
+    
+    .buttons-edit-container .btn-inventory {
+        width: 100%;
+    }
+    
+    .form-grid { 
+        grid-template-columns: 1fr; 
+    }
+    
+    .modal-inventory { 
+        max-width: 92%; 
+        padding: 18px; 
+    }
+}
+
+@media (max-width: 720px) {
+    .form-grid { 
+        grid-template-columns: 1fr; 
+    }
+    
+    .modal-inventory { 
+        max-width: 92%; 
+        padding: 18px; 
+    }
+}
+
+.pagination-container { 
+    display: flex; 
+    justify-content: center; 
+    width: 100%; 
+}
+
+.apiary-map {
+    height: 100%;
+    width: 100%;
+    z-index: 1;
+}
