@@ -191,7 +191,7 @@ Route::middleware(['auth', 'check.payment'])->group(function () {
     Route::get('/apiarios/create-temporal', [ApiarioController::class, 'createTemporal'])->name('apiarios.createTemporal');
 
     // Apiarios
-    //Route::resource('apiarios', ApiarioController::class)->except(['show']);
+    Route::resource('apiarios', ApiarioController::class)->except(['show']);
     Route::get('/apiarios', [ApiarioController::class, 'index'])->name('apiarios');
     Route::get('apiarios/create', [ApiarioController::class, 'create'])->name('apiarios.create');
     Route::post('apiarios/store', [ApiarioController::class, 'store'])->name('apiarios.store');
