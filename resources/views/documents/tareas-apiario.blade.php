@@ -77,7 +77,6 @@
                 <th>#</th>
                 <th>Categoría</th>
                 <th>Tarea Específica</th>
-                <th>Acción Realizada</th>
                 <th>Observaciones</th>
                 <th>Fecha Inicio</th>
                 <th>Fecha Término</th>
@@ -90,7 +89,6 @@
                     <td>{{ $index + 1 }}</td>
                     <td>{{ $tarea->categoria_tarea }}</td>
                     <td>{{ $tarea->tarea_especifica ?? '-' }}</td>
-                    <td>{{ $tarea->accion_realizada ?? '-' }}</td>
                     <td>{{ $tarea->observaciones ?? '-' }}</td>
                     <td>{{ $tarea->fecha_inicio ? \Carbon\Carbon::parse($tarea->fecha_inicio)->format('d/m/Y') : '-' }}</td>
                     <td>{{ $tarea->fecha_termino ? \Carbon\Carbon::parse($tarea->fecha_termino)->format('d/m/Y') : '-' }}</td>

@@ -72,7 +72,7 @@
                         <input type="number" step="0.01" name="madurez_miel" class="field-input"
                             placeholder="Ingrese el porcentaje de madurez..."
                             value="{{ old('madurez_miel', $indiceCosecha->madurez_miel ?? '') }}" required>
-                        <span class="field-helper">Porcentaje de maduración de la miel</span>
+                        <span class="field-helper">Porcentaje de madurez de la miel</span>
                     </div>
 
                     <div class="form-field">
@@ -84,12 +84,12 @@
                                     <line x1="15" y1="3" x2="15" y2="21" />
                                 </svg>
                             </span>
-                            N° de Alzadas
+                            N° de Alzas
                         </label>
-                        <input type="number" step="0.01" name="num_alzadas" class="field-input"
+                        <input type="number" step="1" min="0" name="num_alzadas" class="field-input"
                             placeholder="Número de alzadas..."
                             value="{{ old('num_alzadas', $indiceCosecha->num_alzadas ?? '') }}" required>
-                        <span class="field-helper">Cantidad total de alzadas cosechadas</span>
+                        <span class="field-helper">Cantidad total de alzas cosechadas</span>
                     </div>
 
                     <div class="form-field">
@@ -102,10 +102,10 @@
                             </span>
                             N° de Marcos con Miel
                         </label>
-                        <input type="number" step="0.01" name="marcos_miel" class="field-input"
+                        <input type="number" step="1" min="0" name="marcos_miel" class="field-input"
                             placeholder="Número de marcos..."
                             value="{{ old('marcos_miel', $indiceCosecha->marcos_miel ?? '') }}" required>
-                        <span class="field-helper">Marcos totales con miel operculada</span>
+                        <span class="field-helper">Marcos totales con miel</span>
                     </div>
                 </div>
             </section>
@@ -152,7 +152,7 @@
                         </label>
                         <input type="date" name="fecha_cosecha" class="field-input date-input"
                             value="{{ old('fecha_cosecha', isset($indiceCosecha->fecha_cosecha) ? $indiceCosecha->fecha_cosecha->format('Y-m-d') : '') }}">
-                        <span class="field-helper">Fecha cuando se realizó la cosecha</span>
+                        <span class="field-helper">Fecha cuando se realizó la cosecha en el apiario</span>
                     </div>
 
                     <div class="form-field">
@@ -169,7 +169,7 @@
                         </label>
                         <input type="date" name="fecha_extraccion" class="field-input date-input"
                             value="{{ old('fecha_extraccion', isset($indiceCosecha->fecha_extraccion) ? $indiceCosecha->fecha_extraccion->format('Y-m-d') : '') }}">
-                        <span class="field-helper">Fecha de extracción de la miel</span>
+                        <span class="field-helper">Fecha de extracción de la miel en la sala de extracción</span>
                     </div>
 
                     <div class="form-field">
@@ -185,7 +185,7 @@
                         <input type="text" name="lugar_extraccion" class="field-input"
                             placeholder="Ubicación de la extracción..."
                             value="{{ old('lugar_extraccion', $indiceCosecha->lugar_extraccion ?? '') }}">
-                        <span class="field-helper">Lugar donde se extrajo la miel</span>
+                        <span class="field-helper">Ubicación de la sala de extracción</span>
                     </div>
 
                     <div class="form-field">
@@ -203,7 +203,8 @@
                         <span class="field-helper">Nivel de humedad detectado en la miel</span>
                     </div>
 
-                    <div class="form-field">
+<!--
+<div class="form-field">
                         <label class="field-label">
                             <span class="label-icon">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -216,7 +217,8 @@
                             placeholder="Temperatura en °C..."
                             value="{{ old('temperatura_ambiente', $indiceCosecha->temperatura_ambiente ?? '') }}">
                         <span class="field-helper">Temperatura durante la extracción</span>
-                    </div>
+                    </div>                    
+-->
 
                     <div class="form-field">
                         <label class="field-label">

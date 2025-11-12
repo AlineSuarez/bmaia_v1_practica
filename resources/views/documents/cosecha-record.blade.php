@@ -112,7 +112,6 @@
                 <th>% Humedad</th>
                 <th>N° Alzadas</th>
                 <th>N° Marcos</th>
-                <th>Temperatura (°C)</th>
                 <th>Responsable</th>
                 <th>Notas</th>
             </tr>
@@ -128,7 +127,6 @@
                     <td>{{ $cosecha->humedad_miel ?? '-' }}</td>
                     <td>{{ $cosecha->num_alzadas ?? '-' }}</td>
                     <td>{{ $cosecha->marcos_miel ?? '-' }}</td>
-                    <td>{{ $cosecha->temperatura_ambiente ?? '-' }}</td>
                     <td>{{ $cosecha->responsable_cosecha ?? '-' }}</td>
                     <td>{{ $cosecha->notas ?? '-' }}</td>
                 </tr>

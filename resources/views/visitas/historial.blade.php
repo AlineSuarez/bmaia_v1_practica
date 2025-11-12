@@ -872,7 +872,6 @@
                                                     <th><i class="fas fa-calendar me-1"></i> Fecha de Cosecha</th>
                                                     <th><i class="fas fa-jar me-1"></i> Lote</th>
                                                     <th><i class="fas fa-location-dot me-1"></i> Lugar Extracción</th>
-                                                    <th><i class="fas fa-thermometer-half me-1"></i> Temp. (°C)</th>
                                                     <th><i class="fas fa-percentage me-1"></i> Madurez (%)</th>
                                                     <th><i class="fas fa-water me-1"></i> Humedad (%)</th>
                                                     <th><i class="fas fa-layer-group me-1"></i> Alzas</th>
@@ -893,7 +892,6 @@
                                                         </td>
                                                         <td>{{ $c->id_lote_cosecha ?? '-' }}</td>
                                                         <td>{{ $c->lugar_extraccion ?? '-' }}</td>
-                                                        <td>{{ $c->temperatura_ambiente ?? '-' }}</td>
                                                         <td>{{ $c->madurez_miel ?? '-' }}</td>
                                                         <td>{{ $c->humedad_miel ?? '-' }}</td>
                                                         <td>{{ $c->num_alzadas ?? '-' }}</td>

@@ -39,4 +39,15 @@ class IndiceCosecha extends Model
     {
         return $this->belongsTo(\App\Models\Colmena::class);
     }
+
+    public function getNumAlzadasAttribute($value)
+    {
+        return (int) $value;
+    }
+
+    public function getMarcosMielAttribute($value)
+    {
+        return (int) $value;
+    }
+
 }
