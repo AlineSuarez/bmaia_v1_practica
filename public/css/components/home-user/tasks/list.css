@@ -152,10 +152,10 @@ body {
 .task-list-container {
     position: relative;
     background: linear-gradient(135deg, #ffffff, #fefefe);
+    border: 1px solid var(--amber-100);
     border-radius: var(--radius-lg);
     padding: var(--space-4);
     box-shadow: var(--shadow-md);
-    border: 1px solid var(--amber-100);
     overflow: hidden;
     width: 100%;
     max-width: none; /* Cambio: eliminar restricción de ancho */
@@ -494,7 +494,8 @@ h2.header-title {
 /* ================================================================
    CONTROLES DE FORMULARIO
    ================================================================ */
-.priority-select,
+
+
 .status-select {
     width: 100%;
     min-width: 120px;
@@ -516,7 +517,6 @@ h2.header-title {
     background-size: 1em 1em;
 }
 
-.priority-select:focus,
 .status-select:focus {
     outline: none;
     border-color: var(--amber-500);
@@ -524,7 +524,6 @@ h2.header-title {
     box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.1);
 }
 
-.priority-select:hover,
 .status-select:hover {
     border-color: var(--amber-300);
     background-color: var(--amber-50);
@@ -575,7 +574,7 @@ h2.header-title {
     gap: var(--space-1);
     padding: var(--space-2) var(--space-3); /* Cambio: más padding horizontal */
     border: none;
-    border-radius: var(--radius-md);
+    border-radius: var(--radius-3xl);
     font-size: var(--font-size-xs);
     font-weight: var(--font-weight-semibold);
     cursor: pointer;
@@ -594,20 +593,19 @@ h2.header-title {
 .save-button {
     background: var(--gradient-success);
     color: white;
-    border-radius: var(--space-5);
+    border-radius: var(--radius-2xl);
 }
 
 .save-button:hover {
-    background: var(--success-600);
+    background: var(--success-700);
     transform: translateY(-1px);
-    box-shadow: var(--shadow-sm);
+    box-shadow: var(--radius-lg);
 }
 
 .archive-button {
     background: var(--danger-500);
     color: #fff;
-    border-radius: var(--space-5);
-    transition: background 0.2s;
+    border-radius: var(--radius-2xl);
 }
 
 .archive-button:hover {

@@ -3,6 +3,8 @@
 <head>
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <link href="{{ asset('./css/components/home-user/tasks/list.css') }}" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intro.js/7.2.0/introjs.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/intro.js/7.2.0/intro.min.js"></script>
 </head>
 
 {{-- Contenedor principal de la lista de tareas --}}
@@ -15,7 +17,7 @@
                 <h1 class="header-title">
                     <i class="fa-solid fa-list-check"></i>
                     Lista de Tareas 
-                    <i class="fa-solid fa-circle-question"></i>
+                    <i class="fa-solid fa-circle-question" id="startTour"></i>
                 </h1>
                 
                 <p class="header-subtitle"> Gestiona y organiza de manera eficiente que tareas son relevantes para su Plan de Trabajo Anual</p>
@@ -65,32 +67,50 @@
     </div>
 
     {{-- Contenedor de tabla --}}
-    <div class="tasks-table-container" id="tasksTableContainer">
+    <div class="tasks-table-container" id="tasksTableContainer" 
+    data-intro="Bienvenido al tutorial de la Lista de Tareas. Te explicaremos cada función paso a paso." 
+    data-step="1">
         @if($subtareas->count() > 0)
             <table class="tasks-table" id="tasksTable">
                 <thead>
                     <tr>
-                        <th class="sortable" data-column="nombre">
+                        <th class="sortable" data-column="nombre"
+                        data-intro="Aquí puedes ver el nombre de cada tarea." 
+                        data-step="2">
                             <i class="fa-solid fa-sort"></i>
                             Nombre de Tarea
                         </th>
-                        <th class="sortable" data-column="prioridad">
+                        <th class="sortable" data-column="prioridad"
+                        data-intro="Esta columna muestra la prioridad asignada a cada tarea.
+                        La prioridad indica la importancia: Baja (azul), Media (verde), Alta (amarillo) o Urgente (rojo)." 
+                        data-step="3">
                             <i class="fa-solid fa-sort"></i>
                             Prioridad
                         </th>
-                        <th class="sortable" data-column="estado">
+                        <th class="sortable" data-column="estado"
+                        data-intro="Aquí puedes ver y cambiar el estado de cada tarea.
+                        El estado muestra el progreso de la tarea: Pendiente, En progreso o Completada." 
+                        data-step="4">
                             <i class="fa-solid fa-sort"></i>
                             Estado
                         </th>
-                        <th class="sortable" data-column="fecha_inicio">
+                        <th class="sortable" data-column="fecha_inicio"
+                        data-intro="Esta columna muestra la fecha de inicio asignada a cada tarea.
+                        La fecha de inicio indica cuándo se debe comenzar a trabajar en la tarea." 
+                        data-step="5">
                             <i class="fa-solid fa-sort"></i>
                             Fecha Inicio
                         </th>
-                        <th class="sortable" data-column="fecha_limite">
+                        <th class="sortable" data-column="fecha_limite"
+                        data-intro="Esta columna muestra la fecha límite asignada a cada tarea para que sea completada. 
+                        Es importante cumplir con esta fecha según la prioridad." 
+                        data-step="6">
                             <i class="fa-solid fa-sort"></i>
                             Fecha Límite
                         </th>
-                        <th class="actions-column">
+                        <th class="actions-column"
+                        data-intro="En esta columna encontrarás los botones para guardar los cambios realizados en cada tarea o descartarla si ya no es relevante." 
+                        data-step="7">
                             <i class="fa-solid fa-cog"></i>
                             Acciones
                         </th>
@@ -111,16 +131,28 @@
                             </td>
 
                             {{-- Prioridad --}}
+                            @php
+                                $iconos = [
+                                    'baja' => '<i class="fa fa-circle" style="color: #ADD8E6; margin: 0px 5px 0px 12px;"></i>',
+                                    'media' => '<i class="fa fa-circle text-success" style="margin: 0px 5px 0px 12px;"></i>',
+                                    'alta' => '<i class="fa fa-circle" style="color: #FFFF00; margin: 0px 5px 0px 12px;"></i>',
+                                    'urgente' => '<i class="fa fa-circle text-danger" style="margin: 0px 5px 0px 12px;"></i>',
+                                ];
+                                $prioridades = [
+                                    'baja' => 'Baja',
+                                    'media' => 'Media',
+                                    'alta' => 'Alta',
+                                    'urgente' => 'Urgente',
+                                ];
+                                $p = $task->prioridad;
+                            @endphp
+
                             <td class="priority-cell">
-                                <select class="priority-select prioridad" data-id="{{ $task->id }}"
-                                    aria-label="Prioridad para {{ $task->nombre }}">
-                                    @foreach(['baja' => 'Baja', 'media' => 'Media', 'alta' => 'Alta', 'urgente' => 'Urgente'] as $value => $label)
-                                        <option value="{{ $value }}" @selected($task->prioridad === $value)>
-                                            {{ $label }}
-                                        </option>
-                                    @endforeach
-                                </select>
+                                <span class="priority-label" aria-label="Prioridad para {{ $task->nombre }}">
+                                    {!! $iconos[$p] ?? '' !!} {{ $prioridades[$p] ?? 'Desconocida' }}
+                                </span>
                             </td>
+
 
                             {{-- Estado --}}
                             <td class="status-cell">
@@ -161,17 +193,47 @@
                                         style="display:inline;">
                                         @csrf
                                         <button type="submit" class="action-button archive-button" title="Descartar tarea">
-                                            <i class="fa fa-x"></i>
+                                            <i class="fa fa-trash"></i>
                                         </button>
                                     </form>
+                                    @section('optional-scripts')
+                                    <script src="{{ asset('js/components/home-user/tasks/list.js') }}"></script>
 
+                                    <script>
+                                        // Mostrar mensajes flash del servidor usando la función ya existente mostrarNotificacion
+                                        document.addEventListener('DOMContentLoaded', function () {
+                                            @if(session('success'))
+                                                try {
+                                                    if (typeof mostrarNotificacion === 'function') {
+                                                        mostrarNotificacion('success', {!! json_encode(session('success')) !!});
+                                                    } else {
+                                                        alert({!! json_encode(session('success')) !!});
+                                                    }
+                                                } catch (e) {
+                                                    console.log('notificacion success:', {!! json_encode(session('success')) !!});
+                                                }
+                                            @endif
+
+                                            @if(session('error'))
+                                                try {
+                                                    if (typeof mostrarNotificacion === 'function') {
+                                                        mostrarNotificacion('error', {!! json_encode(session('error')) !!});
+                                                    } else {
+                                                        alert({!! json_encode(session('error')) !!});
+                                                    }
+                                                } catch (e) {
+                                                    console.log('notificacion error:', {!! json_encode(session('error')) !!});
+                                                }
+                                            @endif
+                                        });
+                                    </script>
+                                    @endsection
                                 </div>
                             </td>
                         </tr>
                     @endforeach
                 </tbody>
             </table>
-
         @else
             {{-- Estado vacío --}}
             <div class="empty-state">

@@ -32,6 +32,10 @@ use Illuminate\Support\Facades\Http;
 
 Auth::routes();
 
+// Ruta para vista previa / descarga del PDF de todas las tareas
+Route::get('/tareas/imprimir-todas', [App\Http\Controllers\DocumentController::class, 'imprimirTodasSubtareas'])
+    ->name('tareas.imprimirTodas')
+    ->middleware('auth');
 // Proxy para reverse geocoding (Nominatim)
 Route::get('/reverse-geocode', function (Illuminate\Http\Request $request) {
     $lat = $request->query('lat');
@@ -299,6 +303,8 @@ Route::middleware(['auth', 'check.payment'])->group(function () {
     Route::get('/tareas/{id}', [TaskController::class, 'show'])->name('tareas.show');
     Route::post('/tareas/update/{id}', [TaskController::class, 'guardarCambios']);
     Route::patch('/tareas/{id}/update', [TaskController::class, 'updateTarea']);
+    // Ruta para imprimir todas las tareas (PDF)
+    Route::get('/tareas/imprimir-todas', [App\Http\Controllers\DocumentController::class, 'imprimirTodasSubtareas'])->name('tareas.imprimirTodas')->middleware('auth');
     Route::get('/todas-las-tareas/imprimir', [DocumentController::class, 'imprimirTodasSubtareas'])->name('tareas.imprimirTodas');
     Route::get('/datos-subtareas', [TaskController::class, 'obtenerSubtareasJson'])->name('tareas.datos');
     Route::get('/tareas/calendario', [TaskController::class, 'calendario'])->name('tareas.calendario');
@@ -335,3 +341,10 @@ Route::get('apiarios/{apiario}/colmenas/{colmena}', [App\Http\Controllers\Colmen
 // Ruta pública para imprimir QR (PDF) sin autenticación
 Route::get('/apiarios/{apiario}/colmenas/{colmena}/qr-pdf-public', [App\Http\Controllers\DocumentController::class, 'qrPdfPublic'])
     ->name('colmenas.qr-pdf.public');
+
+/* // Ruta para recalcular prioridades de tareas en lote
+Route::middleware(['auth'])->group(function () {
+    // ...existing routes...
+    Route::post('/tareas/recalcular-prioridades', [App\Http\Controllers\TaskController::class,'recalcularPrioridadesBatch'])
+        ->name('tareas.recalcularPrioridades');
+}); */

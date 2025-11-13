@@ -1,3 +1,31 @@
+/** 
+ * ================================================================
+ * CONFIGURACIÓN DE INTRO.JS
+ * ================================================================ 
+ */
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Configuración del tour
+    const intro = introJs();
+    intro.setOptions({
+        nextLabel: 'Siguiente →',
+        prevLabel: '← Anterior',
+        skipLabel: 'Salir',
+        doneLabel: '¡Entendido!',
+        tooltipPosition: 'auto',
+        showProgress: true,
+        showBullets: false,
+        exitOnOverlayClick: false,
+        disableInteraction: true,
+        overlayOpacity: 0.7
+    });
+
+    // Botón para iniciar el tour
+    document.getElementById('startTour').addEventListener('click', function() {
+        intro.start();
+    });
+});
+
 /**
  * ================================================================
  * CONFIGURACIÓN Y VARIABLES GLOBALES
@@ -41,6 +69,7 @@ const AppState = {
 
 $(document).ready(function () {
     inicializarApp();
+    configurarEditarNombresGlobal(); // <-- Agregar esta línea aquí
 });
 
 function guardarPaginaActual(pagina) {
@@ -172,6 +201,28 @@ function crearFilaTarea(task) {
     row.setAttribute("data-fecha-inicio", formatDateForInput(task.fecha_inicio));
     row.setAttribute("data-fecha-limite", formatDateForInput(task.fecha_limite));
 
+    // Mapeo de iconos y etiquetas para replicar list.blade.php
+    const iconos = {
+        baja: '<i class="fa fa-circle" style="color: #ADD8E6; margin: 0px 5px 0px 12px;"></i>',
+        media: '<i class="fa fa-circle text-success" style="margin: 0px 5px 0px 12px;"></i>',
+        alta: '<i class="fa fa-circle" style="color: #FFFF00; margin: 0px 5px 0px 12px;"></i>',
+        urgente: '<i class="fa fa-circle text-danger" style="margin: 0px 5px 0px 12px;"></i>',
+    };
+    const prioridadesLabel = {
+        baja: 'Baja',
+        media: 'Media',
+        alta: 'Alta',
+        urgente: 'Urgente',
+    };
+    const p = task.prioridad || 'baja';
+
+    const prioridadHtml = `
+        <td class="priority-cell">
+            <span class="priority-label" aria-label="Prioridad para ${escapeHtml(task.nombre)}">
+                ${iconos[p] || ''} ${escapeHtml(prioridadesLabel[p] || 'Desconocida')}
+            </span>
+        </td>
+    `;
 
     row.innerHTML = `
         <td class="task-name-cell">
@@ -182,11 +233,7 @@ function crearFilaTarea(task) {
             </div>
         </td>
 
-        <td class="priority-cell">
-            <select class="priority-select prioridad" data-id="${task.id}">
-                ${generarOpcionesPrioridad(task.prioridad)}
-            </select>
-        </td>
+        ${prioridadHtml}
 
         <td class="status-cell">
             <select class="status-select estado" data-id="${task.id}">
@@ -214,14 +261,17 @@ function crearFilaTarea(task) {
                         data-id="${task.id}" title="Guardar cambios">
                     <i class="fa-solid fa-save"></i>
                 </button>
-                <button type="button" class="action-button delete-button eliminar-tarea" 
-                        data-id="${task.id}" title="Eliminar tarea">
-                    <i class="fa-solid fa-trash"></i>
-                </button>
+                <form action="/tareas/${task.id}/archivar" method="POST" 
+                    onsubmit="return confirm('¿Estás seguro que deseas descartar esta tarea?');"
+                    style="display:inline;">
+                    <input type="hidden" name="_token" value="${document.querySelector('meta[name="csrf-token"]').content}">
+                    <button type="submit" class="action-button archive-button" title="Descartar tarea">
+                        <i class="fa fa-trash"></i>
+                    </button>
+                </form>
             </div>
         </td>
     `;
-
     return row;
 }
 
@@ -572,6 +622,199 @@ function configurarEventListeners() {
     });
 }
 
+// ===== FUNCIONALIDAD: EDITAR / GUARDAR NOMBRES EN BLOQUE =====
+function configurarEditarNombresGlobal() {
+    const btn = document.getElementById("btn-editar-nombre");
+    if (!btn) return;
+
+    const icon = btn.querySelector("i");
+    const spanText = btn.querySelector("span");
+    let editMode = false;
+
+    btn.addEventListener("click", async (e) => {
+        e.preventDefault();
+
+        const rows = Array.from(document.querySelectorAll(".task-row"));
+        if (rows.length === 0) return;
+
+        // Entrar en modo edición: convertir spans a inputs
+        if (!editMode) {
+            editMode = true;
+            btn.classList.add("activo");
+            if (icon && icon.classList.contains("fa-edit")) icon.classList.replace("fa-edit", "fa-save");
+            if (spanText) spanText.textContent = " Guardar";
+
+            rows.forEach((row) => {
+                const nameSpan = row.querySelector(".task-name");
+                if (!nameSpan) return;
+
+                const original = nameSpan.textContent.trim();
+                row.dataset.originalName = original;
+
+                const input = document.createElement("input");
+                input.type = "text";
+                input.className = "task-name-input input-miel";
+                input.value = original;
+                input.setAttribute("data-task-id", row.getAttribute("data-task-id"));
+                input.style.minWidth = "180px";
+                input.style.boxSizing = "border-box";
+                input.autocomplete = "off";
+
+                nameSpan.parentNode.replaceChild(input, nameSpan);
+            });
+
+            const firstInput = document.querySelector(".task-name-input");
+            if (firstInput) firstInput.focus();
+            return;
+        }
+
+        // Guardar: validar y enviar cambios
+        btn.disabled = true;
+
+        const csrfToken =
+            TaskConfig.csrfToken ||
+            document.querySelector('meta[name="csrf-token"]')?.getAttribute("content") ||
+            "";
+
+        const inputs = Array.from(document.querySelectorAll(".task-name-input"));
+        
+        // Validar vacíos
+        for (const input of inputs) {
+            const val = input.value.trim();
+            if (val === "") {
+                mostrarNotificacion("El nombre no puede quedar vacío", "warning");
+                input.focus();
+                input.style.borderColor = "#dc2626";
+                btn.disabled = false;
+                return;
+            } else {
+                input.style.borderColor = "";
+            }
+        }
+
+        const cambios = [];
+        inputs.forEach((input) => {
+            const row = input.closest(".task-row");
+            const original = (row && row.dataset.originalName) || "";
+            const nuevo = input.value.trim();
+            if (nuevo !== original) {
+                cambios.push({ id: input.getAttribute("data-task-id"), nombre: nuevo, row, input });
+            }
+        });
+
+        // Si no hay cambios, solo revertir inputs a spans
+        if (cambios.length === 0) {
+            revertirTodos();
+            finishUI();
+            btn.disabled = false;
+            return;
+        }
+
+        // Enviar actualizaciones
+        const resultados = await Promise.all(
+            cambios.map(async (c) => {
+                try {
+                    const url = `${TaskConfig.endpoints.updateTarea}${c.id}`;
+                    const res = await fetch(url, {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "X-CSRF-TOKEN": csrfToken,
+                            "X-Requested-With": "XMLHttpRequest",
+                            Accept: "application/json",
+                        },
+                        body: JSON.stringify({ nombre: c.nombre }),
+                    });
+
+                    const payloadText = await res.text();
+                    let payload;
+                    try {
+                        payload = payloadText ? JSON.parse(payloadText) : {};
+                    } catch {
+                        payload = payloadText;
+                    }
+
+                    if (!res.ok) {
+                        return {
+                            ok: false,
+                            status: res.status,
+                            body: payload,
+                            item: c,
+                        };
+                    }
+
+                    return { ok: true, data: payload, item: c };
+                } catch (error) {
+                    return { ok: false, error, item: c };
+                }
+            })
+        );
+
+        const fallidos = resultados.filter((r) => !r.ok);
+        const exitosos = resultados.filter((r) => r.ok);
+
+        // Procesar fallidos
+        if (fallidos.length > 0) {
+            fallidos.forEach((f) => {
+                const input = f.item.input;
+                if (input) {
+                    input.style.borderColor = "#dc2626";
+                    input.focus();
+                }
+                console.error("Error guardando tarea", {
+                    id: f.item.id,
+                    status: f.status,
+                    body: f.body,
+                    error: f.error,
+                });
+            });
+            mostrarNotificacion(`Error al guardar ${fallidos.length} tarea(s).`, "error");
+            btn.disabled = false;
+            return;
+        }
+
+        // Si todo fue exitoso, mostrar mensaje y RECARGAR
+        mostrarNotificacion("Nombres actualizados correctamente", "success");
+        
+        // RECARGAR LA PÁGINA
+        setTimeout(() => {
+            window.location.reload();
+        }, 1000);
+
+        // Helpers
+        function revertirTodos() {
+            const allInputs = Array.from(document.querySelectorAll(".task-name-input"));
+            allInputs.forEach((input) => {
+                const row = input.closest(".task-row");
+                const fallback = (row && row.dataset.originalName) || input.value.trim();
+                const span = document.createElement("span");
+                span.className = "task-name";
+                span.textContent = fallback;
+                input.parentNode.replaceChild(span, input);
+                if (row) {
+                    row.dataset.originalName = fallback;
+                    row.setAttribute("data-nombre", fallback);
+                }
+            });
+        }
+
+        function finishUI() {
+            editMode = false;
+            btn.classList.remove("activo");
+            if (icon && icon.classList.contains("fa-save")) icon.classList.replace("fa-save", "fa-edit");
+            if (spanText) spanText.textContent = " Editar";
+            rows.forEach((r) => delete r.dataset.originalName);
+            if (typeof actualizarContadores === "function") actualizarContadores();
+            if (typeof paginarTabla === "function") paginarTabla();
+        }
+    });
+}
+
+// ELIMINAR esta línea que está fuera del ready:
+// document.addEventListener("DOMContentLoaded", function () {
+//     configurarEditarNombresGlobal();
+// });
+
 /**
  * ================================================================
  * ACCIONES DE TAREAS
@@ -791,28 +1034,159 @@ function mostrarLoadingState(show) {
 }
 
 function mostrarNotificacion(type, message) {
-    if (typeof toastr !== "undefined") {
-        toastr[type](message);
-    } else {
-        const emoji = type === "success" ? "✅" : "❌";
-        console.log(`${emoji} ${message}`);
+    // Usar SweetAlert como primer opción (estilo toast)
+    if (typeof Swal !== "undefined") {
+        Swal.fire({
+            toast: true,
+            position: "top-end",
+            icon: type === "error" ? "error" : "success",
+            title: message,
+            showConfirmButton: false,
+            timer: 2500,
+            timerProgressBar: true,
+        });
+        return;
     }
+
+    // Si existe toastr, usarlo
+    if (typeof toastr !== "undefined") {
+        // mapear tipos comunes
+        const t = type === "error" ? "error" : "success";
+        toastr[t](message);
+        return;
+    }
+
+    // Fallback: toast DOM simple y auto-removible
+    (function showCustomToast(t, msg) {
+        const id = "custom-toast-" + Date.now();
+        const el = document.createElement("div");
+        el.id = id;
+        el.setAttribute("role", "status");
+        el.style.position = "fixed";
+        el.style.zIndex = 99999;
+        el.style.right = "20px";
+        el.style.top = "20px";
+        el.style.minWidth = "220px";
+        el.style.padding = "10px 14px";
+        el.style.borderRadius = "8px";
+        el.style.boxShadow = "0 6px 18px rgba(0,0,0,0.12)";
+        el.style.color = "#fff";
+        el.style.fontWeight = "600";
+        el.style.fontSize = "0.94rem";
+        el.style.opacity = "0";
+        el.style.transition = "opacity 240ms ease, transform 240ms ease";
+        el.style.transform = "translateY(-8px)";
+        if (t === "error") {
+            el.style.background = "linear-gradient(90deg,#ef4444,#dc2626)";
+        } else {
+            el.style.background = "linear-gradient(90deg,#10b981,#059669)";
+        }
+        el.textContent = msg;
+        document.body.appendChild(el);
+        // show
+        requestAnimationFrame(() => {
+            el.style.opacity = "1";
+            el.style.transform = "translateY(0)";
+        });
+        // remove after timeout
+        setTimeout(() => {
+            el.style.opacity = "0";
+            el.style.transform = "translateY(-8px)";
+            setTimeout(() => {
+                if (el && el.parentNode) el.parentNode.removeChild(el);
+            }, 240);
+        }, 2600);
+    })(type, message);
 }
 
-async function mostrarConfirmacion({ title, text, confirmText, cancelText }) {
-    if (typeof Swal !== "undefined") {
-        const result = await Swal.fire({
-            title,
-            text,
-            icon: "warning",
-            showCancelButton: true,
-            confirmButtonColor: "#ef4444",
-            cancelButtonColor: "#6b7280",
-            confirmButtonText: confirmText,
-            cancelButtonText: cancelText,
+/**
+ * ================================================================
+ * CONFIGURACIÓN DE AUTO-COMPLETADO
+ * ================================================================ */
+
+
+
+// Mostrar un selector para tareas duplicadas
+function mostrarSelectorTareasDuplicadas(taskIds) {
+    const contenido = `
+        <div>Hay múltiples tareas con el mismo nombre. ¿Cuál deseas editar?</div>
+        <ul>
+            ${taskIds
+                .map(
+                    (id) => `
+                <li>
+                    <button class="btn-editar-tarea" data-id="${id}">
+                        Editar tarea ${id}
+                    </button>
+                </li>
+            `
+                )
+                .join("")}
+        </ul>
+    `;
+
+    mostrarModal({
+        title: "Tareas duplicadas encontradas",
+        contenido,
+        onClose: () => {
+            // Limpiar selección en el input de autocompletar
+            $("#taskAutoComplete").val(null).trigger("change");
+        },
+    });
+
+    // Manejar clic en botón de editar tarea
+    document.querySelectorAll(".btn-editar-tarea").forEach((btn) => {
+        btn.addEventListener("click", function () {
+            const taskId = this.getAttribute("data-id");
+            window.location.href = `/tareas/${taskId}/editar`;
         });
-        return result.isConfirmed;
-    } else {
-        return confirm(`${title}\n${text}`);
+    });
+}
+
+/**
+ * ================================================================
+ * CONFIGURACIÓN DE MODALES
+ * ================================================================ */
+
+function mostrarModal({ title, contenido, onClose }) {
+    // Crear estructura básica del modal
+    const modalHtml = `
+        <div class="modal-overlay">
+            <div class="modal-container">
+                <div class="modal-header">
+                    <h3 class="modal-title">${title}</h3>
+                    <button class="modal-close">&times;</button>
+                </div>
+                <div class="modal-body">
+                    ${contenido}
+                </div>
+            </div>
+        </div>
+    `;
+
+    // Agregar el modal al body
+    document.body.insertAdjacentHTML("beforeend", modalHtml);
+
+    // Abrir el modal (con animación)
+    const overlay = document.querySelector(".modal-overlay");
+    overlay.classList.add("open");
+
+    // Cerrar el modal al hacer clic en la X o fuera del modal
+    document.querySelector(".modal-close").addEventListener("click", cerrarModal);
+    overlay.addEventListener("click", function (e) {
+        if (e.target === overlay) {
+            cerrarModal();
+        }
+    });
+
+    // Cerrar modal con animación
+    function cerrarModal() {
+        overlay.classList.remove("open");
+        setTimeout(() => {
+            overlay.remove();
+            if (typeof onClose === "function") {
+                onClose();
+            }
+        }, 300);
     }
 }

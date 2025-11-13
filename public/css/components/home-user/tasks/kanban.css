@@ -43,8 +43,8 @@
     --kanban-transition: all 0.2s ease;
 
     /* Colores de prioridad */
-    --priority-baja: #10b981;
-    --priority-media: #3b82f6;
+    --priority-baja: #3b82f6;
+    --priority-media: #10b981;
     --priority-alta: #f59e0b;
     --priority-urgente: #ef4444;
 }
@@ -393,9 +393,8 @@
 .kanban-container .task-dates {
     font-size: 0.65rem;
     color: var(--kanban-gray-600);
-    display: flex;
-    align-items: center;
-    gap: var(--kanban-space-1);
+    display: inline;
+    gap: var(--kanban-space-2);
     font-weight: 500;
 }
 

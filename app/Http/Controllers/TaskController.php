@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Log;
 
-
+// Controlador para gestionar las tareas y subtareas
 class TaskController extends Controller
 {
     public function __construct()
@@ -179,26 +179,46 @@ class TaskController extends Controller
         }
     }
 
-    public function update(Request $request, Subtarea $subtarea)
+    // Normaliza la prioridad a los valores esperados en español
+    protected function normalizePriority(?string $p): string
     {
-        // Log temporal para depuración (puedes eliminar después)
+        if (!$p) return 'baja';
+        $p = strtolower(trim($p));
+        $map = [
+            'low' => 'baja', 'baja' => 'baja',
+            'medium' => 'media', 'media' => 'media',
+            'high' => 'alta', 'alta' => 'alta',
+            'urgent' => 'urgente', 'urgente' => 'urgente',
+        ];
+        return $map[$p] ?? 'baja';
+    }
+
+    // Actualiza una subtarea existente
+    public function update(Request $request, SubTarea $subtarea)
+    {   // Registrar los datos recibidos para depuración
         logger()->info('Datos recibidos en update:', $request->all());
         $request->validate([
             'nombre' => 'required|string|max:255',
             'descripcion' => 'nullable|string',
             'fecha_inicio' => 'required|date',
             'fecha_fin' => 'required|date|after_or_equal:fecha_inicio',
-            'prioridad' => 'nullable|in:urgent,high,low',
+            'prioridad' => 'nullable|string',
             'estado' => 'required|in:Pendiente,En progreso,Completada,Vencida',
         ]);
+
+        // Normalizar prioridad
+        $prioridad = $this->normalizePriority($request->prioridad);
+
+        // Actualizar subtarea con los datos validados
         $subtarea->update([
             'nombre' => $request->nombre,
             'descripcion' => $request->descripcion,
             'fecha_inicio' => $request->fecha_inicio,
             'fecha_limite' => $request->fecha_fin,
-            'prioridad' => $request->prioridad,
+            'prioridad' => $prioridad,  // Usar la prioridad normalizada
             'estado' => $request->estado,
         ]);
+        // Redirigir con mensaje de éxito
         return redirect()->route('tareas')->with('success', 'Subtarea actualizada exitosamente.');
     }
 
@@ -214,27 +234,46 @@ class TaskController extends Controller
 
     public function guardarCambios(Request $request, $id)
     {
+        // Permitir también actualizar el nombre; validaciones opcionales
         $request->validate([
+            'nombre' => 'nullable|string|max:255',  // Nuevo campo nombre
             'estado' => 'nullable|in:Pendiente,En progreso,Completada,Vencida',
             'fecha_inicio' => 'nullable|date',
             'fecha_limite' => 'nullable|date|after_or_equal:fecha_inicio',
-            'prioridad' => 'nullable|in:baja,media,alta,urgente',
+            'prioridad' => 'nullable|string',
         ]);
-        $subtarea = Subtarea::findOrFail($id);
+
+        // Encontrar la subtarea por ID
+        $subtarea = SubTarea::findOrFail($id);
+
+        // Tomar sólo los campos presentes en la petición
         $data = array_filter($request->only([
+            'nombre',
             'estado',
             'fecha_inicio',
             'fecha_limite',
             'prioridad'
         ]), fn($value) => !is_null($value));
+
+        // Normalizar prioridad si está presente
+        if (isset($data['prioridad'])) {
+            $data['prioridad'] = $this->normalizePriority($data['prioridad']);
+        }
         $subtarea->update($data);
+        $subtarea->refresh(); // Refrescar para obtener los datos actualizados
+
         if ($request->ajax()) {
-            return response()->json(['message' => 'Tarea modificada con éxito.']);
+            // devolver la subtarea actualizada para que el cliente use el nombre persistido
+            return response()->json([
+                'message' => 'Tarea modificada con éxito.',
+                'tarea' => $subtarea->toArray()
+            ]);
         }
         return redirect()->route('tareas')->with('success', 'Tarea modificada con éxito');
     }
 
 
+    // Actualiza solo el estado de una subtarea
     public function updateStatus(Request $request, $id)
     {
         Log::info('Entró a updateStatus', [
@@ -244,7 +283,7 @@ class TaskController extends Controller
         $request->validate([
             'estado' => 'required|in:Pendiente,En progreso,Completada,Vencida',
         ]);
-        $subtarea = Subtarea::findOrFail($id);
+        $subtarea = SubTarea::findOrFail($id); // Buscar la subtarea por su ID
         $subtarea->update([
             'estado' => $request->estado,
         ]);
@@ -410,4 +449,73 @@ class TaskController extends Controller
 
         return response()->json($tareasGenerales);
     }
+
+/*     // ------------------ nuevo: cálculo de prioridad por tiempo ------------------
+    protected function calcularPrioridadPorTiempo(\App\Models\SubTarea $task): string
+    {
+        $map = ['baja'=>1,'media'=>2,'alta'=>3,'urgente'=>4];
+
+        $inicio = $task->fecha_inicio ? Carbon::parse($task->fecha_inicio) : null;
+        $fin = $task->fecha_limite ? Carbon::parse($task->fecha_limite) : null;
+        $now = Carbon::now();
+
+        if (!$inicio || !$fin || $fin->lte($inicio)) {
+            return 'baja';
+        }
+
+        $total = $fin->diffInSeconds($inicio);
+        $trans = max(0, min($now->diffInSeconds($inicio), $total));
+        $ratio = $total > 0 ? ($trans / $total) : 0;
+
+        if ($ratio >= 0.75) return 'urgente';
+        if ($ratio >= 0.5) return 'alta';
+        if ($ratio >= 0.25) return 'media';
+        return 'baja';
+    }
+
+    protected function aplicarPrioridadSiAumenta(\App\Models\SubTarea $task): bool
+    {
+        $desired = $this->calcularPrioridadPorTiempo($task);
+        $map = ['baja'=>1,'media'=>2,'alta'=>3,'urgente'=>4];
+
+        $actualKey = strtolower($task->prioridad ?? 'baja');
+        $actualRank = $map[$actualKey] ?? 0;
+        $desiredRank = $map[$desired] ?? 0;
+
+        // no bajar; tampoco tocar si ya es urgente
+        if ($desiredRank <= $actualRank || $actualRank === 4) {
+            return false;
+        }
+
+        $task->prioridad = $desired;
+        $task->save();
+        return true;
+    }
+
+    // Endpoint público (protegido por auth) para disparar recálculo manual
+    public function recalcularPrioridadesBatch(Request $request)
+    {
+        // Opcional: permitir forzar recálculo solo a usuarios con permiso
+        $user = Auth::user();
+
+        SubTarea::where('user_id', $user->id)
+            ->where('archivada', false)
+            ->where('estado','!=','Completada')
+            ->chunkById(200, function($tasks) {
+                foreach ($tasks as $task) {
+                    try {
+                        $this->aplicarPrioridadSiAumenta($task);
+                    } catch (\Throwable $e) {
+                        Log::error('recalcularPrioridades: '.$e->getMessage());
+                    }
+                }
+            });
+
+        if ($request->ajax()) {
+            return response()->json(['success' => true]);
+        }
+        return redirect()->back()->with('success', 'Recalculo de prioridades ejecutado.');
+    } */
+
+    // Endpoint para obtener tareas activas en una fecha dada
 }
