@@ -262,16 +262,21 @@
                                                     <span class="pcc-list-value">
                                                         @if(is_array($reemplazos))
                                                             @foreach($reemplazos as $rep)
-                                                                @if(is_array($rep) && isset($rep['fecha']))
+                                                                @if(is_array($rep))
                                                                     <div>
-                                                                        <strong>Fecha:</strong>
-                                                                        {{ \Carbon\Carbon::parse($rep['fecha'])->format('d/m/Y') }}
+                                                                        @if(isset($rep['fecha']))
+                                                                            <strong>Fecha:</strong>
+                                                                            {{ \Carbon\Carbon::parse($rep['fecha'])->format('d/m/Y') }}
+                                                                        @endif
+
                                                                         @if(isset($rep['motivo']))
                                                                             <span><strong> Motivo:</strong> {{ $rep['motivo'] }}</span>
                                                                         @endif
                                                                     </div>
-                                                                @else
+                                                                @elseif(is_string($rep) || is_numeric($rep))
                                                                     {{ $rep }}
+                                                                @else
+                                                                    <span style="color:#888;">Dato no válido</span>
                                                                 @endif
                                                             @endforeach
                                                         @elseif($reemplazos)
