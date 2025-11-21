@@ -538,10 +538,21 @@ class DocumentController extends Controller
 
 public function imprimirTodasSubtareas()
 {
-    // Obtener subtareas no archivadas con la relación a tarea general
+    // Obtener el usuario autenticado
+    $user = Auth::user();
+    
+    // Obtener subtareas no archivadas con la relación a tarea general DEL USUARIO ACTUAL
     $subtareas = SubTarea::with('tareaGeneral')
+        ->where('user_id', $user->id)
         ->where('archivada', false)
         ->get();
+
+    // Log para debugging
+    Log::info('Generando PDF de tareas', [
+        'user_id' => $user->id,
+        'total_subtareas' => $subtareas->count(),
+        'nombres' => $subtareas->pluck('nombre')->toArray()
+    ]);
 
     // Normalizar y eliminar duplicados por nombre
     $subtareas = $subtareas

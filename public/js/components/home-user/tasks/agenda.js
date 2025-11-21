@@ -36,8 +36,9 @@ function inicializarAgenda() {
     // Seleccionar el día actual por defecto
     const hoy = new Date();
     if (hoy.getMonth() === currentMonth && hoy.getFullYear() === currentYear) {
-        selectedDate = hoy.getDate();
-        mostrarTareasDelDia(hoy);
+        // Guardar como Date completo (no solo el número) para comparar mes/año/día
+        selectedDate = new Date(hoy.getFullYear(), hoy.getMonth(), hoy.getDate());
+        mostrarTareasDelDia(selectedDate);
     }
 }
 
@@ -49,6 +50,7 @@ function configurarEventos() {
             currentMonth = 11;
             currentYear--;
         }
+        // no cambiar selectedDate aquí: el día seleccionado no debe "moverse" autom.
         renderCalendario();
     });
 
@@ -58,6 +60,7 @@ function configurarEventos() {
             currentMonth = 0;
             currentYear++;
         }
+        // no cambiar selectedDate aquí
         renderCalendario();
     });
 
@@ -127,8 +130,12 @@ function renderCalendario() {
         const dayElement = crearElementoDia(dia, true, currentMonth + 1);
         calendarGrid.appendChild(dayElement);
     }
+
+    // Actualizar el highlight del dropdown de meses para reflejar currentMonth
+    actualizarMesSeleccionadoEnDropdown();
 }
 
+// Crear elemento de día
 function crearElementoDia(dia, otroMes, mes, fecha = null) {
     const dayElement = document.createElement('div');
     dayElement.className = 'day'; // ✓ Cambiado de 'calendar-day' a 'day'
@@ -146,8 +153,12 @@ function crearElementoDia(dia, otroMes, mes, fecha = null) {
         dayElement.classList.add('today');
     }
     
-    // Marcar día seleccionado
-    if (!otroMes && selectedDate === dia) {
+    // Marcar día seleccionado SOLO si selectedDate es Date y coincide año/mes/día
+    if (!otroMes && selectedDate instanceof Date &&
+        fecha &&
+        selectedDate.getFullYear() === fecha.getFullYear() &&
+        selectedDate.getMonth() === fecha.getMonth() &&
+        selectedDate.getDate() === fecha.getDate()) {
         dayElement.classList.add('selected');
     }
     
@@ -175,9 +186,12 @@ function crearElementoDia(dia, otroMes, mes, fecha = null) {
     // Evento click
     if (!otroMes) {
         dayElement.addEventListener('click', () => {
-            selectedDate = dia;
+            // Guardar selección con año/mes/día actuales (evita que la selección "salte" a otro mes)
+            selectedDate = new Date(currentYear, currentMonth, dia);
+            // Re-renderizar calendario para actualizar clases (selected)
             renderCalendario();
-            mostrarTareasDelDia(new Date(currentYear, currentMonth, dia));
+            // Mostrar tareas del día seleccionado
+            mostrarTareasDelDia(selectedDate);
         });
     }
     
@@ -185,18 +199,19 @@ function crearElementoDia(dia, otroMes, mes, fecha = null) {
 }
 
 function obtenerTareasDelDia(fecha) {
-    const fechaStr = formatearFecha(fecha);
-    
+    // Usa los componentes en hora local del Date recibido (ya creado con currentYear/currentMonth/dia)
+    const year = fecha.getFullYear();
+    const month = fecha.getMonth();
+    const day = fecha.getDate();
+
     return tareasAgenda.filter(tarea => {
+        // Parsear la fecha de la tarea y comparar componentes en hora local
         const fechaInicio = new Date(tarea.fecha_inicio);
-        const fechaActual = new Date(fechaStr);
-        
-        // Normalizar a medianoche para comparación correcta
-        fechaInicio.setHours(0, 0, 0, 0);
-        fechaActual.setHours(0, 0, 0, 0);
-        
-        // Solo comparar con la fecha de inicio
-        return fechaActual.getTime() === fechaInicio.getTime();
+        return (
+            fechaInicio.getFullYear() === year &&
+            fechaInicio.getMonth() === month &&
+            fechaInicio.getDate() === day
+        );
     });
 }
 
@@ -231,14 +246,21 @@ function mostrarTareasDelDia(fecha) {
     });
 }
 
+// Zona de creación de elementos de tarea
 function crearElementoTarea(tarea) {
     const taskItem = document.createElement('div');
     taskItem.className = 'task-item';
     taskItem.setAttribute('data-task-id', tarea.id);
-    
+    // Color de prioridad e ícono de estado
     const colorPrioridad = prioridadColores[tarea.prioridad] || 'blue';
     const iconoEstado = estadoIconos[tarea.estado] || 'fa-hourglass-start';
-    
+
+    // Estado para clase (completed / in-progress / pending)
+    const estadoLower = String(tarea.estado).toLowerCase();
+    let estadoClase = 'pending';
+    if (estadoLower.includes('complet')) estadoClase = 'completed';
+    else if (estadoLower.includes('progreso') || estadoLower.includes('en progreso')) estadoClase = 'in-progress';
+
     taskItem.innerHTML = `
         <div class="priority-bar ${colorPrioridad}"></div>
         <div class="task-content">
@@ -249,16 +271,120 @@ function crearElementoTarea(tarea) {
             </div>
         </div>
         <div class="task-actions">
-            <i class="fa ${iconoEstado}" title="${tarea.estado}"></i>
-            <i class="fa fa-edit edit-task-btn" data-task-id="${tarea.id}" title="Editar tarea"></i>
+            <div class="status-pill ${estadoClase}" title="${escapeHtml(tarea.estado)}" tabindex="0" data-estado="${escapeHtml(tarea.estado)}">
+                <i class="fa ${iconoEstado}" title="${tarea.estado}"></i>
+                <span class="status-text">${escapeHtml(tarea.estado)}</span>
+                <i class="fa fa-caret-down" style="margin-left:auto; opacity:0.6"></i>
+                <div class="status-popover hidden" role="menu" aria-hidden="true">
+                    <button type="button" class="status-option" data-estado="Pendiente">Pendiente</button>
+                    <button type="button" class="status-option" data-estado="En progreso">En progreso</button>
+                    <button type="button" class="status-option" data-estado="Completada">Completada</button>
+                </div>
+            </div>
         </div>
     `;
-    
-    // Evento para editar tarea
-    const editBtn = taskItem.querySelector('.edit-task-btn');
-    editBtn.addEventListener('click', () => {
-        window.location.href = `/tareas/${tarea.id}/editar`;
+
+    // --- Popover & estado change handling ---
+    const pill = taskItem.querySelector('.status-pill');
+    const popover = taskItem.querySelector('.status-popover');
+    const statusText = pill.querySelector('.status-text');
+    const statusIcon = pill.querySelector('i.fa');
+    // store current estado text
+    pill.dataset.estado = tarea.estado;
+
+    function aplicarCambioVisual(pillEl, nuevoEstado) {
+        // actualizar clase visual
+        pillEl.classList.remove('pending', 'in-progress', 'completed');
+        const nl = String(nuevoEstado).toLowerCase();
+        if (nl.includes('complet')) pillEl.classList.add('completed');
+        else if (nl.includes('progreso') || nl.includes('en progreso')) pillEl.classList.add('in-progress');
+        else pillEl.classList.add('pending');
+
+        // icono
+        const nuevoIcono = estadoIconos[nuevoEstado] || estadoIconos[Object.keys(estadoIconos).find(k=> nuevoEstado.toLowerCase().includes(k.toLowerCase()))] || 'fa-hourglass-start';
+        if (statusIcon) {
+            // mantener la clase fa y reemplazar la otra
+            statusIcon.className = 'fa ' + nuevoIcono;
+            statusIcon.setAttribute('title', nuevoEstado);
+        }
+        // texto
+        if (statusText) statusText.textContent = nuevoEstado;
+        pillEl.setAttribute('title', nuevoEstado);
+        pillEl.dataset.estado = nuevoEstado;
+    }
+
+    // abrir/cerrar popover al click en el pill
+    pill.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const opened = !popover.classList.contains('hidden');
+        // cerrar todos los popovers abiertos primero
+        document.querySelectorAll('.status-popover').forEach(p => p.classList.add('hidden'));
+        document.querySelectorAll('.status-pill.open').forEach(p => p.classList.remove('open'));
+        if (!opened) {
+            popover.classList.remove('hidden');
+            pill.classList.add('open');
+            popover.setAttribute('aria-hidden', 'false');
+        } else {
+            popover.classList.add('hidden');
+            pill.classList.remove('open');
+            popover.setAttribute('aria-hidden', 'true');
+        }
     });
+
+    // cerrar al click fuera (listener temporal específico a este taskItem)
+    const closeOnClickOutside = (ev) => {
+        if (!taskItem.contains(ev.target)) {
+            popover.classList.add('hidden');
+            pill.classList.remove('open');
+            popover.setAttribute('aria-hidden', 'true');
+        }
+    };
+    document.addEventListener('click', closeOnClickOutside);
+
+    // manejar selección de estado
+    taskItem.querySelectorAll('.status-option').forEach(btn => {
+        btn.addEventListener('click', (ev) => {
+            ev.stopPropagation();
+            const nuevoEstado = btn.dataset.estado;
+            const previo = pill.dataset.estado || tarea.estado;
+
+            // aplicar cambio optimista
+            aplicarCambioVisual(pill, nuevoEstado);
+            popover.classList.add('hidden');
+            pill.classList.remove('open');
+
+            // enviar petición al backend (esqueleto)
+            const tokenMeta = document.querySelector('meta[name="csrf-token"]');
+            const csrf = tokenMeta ? tokenMeta.getAttribute('content') : '';
+
+            // usar la ruta definida en routes/web.php -> PATCH /tareas/{id}/update-status
+            fetch(`/tareas/${tarea.id}/update-status`, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': csrf
+                },
+                body: JSON.stringify({ estado: nuevoEstado })
+            }).then(res => {
+                if (!res.ok) return Promise.reject(res);
+                // Intentar parsear JSON si existe, pero no fallar si no hay body
+                return res.json().catch(() => null);
+            }).then(data => {
+                // Si realmente se guardó un nuevo estado (diferente al previo), recargar la página
+                if (nuevoEstado !== previo) {
+                    // recarga completa para reflejar cambios en lista/kanban/línea de tiempo
+                    location.reload();
+                }
+                // Si no cambió, no hacemos nada (evita recargas innecesarias)
+            }).catch(() => {
+                // revertir en caso de error
+                aplicarCambioVisual(pill, previo);
+                alert('Error al actualizar el estado. Intenta nuevamente.');
+            });
+        });
+    });
+
+    // limpiar listeners cuando elemento se remueva (no estrictamente necesario aquí)
     
     return taskItem;
 }
@@ -284,3 +410,24 @@ function escapeHtml(text) {
     div.textContent = text;
     return div.innerHTML;
 }
+
+//Sincronizar el dropdown de meses con currentMonth
+function actualizarMesSeleccionadoEnDropdown() {
+    const opciones = document.querySelectorAll('#opciones-meses .mes');
+    if (!opciones || opciones.length === 0) return;
+    opciones.forEach((el, idx) => {
+        if (idx === currentMonth) {
+            el.classList.add('selected');
+            el.classList.add('current-month'); // opcional si usas esa clase en CSS
+        } else {
+            el.classList.remove('selected');
+            el.classList.remove('current-month');
+        }
+    });
+}
+
+/** 
+ * ================================================================
+ * Coneccion Google Calendar
+ * ================================================================ 
+ */

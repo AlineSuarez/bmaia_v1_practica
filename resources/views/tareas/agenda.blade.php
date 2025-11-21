@@ -55,8 +55,16 @@
         <!-- Sección de Tareas -->
         <div class="tasks-section">
             <div class="tasks-header">
-                <h2>Tareas del día</h2>
-                <div class="date-subtitle" id="dateSubtitle">Selecciona un día</div>
+                <div>
+                    <h2>Tareas del día</h2>
+                    <div class="date-subtitle" id="dateSubtitle">Selecciona un día</div>
+                </div>
+                
+                <div class="google-calendar">
+                    <button class="google-calendar-btn" id="GoogleCalendarConnect">
+                        <i class="fa-brands fa-google" aria-hidden="true"></i>
+                        Conectar con Google Calendar</button>
+                </div>
             </div>
 
             <div class="tasks-list" id="tasksList">

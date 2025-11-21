@@ -25,15 +25,17 @@ class TaskController extends Controller
         // Si no existen subtareas para el usuario, insertar tareas predefinidas automáticamente
         if (SubTarea::where('user_id', $user->id)->count() === 0) {
             $predefinidas = TareasPredefinidas::all();
-
+            // Crear subtareas basadas en las tareas predefinidas
             foreach ($predefinidas as $tarea) {
+                $prioridad = $this->normalizePriority($tarea->prioridad ?? 'media'); // Normalizar prioridad
                 SubTarea::create([
                     'tarea_general_id' => $tarea->tarea_general_id,
                     'user_id' => $user->id,
                     'nombre' => $tarea->nombre,
                     'fecha_inicio' => $tarea->fecha_inicio ?? now(),
                     'fecha_limite' => $tarea->fecha_limite ?? now()->addDays(7),
-                    'prioridad' => $tarea->prioridad ?? 'media',
+                    'prioridad' => $prioridad,
+                    'prioridad_base' => $prioridad, // Guardar también como prioridad base
                     'estado' => 'Pendiente',
                     'archivada' => false,
                 ]);
@@ -246,21 +248,42 @@ class TaskController extends Controller
         // Encontrar la subtarea por ID
         $subtarea = SubTarea::findOrFail($id);
 
-        // Tomar sólo los campos presentes en la petición
-        $data = array_filter($request->only([
-            'nombre',
-            'estado',
-            'fecha_inicio',
-            'fecha_limite',
-            'prioridad'
-        ]), fn($value) => !is_null($value));
+        // Log para debugging
+        Log::info('Guardando cambios en subtarea', [
+            'id' => $id,
+            'nombre_anterior' => $subtarea->nombre,
+            'nombre_nuevo' => $request->input('nombre'),
+            'datos_request' => $request->all()
+        ]);
 
-        // Normalizar prioridad si está presente
-        if (isset($data['prioridad'])) {
-            $data['prioridad'] = $this->normalizePriority($data['prioridad']);
+        // Construir array de datos para actualizar
+        $data = [];
+        
+        // Solo agregar campos que están presentes en la petición y no son nulos
+        if ($request->has('nombre') && !is_null($request->input('nombre'))) {
+            $data['nombre'] = $request->input('nombre');
         }
+        if ($request->has('estado') && !is_null($request->input('estado'))) {
+            $data['estado'] = $request->input('estado');
+        }
+        if ($request->has('fecha_inicio') && !is_null($request->input('fecha_inicio'))) {
+            $data['fecha_inicio'] = $request->input('fecha_inicio');
+        }
+        if ($request->has('fecha_limite') && !is_null($request->input('fecha_limite'))) {
+            $data['fecha_limite'] = $request->input('fecha_limite');
+        }
+        if ($request->has('prioridad') && !is_null($request->input('prioridad'))) {
+            $data['prioridad'] = $this->normalizePriority($request->input('prioridad'));
+        }
+
         $subtarea->update($data);
         $subtarea->refresh(); // Refrescar para obtener los datos actualizados
+
+        Log::info('Subtarea actualizada', [
+            'id' => $id,
+            'nombre_final' => $subtarea->nombre,
+            'datos_guardados' => $data
+        ]);
 
         if ($request->ajax()) {
             // devolver la subtarea actualizada para que el cliente use el nombre persistido
@@ -346,6 +369,7 @@ class TaskController extends Controller
             if ($fechaLimite->isPast() && $fechaLimite->isSameDay($hoy)) {
                 $fechaLimite->addYear();
             }
+            $prioridad = $this->normalizePriority($tareaPredefinida->prioridad ?? 'baja');
             // Crear una nueva subtarea asociada al usuario y a la misma tarea general
             Subtarea::create([
                 'tarea_general_id' => $tareaPredefinida->tarea_general_id,
@@ -353,7 +377,8 @@ class TaskController extends Controller
                 'nombre' => $tareaPredefinida->nombre,
                 'fecha_inicio' => $fechaInicio,
                 'fecha_limite' => $fechaLimite,
-                'prioridad' => $tareaPredefinida->prioridad,
+                'prioridad' => $prioridad,
+                'prioridad_base' => $prioridad, // Guardar también como prioridad base
             ]);
         }
         // Redireccionar con un mensaje de éxito
@@ -384,12 +409,14 @@ class TaskController extends Controller
             $tareaGeneral = TareaGeneral::findOrFail($request->tarea_general_id);
             // Crear Subtareas asociadas
             foreach ($request->subtareas as $subtarea) {
+                $prioridad = $this->normalizePriority($subtarea['prioridad'] ?? 'baja');
                 $tareaGeneral->subtareas()->create([
                     'nombre' => $subtarea['nombre'],
                     'fecha_inicio' => $subtarea['fecha_inicio'],
                     'fecha_limite' => $subtarea['fecha_fin'],
                     'estado' => $subtarea['estado'],
-                    'prioridad' => $subtarea['prioridad'],
+                    'prioridad' => $prioridad,
+                    'prioridad_base' => $prioridad, // Guardar también como prioridad base
                     'user_id' => Auth::id(),
                 ]);
             }
@@ -449,73 +476,4 @@ class TaskController extends Controller
 
         return response()->json($tareasGenerales);
     }
-
-/*     // ------------------ nuevo: cálculo de prioridad por tiempo ------------------
-    protected function calcularPrioridadPorTiempo(\App\Models\SubTarea $task): string
-    {
-        $map = ['baja'=>1,'media'=>2,'alta'=>3,'urgente'=>4];
-
-        $inicio = $task->fecha_inicio ? Carbon::parse($task->fecha_inicio) : null;
-        $fin = $task->fecha_limite ? Carbon::parse($task->fecha_limite) : null;
-        $now = Carbon::now();
-
-        if (!$inicio || !$fin || $fin->lte($inicio)) {
-            return 'baja';
-        }
-
-        $total = $fin->diffInSeconds($inicio);
-        $trans = max(0, min($now->diffInSeconds($inicio), $total));
-        $ratio = $total > 0 ? ($trans / $total) : 0;
-
-        if ($ratio >= 0.75) return 'urgente';
-        if ($ratio >= 0.5) return 'alta';
-        if ($ratio >= 0.25) return 'media';
-        return 'baja';
-    }
-
-    protected function aplicarPrioridadSiAumenta(\App\Models\SubTarea $task): bool
-    {
-        $desired = $this->calcularPrioridadPorTiempo($task);
-        $map = ['baja'=>1,'media'=>2,'alta'=>3,'urgente'=>4];
-
-        $actualKey = strtolower($task->prioridad ?? 'baja');
-        $actualRank = $map[$actualKey] ?? 0;
-        $desiredRank = $map[$desired] ?? 0;
-
-        // no bajar; tampoco tocar si ya es urgente
-        if ($desiredRank <= $actualRank || $actualRank === 4) {
-            return false;
-        }
-
-        $task->prioridad = $desired;
-        $task->save();
-        return true;
-    }
-
-    // Endpoint público (protegido por auth) para disparar recálculo manual
-    public function recalcularPrioridadesBatch(Request $request)
-    {
-        // Opcional: permitir forzar recálculo solo a usuarios con permiso
-        $user = Auth::user();
-
-        SubTarea::where('user_id', $user->id)
-            ->where('archivada', false)
-            ->where('estado','!=','Completada')
-            ->chunkById(200, function($tasks) {
-                foreach ($tasks as $task) {
-                    try {
-                        $this->aplicarPrioridadSiAumenta($task);
-                    } catch (\Throwable $e) {
-                        Log::error('recalcularPrioridades: '.$e->getMessage());
-                    }
-                }
-            });
-
-        if ($request->ajax()) {
-            return response()->json(['success' => true]);
-        }
-        return redirect()->back()->with('success', 'Recalculo de prioridades ejecutado.');
-    } */
-
-    // Endpoint para obtener tareas activas en una fecha dada
 }

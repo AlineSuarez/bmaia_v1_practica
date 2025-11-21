@@ -122,6 +122,7 @@
                         data-priority="{{ $task->prioridad }}"
                         data-fecha-inicio ="{{ \Carbon\Carbon::parse($task->fecha_inicio)->format('d-m-Y') }}"
                         data-fecha-limite ="{{ \Carbon\Carbon::parse($task->fecha_limite)->format('d-m-Y') }}"
+                        style="display: none;"
                         >
                             {{-- Nombre de la tarea --}}
                             <td class="task-name-cell">
@@ -158,11 +159,16 @@
                             <td class="status-cell">
                                 <select class="status-select estado" data-id="{{ $task->id }}"
                                     aria-label="Estado para {{ $task->nombre }}">
-                                    @foreach(['Pendiente', 'En progreso', 'Completada'] as $estado)
-                                        <option value="{{ $estado }}" @selected($task->estado === $estado)>
-                                            {{ $estado }}
-                                        </option>
-                                    @endforeach
+                                    @if($task->estado === 'Vencida')
+                                        <option value="Vencida" selected disabled>Vencida</option>
+                                        <option value="Completada">Completada</option>
+                                    @else
+                                        @foreach(['Pendiente', 'En progreso', 'Completada'] as $estado)
+                                            <option value="{{ $estado }}" @selected($task->estado === $estado)>
+                                                {{ $estado }}
+                                            </option>
+                                        @endforeach
+                                    @endif
                                 </select>
                             </td>
 
@@ -280,9 +286,14 @@
             <div class="footer-content">
                 <div class="footer-stats">
                     <div class="stat-group">
-                        <i class="fa-solid fa-check-circle text-success"></i>
-                        <span id="count-completadas">{{ $subtareas->where('estado', 'Completada')->count() }}
-                            Completadas</span>
+                        <i class="fa-solid fa-exclamation-triangle text-danger"></i>
+                        <span id="count-vencidas">{{ $subtareas->where('estado', 'Vencida')->count() }}
+                            Vencidas</span>
+                    </div>
+                    <div class="stat-group">
+                        <i class="fa-solid fa-hourglass-start text-warning"></i>
+                        <span id="count-pendientes">{{ $subtareas->where('estado', 'Pendiente')->count() }}
+                            Pendientes</span>
                     </div>
                     <div class="stat-group">
                         <i class="fa-solid fa-spinner text-primary"></i>
@@ -290,9 +301,9 @@
                             Progreso</span>
                     </div>
                     <div class="stat-group">
-                        <i class="fa-solid fa-hourglass-start text-warning"></i>
-                        <span id="count-pendientes">{{ $subtareas->where('estado', 'Pendiente')->count() }}
-                            Pendientes</span>
+                        <i class="fa-solid fa-check-circle text-success"></i>
+                        <span id="count-completadas">{{ $subtareas->where('estado', 'Completada')->count() }}
+                            Completadas</span>
                     </div>
                 </div>
                 <div class="footer-info">

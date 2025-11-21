@@ -341,10 +341,3 @@ Route::get('apiarios/{apiario}/colmenas/{colmena}', [App\Http\Controllers\Colmen
 // Ruta pública para imprimir QR (PDF) sin autenticación
 Route::get('/apiarios/{apiario}/colmenas/{colmena}/qr-pdf-public', [App\Http\Controllers\DocumentController::class, 'qrPdfPublic'])
     ->name('colmenas.qr-pdf.public');
-
-/* // Ruta para recalcular prioridades de tareas en lote
-Route::middleware(['auth'])->group(function () {
-    // ...existing routes...
-    Route::post('/tareas/recalcular-prioridades', [App\Http\Controllers\TaskController::class,'recalcularPrioridadesBatch'])
-        ->name('tareas.recalcularPrioridades');
-}); */

@@ -290,12 +290,19 @@ function paginarTabla() {
     const rowsOrdenadas = ordenarFilas(rowsFiltradas);
 
     const { porPagina, paginaActual } = AppState.paginacion;
-    const totalPaginas = Math.ceil(rowsFiltradas.length / porPagina) || 1;
+    const totalPaginas = Math.ceil(rowsOrdenadas.length / porPagina) || 1;
 
     // Actualizar estado
     AppState.paginacion.totalPaginas = totalPaginas;
     if (AppState.paginacion.paginaActual > totalPaginas) {
         AppState.paginacion.paginaActual = totalPaginas;
+    }
+
+    // ✨ REORDENAR FÍSICAMENTE LAS FILAS EN EL DOM
+    const tbody = document.querySelector(TaskConfig.selectors.tasksTableBody);
+    if (tbody && rowsOrdenadas.length > 0) {
+        // Reorganizar todas las filas ordenadas en el DOM
+        rowsOrdenadas.forEach(row => tbody.appendChild(row));
     }
 
     // Ocultar todas las filas
@@ -305,7 +312,7 @@ function paginarTabla() {
     const inicio = (AppState.paginacion.paginaActual - 1) * porPagina;
     const fin = inicio + porPagina;
 
-    rowsFiltradas.slice(inicio, fin).forEach((row) => {
+    rowsOrdenadas.slice(inicio, fin).forEach((row) => {
         row.style.display = "";
     });
 
@@ -391,12 +398,32 @@ function renderizarPaginacion() {
  * ORDENAMIENTO DE FILAS
  * ================================================================ */
 
+// Función auxiliar para parsear fechas en formato dd-mm-yyyy
+function parsearFecha(fechaStr) {
+    if (!fechaStr) return new Date(0); // Fecha mínima si está vacía
+    
+    // Si ya está en formato yyyy-mm-dd (del input date)
+    if (fechaStr.match(/^\d{4}-\d{2}-\d{2}$/)) {
+        return new Date(fechaStr);
+    }
+    
+    // Si está en formato dd-mm-yyyy (del atributo data-fecha-inicio)
+    if (fechaStr.match(/^\d{2}-\d{2}-\d{4}$/)) {
+        const [dia, mes, anio] = fechaStr.split('-');
+        return new Date(`${anio}-${mes}-${dia}`);
+    }
+    
+    // Fallback
+    return new Date(fechaStr);
+}
+
 function ordenarFilas(filas) {
     // Definir orden de prioridad de los estados
     const ordenEstados = {
-        Pendiente: 1,
-        "En progreso": 2,
-        Completada: 3,
+        Vencida: 1,        // Las vencidas tienen máxima prioridad
+        Pendiente: 2,
+        "En progreso": 3,
+        Completada: 4,
     };
 
     return filas.sort((a, b) => {
@@ -413,21 +440,19 @@ function ordenarFilas(filas) {
 
         //Segundo criterio: ordenar por Fecha de inicio (ascendente)
         const fechaA = a.getAttribute('data-fecha-inicio') || a.querySelector('.fecha-inicio')?.value || "";
-        const fechaB = b.getAttribute('data-fecha-limite') || b.querySelector('.fecha-inicio')?.value || "";
+        const fechaB = b.getAttribute('data-fecha-inicio') || b.querySelector('.fecha-inicio')?.value || "";
 
-        //Aqui se convierte el Date para comparar correctamente
-        const dateA = new Date(fechaA);
-        const dateB = new Date(fechaB);
+        // Convertir fechas de formato dd-mm-yyyy a yyyy-mm-dd
+        const dateA = parsearFecha(fechaA);
+        const dateB = parsearFecha(fechaB);
 
         return dateA - dateB; //Orden ascendente (las más antiguas primero)
     });
-
-
 }
 
 /**
  * ================================================================
- * SISTEMA DE FILTROS
+ * SISTEMA DE FILTROS DE ESTADO
  * ================================================================ */
 
 function configurarFiltros() {
@@ -538,6 +563,7 @@ function formatStatusOption(option) {
     if (!option.id) return option.text;
 
     const icons = {
+        Vencida: '<i class="fa fa-exclamation-triangle text-danger"></i>',
         Pendiente: '<i class="fa fa-hourglass-start text-secondary"></i>',
         "En progreso": '<i class="fa fa-spinner text-secondary"></i>',
         Completada: '<i class="fa fa-check-circle text-secondary"></i>',
@@ -953,6 +979,15 @@ function generarOpcionesPrioridad(prioridadSeleccionada) {
 }
 
 function generarOpcionesEstado(estadoSeleccionado) {
+    // Si el estado actual es Vencida, solo permitir cambiar a Completada
+    if (estadoSeleccionado === "Vencida") {
+        return `
+            <option value="Vencida" selected disabled>Vencida</option>
+            <option value="Completada">Completada</option>
+        `;
+    }
+    
+    // Para otros estados, mostrar todas las opciones excepto Vencida
     const estados = ["Pendiente", "En progreso", "Completada"];
     return estados
         .map(
@@ -984,7 +1019,7 @@ function escapeHtml(text) {
 function actualizarContadores() {
     const allRows = Array.from(document.querySelectorAll(".task-row")); // Todas las filas
     const rowsFiltradas = filtrarFilas(allRows); // Filas que cumplen los filtros activos
-    const contadores = { Completada: 0, "En progreso": 0, Pendiente: 0 }; // Reiniciar contadores
+    const contadores = { Vencida: 0, Completada: 0, "En progreso": 0, Pendiente: 0 }; // Reiniciar contadores
 
     // Contar estados en las filas filtradas
     rowsFiltradas.forEach((row) => {
@@ -996,6 +1031,7 @@ function actualizarContadores() {
 
     // Actualizar UI
     const elementos = {
+        "count-vencidas": `${contadores.Vencida} Vencidas`,
         "count-completadas": `${contadores.Completada} Completadas`,
         "count-enprogreso": `${contadores["En progreso"]} En Progreso`,
         "count-pendientes": `${contadores.Pendiente} Pendientes`,

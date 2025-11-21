@@ -33,12 +33,17 @@
             <!-- Controles de vista y administración -->
             <section class="apiario-controls">
                 <div class="view-controls">
-                    <button class="btn-panal view-toggler" data-view="list" title="Ver en formato lista">Lista</button>
+                    <button class="btn-panal view-toggler" data-view="list" 
+                        title="Ver en formato lista">Lista</button>
+
                     <button class="btn-panal view-toggler" data-view="kanban"
                         title="Ver en formato tablero">Tablero</button>
-                    <button class="btn-panal view-toggler" data-view="timeline" title="Ver en línea temporal">Línea de
-                        Tiempo</button>
-                    <button class="btn-panal view-toggler" data-view="agenda" title="Ver en formato agenda">Agenda</button>
+
+                    <button class="btn-panal view-toggler" data-view="timeline" 
+                        title="Ver en línea temporal">Línea de Tiempo</button>
+                        
+                    <button class="btn-panal view-toggler" data-view="agenda" 
+                        title="Ver en formato agenda">Agenda</button>
                 </div>
 
                 <!-- Segunda linea de botones (total y Imprimir) -->
