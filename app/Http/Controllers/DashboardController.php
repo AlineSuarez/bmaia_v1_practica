@@ -5,10 +5,15 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Apiario;
 use App\Models\Colmena;
+use App\Models\MovimientoColmena;
 use App\Models\User;
 use App\Models\Task;
+use App\Models\TareaGeneral;
 use App\Models\SubTarea;
 use App\Models\Visita;
+use App\Models\VisitaInspeccion;
+use App\Models\PresenciaVarroa;
+use App\Models\EstadoNutricional;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 use App\Models\Payment;
@@ -28,6 +33,8 @@ class DashboardController extends Controller
             'Visita General',
             'Inspección de Visita',
             'Uso de Medicamentos',
+            'Alimentación',
+            'Inspección de Reina',
         ];
 
         // Apiarios base (trashumantes activos y no temporales)
@@ -73,6 +80,8 @@ class DashboardController extends Controller
             ->count();
         $t_completadas = $tasks->where('estado', 'Completada')->count();
 
+        $tareasGenerales = TareaGeneral::select('id', 'nombre')->get();
+
         // Apiarios para data gráfica (solo trashumantes activos)
         $apiarios = Apiario::where('user_id', $user->id)
             ->where('tipo_apiario', 'trashumante')
@@ -80,23 +89,97 @@ class DashboardController extends Controller
             ->get();
 
         $dataApiarios = $apiarios->map(fn($a) => [
+            'id' => $a->id,
             'name' => $a->nombre,
             'count' => $a->num_colmenas,
             'season' => $a->temporada_produccion,
+            'latitud' => $a->latitud,
+            'longitud' => $a->longitud,
+            'actividad' => $a->objetivo_produccion,
         ]);
 
         // Data visitas
         $dataVisitas = Visita::whereHas('apiario', function ($q) use ($user) {
             $q->where('user_id', $user->id)
-            ->where('tipo_apiario', 'trashumante')
-            ->where('activo', 1);
+              ->where('tipo_apiario', 'trashumante')
+              ->where('activo', 1);
         })
-            ->whereIn('tipo_visita', $tiposOk)
-            ->get()
-            ->map(fn($v) => [
-                'apiario' => $v->apiario->nombre,
-                'tipo_visita' => $v->tipo_visita,
-            ]);
+        ->whereIn('tipo_visita', $tiposOk)
+        ->get()
+        ->map(fn($v) => [
+            'id' => $v->id,
+            'apiario_id' => $v->apiario_id,
+            'apiario' => $v->apiario->nombre,
+        
+            'fecha_visita' => $v->fecha_visita,
+            'tipo_visita' => $v->tipo_visita,
+            'motivo_tratamiento' => $v->motivo_tratamiento ?? null,
+        ]);
+
+        // Extraer inspecciones asociadas a las visitas obtenidas
+        $dataVisitasInspecciones = VisitaInspeccion::whereIn(
+            'visita_id',
+            $dataVisitas->pluck('id')
+        )->get()
+        ->map(fn($i) => [
+            'visita_id' => $i->visita_id,
+            'num_colmenas_totales' => $i->num_colmenas_totales,
+            'num_colmenas_inspeccionadas' => $i->num_colmenas_inspeccionadas,
+            'num_colmenas_enfermas' => $i->num_colmenas_enfermas,
+            'num_colmenas_activas' => $i->num_colmenas_activas,
+            'num_colmenas_muertas' => $i->num_colmenas_muertas,
+            'created_at' => $i->created_at->format('Y-m-d'),
+        ]);
+
+        // Datos de presencia de Varroa por visita    
+        $presenciaVarroa = PresenciaVarroa::whereIn(
+            'visita_id',
+            $dataVisitas->pluck('id')
+        )->get();      
+            
+        // Datos de alimentacion por visita
+        $estadoNutricional = EstadoNutricional::whereIn(
+            'visita_id',
+            $dataVisitas->pluck('id')
+        )->get();        
+
+        // Estado de tareas
+        $estadoTareas = [
+            'Completada' => $tasks->where('estado','Completada')->count(),
+            'En progreso' => $tasks->where('estado','En progreso')->count(),
+            'Pendiente' => $tasks->where('estado','Pendiente')->count(),
+            'Vencida' => $tasks
+                ->filter(fn($t) => $t->fecha_limite && $t->fecha_limite < now() && $t->estado != 'Completada')
+                ->count()
+        ];
+
+        $subtareasEstadoTareas = collect($estadoTareas)->map(fn($count,$estado) => [
+            'name'=>$estado,
+            'value'=>$count
+        ])->values();
+        
+        // Agrupar subtareas por fase
+        $planFases = $tasks->groupBy(fn($t) => $t->fase ?? 'General');
+        
+        // Cumplimiento plan anual
+        $cumplimientoPlan = $planFases->map(fn($tareas,$fase)=>[
+            'fase'=>$fase,
+            'total'=>$tareas->count(),
+            'completadas'=>$tareas->where('estado','Completada')->count(),
+            'porcentaje'=>$tareas->count()
+                ? round($tareas->where('estado','Completada')->count() / $tareas->count() * 100)
+                : 0
+        ])->values();
+
+        // Obtener movimientos vinculados a colmenas de los apiarios del usuario
+        $apiariosUser = Apiario::where('user_id', $user->id)
+        ->where('activo', 1)
+        ->where('tipo_apiario', 'trashumante')
+        ->pluck('id');
+        
+        $colmenasUser = Colmena::whereIn('apiario_id', $apiariosUser)->pluck('id');
+
+        $movimientosColmenas = MovimientoColmena::whereIn('colmena_id', $colmenasUser)->get();
 
         return view('dashboard', compact(
             'totalApiarios',
@@ -108,6 +191,13 @@ class DashboardController extends Controller
             't_completadas',
             'dataApiarios',
             'dataVisitas',
+            'dataVisitasInspecciones',
+            'presenciaVarroa',
+            'estadoNutricional',
+            'subtareasEstadoTareas',
+            'tasks',
+            'tareasGenerales',
+            'movimientosColmenas',
             'user',
             'apiariosBase',
             'apiariosTemporales'
@@ -158,6 +248,7 @@ class DashboardController extends Controller
             ->where('tipo_apiario', 'trashumante')
             ->where('activo', 1)
             ->get();
+            
         $dataApiarios = $apiarios->map(function ($apiario) {
             return [
                 'name' => $apiario->nombre,
