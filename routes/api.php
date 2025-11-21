@@ -195,6 +195,9 @@ Route::prefix('v1')->name('api.')->group(function () {
 Route::prefix('v1/n8n')->name('api.n8n.')->group(function () {
     Route::get('ping', [\App\Http\Controllers\Api\v1\N8nWebhookController::class, 'ping'])->name('ping');
     Route::post('create-apiario', [\App\Http\Controllers\Api\v1\N8nWebhookController::class, 'createApiario'])->name('create-apiario');
+    Route::post('delete-apiario', [\App\Http\Controllers\Api\v1\N8nWebhookController::class, 'deleteApiario'])->name('delete-apiario');
+    Route::post('update-apiario', [\App\Http\Controllers\Api\v1\N8nWebhookController::class, 'updateApiario'])->name('update-apiario');
+    Route::get('list-apiarios',  [\App\Http\Controllers\Api\v1\N8nWebhookController::class, 'listApiarios'])->name('list-apiarios');
 });
 
 // Fallback JSON

@@ -84,6 +84,18 @@ class N8nWebhookController extends Controller
                 }
             }
 
+            // 3.1 Si no viene lat/lon y la comuna tiene coordenadas en la BD, completarlas
+            if (
+                isset($data['comuna_id']) &&
+                (!isset($data['latitud']) || !isset($data['longitud']))
+            ) {
+                $com = Comuna::find($data['comuna_id']);
+                if ($com) {
+                    $data['latitud'] = $com->lat;
+                    $data['longitud'] = $com->lon;
+                }
+            }
+
             // 4. Normalizar tipo_manejo
             $manejoMap = [
                 'orgánico' => 'Orgánico',
@@ -222,4 +234,202 @@ class N8nWebhookController extends Controller
             'timestamp' => now()->toIso8601String()
         ]);
     }
+
+    public function deleteApiario(Request $request)
+    {
+        // 1. Validar firma HMAC
+        if (!$this->validateHmacSignature($request)) {
+            return response()->json(['ok' => false, 'error' => 'Firma no válida'], 401);
+        }
+
+        // 2. Obtener datos
+        $id     = $request->input('apiario_id');
+        $nombre = $request->input('nombre');
+        $userId = $request->input('user_id');
+
+        if (!$id && !$nombre) {
+            return response()->json([
+                'ok'    => false,
+                'error' => 'Debes enviar apiario_id o nombre'
+            ], 422);
+        }
+
+        // 3. Buscar apiario por id o nombre, pero SIEMPRE del usuario
+        $query = Apiario::where('user_id', $userId);
+
+        if ($id) {
+            $apiario = $query->where('id', $id)->first();
+        } else {
+            $apiario = $query->where('nombre', 'LIKE', "%$nombre%")->first();
+        }
+
+        if (!$apiario) {
+            return response()->json([
+                'ok' => false,
+                'error' => 'Apiario no encontrado'
+            ], 404);
+        }
+
+        // 4. ELIMINAR TODAS LAS COLMENAS DEL APIARIO
+        // -----------------------------------------------
+        foreach ($apiario->colmenas as $colmena) {
+            $colmena->delete(); // usa soft delete si corresponde
+        }
+
+        if ($apiario->es_temporal == 1) {
+            return response()->json([
+                'ok' => false,
+                'error' => 'Un apiario temporal no puede eliminarse. Solo puede retornarse/archivarse.'
+            ], 403);
+        }
+
+        // 5. ELIMINAR APIARIO
+        $apiario->delete();
+
+        // 6. RESPUESTA
+        return response()->json([
+            'ok' => true,
+            'message' => 'Apiario y sus colmenas fueron eliminados correctamente.',
+            'deleted_apiario_id' => $apiario->id,
+            'deleted_colmenas_count' => $apiario->colmenas()->withTrashed()->count()
+        ]);
+    }
+
+    public function updateApiario(Request $request)
+    {
+        if (!$this->validateHmacSignature($request)) {
+            return response()->json(['ok' => false, 'error' => 'Firma no válida'], 401);
+        }
+
+        $id     = $request->input('apiario_id');
+        $nombre = $request->input('nombre');
+        $campo  = $request->input('campo');
+        $valor  = $request->input('valor');
+        $userId = $request->input('user_id');
+
+        if ((!$id && !$nombre) || !$campo || $valor === null) {
+            return response()->json([
+                'ok'    => false,
+                'error' => 'Faltan datos: id/nombre, campo o valor'
+            ], 422);
+        }
+
+        $query = Apiario::where('user_id', $userId);
+
+        if ($id) {
+            $apiario = $query->find($id);
+        } else {
+            $apiario = $query->where('nombre', $nombre)->first();
+        }
+
+        if (!$apiario) {
+            return response()->json(['ok' => false, 'error' => 'Apiario no encontrado'], 404);
+        }
+
+        $editable = [
+            'nombre',
+            'num_colmenas',
+            'temporada_produccion',
+            'registro_sag',
+            'tipo_manejo',
+            'objetivo_produccion',
+            'region',
+            'comuna',
+            'latitud',
+            'longitud'
+        ];
+
+        if (!in_array($campo, $editable)) {
+            return response()->json([
+                'ok' => false,
+                'error' => "El campo '$campo' no se puede editar"
+            ], 400);
+        }
+
+        if ($campo === 'region') {
+            $r = Region::where('nombre', 'LIKE', "%$valor%")->first();
+            if (!$r) return response()->json(['ok'=>false,'error'=>'Región no encontrada'],404);
+            $apiario->region_id = $r->id;
+        }
+        elseif ($campo === 'comuna') {
+            $c = Comuna::where('nombre','LIKE',"%$valor%")
+                    ->where('region_id',$apiario->region_id)
+                    ->first();
+            if (!$c) return response()->json(['ok'=>false,'error'=>'Comuna no encontrada'],404);
+            $apiario->comuna_id = $c->id;
+        }
+        else {
+            $apiario->$campo = $valor;
+        }
+
+        $apiario->save();
+
+        if ($campo === 'num_colmenas') 
+        {
+            $nuevoTotal = (int) $valor;
+            $actuales = $apiario->colmenas()->count();
+
+            // SI SE AGREGAN COLMENAS
+            if ($nuevoTotal > $actuales) {
+                for ($i = $actuales + 1; $i <= $nuevoTotal; $i++) {
+                    $codigo = url("/apiarios/{$apiario->id}/colmenas/{$i}");
+                    $apiario->colmenas()->create([
+                        'nombre'        => 'Colmena ' . $i,
+                        'numero'        => (string) $i,
+                        'color_etiqueta'=> 'Amarillo',
+                        'codigo_qr'     => $codigo,
+                    ]);
+                }
+            }
+
+            // SI SE ELIMINAN COLMENAS
+            if ($nuevoTotal < $actuales) {
+                $apiario->colmenas()
+                    ->where('numero', '>', $nuevoTotal)
+                    ->delete(); // Soft delete (puedo cambiarlo a forceDelete si quieres)
+            }
+        }
+
+        return response()->json([
+            'ok'      => true,
+            'message' => 'Apiario actualizado correctamente',
+            'updated' => [
+                'id'    => $apiario->id,
+                'campo' => $campo,
+                'valor' => $valor
+            ]
+        ]);
+    }
+
+    public function listApiarios(Request $request)
+    {
+        if (!$this->validateHmacSignature($request)) {
+            return response()->json(['ok' => false, 'error' => 'Firma no válida'], 401);
+        }
+
+        $userId = $request->input('user_id');
+
+        $apiarios = Apiario::where('user_id', $userId)
+            ->with(['region','comuna'])
+            ->orderBy('id', 'asc')
+            ->get();
+
+        return response()->json([
+            'ok'   => true,
+            'count'=> $apiarios->count(),
+            'data' => $apiarios->map(function ($a) {
+                return [
+                    'id'           => $a->id,
+                    'nombre'       => $a->nombre,
+                    'region'       => $a->region?->nombre,
+                    'comuna'       => $a->comuna?->nombre,
+                    'num_colmenas' => $a->activo ? $a->num_colmenas : ($a->colmenas_historicas ?? $a->num_colmenas),
+                    'tipo_apiario'  => $a->tipo_apiario,
+                    'es_temporal'   => $a->es_temporal,
+                    'activo'        => $a->activo,
+                ];
+            })
+        ]);
+    }
+
 }
