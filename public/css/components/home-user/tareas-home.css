@@ -290,12 +290,11 @@
 }
 
 .btn-miel.activo{
-    background: linear-gradient(
-    135deg,
-    var(--primary-light),
-    var(--secondary-light)
-    );
-    box-shadow: var(--shadow-xl);
+    background: var(--success-color);
+}
+.btn-miel.activo:hover{
+    background: #0fad78;
+    box-shadow: var(--shadow-sm);
 }
 
 /* ========================================

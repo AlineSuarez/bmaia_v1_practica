@@ -43,6 +43,14 @@ function inicializarAgenda() {
 }
 
 function configurarEventos() {
+    // Botón de Google Calendar
+    const googleCalendarBtn = document.getElementById('GoogleCalendarConnect');
+    if (googleCalendarBtn) {
+        googleCalendarBtn.addEventListener('click', () => {
+            mostrarPopupConfirmacion();
+        });
+    }
+
     // Navegación de meses
     document.getElementById('prevMonth').addEventListener('click', () => {
         currentMonth--;
@@ -411,6 +419,60 @@ function escapeHtml(text) {
     return div.innerHTML;
 }
 
+// Función para mostrar el popup de confirmación de Google Calendar
+function mostrarPopupConfirmacion() {
+    // Crear el overlay
+    const overlay = document.createElement('div');
+    overlay.className = 'popup-overlay';
+    overlay.id = 'googleCalendarPopup';
+    
+    // Crear el contenido del popup
+    overlay.innerHTML = `
+        <div class="popup-container">
+            <div class="popup-header">
+                <i class="fa-brands fa-google"></i>
+                <h3>Conectar con Google Calendar</h3>
+            </div>
+            <div class="popup-body">
+                <p>¿Estás seguro de que deseas conectar tu cuenta de Google Calendar?</p>
+                <p class="popup-note">Esto permitirá sincronizar tus tareas con tu calendario de Google.</p>
+            </div>
+            <div class="popup-actions">
+                <button class="popup-btn popup-btn-cancel" id="popupCancelar">
+                    <i class="fa fa-times"></i>
+                    Cancelar
+                </button>
+                <button class="popup-btn popup-btn-confirm" id="popupConfirmar">
+                    <i class="fa fa-check"></i>
+                    Confirmar
+                </button>
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(overlay);
+    
+    // Event listeners para los botones
+    document.getElementById('popupCancelar').addEventListener('click', cerrarPopup);
+    document.getElementById('popupConfirmar').addEventListener('click', () => {
+        window.location.href = '/auth/google/connect';
+    });
+    
+    // Cerrar al hacer clic fuera del popup
+    overlay.addEventListener('click', (e) => {
+        if (e.target === overlay) {
+            cerrarPopup();
+        }
+    });
+}
+
+function cerrarPopup() {
+    const popup = document.getElementById('googleCalendarPopup');
+    if (popup) {
+        popup.remove();
+    }
+}
+
 //Sincronizar el dropdown de meses con currentMonth
 function actualizarMesSeleccionadoEnDropdown() {
     const opciones = document.querySelectorAll('#opciones-meses .mes');
@@ -425,9 +487,3 @@ function actualizarMesSeleccionadoEnDropdown() {
         }
     });
 }
-
-/** 
- * ================================================================
- * Coneccion Google Calendar
- * ================================================================ 
- */

@@ -1,17 +1,30 @@
-{{-- filepath: c:\Users\JKL528\Documents\proyecto\bmaia_v1_practica\resources\views\tareas\agenda.blade.php --}}
-{{-- Meta tags requeridos --}} 
+{{-- Meta tags requeridos --}}
+
 <head>
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <link href="{{ asset('css/components/home-user/tasks/agenda.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/components/home-user/tasks/agenda.css') }}?v={{ time() }}" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
-<body>
-    <div class="container-agenda">
+
+
+<div class="container-agenda">
+    {{-- Header de Agenda --}}
+    <div class="task-list-header">
+        <div class="header-content">
+            <div class="header-left">
+                <h1 class="header-title">
+                    <i class="fa-solid fa-calendar-days"></i>
+                    Agenda de Tareas
+                </h1>
+                <p class="header-subtitle">Visualiza y actualiza el estado de tus tareas mediante el calendario de tareas mensual</p>
+            </div>
+        </div>
+    </div>
+    <div class="agenda-content">
         <!-- Sección del Calendario -->
         <div class="calendar-section">
             <div class="calendar-header">
                 <h2 id="monthYear">Noviembre 2025</h2>
-
                 <div class="navegador-contenedor">
                     <i class="fa fa-calendar-alt" id="navegador-meses"></i>
 
@@ -76,11 +89,11 @@
             </div>
         </div>
     </div>
+</div>
 
-    {{-- Pasar las tareas al JavaScript --}}
-    <script>
-        window.tareasData = @json($subtareas);
-    </script>
+{{-- Pasar las tareas al JavaScript --}}
+<script>
+    window.tareasData = @json($subtareas);
+</script>
 
-    <script src="{{ asset('js/components/home-user/tasks/agenda.js') }}"></script>
-</body>
+<script src="{{ asset('js/components/home-user/tasks/agenda.js') }}?v={{ time() }}"></script>
