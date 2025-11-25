@@ -303,6 +303,8 @@ Route::middleware(['auth', 'check.payment'])->group(function () {
     Route::get('/tareas/{id}', [TaskController::class, 'show'])->name('tareas.show');
     Route::post('/tareas/update/{id}', [TaskController::class, 'guardarCambios']);
     Route::patch('/tareas/{id}/update', [TaskController::class, 'updateTarea']);
+    // Actualizar plan de trabajo (bulk): incrementar año y actualizar estado/fechas
+    Route::post('/tareas/actualizar-plan-trabajo', [TaskController::class, 'actualizarPlanTrabajo'])->name('tareas.actualizarPlanTrabajo');
     // Ruta para imprimir todas las tareas (PDF)
     Route::get('/tareas/imprimir-todas', [App\Http\Controllers\DocumentController::class, 'imprimirTodasSubtareas'])->name('tareas.imprimirTodas')->middleware('auth');
     Route::get('/todas-las-tareas/imprimir', [DocumentController::class, 'imprimirTodasSubtareas'])->name('tareas.imprimirTodas');

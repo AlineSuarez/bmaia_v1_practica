@@ -21,26 +21,32 @@
                 </h1>
                 
                 <p class="header-subtitle"> Gestiona y organiza de manera eficiente que tareas son relevantes para su Plan de Trabajo Anual</p>
-                
             </div>
-                <div class="header-semaphore">
-                    @php
-                        $prioridades = [
-                            ['color' => 'red', 'label' => 'Urgentes', 'value' => 'urgente'],
-                            ['color' => 'yellow', 'label' => 'Alta', 'value' => 'alta'],
-                            ['color' => 'green', 'label' => 'Media', 'value' => 'media'],
-                            ['color' => 'lightblue', 'label' => 'Baja', 'value' => 'baja'],
-                        ];
-                    @endphp
+            <div>
+                <button class="btn-Actualizar" id="actualizarPlanTrabajoBtn">
+                    <i class="fa fa-upload"></i>
+                    <span>Actualizar <br>
+                        Plan de Trabajo</span>
+                </button>
+            </div>
+            <div class="header-semaphore">
+                @php
+                    $prioridades = [
+                        ['color' => 'red', 'label' => 'Urgentes', 'value' => 'urgente'],
+                        ['color' => 'yellow', 'label' => 'Alta', 'value' => 'alta'],
+                        ['color' => 'green', 'label' => 'Media', 'value' => 'media'],
+                        ['color' => 'lightblue', 'label' => 'Baja', 'value' => 'baja'],
+                    ];
+                @endphp
 
-                    @foreach($prioridades as $prioridad)
-                        <div class="task-semaphore priority-filter" data-priority="{{ $prioridad['value'] }}" style="cursor: pointer;">
-                            <i class="fa-solid fa-circle priority-light" style="color: {{ $prioridad['color'] }}"></i>
-                            <span class="stat-semaphore">{{ $prioridad['label'] }}</span>
-                            <span class="task-text">{{ $subtareas->where('prioridad', $prioridad['value'])->count() }}</span>
-                        </div>
-                    @endforeach
-                </div>
+                @foreach($prioridades as $prioridad)
+                    <div class="task-semaphore priority-filter" data-priority="{{ $prioridad['value'] }}" style="cursor: pointer;">
+                        <i class="fa-solid fa-circle priority-light" style="color: {{ $prioridad['color'] }}"></i>
+                        <span class="stat-semaphore">{{ $prioridad['label'] }}</span>
+                        <span class="task-text">{{ $subtareas->where('prioridad', $prioridad['value'])->count() }}</span>
+                    </div>
+                @endforeach
+            </div>
         </div>
     </div>
 

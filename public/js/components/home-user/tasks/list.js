@@ -60,6 +60,7 @@ const AppState = {
     },
     tareas: [],
     isLoading: false,
+    silencing: false, // bandera para evitar marcar cambios cuando se actualiza en lote
 };
 
 /**
@@ -105,7 +106,214 @@ function inicializarApp() {
     configurarFiltros();
     configurarFiltrosPrioridad(); // Nueva función para filtros de prioridad
     configurarSelect2();
+    configurarActualizarPlanTrabajo(); // Añadido: configurar flujo de actualización anual
     cargarTareasIniciales();
+}
+
+// Configurar flujo para el botón "Actualizar Plan de Trabajo"
+function configurarActualizarPlanTrabajo() {
+    const btn = document.getElementById('actualizarPlanTrabajoBtn');
+    if (!btn) return;
+
+    btn.addEventListener('click', async function () {
+        const confirmado = await askConfirm({
+            title: '¿Deseas actualizar el Plan de Trabajo al siguiente año?',
+            text: 'Se actualizarán las fechas al siguiente año y las tareas pasarán a estado Pendiente.',
+            confirmText: 'Sí, actualizar',
+            cancelText: 'Cancelar',
+        });
+
+        if (!confirmado) return;
+
+        // Recolectar todas las filas de tareas
+        const allRows = Array.from(document.querySelectorAll('.task-row'));
+
+        // Detectar tareas no completadas
+        const notCompleted = allRows.filter((row) => {
+            const status = (row.getAttribute('data-status') || '').trim();
+            return status !== 'Completada';
+        });
+
+        // Si existen tareas no completadas, preguntar si deben marcarse como Completada antes
+        if (notCompleted.length > 0) {
+            const marcar = await askConfirm({
+                title: 'Hay tareas no completadas',
+                text: `Se encontraron ${notCompleted.length} tareas que no están completadas. ¿Deseas marcarlas como Completadas antes de actualizar el año?`,
+                confirmText: 'Sí, marcarlas',
+                cancelText: 'No, cancelar',
+            });
+
+            if (!marcar) {
+                // El usuario no desea marcar las tareas como completadas: cancelar toda la operación
+                mostrarNotificacion('info', 'Acción cancelada. No se realizaron cambios.');
+                return;
+            }
+            // Silenciar handlers de cambio para evitar marcar botones como "pendiente"
+            AppState.silencing = true;
+
+            // Marcar en DOM como Completada (temporal)
+            notCompleted.forEach((row) => {
+                const select = row.querySelector('.estado, .status-select');
+                if (select) {
+                    try {
+                        select.value = 'Completada';
+                        // Si usa Select2, disparar evento (sin efecto por silencing)
+                        if (typeof $(select).trigger === 'function') $(select).trigger('change');
+                    } catch (e) {}
+                }
+                row.setAttribute('data-status', 'Completada');
+            });
+        }
+
+        // A estas alturas consideramos que todas las tareas están Completadas (reales o forzadas)
+        // Preparar payload con nuevas fechas y estados
+        const tasksPayload = [];
+        allRows.forEach((row) => {
+            const id = row.getAttribute('data-task-id');
+
+            // Obtener fechas desde los inputs si existen, si no desde data-attributes
+            const inputInicio = row.querySelector('.fecha-inicio');
+            const inputFin = row.querySelector('.fecha-fin');
+
+            const rawInicio = inputInicio ? inputInicio.value || row.getAttribute('data-fecha-inicio') : row.getAttribute('data-fecha-inicio');
+            const rawFin = inputFin ? inputFin.value || row.getAttribute('data-fecha-limite') : row.getAttribute('data-fecha-limite');
+
+            const nuevoInicio = incrementYearForDateString(rawInicio);
+            const nuevoFin = incrementYearForDateString(rawFin);
+
+            // Actualizar DOM: inputs (YYYY-MM-DD) y atributos data (DD-MM-YYYY)
+            if (inputInicio) inputInicio.value = nuevoInicio.iso;
+            if (inputFin) inputFin.value = nuevoFin.iso;
+            row.setAttribute('data-fecha-inicio', nuevoInicio.dmy);
+            row.setAttribute('data-fecha-limite', nuevoFin.dmy);
+
+            // Cambiar estado a Pendiente (silenciando los handlers para evitar marcar como pendiente)
+            const selectEstado = row.querySelector('.estado, .status-select');
+            if (selectEstado) {
+                try {
+                    selectEstado.value = 'Pendiente';
+                    if (typeof $(selectEstado).trigger === 'function') $(selectEstado).trigger('change');
+                } catch (e) {}
+            }
+            row.setAttribute('data-status', 'Pendiente');
+
+            tasksPayload.push({
+                id: id,
+                fecha_inicio: nuevoInicio.iso,
+                fecha_limite: nuevoFin.iso,
+                estado: 'Pendiente',
+            });
+        });
+
+        // Enviar al servidor
+        mostrarLoadingState(true);
+        try {
+            const url = '/tareas/actualizar-plan-trabajo';
+            const resp = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': TaskConfig.csrfToken || document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                },
+                body: JSON.stringify({ tasks: tasksPayload }),
+            });
+
+            if (!resp.ok) {
+                const text = await resp.text();
+                throw new Error(text || 'Error en la actualización');
+            }
+
+            // Actualización exitosa
+            mostrarNotificacion('success', 'Plan de Trabajo actualizado correctamente.');
+            // Refrescar vistas/contadores
+            actualizarContadores();
+            paginarTabla();
+        } catch (error) {
+            console.error('Error actualizando plan de trabajo:', error);
+            mostrarNotificacion('error', 'Ocurrió un error al actualizar el Plan de Trabajo.');
+        } finally {
+            // Quitar estado de loading
+            mostrarLoadingState(false);
+
+            // Levantar silencing para que los handlers vuelvan a funcionar
+            AppState.silencing = false;
+
+            // Limpiar marcas visuales de "pendiente" para evitar que el usuario tenga que guardar cada fila
+            document.querySelectorAll('.guardar-cambios.pendiente-guardar').forEach((b) => b.classList.remove('pendiente-guardar'));
+            // Ocultar recordatorios y contador
+            try {
+                const $contador = document.getElementById('contadorCambiosPendientes');
+                if ($contador) $contador.style.display = 'none';
+                const $record = document.getElementById('cambiosRecordatorio');
+                if ($record) $record.style.display = 'none';
+            } catch (e) {}
+        }
+    });
+}
+
+// Helper: preguntar confirmación con wrappers de mostrarConfirmacion/Swal/fallback
+async function askConfirm({ title, text, confirmText = 'Sí', cancelText = 'No' }) {
+    // Usar mostrarConfirmacion si existe
+    if (typeof mostrarConfirmacion === 'function') {
+        try {
+            const res = await mostrarConfirmacion({ title, text, confirmText, cancelText });
+            return !!res;
+        } catch (e) {}
+    }
+
+    // Si Swal está disponible
+    if (typeof Swal !== 'undefined' && typeof Swal.fire === 'function') {
+        const result = await Swal.fire({
+            title: title,
+            text: text,
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonText: confirmText,
+            cancelButtonText: cancelText,
+        });
+        return !!result.isConfirmed;
+    }
+
+    // Fallback simple
+    return confirm(`${title}\n\n${text}`);
+}
+
+// Helper: incrementar año de una fecha dada (acepta yyyy-mm-dd o dd-mm-yyyy)
+function incrementYearForDateString(dateStr) {
+    if (!dateStr) {
+        // devolver hoy +1 año por defecto
+        const d = new Date();
+        d.setFullYear(d.getFullYear() + 1);
+        return { iso: formatDateForInput(d.toISOString()), dmy: formatDateToDMY(d) };
+    }
+
+    // Usar parsearFecha si existe
+    let dateObj;
+    try {
+        if (typeof parsearFecha === 'function') {
+            dateObj = parsearFecha(dateStr);
+            if (!(dateObj instanceof Date) || isNaN(dateObj)) dateObj = new Date(dateStr);
+        } else {
+            dateObj = new Date(dateStr);
+        }
+    } catch (e) {
+        dateObj = new Date(dateStr);
+    }
+
+    if (!(dateObj instanceof Date) || isNaN(dateObj)) dateObj = new Date();
+    dateObj.setFullYear(dateObj.getFullYear() + 1);
+
+    // ISO para input yyyy-mm-dd
+    const iso = dateObj.toISOString().slice(0, 10);
+    const dmy = formatDateToDMY(dateObj);
+    return { iso, dmy };
+}
+
+function formatDateToDMY(dateObj) {
+    const d = dateObj.getDate().toString().padStart(2, '0');
+    const m = (dateObj.getMonth() + 1).toString().padStart(2, '0');
+    const y = dateObj.getFullYear();
+    return `${d}-${m}-${y}`;
 }
 
 /**
@@ -619,6 +827,9 @@ function configurarEventListeners() {
 
     // Detectar cambios en prioridad o estado
     $(document).on("change", ".priority-select, .status-select", function () {
+        // Si estamos silenciando cambios (actualización en lote), no marcar como pendiente
+        if (AppState.silencing) return;
+
         const $row = $(this).closest(".task-row");
         const taskId = $row.data("task-id");
         cambiosPendientes.add(taskId);
@@ -1063,9 +1274,25 @@ function mostrarEstadoVacio() {
 }
 
 function mostrarLoadingState(show) {
-    const loading = document.querySelector(TaskConfig.selectors.loadingState);
-    if (loading) {
-        loading.classList.toggle("hidden", !show);
+    let loading = document.querySelector(TaskConfig.selectors.loadingState);
+    // Si no existe, intentar buscar por id
+    if (!loading) loading = document.getElementById('taskListLoading');
+    if (!loading) return;
+
+    // Asegurarnos de que el overlay está en el <body> para evitar problemas de stacking/contexto
+    if (loading.parentElement !== document.body) {
+        try {
+            document.body.appendChild(loading);
+        } catch (e) {
+            // fallback: ignore
+        }
+    }
+
+    loading.classList.toggle('hidden', !show);
+    // Si mostramos, forzar focus para que el usuario lo vea inmediatamente
+    if (show) {
+        loading.setAttribute('tabindex', '-1');
+        try { loading.focus(); } catch (e) {}
     }
 }
 

@@ -9,6 +9,7 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\DB;
 
 // Controlador para gestionar las tareas y subtareas
 class TaskController extends Controller
@@ -344,6 +345,50 @@ class TaskController extends Controller
             ];
         });
         return response()->json($events);
+    }
+
+    /**
+     * Actualiza en bloque las subtareas recibidas: guarda nuevas fechas y estado.
+     * Estructura esperada: { tasks: [ { id, fecha_inicio, fecha_limite, estado }, ... ] }
+     */
+    public function actualizarPlanTrabajo(Request $request)
+    {
+        $user = Auth::user();
+
+        $data = $request->all();
+        $tasks = data_get($data, 'tasks', []);
+
+        if (!is_array($tasks) || count($tasks) === 0) {
+            return response()->json(['error' => 'No se recibieron tareas para actualizar.'], 422);
+        }
+
+        DB::beginTransaction();
+        try {
+            foreach ($tasks as $t) {
+                $id = data_get($t, 'id');
+                $fecha_inicio = data_get($t, 'fecha_inicio');
+                $fecha_limite = data_get($t, 'fecha_limite');
+                $estado = data_get($t, 'estado', 'Pendiente');
+
+                if (!$id) continue;
+
+                $subtarea = SubTarea::find($id);
+                // Solo actualizar si existe y pertenece al usuario autenticado
+                if (!$subtarea || $subtarea->user_id !== $user->id) continue;
+
+                $subtarea->fecha_inicio = $fecha_inicio;
+                $subtarea->fecha_limite = $fecha_limite;
+                $subtarea->estado = $estado;
+                $subtarea->save();
+            }
+
+            DB::commit();
+            return response()->json(['ok' => true, 'message' => 'Plan de Trabajo actualizado correctamente.']);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Error al actualizar plan de trabajo: ' . $e->getMessage(), ['exception' => $e]);
+            return response()->json(['error' => 'Error interno al actualizar tareas.'], 500);
+        }
     }
 
     public function default(Request $request)
