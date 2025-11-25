@@ -1,4 +1,6 @@
 <?php
+
+use App\Http\Controllers\RouteTimeController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
@@ -29,6 +31,23 @@ use App\Http\Controllers\SistemaExpertoController;
 use App\Http\Controllers\DatoFacturacionController;
 use App\Http\Controllers\FacturaController;
 use Illuminate\Support\Facades\Http;
+use App\Http\Controllers\HojaRutaController;
+use App\Http\Controllers\FloraCatalogController;
+// 🔹 NUEVO: controlador de monitoreo histórico
+use App\Http\Controllers\MonitoreoController;
+
+// === AGREGADO: controlador para el catálogo de flora (ver más / editar perfil)
+use App\Http\Controllers\FloraPerfilController;
+
+// === AGREGADO: controlador del PROXY WMS/WFS (evita problemas de CORS)
+use App\Http\Controllers\GeoProxyController;
+
+// === AGREGADO: controlador para el Explorador del mapa (inyecta $regiones)
+use App\Http\Controllers\MapaExploradorController;
+
+/** ====== AGREGADO PASO 4: API perfiles de Región y Comuna ====== */
+use App\Http\Controllers\RegionPerfilController as HRRegionPerfilController;
+use App\Http\Controllers\ComunaPerfilController as HRComunaPerfilController;
 
 Auth::routes();
 
@@ -40,6 +59,54 @@ Route::get('/reverse-geocode', function (Illuminate\Http\Request $request) {
     $response = Http::get($url);
     return $response->json();
 });
+
+// === PROXY WMS/WFS principal (controlador robusto)
+Route::get('/wms-proxy', [GeoProxyController::class, 'proxy'])->name('geo.wms-proxy');
+
+// === NUEVO: Ping de capacidades (para probar conectividad del WMS)
+Route::get('/wms-proxy/ping', [GeoProxyController::class, 'ping'])->name('geo.wms-ping');
+
+// === PROXY WMS sencillo (closure) para casos puntuales (opcional, no reemplaza lo anterior)
+Route::get('/wms-proxy-lite', function (\Illuminate\Http\Request $req) {
+    $baseUrl = $req->query('url'); // URL base del servicio WMS/WFS (ej: https://ide.mma.gob.cl/geoserver/ows)
+    if (!$baseUrl) {
+        return response()->json(['ok' => false, 'error' => 'Falta parámetro url'], 400);
+    }
+
+    // (Opcional) Lista blanca rápida — ajusta dominios permitidos si quieres endurecer
+    $allowed = [
+        'ide.mma.gob.cl',
+        'ide.chile.gob.cl',
+        'mapas.conaf.cl',
+        'mapas5.arcgisonline.com',
+        'mapas.snic.conaf.cl',
+        'geoportal.conaf.cl',
+        'sig.sernageomin.cl',
+        'geoserver',
+        'arcgis'
+    ];
+    $host = parse_url($baseUrl, PHP_URL_HOST);
+    $allowedHost = $host && collect($allowed)->first(fn($d) => str_contains($host, $d));
+    if (!$allowedHost) {
+        return response()->json(['ok' => false, 'error' => 'Host no permitido'], 403);
+    }
+
+    // Reenviamos todos los parámetros (excepto url)
+    $params = $req->except('url');
+    $qs = http_build_query($params);
+    $final = $baseUrl . (str_contains($baseUrl, '?') ? '&' : '?') . $qs;
+
+    try {
+        $r = Http::withHeaders([
+            'User-Agent' => 'B-MaiA/1.0 (educational)'
+        ])->get($final);
+
+        return response($r->body(), $r->status())
+            ->header('Content-Type', $r->header('Content-Type', 'application/json'));
+    } catch (\Throwable $e) {
+        return response()->json(['ok' => false, 'error' => $e->getMessage()], 500);
+    }
+})->name('geo.wms-proxy-lite');
 
 //Rutas de las policies 
 Route::view('/politicas-de-privacidad', 'legal.privacidad')->name('privacidad');
@@ -202,7 +269,7 @@ Route::middleware(['auth', 'check.payment'])->group(function () {
     Route::get('/apiarios-temporales/{apiario}/detalle-movimiento', [ApiarioController::class, 'detalleMovimiento']);
     Route::get('/apiarios-temporales/{apiario}/exportar-historial', [ApiarioController::class, 'exportarHistorial'])->name('apiarios.exportarHistorial');
     Route::post('/apiarios/massDelete', [ApiarioController::class, 'massDelete'])->name('apiarios.massDelete');
-    Route::post('/apiarios/{id}/convertir-trashumante-base', [ApiarioController::class, 'convertirEnTrashumanteBase'])->name(name: 'apiarios.convertirBase');
+    Route::post('/apiarios/{id}/convertir-trashumante-base', [ApiarioController::class, 'convertirEnTrashumanteBase'])->name('apiarios.convertirBase');
     Route::post('/apiarios/{apiario}/convertir-fijo', [ApiarioController::class, 'convertirAFijo'])->name('apiarios.convertirFijo');
 
     // Trashumancia - temporal
@@ -307,6 +374,9 @@ Route::middleware(['auth', 'check.payment'])->group(function () {
     // Zonificación
     Route::get('/zonificacion', [ZonificacionController::class, 'index'])->name('zonificacion');
 
+    Route::get('/zonificacion/{apiario}', [ZonificacionController::class, 'show'])
+        ->name('zonificacion.show');
+
     Route::get('/debug-date', function () {
         return [
             'auth_user' => Auth::check() ? Auth::user()->email : 'no user',
@@ -319,6 +389,10 @@ Route::middleware(['auth', 'check.payment'])->group(function () {
         return view('apiarios.test-lang');
     });
 
+    // === AGREGADO: Endpoints para “Ver más” (mostrar/editar perfil de flora)
+    Route::get('/flora-perfil/{flor}', [FloraPerfilController::class, 'show'])->name('flora.perfil.show');   // JSON para el modal
+    Route::post('/flora-perfil/{flor}', [FloraPerfilController::class, 'update'])->name('flora.perfil.update'); // guardar cambios
+
     // Sistema Experto
     Route::prefix('sistemaexperto')->name('sistemaexperto.')->group(function () {
         Route::get('/', [SistemaExpertoController::class, 'index'])->name('index');
@@ -327,6 +401,19 @@ Route::middleware(['auth', 'check.payment'])->group(function () {
         Route::get('colmenas/{colmena}/edit', [SistemaExpertoController::class, 'editPcc'])->name('editpcc');
         Route::put('sistemaexperto/{sistemaexperto}', [SistemaExpertoController::class, 'update'])->name('update');
     });
+
+    /** ====== AGREGADO PASO 4: API Hoja de Ruta (SVG) ====== */
+    Route::get('/hoja-de-ruta/api/region/{slug}', [HRRegionPerfilController::class, 'showBySlug'])
+        ->name('hojaruta.region.perfil');
+
+    Route::match(['post','put'], '/hoja-de-ruta/api/region/{slug}', [HRRegionPerfilController::class, 'upsert'])
+        ->name('hojaruta.region.perfil.upsert');
+
+    Route::get('/hoja-de-ruta/api/comuna/{id}', [HRComunaPerfilController::class, 'show'])
+        ->name('hojaruta.comuna.perfil');
+
+    Route::match(['post','put'], '/hoja-de-ruta/api/comuna/{id}', [HRComunaPerfilController::class, 'upsert'])
+        ->name('hojaruta.comuna.perfil.upsert');
 });
 
 // Ruta pública para detalle de colmena
@@ -335,3 +422,73 @@ Route::get('apiarios/{apiario}/colmenas/{colmena}', [App\Http\Controllers\Colmen
 // Ruta pública para imprimir QR (PDF) sin autenticación
 Route::get('/apiarios/{apiario}/colmenas/{colmena}/qr-pdf-public', [App\Http\Controllers\DocumentController::class, 'qrPdfPublic'])
     ->name('colmenas.qr-pdf.public');
+
+/* =======================================================================
+ *  HOJA DE RUTA + CATÁLOGO DE FLORA
+ * ======================================================================= */
+
+// Vista principal del módulo Hoja de Ruta
+Route::view('/hoja-de-ruta', 'hoja_ruta.index')->name('hoja.ruta');
+
+// Explorador (mapa SVG) – AHORA usando HojaRutaController
+Route::get('/hoja-de-ruta/explorador', [HojaRutaController::class, 'explorador'])
+    ->name('hoja.explorador');
+
+// API simple usada por el SVG: región + comunas
+Route::get('/hoja-de-ruta/api/region/{iso}', [HojaRutaController::class, 'apiRegion'])
+    ->name('hoja_ruta.api.region');
+
+/* ======== API del Explorador del Mapa (MapaExploradorController) ======== */
+Route::prefix('api/mapa')->group(function () {
+    // Perfil de región (nombre/abreviatura + region_perfiles)
+    Route::get('region/{slug}/perfil', [MapaExploradorController::class, 'regionPerfil'])
+        ->name('api.mapa.region.perfil');
+
+    // Comunas por región (con su perfil si existe)
+    Route::get('region/{slug}/comunas', [MapaExploradorController::class, 'regionComunas'])
+        ->name('api.mapa.region.comunas');
+
+    // Perfil puntual de una comuna
+    Route::get('comuna/{id}/perfil', [MapaExploradorController::class, 'comunaPerfil'])
+        ->name('api.mapa.comuna.perfil');
+});
+/* ======== FIN API Explorador ======== */
+
+// Cálculo de ruta
+Route::view('/hoja-de-ruta/calculo', 'hoja_ruta.calculo')->name('hoja.calculo');
+
+// 🔹 Monitoreo histórico (usa controlador)
+Route::get('/hoja-de-ruta/monitoreo', [MonitoreoController::class, 'index'])->name('hoja.monitoreo');
+
+// Capacidad de carga y SVG extra
+Route::view('/hoja-de-ruta/capacidad', 'hoja_ruta.capacidad')->name('hoja.capacidad');
+Route::view('/hoja-de-ruta/explorador-svg', 'hoja_ruta.explorador_svg')->name('hoja.explorador.svg');
+
+/*
+ * Catálogo de Flora
+ *
+ * - /hoja-de-ruta/catalogo        → redirige al catálogo nuevo (compatibilidad)
+ *   nombre: hoja.catalogo
+ *
+ * - /hoja-de-ruta/catalogo-flora  → listado + filtros
+ *   nombre: flora.catalogo.index   (este es el que usa catalogo.blade.php)
+ *
+ * - /hoja-de-ruta/catalogo-flora/{species} → detalle de especie
+ *   nombre: flora.catalogo.show
+ */
+
+// Ruta antigua: redirige al catálogo nuevo
+Route::get('/hoja-de-ruta/catalogo', function () {
+    return redirect()->route('flora.catalogo.index');
+})->name('hoja.catalogo');
+
+// Listado principal del catálogo (INDEX)
+Route::get('/hoja-de-ruta/catalogo-flora', [FloraCatalogController::class, 'index'])
+    ->name('flora.catalogo.index');
+
+// Detalle de una especie
+Route::get('/hoja-de-ruta/catalogo-flora/{species}', [FloraCatalogController::class, 'show'])
+    ->name('flora.catalogo.show');
+
+// API de cálculo de tiempo de ruta
+Route::get('/api/route-time', [RouteTimeController::class, 'calc'])->name('route-time');

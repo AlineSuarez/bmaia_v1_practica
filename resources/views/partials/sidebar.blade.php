@@ -118,6 +118,21 @@
                                 <span class="apicola-active-indicator"></span>
                             </a>
                         </li>
+
+                        {{-- >>> NUEVO BOTÓN: Hoja de Ruta (debajo de Indicadores) <<< --}}
+                        <li class="apicola-sidebar-item">
+                            <a class="apicola-sidebar-link {{ request()->routeIs('hoja.*') ? 'active' : '' }}"
+                               href="{{ route('hoja.explorador') }}">
+                                <div class="apicola-icon-container">
+                                    <i class="fa-solid fa-route"></i>
+                                    <span class="apicola-icon-background"></span>
+                                </div>
+                                <span class="apicola-menu-text">Hoja de Ruta</span>
+                                <span class="apicola-active-indicator"></span>
+                            </a>
+                        </li>
+                        {{-- <<< FIN NUEVO BOTÓN >>> --}}
+
                     </ul>
                 </div>
             </nav>

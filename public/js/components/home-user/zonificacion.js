@@ -15,6 +15,9 @@ document.addEventListener("DOMContentLoaded", function () {
             archivados: 1,
         };
 
+        // ➕ Ruta base para el detalle de apiario
+        const DETAIL_ROUTE_BASE = "/zonificacion/";
+
         // Función para paginar datos
         function paginateData(data, page, itemsPerPage = ITEMS_PER_PAGE) {
             const startIndex = (page - 1) * itemsPerPage;
@@ -87,12 +90,8 @@ document.addEventListener("DOMContentLoaded", function () {
                 let rowHTML = `
                     <td>${apiario.nombre}</td>
                     <td>
-                        <span title="Lat: ${apiario.latitud}, Lon: ${
-                    apiario.longitud
-                }" class="coordinates-tooltip">
-                            ${parseFloat(apiario.latitud).toFixed(
-                                5
-                            )}, ${parseFloat(apiario.longitud).toFixed(5)}
+                        <span title="Lat: ${apiario.latitud}, Lon: ${apiario.longitud}" class="coordinates-tooltip">
+                            ${parseFloat(apiario.latitud).toFixed(5)}, ${parseFloat(apiario.longitud).toFixed(5)}
                         </span>
                     </td>
                     <td>${apiario.num_colmenas}</td>
@@ -122,6 +121,11 @@ document.addEventListener("DOMContentLoaded", function () {
                     rowHTML += `
         <td>
             <div class="action-buttons">
+                <!-- ➕ Ir al detalle -->
+                <button class="action-btn detail-btn" title="Ver detalle" data-id="${apiario.id}">
+                    <i class="fa-solid fa-compass"></i>
+                </button>
+                <!-- Ya existente: localizar en mapa -->
                 <button class="action-btn locate-btn" title="Localizar en mapa"
                     data-lat="${apiario.latitud}" data-lon="${apiario.longitud}">
                     <i class="fa-solid fa-location-crosshairs"></i>
@@ -172,7 +176,13 @@ document.addEventListener("DOMContentLoaded", function () {
         <div class="card-actions">
             ${
                 tabName !== "temporales"
-                    ? `<button class="card-action locate-btn" title="Localizar en mapa"
+                    ? `
+                    <!-- ➕ Ir al detalle -->
+                    <button class="card-action detail-btn" title="Ver detalle" data-id="${apiario.id}">
+                        <i class="fa-solid fa-compass"></i>
+                    </button>
+                    <!-- Ya existente: localizar en mapa -->
+                    <button class="card-action locate-btn" title="Localizar en mapa"
                         data-lat="${apiario.latitud}" data-lon="${apiario.longitud}">
                         <i class="fa-solid fa-location-crosshairs"></i>
                     </button>`
@@ -201,12 +211,8 @@ document.addEventListener("DOMContentLoaded", function () {
         <div class="card-info">
             <div class="info-item">
                 <i class="fa-solid fa-location-dot"></i>
-                <span title="Lat: ${apiario.latitud}, Lon: ${
-                    apiario.longitud
-                }" class="coordinates-tooltip">
-                    ${parseFloat(apiario.latitud).toFixed(5)}, ${parseFloat(
-                    apiario.longitud
-                ).toFixed(5)}
+                <span title="Lat: ${apiario.latitud}, Lon: ${apiario.longitud}" class="coordinates-tooltip">
+                    ${parseFloat(apiario.latitud).toFixed(5)}, ${parseFloat(apiario.longitud).toFixed(5)}
                 </span>
             </div>
             <div class="info-item">
@@ -409,6 +415,25 @@ document.addEventListener("DOMContentLoaded", function () {
                     // Deshabilita solo el botón del apiario activo
                     btn.disabled = true;
                 }
+            }
+        });
+
+        // ➕ Listener para abrir el detalle con la brújula (tabla y tarjetas)
+        document.addEventListener("click", function (e) {
+            const detailBtn = e.target.closest(".detail-btn");
+            if (!detailBtn) return;
+
+            // Intentamos obtener el id desde data-id del botón;
+            // si no, lo buscamos en el tr o en la tarjeta
+            let id = detailBtn.getAttribute("data-id");
+            if (!id) {
+                const row = detailBtn.closest("tr");
+                const card = detailBtn.closest(".apiary-card");
+                if (row) id = row.getAttribute("data-id");
+                if (!id && card) id = card.getAttribute("data-id");
+            }
+            if (id) {
+                window.location.href = DETAIL_ROUTE_BASE + id;
             }
         });
 
