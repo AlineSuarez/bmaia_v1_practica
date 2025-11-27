@@ -59,6 +59,9 @@ class Kernel extends HttpKernel
         'signed' => \Illuminate\Routing\Middleware\ValidateSignature::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
+
+        // ✅ Alias para tu middleware de pago + hoja de ruta
+        'check.payment' => \App\Http\Middleware\CheckPaymentStatus::class,
     ];
 
     protected $commands = [

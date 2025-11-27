@@ -6,8 +6,7 @@
 @section('content')
     @include('hoja_ruta.partials.subnav')
 
-    {{-- Banner honeycomb / estilos compartidos (EL MISMO QUE EN CÁLCULO DE RUTA) --}}
-    <link rel="stylesheet" href="{{ asset('css/components/home-user/zonificacion.css') }}">
+
 
     @php
         // Si el controlador ya envió $speciesList con resultados (por ejemplo con filtros),
@@ -17,148 +16,14 @@
             $speciesList = \App\Models\FloraSpecies::orderBy('common_name')->get();
         }
     @endphp
+         {{-- Estilos compartidos (banner honeycomb, etc.) --}}
+    <link rel="stylesheet"
+          href="{{ asset('css/components/home-user/zonificacion.css') }}">
 
-    <style>
-        .zonificacion-container {
-            padding: 20px 24px 32px;
-        }
-
-        /* ==== Tarjeta de filtros y tabla (no tocamos el banner, viene desde zonificacion.css) ==== */
-
-        .catalogo-filtros-card {
-            margin-top: 22px;
-            background: #ffffff;
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(15,23,42,0.08);
-            padding: 14px 16px 18px;
-            border: 1px solid #e5e7eb;
-        }
-
-        .catalogo-filtros-row {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-
-        .catalogo-search-wrapper {
-            flex: 1 1 260px;
-        }
-
-        .catalogo-search-input {
-            width: 100%;
-            border-radius: 8px;
-            border: 1px solid #e5e7eb;
-            padding: 8px 10px;
-            font-size: 13px;
-        }
-
-        .catalogo-select {
-            border-radius: 8px;
-            border: 1px solid #e5e7eb;
-            padding: 7px 10px;
-            font-size: 13px;
-            min-width: 150px;
-            background-color: #ffffff;
-        }
-
-        .btn-filtros {
-            border-radius: 8px;
-            border: 1px solid #d1d5db;
-            background: #f9fafb;
-            padding: 7px 12px;
-            font-size: 13px;
-            cursor: pointer;
-            white-space: nowrap;
-            text-decoration: none;
-            color: #111827;
-        }
-
-        .btn-filtros:hover {
-            background: #f3f4f6;
-        }
-
-        .btn-ver-listado {
-            margin-left: auto;
-            border-radius: 8px;
-            border: none;
-            background: #7ac943;
-            padding: 10px 18px;
-            font-size: 13px;
-            font-weight: 600;
-            color: white;
-            cursor: pointer;
-            white-space: nowrap;
-        }
-
-        .btn-ver-listado:hover {
-            background: #5aa227;
-        }
-
-        .flora-table-wrapper {
-            margin-top: 18px;
-            background: #ffffff;
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(15,23,42,0.08);
-            border: 1px solid #e5e7eb;
-            overflow: hidden;
-        }
-
-        table.flora-table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 13px;
-        }
-
-        .flora-table thead {
-            background: #f3f4f6;
-        }
-
-        .flora-table th,
-        .flora-table td {
-            padding: 6px 10px;
-            text-align: left;
-            border-bottom: 1px solid #e5e7eb;
-        }
-
-        .flora-table th {
-            font-size: 11px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: .03em;
-            color: #6b7280;
-        }
-
-        .flora-table tbody tr:nth-child(even) {
-            background: #f9fafb;
-        }
-
-        .flora-table tbody tr:hover {
-            background: #ecfdf5;
-        }
-
-        .flora-table a {
-            color: inherit;
-            text-decoration: none;
-        }
-
-        .flora-table a:hover {
-            text-decoration: underline;
-        }
-
-        @media (max-width: 900px) {
-            .catalogo-filtros-row {
-                align-items: stretch;
-            }
-
-            .btn-ver-listado {
-                width: 100%;
-                margin-left: 0;
-                margin-top: 8px;
-                text-align: center;
-            }
-        }
-    </style>
+    {{-- ✅ Estilos específicos del Catálogo de Flora --}}
+    <link rel="stylesheet"
+          href="{{ asset('css/components/home-user/hoja-ruta-catalogo.css') }}">
+    
 
     <div class="zonificacion-container">
 

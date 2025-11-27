@@ -20,7 +20,6 @@ use App\Models\Comuna;
 use App\Services\PaymentMailer;
 use Carbon\Carbon;
 
-
 class PaymentController extends Controller
 {
     public function __construct()
@@ -246,8 +245,10 @@ class PaymentController extends Controller
         $user->plan = $payment->plan;
         $user->fecha_vencimiento = $payment->expires_at instanceof Carbon ? $payment->expires_at : Carbon::parse($payment->expires_at);
         $user->webpay_status = 'pagado';
+        $user->has_hoja_ruta = true; // ✅ NUEVO: dar acceso al módulo Hoja de Ruta al pagar
         $user->save();
         $user->refresh();
+
         // Enviar correos
         PaymentMailer::sendSucceeded($payment);
         PaymentMailer::sendPlanActivated($user, $payment->plan);
@@ -397,7 +398,6 @@ class PaymentController extends Controller
             PaymentMailer::sendReceipt($payment);
         }
 
-
         // Si ya hay factura, continúa a success (después de enviar correos)
         if (Factura::where('payment_id', $payment->id)->exists()) {
             $request->session()->put('payment_success', true);
@@ -512,7 +512,6 @@ class PaymentController extends Controller
         // >>> FALTABA PASAR isFactura y buyer <<<
         return view('payment.success', compact('payment', 'facturaUrl', 'receiptUrl', 'isFactura', 'buyer'));
     }
-
 
     public function showFailed(Request $request)
     {

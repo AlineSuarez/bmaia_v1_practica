@@ -1,5 +1,4 @@
 <?php
-
 use App\Http\Controllers\RouteTimeController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginController;
@@ -388,11 +387,7 @@ Route::middleware(['auth', 'check.payment'])->group(function () {
     Route::get('/test-lang', function () {
         return view('apiarios.test-lang');
     });
-
-    // === AGREGADO: Endpoints para “Ver más” (mostrar/editar perfil de flora)
-    Route::get('/flora-perfil/{flor}', [FloraPerfilController::class, 'show'])->name('flora.perfil.show');   // JSON para el modal
-    Route::post('/flora-perfil/{flor}', [FloraPerfilController::class, 'update'])->name('flora.perfil.update'); // guardar cambios
-
+ 
     // Sistema Experto
     Route::prefix('sistemaexperto')->name('sistemaexperto.')->group(function () {
         Route::get('/', [SistemaExpertoController::class, 'index'])->name('index');
@@ -401,19 +396,7 @@ Route::middleware(['auth', 'check.payment'])->group(function () {
         Route::get('colmenas/{colmena}/edit', [SistemaExpertoController::class, 'editPcc'])->name('editpcc');
         Route::put('sistemaexperto/{sistemaexperto}', [SistemaExpertoController::class, 'update'])->name('update');
     });
-
-    /** ====== AGREGADO PASO 4: API Hoja de Ruta (SVG) ====== */
-    Route::get('/hoja-de-ruta/api/region/{slug}', [HRRegionPerfilController::class, 'showBySlug'])
-        ->name('hojaruta.region.perfil');
-
-    Route::match(['post','put'], '/hoja-de-ruta/api/region/{slug}', [HRRegionPerfilController::class, 'upsert'])
-        ->name('hojaruta.region.perfil.upsert');
-
-    Route::get('/hoja-de-ruta/api/comuna/{id}', [HRComunaPerfilController::class, 'show'])
-        ->name('hojaruta.comuna.perfil');
-
-    Route::match(['post','put'], '/hoja-de-ruta/api/comuna/{id}', [HRComunaPerfilController::class, 'upsert'])
-        ->name('hojaruta.comuna.perfil.upsert');
+    
 });
 
 // Ruta pública para detalle de colmena
@@ -427,68 +410,42 @@ Route::get('/apiarios/{apiario}/colmenas/{colmena}/qr-pdf-public', [App\Http\Con
  *  HOJA DE RUTA + CATÁLOGO DE FLORA
  * ======================================================================= */
 
-// Vista principal del módulo Hoja de Ruta
-Route::view('/hoja-de-ruta', 'hoja_ruta.index')->name('hoja.ruta');
+//  Todo el módulo Hoja de Ruta queda protegido por auth + check.payment
+Route::middleware(['auth', 'check.payment'])->group(function () {
 
-// Explorador (mapa SVG) – AHORA usando HojaRutaController
-Route::get('/hoja-de-ruta/explorador', [HojaRutaController::class, 'explorador'])
-    ->name('hoja.explorador');
+    // Vista principal del módulo Hoja de Ruta
+    Route::view('/hoja-de-ruta', 'hoja_ruta.index')->name('hoja.ruta');
 
-// API simple usada por el SVG: región + comunas
-Route::get('/hoja-de-ruta/api/region/{iso}', [HojaRutaController::class, 'apiRegion'])
-    ->name('hoja_ruta.api.region');
+    // Explorador (mapa SVG) – usando HojaRutaController
+    Route::get('/hoja-de-ruta/explorador', [HojaRutaController::class, 'explorador'])
+        ->name('hoja.explorador');
 
-/* ======== API del Explorador del Mapa (MapaExploradorController) ======== */
-Route::prefix('api/mapa')->group(function () {
-    // Perfil de región (nombre/abreviatura + region_perfiles)
-    Route::get('region/{slug}/perfil', [MapaExploradorController::class, 'regionPerfil'])
-        ->name('api.mapa.region.perfil');
+    // Cálculo de ruta
+    Route::view('/hoja-de-ruta/calculo', 'hoja_ruta.calculo')->name('hoja.calculo');
 
-    // Comunas por región (con su perfil si existe)
-    Route::get('region/{slug}/comunas', [MapaExploradorController::class, 'regionComunas'])
-        ->name('api.mapa.region.comunas');
+    // Monitoreo histórico
+    Route::get('/hoja-de-ruta/monitoreo', [MonitoreoController::class, 'index'])->name('hoja.monitoreo');
 
-    // Perfil puntual de una comuna
-    Route::get('comuna/{id}/perfil', [MapaExploradorController::class, 'comunaPerfil'])
-        ->name('api.mapa.comuna.perfil');
+    // Capacidad de carga y SVG extra
+    Route::view('/hoja-de-ruta/capacidad', 'hoja_ruta.capacidad')->name('hoja.capacidad');
+    Route::view('/hoja-de-ruta/explorador-svg', 'hoja_ruta.explorador_svg')->name('hoja.explorador.svg');
+
+    /*
+     * Catálogo de Flora
+      */
+    // Ruta antigua: redirige al catálogo nuevo
+    Route::get('/hoja-de-ruta/catalogo', function () {
+        return redirect()->route('flora.catalogo.index');
+    })->name('hoja.catalogo');
+
+    // Listado principal del catálogo (INDEX)
+    Route::get('/hoja-de-ruta/catalogo-flora', [FloraCatalogController::class, 'index'])
+        ->name('flora.catalogo.index');
+
+    // Detalle de una especie
+    Route::get('/hoja-de-ruta/catalogo-flora/{species}', [FloraCatalogController::class, 'show'])
+        ->name('flora.catalogo.show');
+
+    // API de cálculo de tiempo de ruta
+    Route::get('/api/route-time', [RouteTimeController::class, 'calc'])->name('route-time');
 });
-/* ======== FIN API Explorador ======== */
-
-// Cálculo de ruta
-Route::view('/hoja-de-ruta/calculo', 'hoja_ruta.calculo')->name('hoja.calculo');
-
-// 🔹 Monitoreo histórico (usa controlador)
-Route::get('/hoja-de-ruta/monitoreo', [MonitoreoController::class, 'index'])->name('hoja.monitoreo');
-
-// Capacidad de carga y SVG extra
-Route::view('/hoja-de-ruta/capacidad', 'hoja_ruta.capacidad')->name('hoja.capacidad');
-Route::view('/hoja-de-ruta/explorador-svg', 'hoja_ruta.explorador_svg')->name('hoja.explorador.svg');
-
-/*
- * Catálogo de Flora
- *
- * - /hoja-de-ruta/catalogo        → redirige al catálogo nuevo (compatibilidad)
- *   nombre: hoja.catalogo
- *
- * - /hoja-de-ruta/catalogo-flora  → listado + filtros
- *   nombre: flora.catalogo.index   (este es el que usa catalogo.blade.php)
- *
- * - /hoja-de-ruta/catalogo-flora/{species} → detalle de especie
- *   nombre: flora.catalogo.show
- */
-
-// Ruta antigua: redirige al catálogo nuevo
-Route::get('/hoja-de-ruta/catalogo', function () {
-    return redirect()->route('flora.catalogo.index');
-})->name('hoja.catalogo');
-
-// Listado principal del catálogo (INDEX)
-Route::get('/hoja-de-ruta/catalogo-flora', [FloraCatalogController::class, 'index'])
-    ->name('flora.catalogo.index');
-
-// Detalle de una especie
-Route::get('/hoja-de-ruta/catalogo-flora/{species}', [FloraCatalogController::class, 'show'])
-    ->name('flora.catalogo.show');
-
-// API de cálculo de tiempo de ruta
-Route::get('/api/route-time', [RouteTimeController::class, 'calc'])->name('route-time');

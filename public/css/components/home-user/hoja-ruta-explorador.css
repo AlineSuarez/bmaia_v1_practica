@@ -1,0 +1,166 @@
+
+            .explorador-grid{
+                display:grid;
+                grid-template-columns: minmax(380px, 480px) minmax(320px, 1fr); /* mapa + espacio derecho */
+                gap:18px;
+                margin-top:18px;
+                align-items:stretch;
+            }
+
+            @media (max-width: 980px){
+                .explorador-grid{
+                    grid-template-columns: 1fr;
+                }
+            }
+
+            .explorador-map-wrapper{
+                position:relative;
+                border-radius:18px;
+                padding:14px;
+                background:
+                    radial-gradient(900px 500px at 0% 0%, #132c45 0, transparent 60%),
+                    radial-gradient(700px 500px at 110% 10%, #091727 0, transparent 60%),
+                    #050a12;
+                border:1px solid rgba(255,255,255,0.06);
+                box-shadow:0 20px 45px rgba(0,0,0,0.65);
+                overflow:hidden;
+            }
+
+            .explorador-map-title{
+                font-size:13px;
+                font-weight:600;
+                color:#e3edf7;
+                margin:0 0 6px;
+            }
+            .explorador-map-subtitle{
+                font-size:11px;
+                color:#8ea2b7;
+                margin:0 0 10px;
+            }
+
+            .explorador-map-inner{
+                position:relative;
+                border-radius:14px;
+                padding:18px 18px 14px;
+                /* ===== fondo claro tipo panel derecho ===== */
+                background: linear-gradient(180deg, #ffffff 0%, #f3f4f6 60%, #e5e7eb 100%);
+                border:1px solid #e5e7eb;
+                min-height:480px;
+                display:flex;
+                align-items:center;
+                justify-content:flex-start;   /* mapa pegado a la izquierda */
+            }
+
+            /* El <object> que carga tu chile.svg */
+            #chileMap{
+                width:100%;
+                max-width:340px;   /* mapa más pequeño */
+                height:auto;
+                display:block;
+            }
+
+            /* Pill con la región actual, sobre el mapa */
+            .map-region-pill{
+                position:absolute;
+                top:14px;
+                left:14px;
+                padding:8px 10px;
+                border-radius:10px;
+                background:rgba(4,12,22,0.92);
+                border:1px solid rgba(255,255,255,0.16);
+                box-shadow:0 10px 24px rgba(0,0,0,0.6);
+                max-width:260px;
+            }
+            .map-region-label{
+                font-size:10px;
+                text-transform:uppercase;
+                letter-spacing:0.08em;
+                color:#7f93a8;
+                margin-bottom:2px;
+            }
+            .map-region-name{
+                font-size:14px;
+                font-weight:600;
+                color:#f1f7ff;
+                line-height:1.2;
+            }
+            .map-region-code{
+                font-size:11px;
+                color:#9fb3c7;
+                margin-top:2px;
+            }
+
+            /* Tooltip flotante sobre el mapa */
+            .map-tooltip{
+                position:absolute;
+                display:none;
+                pointer-events:none;
+                transform:translate(-50%, -120%);
+                padding:6px 8px;
+                font-size:11px;
+                border-radius:8px;
+                background:rgba(6,18,30,0.92);
+                color:#eaf3ff;
+                border:1px solid rgba(255,255,255,0.08);
+                box-shadow:0 10px 24px rgba(0,0,0,0.55);
+                white-space:nowrap;
+                z-index:10;
+            }
+            .map-tooltip::after{
+                content:"";
+                position:absolute;
+                left:50%;
+                bottom:-5px;
+                transform:translateX(-50%) rotate(45deg);
+                width:8px;
+                height:8px;
+                background:inherit;
+                border-left:1px solid rgba(255,255,255,0.08);
+                border-bottom:1px solid rgba(255,255,255,0.08);
+            }
+
+            .map-legend{
+                position:absolute;
+                left:12px;
+                bottom:12px;
+                padding:6px 8px;
+                font-size:11px;
+                border-radius:10px;
+                background:rgba(4,12,22,0.9);
+                color:#9fb3c7;
+                border:1px solid rgba(255,255,255,0.16);
+            }
+            .map-legend span{
+                font-weight:600;
+                color:#f3fbff;
+            }
+
+            /* ====== CARD LADO DERECHO ====== */
+            .explorador-side-card{
+                border-radius:18px;
+                padding:18px 20px;
+                background: linear-gradient(180deg, rgba(255,255,255,0.92), rgba(243,244,246,0.98));
+                border:1px solid #e5e7eb;
+                box-shadow:0 18px 45px rgba(0,0,0,0.12);
+                color:#111827;
+                display:flex;
+                flex-direction:column;
+                justify-content:flex-start;
+                min-height:480px;
+            }
+            .explorador-side-card h2{
+                font-size:18px;
+                font-weight:600;
+                margin:0 0 8px;
+            }
+            .explorador-side-card p{
+                font-size:13px;
+                color:#4b5563;
+                margin:0;
+            }
+
+            @media (max-width: 980px){
+                .explorador-side-card{
+                    min-height:220px;
+                }
+            }

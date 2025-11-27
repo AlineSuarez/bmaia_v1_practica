@@ -1,0 +1,199 @@
+
+        .zonificacion-container {
+            padding: 20px 24px 32px;
+        }
+
+        .catalogo-filtros-card {
+            margin-top: 20px;
+            background: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(15, 23, 42, 0.08);
+            padding: 14px 16px 18px;
+            border: 1px solid #e5e7eb;
+        }
+
+        .catalogo-filtros-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .catalogo-filtros-row input[type="text"] {
+            flex: 1 1 260px;
+            border-radius: 10px;
+            border: 1px solid #e5e7eb;
+            padding: 10px 12px;
+            font-size: 14px;
+        }
+
+        .catalogo-select {
+            min-width: 180px;
+            border-radius: 10px;
+            border: 1px solid #e5e7eb;
+            padding: 8px 10px;
+            font-size: 14px;
+            background-color: #f9fafb;
+        }
+
+        .catalogo-actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .btn-reset-filtros {
+            font-size: 13px;
+            color: #2563eb;
+            background: transparent;
+            border: none;
+            padding: 6px 10px;
+            cursor: pointer;
+        }
+
+        .btn-ver-listado {
+            background: #22c55e;
+            color: #ffffff;
+            border-radius: 999px;
+            padding: 9px 18px;
+            border: none;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        /* ====== Detalle de especie ====== */
+
+        .species-detail-wrapper {
+            margin-top: 24px;
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 22px 24px 28px;
+            box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+            display: grid;
+            grid-template-columns: minmax(0, 1.2fr) minmax(0, 1.8fr);
+            gap: 28px;
+        }
+
+        .species-name {
+            font-size: 26px;
+            font-weight: 700;
+            color: #15803d;
+            margin-bottom: 4px;
+        }
+
+        .species-scientific {
+            font-size: 18px;
+            font-style: italic;
+            color: #111827;
+        }
+
+        .species-image-main {
+            width: 100%;
+            border-radius: 18px;
+            object-fit: cover;
+            max-height: 520px;
+            display: block;
+        }
+
+        .species-image-placeholder {
+            width: 100%;
+            border-radius: 16px;
+            border: 1px dashed #9ca3af;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #6b7280;
+            height: 260px;
+            font-size: 14px;
+        }
+
+        .species-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 14px;
+            margin-top: 6px;
+            flex-wrap: wrap;
+        }
+
+        .species-tab-btn {
+            border-radius: 999px;
+            padding: 7px 16px;
+            font-size: 13px;
+            border: 1px solid #e5e7eb;
+            background: #f9fafb;
+            cursor: pointer;
+            transition: all .15s ease;
+        }
+
+        .species-tab-btn.active {
+            background: #84cc16;
+            border-color: #65a30d;
+            color: #ffffff;
+            font-weight: 600;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .species-section-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+
+        .species-text {
+            font-size: 14px;
+            color: #374151;
+            line-height: 1.55;
+        }
+
+        .species-meta {
+            margin-top: 18px;
+            font-size: 13px;
+            color: #4b5563;
+        }
+
+        .species-meta span {
+            display: inline-block;
+            margin-right: 12px;
+        }
+
+        /* Imagen del mapa */
+        .species-map-image {
+            width: 100%;
+            max-width: 400px;
+            border-radius: 14px;
+            display: block;
+            margin-top: 10px;
+            border: 1px solid #e5e7eb;
+        }
+
+        /* Contenedor del gráfico de estacionalidad */
+        .phenology-chart-wrapper {
+            margin-top: 18px;
+            background: #f9fafb;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+            padding: 12px 16px 18px;
+            max-width: 720px;
+            height: 260px; /* altura fija para que no crezca infinito */
+            position: relative;
+        }
+
+        .phenology-chart-wrapper canvas {
+            width: 100% !important;
+            height: 100% !important;
+        }
+
+        @media (max-width: 1024px) {
+            .species-detail-wrapper {
+                grid-template-columns: 1fr;
+            }
+        }
