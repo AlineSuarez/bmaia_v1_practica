@@ -4,6 +4,8 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use App\Models\SubTarea;
+use App\Models\User;
+use App\Models\Alert;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 
@@ -40,13 +42,35 @@ class ActualizarPrioridadTareas extends Command
 
         foreach ($subtareas as $tarea) {
             try {
-                // Si la tarea está completada, restaurar su prioridad base
+                // Si la tarea está completada, restaurar su prioridad base y eliminar de Google Calendar
                 if (in_array($tarea->estado, ['Completada', 'Completado'])) {
                     $resultado = $this->restaurarPrioridadBase($tarea);
                     if ($resultado['restaurado']) {
                         $restauradas++;
                         $this->line("🔄 Tarea #{$tarea->id}: {$tarea->nombre}");
                         $this->line("   Prioridad restaurada: {$resultado['prioridad_anterior']} → {$resultado['prioridad_base']} (Completada)");
+                    } else {
+                        $sinCambios++;
+                    }
+                    
+                    // Eliminar de Google Calendar
+                    $this->eliminarDeGoogleCalendar($tarea);
+                    continue;
+                }
+
+                // Si la fecha de inicio es futura, restaurar a prioridad base
+                $fechaInicio = Carbon::parse($tarea->fecha_inicio);
+                $ahora = Carbon::now();
+                
+                if ($ahora->lt($fechaInicio)) {
+                    $resultado = $this->restaurarPrioridadBase($tarea, 'Fecha de inicio futura');
+                    if ($resultado['restaurado']) {
+                        $restauradas++;
+                        $this->line("🔄 Tarea #{$tarea->id}: {$tarea->nombre}");
+                        $this->line("   Prioridad restaurada: {$resultado['prioridad_anterior']} → {$resultado['prioridad_base']} (Fecha de inicio: {$fechaInicio->format('d/m/Y')})");
+                        
+                        // Sincronizar cambio con Google Calendar
+                        $this->sincronizarConGoogleCalendar($tarea);
                     } else {
                         $sinCambios++;
                     }
@@ -61,6 +85,12 @@ class ActualizarPrioridadTareas extends Command
                         $actualizadas++;
                         $this->line("✅ Tarea #{$tarea->id}: {$tarea->nombre}");
                         $this->line("   Prioridad: {$resultado['prioridad_anterior']} → {$resultado['prioridad_nueva']} ({$resultado['porcentaje']}%)");
+                        
+                        // Crear alerta para el usuario
+                        $this->crearAlertaPrioridad($tarea, $resultado['prioridad_anterior'], $resultado['prioridad_nueva']);
+                        
+                        // Sincronizar cambio con Google Calendar
+                        $this->sincronizarConGoogleCalendar($tarea);
                     } else {
                         $sinCambios++;
                     }
@@ -104,9 +134,10 @@ class ActualizarPrioridadTareas extends Command
      * Restaura la prioridad base de una tarea completada
      *
      * @param SubTarea $tarea
+     * @param String $razon Razón de la restauración (para logging)
      * @return array
      */
-    private function restaurarPrioridadBase(SubTarea $tarea): array
+    private function restaurarPrioridadBase(SubTarea $tarea, string $razon = 'Completada'): array
     {
         $prioridadActual = strtolower($tarea->prioridad ?? 'baja');
         $prioridadBase = strtolower($tarea->prioridad_base ?? 'baja');
@@ -127,7 +158,8 @@ class ActualizarPrioridadTareas extends Command
             return [
                 'restaurado' => true,
                 'prioridad_anterior' => $prioridadActual,
-                'prioridad_base' => $prioridadBase
+                'prioridad_base' => $prioridadBase,
+                'razon' => $razon
             ];
         }
 
@@ -253,5 +285,235 @@ class ActualizarPrioridadTareas extends Command
         } else {
             return 'baja';
         }
+    }
+
+    /**
+     * Crea una alerta para notificar al usuario sobre el cambio de prioridad
+     *
+     * @param SubTarea $tarea
+     * @param string $prioridadAnterior
+     * @param string $prioridadNueva
+     * @return void
+     */
+    private function crearAlertaPrioridad(SubTarea $tarea, string $prioridadAnterior, string $prioridadNueva): void
+    {
+        try {
+            // Emojis según la nueva prioridad
+            $iconos = [
+                'urgente' => '🔴',
+                'alta' => '🟡',
+                'media' => '🟢',
+                'baja' => '🔵'
+            ];
+
+            $icono = $iconos[strtolower($prioridadNueva)] ?? '⚠️';
+
+            Alert::create([
+                'user_id' => $tarea->user_id,
+                'title' => "{$icono} Prioridad de tarea actualizada",
+                'description' => "La tarea \"{$tarea->nombre}\" ha aumentado su prioridad de {$prioridadAnterior} a {$prioridadNueva}.",
+                'type' => 'priority_change',
+                'date' => now(),
+                'priority' => strtolower($prioridadNueva),
+            ]);
+
+            $this->line("   🔔 Alerta creada para el usuario");
+
+        } catch (\Exception $e) {
+            Log::warning("No se pudo crear la alerta", [
+                'tarea_id' => $tarea->id,
+                'error' => $e->getMessage()
+            ]);
+        }
+    }
+
+    /**
+     * Elimina la tarea de Google Calendar
+     *
+     * @param SubTarea $tarea
+     * @return void
+     */
+    private function eliminarDeGoogleCalendar(SubTarea $tarea): void
+    {
+        try {
+            // Obtener el usuario de la tarea
+            $user = User::find($tarea->user_id);
+            
+            if (!$user || !$user->google_calendar_token) {
+                return; // Usuario no tiene Google Calendar conectado
+            }
+
+            // Configurar cliente de Google
+            $client = new \Google_Client();
+            $client->setClientId(config('services.google.client_id'));
+            $client->setClientSecret(config('services.google.client_secret'));
+            $client->setAccessToken($user->google_calendar_token);
+
+            // Verificar y renovar token si es necesario
+            if ($client->isAccessTokenExpired()) {
+                if ($user->google_calendar_refresh_token) {
+                    $client->fetchAccessTokenWithRefreshToken($user->google_calendar_refresh_token);
+                    $newToken = $client->getAccessToken();
+                    
+                    $user->update([
+                        'google_calendar_token' => $newToken['access_token'],
+                        'google_calendar_token_expires_at' => now()->addSeconds($newToken['expires_in'] ?? 3600),
+                    ]);
+                } else {
+                    return; // No se puede renovar el token
+                }
+            }
+
+            $service = new \Google_Service_Calendar($client);
+
+            // Buscar el evento en Google Calendar por nombre y fecha
+            $events = $service->events->listEvents('primary', [
+                'q' => $tarea->nombre,
+                'timeMin' => Carbon::parse($tarea->fecha_inicio)->startOfDay()->toRfc3339String(),
+                'timeMax' => Carbon::parse($tarea->fecha_limite)->endOfDay()->toRfc3339String(),
+                'singleEvents' => true,
+            ]);
+
+            // Si encontramos el evento, eliminarlo
+            foreach ($events->getItems() as $event) {
+                if ($event->getSummary() === $tarea->nombre) {
+                    $service->events->delete('primary', $event->getId());
+                    
+                    $this->line("   🗑️  Eliminado de Google Calendar");
+                    Log::info("Tarea completada eliminada de Google Calendar", [
+                        'tarea_id' => $tarea->id,
+                        'evento_id' => $event->getId()
+                    ]);
+                    break;
+                }
+            }
+
+        } catch (\Exception $e) {
+            // Log del error pero no detener el proceso
+            Log::warning("No se pudo eliminar de Google Calendar", [
+                'tarea_id' => $tarea->id,
+                'error' => $e->getMessage()
+            ]);
+        }
+    }
+
+    /**
+     * Sincroniza el cambio de prioridad con Google Calendar
+     *
+     * @param SubTarea $tarea
+     * @return void
+     */
+    private function sincronizarConGoogleCalendar(SubTarea $tarea): void
+    {
+        try {
+            // Obtener el usuario de la tarea
+            $user = User::find($tarea->user_id);
+            
+            if (!$user || !$user->google_calendar_token) {
+                return; // Usuario no tiene Google Calendar conectado
+            }
+
+            // Configurar cliente de Google
+            $client = new \Google_Client();
+            $client->setClientId(config('services.google.client_id'));
+            $client->setClientSecret(config('services.google.client_secret'));
+            $client->setAccessToken($user->google_calendar_token);
+
+            // Verificar y renovar token si es necesario
+            if ($client->isAccessTokenExpired()) {
+                if ($user->google_calendar_refresh_token) {
+                    $client->fetchAccessTokenWithRefreshToken($user->google_calendar_refresh_token);
+                    $newToken = $client->getAccessToken();
+                    
+                    $user->update([
+                        'google_calendar_token' => $newToken['access_token'],
+                        'google_calendar_token_expires_at' => now()->addSeconds($newToken['expires_in'] ?? 3600),
+                    ]);
+                } else {
+                    return; // No se puede renovar el token
+                }
+            }
+
+            $service = new \Google_Service_Calendar($client);
+
+            // Buscar el evento en Google Calendar por nombre y fecha
+            $events = $service->events->listEvents('primary', [
+                'q' => $tarea->nombre,
+                'timeMin' => Carbon::parse($tarea->fecha_inicio)->startOfDay()->toRfc3339String(),
+                'timeMax' => Carbon::parse($tarea->fecha_limite)->endOfDay()->toRfc3339String(),
+                'singleEvents' => true,
+            ]);
+
+            // Si encontramos el evento, actualizar su color y agregar recordatorio
+            $eventosEncontrados = count($events->getItems());
+            Log::info("Búsqueda de evento en Google Calendar", [
+                'tarea_id' => $tarea->id,
+                'tarea_nombre' => $tarea->nombre,
+                'eventos_encontrados' => $eventosEncontrados
+            ]);
+            
+            foreach ($events->getItems() as $event) {
+                if ($event->getSummary() === $tarea->nombre) {
+                    // Actualizar color según nueva prioridad
+                    $event->setColorId($this->getPriorityColor($tarea->prioridad));
+                    
+                    // Actualizar descripción con información del cambio de prioridad
+                    $descripcionActual = $event->getDescription() ?? '';
+                    $nuevaDescripcion = $descripcionActual . "\n\n⚠️ ALERTA: La prioridad ha aumentado a " . strtoupper($tarea->prioridad) . " (" . now()->format('d/m/Y H:i') . ")";
+                    $event->setDescription($nuevaDescripcion);
+                    
+                    // Agregar recordatorio inmediato sobre el cambio usando formato de objeto
+                    $reminder1 = new \Google_Service_Calendar_EventReminder();
+                    $reminder1->setMethod('popup');
+                    $reminder1->setMinutes(0);
+                    
+                    $reminder2 = new \Google_Service_Calendar_EventReminder();
+                    $reminder2->setMethod('email');
+                    $reminder2->setMinutes(0);
+                    
+                    $reminders = new \Google_Service_Calendar_EventReminders();
+                    $reminders->setUseDefault(false);
+                    $reminders->setOverrides([$reminder1, $reminder2]);
+                    
+                    $event->setReminders($reminders);
+                    
+                    // Actualizar el evento
+                    $service->events->update('primary', $event->getId(), $event);
+                    
+                    $this->line("   📅 Actualizado en Google Calendar (con notificación)");
+                    Log::info("Prioridad actualizada en Google Calendar con notificación", [
+                        'tarea_id' => $tarea->id,
+                        'evento_id' => $event->getId(),
+                        'nueva_prioridad' => $tarea->prioridad
+                    ]);
+                    break;
+                }
+            }
+
+        } catch (\Exception $e) {
+            // Log del error pero no detener el proceso
+            Log::warning("No se pudo sincronizar con Google Calendar", [
+                'tarea_id' => $tarea->id,
+                'error' => $e->getMessage()
+            ]);
+        }
+    }
+
+    /**
+     * Mapea las prioridades a colores de Google Calendar
+     *
+     * @param string $prioridad
+     * @return string
+     */
+    private function getPriorityColor(string $prioridad): string
+    {
+        $colores = [
+            'baja' => '7',      // Turquesa
+            'media' => '2',     // Verde claro
+            'alta' => '5',      // Amarillo
+            'urgente' => '11',  // Rojo
+        ];
+
+        return $colores[strtolower($prioridad)] ?? '7';
     }
 }

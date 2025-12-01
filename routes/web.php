@@ -54,6 +54,16 @@ Route::view('/politica-de-cookies', 'legal.cookies')->name('cookies');
 Route::get('auth/google', [GoogleController::class, 'redirectToGoogle'])->name('auth.google');
 Route::get('auth/google/callback', [GoogleController::class, 'handleGoogleCallback']);
 
+// Google Calendar - Autorización y sincronización
+Route::middleware(['auth'])->group(function () {
+    Route::get('auth/google-calendar', [GoogleController::class, 'redirectToGoogleCalendar'])->name('auth.google.calendar');
+    Route::get('auth/google-calendar/callback', [GoogleController::class, 'handleGoogleCalendarCallback'])->name('auth.google.calendar.callback');
+    Route::get('google-calendar/status', [TaskController::class, 'checkGoogleCalendarStatus'])->name('google.calendar.status');
+    Route::get('google-calendar/sync-status', [GoogleController::class, 'getSyncStatus'])->name('google.calendar.sync.status');
+    Route::post('google-calendar/sync-batch', [GoogleController::class, 'syncBatch'])->name('google.calendar.sync.batch');
+    Route::delete('google-calendar/delete-all', [GoogleController::class, 'deleteAllCalendarEvents'])->name('google.calendar.delete.all');
+});
+
 /*
 Route::middleware(['auth'])->group(function () {
     Route::get('/email/verify', function () {
@@ -151,6 +161,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/user/settings/preferences/date-format', [PreferencesController::class, 'updateDateFormat'])->name('preferences.updateDateFormat');
 
     // Alertas
+    Route::get('/alerts', [AlertController::class, 'index'])->name('alerts.api'); // API para notificaciones
     Route::get('/user/settings/alerts', [AlertController::class, 'index'])->name('alerts.index');
     Route::post('/user/settings/alerts', [AlertController::class, 'store'])->name('alerts.store');
     Route::put('/user/settings/alerts/{alert}', [AlertController::class, 'update'])->name('alerts.update');

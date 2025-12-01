@@ -322,165 +322,11 @@ function formatDateToDMY(dateObj) {
  * ================================================================ */
 
 async function cargarTareasIniciales() {
-    // Solo cargar si no hay tareas ya renderizadas
-    const existingRows = document.querySelectorAll(".task-row");
-    if (existingRows.length > 0) {
-        AppState.tareas = Array.from(existingRows).map((row) => ({
-            id: row.getAttribute("data-task-id"),
-            estado: row.getAttribute("data-status"),
-            prioridad: row.getAttribute("data-priority"),
-        }));
-        paginarTabla();
-        configurarSelect2();
-    } else {
-        await recargarTareas();
-    }
-}
-
-async function recargarTareas() {
-    if (AppState.isLoading) return;
-
-    AppState.isLoading = true;
-    mostrarLoadingState(true);
-
-    try {
-        const response = await fetch(TaskConfig.endpoints.datosSubtareas);
-        const data = await response.json();
-
-        if (response.ok) {
-            AppState.tareas = data;
-            renderizarTabla(data);
-            actualizarContadores();
-        } else {
-            throw new Error("Error al cargar los datos");
-        }
-    } catch (error) {
-        console.error("❌ Error al recargar tareas:", error);
-        mostrarNotificacion("error", "Error al cargar los datos");
-    } finally {
-        AppState.isLoading = false;
-        mostrarLoadingState(false);
-    }
-}
-
-/**
- * ================================================================
- * RENDERIZADO DE LA TABLA
- * ================================================================ */
-
-function renderizarTabla(tareasData) {
-    const tbody = document.querySelector(TaskConfig.selectors.tasksTableBody);
-    if (!tbody) return;
-
-    // Extraer todas las subtareas
-    const todasLasTareas = [];
-    tareasData.forEach((tg) => {
-        if (tg.subtareas && Array.isArray(tg.subtareas)) {
-            todasLasTareas.push(...tg.subtareas);
-        }
-    });
-
-    // Limpiar tabla
-    tbody.innerHTML = "";
-
-    if (todasLasTareas.length === 0) {
-        mostrarEstadoVacio();
-        return;
-    }
-
-    // Renderizar filas
-    todasLasTareas.forEach((tarea) => {
-        const row = crearFilaTarea(tarea);
-        tbody.appendChild(row);
-    });
-
-    // Configurar funcionalidades
-    configurarSelect2();
+    // Las tareas vienen renderizadas desde el servidor (Blade)
+    // Solo necesitamos configurar la funcionalidad
     paginarTabla();
-    aplicarFiltros();
-}
-
-function crearFilaTarea(task) {
-    const row = document.createElement("tr");
-    row.className = "task-row";
-    row.setAttribute("data-task-id", task.id);
-    row.setAttribute("data-status", task.estado);
-    row.setAttribute("data-priority", task.prioridad);
-    row.setAttribute("data-fecha-inicio", formatDateForInput(task.fecha_inicio));
-    row.setAttribute("data-fecha-limite", formatDateForInput(task.fecha_limite));
-
-    // Mapeo de iconos y etiquetas para replicar list.blade.php
-    const iconos = {
-        baja: '<i class="fa fa-circle" style="color: #ADD8E6; margin: 0px 5px 0px 12px;"></i>',
-        media: '<i class="fa fa-circle text-success" style="margin: 0px 5px 0px 12px;"></i>',
-        alta: '<i class="fa fa-circle" style="color: #FFFF00; margin: 0px 5px 0px 12px;"></i>',
-        urgente: '<i class="fa fa-circle text-danger" style="margin: 0px 5px 0px 12px;"></i>',
-    };
-    const prioridadesLabel = {
-        baja: 'Baja',
-        media: 'Media',
-        alta: 'Alta',
-        urgente: 'Urgente',
-    };
-    const p = task.prioridad || 'baja';
-
-    const prioridadHtml = `
-        <td class="priority-cell">
-            <span class="priority-label" aria-label="Prioridad para ${escapeHtml(task.nombre)}">
-                ${iconos[p] || ''} ${escapeHtml(prioridadesLabel[p] || 'Desconocida')}
-            </span>
-        </td>
-    `;
-
-    row.innerHTML = `
-        <td class="task-name-cell">
-            <div class="task-name-content">
-                <span class="task-name" title="${escapeHtml(
-                    task.nombre
-                )}">${escapeHtml(task.nombre)}</span>
-            </div>
-        </td>
-
-        ${prioridadHtml}
-
-        <td class="status-cell">
-            <select class="status-select estado" data-id="${task.id}">
-                ${generarOpcionesEstado(task.estado)}
-            </select>
-        </td>
-
-        <td class="date-cell">
-            <input type="date" 
-                   class="date-input fecha-inicio"
-                   value="${formatDateForInput(task.fecha_inicio)}"
-                   data-id="${task.id}" />
-        </td>
-
-        <td class="date-cell">
-            <input type="date" 
-                   class="date-input fecha-fin"
-                   value="${formatDateForInput(task.fecha_limite)}"
-                   data-id="${task.id}" />
-        </td>
-
-        <td class="actions-cell">
-            <div class="table-actions">
-                <button type="button" class="action-button save-button guardar-cambios" 
-                        data-id="${task.id}" title="Guardar cambios">
-                    <i class="fa-solid fa-save"></i>
-                </button>
-                <form action="/tareas/${task.id}/archivar" method="POST" 
-                    onsubmit="return confirm('¿Estás seguro que deseas descartar esta tarea?');"
-                    style="display:inline;">
-                    <input type="hidden" name="_token" value="${document.querySelector('meta[name="csrf-token"]').content}">
-                    <button type="submit" class="action-button archive-button" title="Descartar tarea">
-                        <i class="fa fa-trash"></i>
-                    </button>
-                </form>
-            </div>
-        </td>
-    `;
-    return row;
+    configurarSelect2();
+    actualizarContadores();
 }
 
 /**
@@ -802,6 +648,12 @@ function configurarEventListeners() {
     // Cambios en selects
     $(document).on("change", ".prioridad, .estado", function () {
         const $row = $(this).closest(".task-row");
+        
+        // Guardar el estado original antes del primer cambio
+        if (!$row.attr("data-status-original")) {
+            $row.attr("data-status-original", $row.attr("data-status"));
+        }
+        
         $row.attr("data-priority", $row.find(".prioridad").val());
         $row.attr("data-status", $row.find(".estado").val());
     });
@@ -919,7 +771,7 @@ function configurarEditarNombresGlobal() {
         for (const input of inputs) {
             const val = input.value.trim();
             if (val === "") {
-                mostrarNotificacion("El nombre no puede quedar vacío", "warning");
+                mostrarNotificacion("warning", "El nombre no puede quedar vacío");
                 input.focus();
                 input.style.borderColor = "#dc2626";
                 btn.disabled = false;
@@ -1005,13 +857,13 @@ function configurarEditarNombresGlobal() {
                     error: f.error,
                 });
             });
-            mostrarNotificacion(`Error al guardar ${fallidos.length} tarea(s).`, "error");
+            mostrarNotificacion("error", `Error al guardar ${fallidos.length} tarea(s).`);
             btn.disabled = false;
             return;
         }
 
         // Si todo fue exitoso, mostrar mensaje y RECARGAR
-        mostrarNotificacion("Nombres actualizados correctamente", "success");
+        mostrarNotificacion("success", "Se han actualizado los nombres correctamente");
         
         // RECARGAR LA PÁGINA
         setTimeout(() => {
@@ -1047,11 +899,6 @@ function configurarEditarNombresGlobal() {
     });
 }
 
-// ELIMINAR esta línea que está fuera del ready:
-// document.addEventListener("DOMContentLoaded", function () {
-//     configurarEditarNombresGlobal();
-// });
-
 /**
  * ================================================================
  * ACCIONES DE TAREAS
@@ -1062,13 +909,41 @@ async function manejarGuardarCambios(event) {
     const taskId = $button.data("id");
     const $row = $button.closest(".task-row");
 
-    // Extraer datos
+    // Función auxiliar para convertir fecha YYYY-MM-DD a DD-MM-YYYY
+    const convertirFecha = (fecha) => {
+        if (!fecha) return fecha;
+        const partes = fecha.split('-');
+        if (partes.length === 3) {
+            return `${partes[2]}-${partes[1]}-${partes[0]}`; // DD-MM-YYYY
+        }
+        return fecha;
+    };
+
+    // Extraer datos actuales
     const taskData = {
         fecha_inicio: $row.find(".fecha-inicio").val(),
         fecha_limite: $row.find(".fecha-fin").val(),
-        prioridad: $row.find(".prioridad").val(),
+        prioridad: $row.attr("data-priority"), // La prioridad no es editable, se toma del data-attribute
         estado: $row.find(".estado").val(),
     };
+
+    // Obtener datos anteriores (usar el estado original si existe, sino el actual)
+    const datosAnteriores = {
+        estado: $row.attr("data-status-original") || $row.attr("data-status"),
+        prioridad: $row.attr("data-priority"),
+        fecha_inicio: $row.attr("data-fecha-inicio"),
+        fecha_limite: $row.attr("data-fecha-limite"),
+    };
+
+    // Convertir fechas actuales al formato DD-MM-YYYY para comparar
+    const fechaInicioComparar = convertirFecha(taskData.fecha_inicio);
+    const fechaLimiteComparar = convertirFecha(taskData.fecha_limite);
+
+    // Verificar si solo cambió el estado (la prioridad no cambia porque no es editable en esta vista)
+    const soloCambioEstado = 
+        taskData.estado !== datosAnteriores.estado &&
+        fechaInicioComparar === datosAnteriores.fecha_inicio &&
+        fechaLimiteComparar === datosAnteriores.fecha_limite;
 
     // UI Loading
     const originalHtml = $button.html();
@@ -1077,34 +952,58 @@ async function manejarGuardarCambios(event) {
         .html('<i class="fas fa-spinner fa-spin"></i>');
 
     try {
-        const response = await fetch(
-            `${TaskConfig.endpoints.updateTarea}${taskId}`,
-            {
-                method: "POST",
+        let response;
+        
+        // Si solo cambió el estado, usar el endpoint específico que maneja Google Calendar
+        if (soloCambioEstado) {
+            response = await fetch(`/tareas/${taskId}/update-status`, {
+                method: "PATCH",
                 headers: {
                     "Content-Type": "application/json",
                     "X-CSRF-TOKEN": TaskConfig.csrfToken,
                 },
-                body: JSON.stringify(taskData),
-            }
-        );
-
-        if (response.ok) {
-            mostrarNotificacion("success", "Cambios guardados exitosamente");
-
-            // Actualizar atributos de la fila
-            $row.attr("data-status", taskData.estado);
-            $row.attr("data-priority", taskData.prioridad); // Actualizar atributo de prioridad
-            $row.attr("data-fecha-inicio", taskData.fecha_inicio); // Actualizar atributo de fecha inicio
-            $row.attr("data-fecha-limite", taskData.fecha_limite); // Actualizar atributo de fecha límite
-
-            // Actualizar contadores
-            actualizarContadores(); // Actualizar contadores después de guardar
-            paginarTabla(); // Reaplicar paginación para reflejar cambios
-
+                body: JSON.stringify({ estado: taskData.estado }),
+            });
         } else {
+            // Si cambiaron otros campos, usar el endpoint completo
+            response = await fetch(
+                `${TaskConfig.endpoints.updateTarea}${taskId}`,
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRF-TOKEN": TaskConfig.csrfToken,
+                    },
+                    body: JSON.stringify(taskData),
+                }
+            );
+        }
+
+        if (!response.ok) {
             throw new Error(`Error HTTP: ${response.status}`);
         }
+
+        // Intentar parsear JSON solo si hay contenido
+        const contentType = response.headers.get("content-type");
+        if (contentType && contentType.includes("application/json")) {
+            await response.json();
+        }
+        
+        mostrarNotificacion("success", "Cambios guardados exitosamente");
+
+        // Actualizar atributos de la fila (usando formato DD-MM-YYYY para las fechas)
+        $row.attr("data-status", taskData.estado);
+        // La prioridad no se actualiza porque no es editable en esta vista
+        $row.attr("data-fecha-inicio", fechaInicioComparar);
+        $row.attr("data-fecha-limite", fechaLimiteComparar);
+        
+        // Limpiar el estado original después de guardar exitosamente
+        $row.removeAttr("data-status-original");
+
+        // Actualizar contadores
+        actualizarContadores();
+        paginarTabla();
+
     } catch (error) {
         console.error("❌ Error al guardar:", error);
         mostrarNotificacion("error", "Error al guardar los cambios");
@@ -1171,23 +1070,6 @@ async function manejarEliminarTarea(event) {
  * ================================================================
  * UTILIDADES Y HELPERS
  * ================================================================ */
-
-function generarOpcionesPrioridad(prioridadSeleccionada) {
-    const prioridades = {
-        baja: "Baja",
-        media: "Media",
-        alta: "Alta",
-        urgente: "Urgente",
-    };
-    return Object.entries(prioridades)
-        .map(
-            ([value, label]) =>
-                `<option value="${value}" ${
-                    prioridadSeleccionada === value ? "selected" : ""
-                }>${label}</option>`
-        )
-        .join("");
-}
 
 function generarOpcionesEstado(estadoSeleccionado) {
     // Si el estado actual es Vencida, solo permitir cambiar a Completada
@@ -1360,50 +1242,6 @@ function mostrarNotificacion(type, message) {
             }, 240);
         }, 2600);
     })(type, message);
-}
-
-/**
- * ================================================================
- * CONFIGURACIÓN DE AUTO-COMPLETADO
- * ================================================================ */
-
-
-
-// Mostrar un selector para tareas duplicadas
-function mostrarSelectorTareasDuplicadas(taskIds) {
-    const contenido = `
-        <div>Hay múltiples tareas con el mismo nombre. ¿Cuál deseas editar?</div>
-        <ul>
-            ${taskIds
-                .map(
-                    (id) => `
-                <li>
-                    <button class="btn-editar-tarea" data-id="${id}">
-                        Editar tarea ${id}
-                    </button>
-                </li>
-            `
-                )
-                .join("")}
-        </ul>
-    `;
-
-    mostrarModal({
-        title: "Tareas duplicadas encontradas",
-        contenido,
-        onClose: () => {
-            // Limpiar selección en el input de autocompletar
-            $("#taskAutoComplete").val(null).trigger("change");
-        },
-    });
-
-    // Manejar clic en botón de editar tarea
-    document.querySelectorAll(".btn-editar-tarea").forEach((btn) => {
-        btn.addEventListener("click", function () {
-            const taskId = this.getAttribute("data-id");
-            window.location.href = `/tareas/${taskId}/editar`;
-        });
-    });
 }
 
 /**

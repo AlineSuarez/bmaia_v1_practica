@@ -260,7 +260,7 @@ h2.header-title {
    BOTON ACTUALIZAR PLAN DE TRABAJO
    ================================================================ */
     .btn-Actualizar{
-    background: var(--gradient-amber);
+    background: linear-gradient(135deg, #144c8e, #0e325e);
     padding: var(--space-2) var(--space-3);
     color: white;
     border: none;
@@ -270,6 +270,7 @@ h2.header-title {
     cursor: pointer;
     transition: var(--transition-all);
     box-shadow: var(--shadow-sm);
+    margin-right: var(--space-4);
     }
 
     .btn-Actualizar:hover {
@@ -279,8 +280,57 @@ h2.header-title {
 
     .btn-Actualizar i {
     font-size: var(--font-size-lg);
+    padding-right: var(--space-2);
     }
 
+    /* Tooltip deslizante para el botón de actualizar plan */
+.btn-Actualizar {
+    position: relative;
+    overflow: visible;
+}
+
+.btn-Actualizar .update-tooltip {
+    position: absolute;
+    right: 100%;
+    top: 50%;
+    margin-right: var(--space-1);
+    transform: translateX(12px) translateY(-50%);
+    opacity: 0;
+    pointer-events: none;
+    transition: transform 0.22s cubic-bezier(.2,.8,.2,1), opacity 0.18s ease;
+    border: 1px solid rgba(0,0,0,0.12);
+    background: linear-gradient(135deg, #ffffff, #fefefe);
+    color: var(--gray-700);
+    padding: 0.45rem 0.65rem;
+    border-radius: var(--radius-md);
+    /* Permite que el texto se ajuste y quepa dentro del tooltip */
+    white-space: normal;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+    text-align: left;
+    box-shadow: var(--shadow-sm);
+    font-size: var(--font-size-sm);
+    z-index: 30;
+    /* Contenedor del tooltip */
+    max-width: 470px;
+    width: max-content;
+    box-sizing: border-box;
+}
+
+/* Mostrar al hacer hover o focus (teclas) */
+.btn-Actualizar:hover .update-tooltip,
+.btn-Actualizar:focus .update-tooltip,
+.btn-Actualizar:focus-within .update-tooltip {
+    transform: translateX(0) translateY(-50%);
+    opacity: 1;
+}
+
+/* Ocultar en pantallas pequeñas para no romper el layout */
+@media (max-width: 640px) {
+    .btn-Actualizar .update-tooltip {
+        display: none;
+    }
+}
 
 /* ================================================================
    FILTRO DE SEMÁFORO

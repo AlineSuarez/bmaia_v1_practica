@@ -22,13 +22,29 @@
                 
                 <p class="header-subtitle"> Gestiona y organiza de manera eficiente que tareas son relevantes para su Plan de Trabajo Anual</p>
             </div>
+            <!-- Botón de actualizar plan de trabajo -->
+            @php
+                $year = now()->year;
+            @endphp
+
             <div>
                 <button class="btn-Actualizar" id="actualizarPlanTrabajoBtn">
                     <i class="fa fa-upload"></i>
-                    <span>Actualizar <br>
-                        Plan de Trabajo</span>
+                    <span>  Renovar         <br>
+                            Plan de Trabajo <br>
+                            {{ $year + 1}} - {{ $year + 2}} 
+                    </span>
+
+                    <!-- Tooltip deslizante (mismo fondo del background con borde gris leve) -->
+                    <span id="tooltip-actualizar-plan" class="update-tooltip" aria-hidden="true">
+                        Prepara tu flujo de trabajo para el {{ $year + 1}} - {{ $year + 2}}. Moveremos tus tareas al proximo    
+                        año y sincronizaremos sus fechas automáticamente. Esto asegurará que tus prioridades y estados          
+                        se mantengan actualizados y vigentes desde el primer día del nuevo periodo."
+                    </span>
                 </button>
             </div>
+
+            <!-- Semáforo de prioridades -->
             <div class="header-semaphore">
                 @php
                     $prioridades = [
@@ -208,38 +224,6 @@
                                             <i class="fa fa-trash"></i>
                                         </button>
                                     </form>
-                                    @section('optional-scripts')
-                                    <script src="{{ asset('js/components/home-user/tasks/list.js') }}"></script>
-
-                                    <script>
-                                        // Mostrar mensajes flash del servidor usando la función ya existente mostrarNotificacion
-                                        document.addEventListener('DOMContentLoaded', function () {
-                                            @if(session('success'))
-                                                try {
-                                                    if (typeof mostrarNotificacion === 'function') {
-                                                        mostrarNotificacion('success', {!! json_encode(session('success')) !!});
-                                                    } else {
-                                                        alert({!! json_encode(session('success')) !!});
-                                                    }
-                                                } catch (e) {
-                                                    console.log('notificacion success:', {!! json_encode(session('success')) !!});
-                                                }
-                                            @endif
-
-                                            @if(session('error'))
-                                                try {
-                                                    if (typeof mostrarNotificacion === 'function') {
-                                                        mostrarNotificacion('error', {!! json_encode(session('error')) !!});
-                                                    } else {
-                                                        alert({!! json_encode(session('error')) !!});
-                                                    }
-                                                } catch (e) {
-                                                    console.log('notificacion error:', {!! json_encode(session('error')) !!});
-                                                }
-                                            @endif
-                                        });
-                                    </script>
-                                    @endsection
                                 </div>
                             </td>
                         </tr>
@@ -265,13 +249,6 @@
         <span
             style="background:var(--amber-100); color:var(--amber-700); padding:0.5rem 1rem; border-radius:0.5rem; font-weight:600;">
             Tienes cambios sin guardar. Recuerda presionar el botón de guardar para aplicar los cambios.
-        </span>
-    </div>
-
-    <div id="contadorCambiosPendientes" style="display:none; margin:1rem 0; text-align:center;">
-        <span
-            style="background:var(--amber-100); color:var(--amber-700); padding:0.5rem 1rem; border-radius:0.5rem; font-weight:600;">
-            Cambios pendientes: <span id="numCambiosPendientes">0</span>
         </span>
     </div>
 

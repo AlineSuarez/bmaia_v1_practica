@@ -30,6 +30,11 @@ document.addEventListener('DOMContentLoaded', function() {
     inicializarAgenda();
     configurarEventos();
     renderCalendario();
+    
+    // Si acabamos de conectar Google Calendar, iniciar sincronización
+    if (window.googleCalendarJustConnected) {
+        iniciarSincronizacionConProgreso();
+    }
 });
 
 function inicializarAgenda() {
@@ -40,16 +45,40 @@ function inicializarAgenda() {
         selectedDate = new Date(hoy.getFullYear(), hoy.getMonth(), hoy.getDate());
         mostrarTareasDelDia(selectedDate);
     }
+    
+    // Verificar estado de Google Calendar
+    verificarEstadoGoogleCalendar();
+}
+
+// Verificar si el usuario ya tiene Google Calendar conectado
+function verificarEstadoGoogleCalendar() {
+    fetch('/google-calendar/status')
+        .then(response => response.json())
+        .then(data => {
+            const btn = document.getElementById('GoogleCalendarConnect');
+            if (btn) {
+                if (data.connected) {
+                    btn.innerHTML = '<i class="fa-brands fa-google" aria-hidden="true"></i> Conectado con Google Calendar';
+                    btn.style.background = 'linear-gradient(135deg, #34a853 0%, #0f9d58 100%)';
+                    btn.disabled = false;
+                    btn.onclick = () => mostrarOpcionesGoogleCalendar();
+                } else {
+                    // Estado inicial: no conectado
+                    btn.innerHTML = '<i class="fa-brands fa-google" aria-hidden="true"></i> Conectar con Google Calendar';
+                    btn.style.background = '';
+                    btn.disabled = false;
+                    btn.onclick = () => mostrarPopupConfirmacion();
+                }
+            }
+        })
+        .catch(error => {
+            console.error('Error al verificar estado de Google Calendar:', error);
+        });
 }
 
 function configurarEventos() {
-    // Botón de Google Calendar
-    const googleCalendarBtn = document.getElementById('GoogleCalendarConnect');
-    if (googleCalendarBtn) {
-        googleCalendarBtn.addEventListener('click', () => {
-            mostrarPopupConfirmacion();
-        });
-    }
+    // Botón de Google Calendar - Manejado dinámicamente por verificarEstadoGoogleCalendar()
+    // No agregar addEventListener aquí para evitar duplicados
 
     // Navegación de meses
     document.getElementById('prevMonth').addEventListener('click', () => {
@@ -435,7 +464,7 @@ function mostrarPopupConfirmacion() {
             </div>
             <div class="popup-body">
                 <p>¿Estás seguro de que deseas conectar tu cuenta de Google Calendar?</p>
-                <p class="popup-note">Esto permitirá sincronizar tus tareas con tu calendario de Google.</p>
+                <p class="popup-note">Esto sincronizará todas tus tareas actuales con tu calendario de Google.</p>
             </div>
             <div class="popup-actions">
                 <button class="popup-btn popup-btn-cancel" id="popupCancelar">
@@ -455,7 +484,9 @@ function mostrarPopupConfirmacion() {
     // Event listeners para los botones
     document.getElementById('popupCancelar').addEventListener('click', cerrarPopup);
     document.getElementById('popupConfirmar').addEventListener('click', () => {
-        window.location.href = '/auth/google/connect';
+        cerrarPopup();
+        // Redirigir a la ruta de autorización de Google Calendar
+        window.location.href = '/auth/google-calendar';
     });
     
     // Cerrar al hacer clic fuera del popup
@@ -467,10 +498,11 @@ function mostrarPopupConfirmacion() {
 }
 
 function cerrarPopup() {
-    const popup = document.getElementById('googleCalendarPopup');
-    if (popup) {
+    // Buscar y eliminar cualquier popup-overlay activo
+    const popups = document.querySelectorAll('.popup-overlay');
+    popups.forEach(popup => {
         popup.remove();
-    }
+    });
 }
 
 //Sincronizar el dropdown de meses con currentMonth
@@ -486,4 +518,318 @@ function actualizarMesSeleccionadoEnDropdown() {
             el.classList.remove('current-month');
         }
     });
+}
+
+// ===== SINCRONIZACIÓN CON PROGRESO =====
+async function iniciarSincronizacionConProgreso() {
+    try {
+        // Mostrar modal
+        const modal = document.getElementById('syncProgressModal');
+        modal.style.display = 'flex';
+        
+        // Asegurar que la barra de progreso esté visible y el loader oculto
+        const progressBar = modal.querySelector('.progress-bar');
+        const progressFill = modal.querySelector('.progress-fill');
+        const loader = modal.querySelector('.loader');
+        if (progressBar) progressBar.style.display = 'block';
+        if (progressFill) progressFill.style.width = '0%';
+        if (loader) loader.style.display = 'none';
+        
+        // Obtener el total de tareas
+        const statusResponse = await fetch('/google-calendar/sync-status');
+        const statusData = await statusResponse.json();
+        
+        if (!statusData.connected) {
+            throw new Error('No conectado con Google Calendar');
+        }
+        
+        const totalTareas = statusData.total;
+        const batchSize = 10; // Sincronizar 10 tareas a la vez
+        let tareasProcessadas = 0;
+        let tareasExitosas = 0;
+        let errores = 0;
+        
+        document.getElementById('syncMessage').textContent = 
+            'Sincronizando tareas con Google Calendar...';
+        document.getElementById('syncDetails').textContent = 
+            'Por favor espera...';
+        
+        // Sincronizar por lotes
+        while (tareasProcessadas < totalTareas) {
+            const response = await fetch('/google-calendar/sync-batch', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                },
+                body: JSON.stringify({
+                    offset: tareasProcessadas,
+                    limit: batchSize
+                })
+            });
+            
+            if (!response.ok) {
+                throw new Error('Error en la sincronización');
+            }
+            
+            const data = await response.json();
+            tareasProcessadas += data.procesadas;
+            tareasExitosas += data.sincronizadas;
+            errores += data.errores;
+            
+            // Actualizar progreso
+            const porcentaje = Math.round((tareasProcessadas / totalTareas) * 100);
+            document.getElementById('syncProgressBar').style.width = `${porcentaje}%`;
+            document.getElementById('syncPercentage').textContent = `${porcentaje}%`;
+            document.getElementById('syncDetails').textContent = 'Sincronizando...';
+            
+            // Si es el último lote, terminar
+            if (data.complete) {
+                break;
+            }
+            
+            // Pequeña pausa entre lotes
+            await new Promise(resolve => setTimeout(resolve, 200));
+        }
+        
+        // Mostrar mensaje final
+        document.getElementById('syncMessage').textContent = '¡Sincronización completada!';
+        document.getElementById('syncDetails').textContent = 'Tareas sincronizadas exitosamente';
+        
+        // Cerrar modal después de 2 segundos
+        setTimeout(() => {
+            modal.style.display = 'none';
+            
+            // Mostrar notificación de éxito
+            if (typeof mostrarNotificacion === 'function') {
+                mostrarNotificacion('success', 'Tareas sincronizadas con Google Calendar');
+            }
+        }, 2000);
+        
+    } catch (error) {
+        console.error('Error en sincronización:', error);
+        document.getElementById('syncMessage').textContent = 'Error en la sincronización';
+        document.getElementById('syncDetails').textContent = error.message;
+        
+        // Cerrar modal después de 3 segundos
+        setTimeout(() => {
+            document.getElementById('syncProgressModal').style.display = 'none';
+        }, 3000);
+    }
+}
+
+// ===== OPCIONES DE GOOGLE CALENDAR =====
+function mostrarOpcionesGoogleCalendar() {
+    // Crear el overlay
+    const overlay = document.createElement('div');
+    overlay.className = 'popup-overlay';
+    overlay.id = 'googleCalendarOptionsPopup';
+    
+    // Crear el contenido del popup
+    overlay.innerHTML = `
+        <div class="popup-container">
+            <div class="popup-header">
+                <i class="fa-brands fa-google"></i>
+                <h3>Google Calendar</h3>
+            </div>
+            <div class="popup-body">
+                <p>¿Qué deseas hacer?</p>
+            </div>
+            <div class="popup-actions" style="flex-direction: column; gap: 10px;">
+                <button class="popup-btn popup-btn-confirm" id="optionResync" style="width: 100%;">
+                    <i class="fa fa-sync"></i>
+                    Volver a sincronizar
+                </button>
+                <button class="popup-btn popup-btn-cancel" id="optionDelete" style="width: 100%; background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); color: white;">
+                    <i class="fa fa-trash"></i>
+                    Eliminar tareas del calendario
+                </button>
+                <button class="popup-btn" id="optionCancel" style="width: 100%; background: #6b7280; color: white;">
+                    <i class="fa fa-times"></i>
+                    Cancelar
+                </button>
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(overlay);
+    
+    // Event listeners para los botones
+    document.getElementById('optionResync').addEventListener('click', () => {
+        cerrarPopup();
+        window.location.href = '/auth/google-calendar';
+    });
+    
+    document.getElementById('optionDelete').addEventListener('click', () => {
+        cerrarPopup();
+        confirmarEliminacionTareas();
+    });
+    
+    document.getElementById('optionCancel').addEventListener('click', cerrarPopup);
+    
+    // Cerrar al hacer clic fuera del popup
+    overlay.addEventListener('click', (e) => {
+        if (e.target === overlay) {
+            cerrarPopup();
+        }
+    });
+}
+
+function confirmarEliminacionTareas() {
+    // Primera confirmación
+    const overlay = document.createElement('div');
+    overlay.className = 'popup-overlay';
+    overlay.id = 'googleCalendarDeletePopup';
+    
+    overlay.innerHTML = `
+        <div class="popup-container">
+            <div class="popup-header" style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);">
+                <i class="fa fa-exclamation-triangle"></i>
+                <h3>Eliminar tareas de Google Calendar</h3>
+            </div>
+            <div class="popup-body">
+                <p style="color: #dc2626; font-weight: 600;">
+                <i class="fa fa-exclamation-triangle"></i>
+                ¿Estás seguro?</p>
+                <p>Esta acción eliminará TODAS las tareas que se subieron a Google Calendar.</p>
+                <p style="font-size: 0.9rem; color: #6b7280;">Podrás volver a sincronizarlas después si lo deseas.</p>
+            </div>
+            <div class="popup-actions">
+                <button class="popup-btn" id="deleteCancelBtn" style="background: #6b72806e;">
+                    <i class="fa fa-times"></i>
+                    Cancelar
+                </button>
+                <button class="popup-btn popup-btn-cancel" id="deleteConfirmBtn">
+                    <i class="fa fa-trash"></i>
+                    Sí, eliminar
+                </button>
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(overlay);
+    
+    document.getElementById('deleteCancelBtn').addEventListener('click', cerrarPopup);
+    document.getElementById('deleteConfirmBtn').addEventListener('click', () => {
+        cerrarPopup();
+        confirmarEliminacionFinal();
+    });
+    
+    overlay.addEventListener('click', (e) => {
+        if (e.target === overlay) {
+            cerrarPopup();
+        }
+    });
+}
+
+function confirmarEliminacionFinal() {
+    // Segunda confirmación
+    const overlay = document.createElement('div');
+    overlay.className = 'popup-overlay';
+    overlay.id = 'googleCalendarDeleteFinalPopup';
+    
+    overlay.innerHTML = `
+        <div class="popup-container">
+            <div class="popup-header" style="background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%);">
+                <i class="fa fa-exclamation-circle"></i>
+                <h3>Confirmación Final</h3>
+            </div>
+            <div class="popup-body">
+                <p style="color: #dc2626; font-weight: 700; font-size: 1.1rem;">
+                <i class="fa fa-exclamation-triangle"></i>
+                ÚLTIMA ADVERTENCIA</p>
+                <p>¿Realmente deseas eliminar todas las tareas de Google Calendar?</p>
+                <p style="font-size: 0.85rem; color: #991b1b;">Esta acción no se puede deshacer.</p>
+            </div>
+            <div class="popup-actions">
+                <button class="popup-btn" id="finalCancelBtn" style="background: #6b72806e;">
+                    <i class="fa fa-times"></i>
+                    No, cancelar
+                </button>
+                <button class="popup-btn popup-btn-cancel" id="finalConfirmBtn">
+                    <i class="fa fa-check"></i>
+                    Sí, estoy seguro
+                </button>
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(overlay);
+    
+    document.getElementById('finalCancelBtn').addEventListener('click', cerrarPopup);
+    document.getElementById('finalConfirmBtn').addEventListener('click', () => {
+        cerrarPopup();
+        eliminarTareasDeGoogleCalendar();
+    });
+    
+    overlay.addEventListener('click', (e) => {
+        if (e.target === overlay) {
+            cerrarPopup();
+        }
+    });
+}
+
+async function eliminarTareasDeGoogleCalendar() {
+    // Mostrar modal de progreso
+    const modal = document.getElementById('syncProgressModal');
+    modal.style.display = 'flex';
+    
+    // Ocultar barra de progreso y mostrar loader circular
+    const progressBar = modal.querySelector('.progress-bar');
+    const loader = modal.querySelector('.loader');
+    if (progressBar) progressBar.style.display = 'none';
+    if (loader) loader.style.display = 'block';
+    
+    document.getElementById('syncMessage').textContent = 'Eliminando tareas de Google Calendar...';
+    document.getElementById('syncPercentage').textContent = '';
+    document.getElementById('syncDetails').textContent = 'Por favor espera...';
+    
+    try {
+        const response = await fetch('/google-calendar/delete-all', {
+            method: 'DELETE',
+            headers: {
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                'Accept': 'application/json'
+            }
+        });
+        
+        if (!response.ok) {
+            throw new Error('Error al eliminar tareas');
+        }
+        
+        const data = await response.json();
+        
+        // Actualizar mensaje de éxito
+        document.getElementById('syncPercentage').textContent = '✓';
+        document.getElementById('syncMessage').textContent = '¡Tareas eliminadas exitosamente!';
+        document.getElementById('syncDetails').textContent = 'Las tareas han sido eliminadas de Google Calendar';
+        
+        // Cerrar modal después de 2 segundos
+        setTimeout(() => {
+            modal.style.display = 'none';
+            
+            // Restablecer el botón al estado original (naranja, no conectado)
+            const btn = document.getElementById('GoogleCalendarConnect');
+            if (btn) {
+                btn.innerHTML = '<i class="fa-brands fa-google" aria-hidden="true"></i> Conectar con Google Calendar';
+                btn.style.background = ''; // Remover inline style para usar CSS original (naranja)
+                btn.disabled = false;
+                btn.onclick = () => mostrarPopupConfirmacion();
+            }
+            
+            // Mostrar notificación
+            if (typeof mostrarNotificacion === 'function') {
+                mostrarNotificacion('success', 'Tareas eliminadas de Google Calendar');
+            }
+        }, 2000);
+        
+    } catch (error) {
+        console.error('Error eliminando tareas:', error);
+        document.getElementById('syncMessage').textContent = 'Error al eliminar';
+        document.getElementById('syncDetails').textContent = error.message;
+        
+        setTimeout(() => {
+            modal.style.display = 'none';
+        }, 3000);
+    }
 }

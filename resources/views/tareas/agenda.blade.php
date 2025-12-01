@@ -2,6 +2,7 @@
 
 <head>
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    <link href="{{ asset('css/components/home-user/tasks/header.css') }}?v={{ time() }}" rel="stylesheet">
     <link href="{{ asset('css/components/home-user/tasks/agenda.css') }}?v={{ time() }}" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
@@ -76,7 +77,7 @@
                 <div class="google-calendar">
                     <button class="google-calendar-btn" id="GoogleCalendarConnect">
                         <i class="fa-brands fa-google" aria-hidden="true"></i>
-                        Conectar con Google Calendar</button>
+                        Conectar con Google Calendar</button> 
                 </div>
             </div>
 
@@ -91,9 +92,31 @@
     </div>
 </div>
 
+{{-- Modal de Progreso de Sincronización --}}
+<div id="syncProgressModal" class="sync-modal" style="display: none;">
+    <div class="sync-modal-content">
+        <div class="sync-header">
+            <i class="fa-brands fa-google" style="color: #4285f4; font-size: 2rem;"></i>
+            <h3>Sincronizando con Google Calendar</h3>
+        </div>
+        <div class="sync-body">
+            <p id="syncMessage">Preparando sincronización...</p>
+            <div class="progress-container">
+                <div class="loader" style="display: none;"></div>
+                <div class="progress-bar">
+                    <div id="syncProgressBar" class="progress-fill"></div>
+                </div>
+                <span id="syncPercentage">0%</span>
+            </div>
+            <p id="syncDetails" class="sync-details"></p>
+        </div>
+    </div>
+</div>
+
 {{-- Pasar las tareas al JavaScript --}}
 <script>
     window.tareasData = @json($subtareas);
+    window.googleCalendarJustConnected = @json(session('google_calendar_connected', false));
 </script>
 
 <script src="{{ asset('js/components/home-user/tasks/agenda.js') }}?v={{ time() }}"></script>

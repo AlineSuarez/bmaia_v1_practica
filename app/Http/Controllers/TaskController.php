@@ -5,6 +5,7 @@ use App\Models\Task;
 use App\Models\TareaGeneral;
 use App\Models\SubTarea;
 use App\Models\TareasPredefinidas;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -308,9 +309,17 @@ class TaskController extends Controller
             'estado' => 'required|in:Pendiente,En progreso,Completada,Vencida',
         ]);
         $subtarea = SubTarea::findOrFail($id); // Buscar la subtarea por su ID
+        $estadoAnterior = $subtarea->estado;
+        
         $subtarea->update([
             'estado' => $request->estado,
         ]);
+
+        // Si la tarea se marca como completada, eliminar de Google Calendar
+        if ($request->estado === 'Completada' && $estadoAnterior !== 'Completada') {
+            $this->eliminarDeGoogleCalendar($subtarea);
+        }
+
         return response()->json([
             'success' => true,
             'message' => 'Estado actualizado correctamente'
@@ -520,5 +529,91 @@ class TaskController extends Controller
             ->get();
 
         return response()->json($tareasGenerales);
+    }
+
+    /**
+     * Verifica el estado de sincronización de Google Calendar
+     */
+    public function checkGoogleCalendarStatus()
+    {
+        $user = Auth::user();
+        
+        $isConnected = !empty($user->google_calendar_token) && 
+                       !empty($user->google_calendar_token_expires_at) &&
+                       Carbon::parse($user->google_calendar_token_expires_at)->isFuture();
+
+        return response()->json([
+            'connected' => $isConnected,
+            'synced' => (bool) $user->google_calendar_synced,
+            'expires_at' => $user->google_calendar_token_expires_at,
+        ]);
+    }
+
+    /**
+     * Elimina una tarea de Google Calendar
+     *
+     * @param SubTarea $tarea
+     * @return void
+     */
+    private function eliminarDeGoogleCalendar(SubTarea $tarea): void
+    {
+        try {
+            $user = User::find($tarea->user_id);
+            
+            if (!$user || !$user->google_calendar_token) {
+                return;
+            }
+
+            // Configurar cliente de Google
+            $client = new \Google_Client();
+            $client->setClientId(config('services.google.client_id'));
+            $client->setClientSecret(config('services.google.client_secret'));
+            $client->setAccessToken($user->google_calendar_token);
+
+            // Verificar y renovar token si es necesario
+            if ($client->isAccessTokenExpired()) {
+                if ($user->google_calendar_refresh_token) {
+                    $client->fetchAccessTokenWithRefreshToken($user->google_calendar_refresh_token);
+                    $newToken = $client->getAccessToken();
+                    
+                    $user->update([
+                        'google_calendar_token' => $newToken['access_token'],
+                        'google_calendar_token_expires_at' => now()->addSeconds($newToken['expires_in'] ?? 3600),
+                    ]);
+                } else {
+                    return;
+                }
+            }
+
+            $service = new \Google_Service_Calendar($client);
+
+            // Buscar el evento en Google Calendar
+            $events = $service->events->listEvents('primary', [
+                'q' => $tarea->nombre,
+                'timeMin' => Carbon::parse($tarea->fecha_inicio)->startOfDay()->toRfc3339String(),
+                'timeMax' => Carbon::parse($tarea->fecha_limite)->endOfDay()->toRfc3339String(),
+                'singleEvents' => true,
+            ]);
+
+            // Eliminar el evento encontrado
+            foreach ($events->getItems() as $event) {
+                if ($event->getSummary() === $tarea->nombre) {
+                    $service->events->delete('primary', $event->getId());
+                    
+                    Log::info("Tarea completada eliminada de Google Calendar", [
+                        'tarea_id' => $tarea->id,
+                        'evento_id' => $event->getId(),
+                        'nombre' => $tarea->nombre
+                    ]);
+                    break;
+                }
+            }
+
+        } catch (\Exception $e) {
+            Log::warning("No se pudo eliminar tarea de Google Calendar", [
+                'tarea_id' => $tarea->id,
+                'error' => $e->getMessage()
+            ]);
+        }
     }
 }
