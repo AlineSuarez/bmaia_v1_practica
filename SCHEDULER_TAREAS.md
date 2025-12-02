@@ -29,7 +29,7 @@ Este comando contiene la lógica para:
 ### 2. Scheduler
 **Ubicación**: `routes/console.php`
 
-Programa cada cuánto tiempo se ejecuta el command. Actualmente configurado para ejecutarse **cada hora**.
+Programa cada cuánto tiempo se ejecuta el command. Actualmente configurado para ejecutarse **diariamente a las 02:00 AM**.
 
 ### 3. Cron del Servidor
 Necesario para que Laravel ejecute el scheduler automáticamente.

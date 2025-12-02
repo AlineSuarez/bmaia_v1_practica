@@ -81,7 +81,7 @@ Configurar cron (ver `SCHEDULER_TAREAS.md`):
 └─────────────────────────────────────────────────────┘
                       ↓
 ┌─────────────────────────────────────────────────────┐
-│  Scheduler ejecuta cada hora                        │
+│  Scheduler ejecuta diariamente a las 02:00 AM      │
 │  └─> Calcula % tiempo transcurrido                  │
 └─────────────────────────────────────────────────────┘
                       ↓
@@ -150,4 +150,5 @@ php artisan tinker --execute="App\Models\SubTarea::where('estado', 'Vencida')->u
 ---
 
 **Estado**: Sistema completamente funcional y documentado
-**Fecha**: Noviembre 2025
+**Fecha de Creación**: Noviembre 2025
+**Ultima Modificación**: Diciembre 2025

@@ -59,7 +59,7 @@ php artisan tareas:actualizar-prioridad -v
 ```
 
 #### Ejecución automática:
-Este comando se ejecuta **automáticamente cada hora** a través del Laravel Scheduler (configurado en `routes/console.php`).
+Este comando se ejecuta **automáticamente todos los días a las 02:00 AM** a través del Laravel Scheduler (configurado en `routes/console.php`).
 
 #### Cuándo ejecutarlo manualmente:
 - Para probar el funcionamiento
@@ -180,7 +180,7 @@ Cuando se implementó el campo `prioridad_base`, la migración inicial copió el
 1. Tarea creada con prioridad_base = 'media'
    └─> prioridad = 'media' (inicial)
 
-2. Scheduler ejecuta cada hora
+2. Scheduler ejecuta diariamente a las 02:00 AM
    └─> Calcula % tiempo transcurrido
 
 3. Al pasar 50% del tiempo:
@@ -202,8 +202,9 @@ El comando se ejecuta automáticamente gracias a la configuración en `routes/co
 
 ```php
 Schedule::command('tareas:actualizar-prioridad')
-    ->hourly()
+    ->dailyAt('02:00')
     ->withoutOverlapping()
+    ->onOneServer()
     ->runInBackground();
 ```
 

@@ -261,5 +261,3 @@ Si hay problemas, revisa:
 4. Logs en `storage/logs/laravel.log`
 
 ---
-
-¡Todo listo para usar! 🎉
