@@ -2,7 +2,6 @@
 
 <head>
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <link href="{{ asset('css/components/home-user/tasks/header.css') }}?v={{ time() }}" rel="stylesheet">
     <link href="{{ asset('css/components/home-user/tasks/agenda.css') }}?v={{ time() }}" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
