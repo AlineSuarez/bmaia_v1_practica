@@ -3,6 +3,8 @@
 <head>
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <link href="{{ asset('./css/components/home-user/tasks/list.css') }}" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intro.js/7.2.0/introjs.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/intro.js/7.2.0/intro.min.js"></script>
 </head>
 
 {{-- Contenedor principal de la lista de tareas --}}
@@ -14,21 +16,52 @@
             <div class="header-left">
                 <h1 class="header-title">
                     <i class="fa-solid fa-list-check"></i>
-                    Lista de Tareas
+                    Lista de Tareas 
+                    <i class="fa-solid fa-circle-question" id="startTour"></i>
                 </h1>
-                <p class="header-subtitle">Gestiona y organiza tus tareas de manera eficiente</p>
+                
+                <p class="header-subtitle"> Gestiona y organiza de manera eficiente que tareas son relevantes para su Plan de Trabajo Anual</p>
             </div>
-            <div class="header-actions">
-                <div class="task-stats">
-                    <span class="stat-item">
-                        <i class="fa-solid fa-tasks"></i>
-                        <span>{{ $subtareas->count() }} tareas</span>
+            <!-- Botón de actualizar plan de trabajo -->
+            @php
+                $year = now()->year;
+            @endphp
+
+            <div>
+                <button class="btn-Actualizar" id="actualizarPlanTrabajoBtn">
+                    <i class="fa fa-upload"></i>
+                    <span>  Renovar         <br>
+                            Plan de Trabajo <br>
+                            {{ $year + 1}} - {{ $year + 2}} 
                     </span>
-                </div>
-                <a href="{{ route('tareas.imprimirTodas') }}" target="_blank" class="print-button">
-                    <i class="fa fa-print"></i>
-                    <span>Imprimir</span>
-                </a>
+
+                    <!-- Tooltip deslizante (mismo fondo del background con borde gris leve) -->
+                    <span id="tooltip-actualizar-plan" class="update-tooltip" aria-hidden="true">
+                        Prepara tu flujo de trabajo para el {{ $year + 1}} - {{ $year + 2}}. Moveremos tus tareas al proximo    
+                        año y sincronizaremos sus fechas automáticamente. Esto asegurará que tus prioridades y estados          
+                        se mantengan actualizados y vigentes desde el primer día del nuevo periodo."
+                    </span>
+                </button>
+            </div>
+
+            <!-- Semáforo de prioridades -->
+            <div class="header-semaphore">
+                @php
+                    $prioridades = [
+                        ['color' => 'red', 'label' => 'Urgentes', 'value' => 'urgente'],
+                        ['color' => 'yellow', 'label' => 'Alta', 'value' => 'alta'],
+                        ['color' => 'green', 'label' => 'Media', 'value' => 'media'],
+                        ['color' => 'lightblue', 'label' => 'Baja', 'value' => 'baja'],
+                    ];
+                @endphp
+
+                @foreach($prioridades as $prioridad)
+                    <div class="task-semaphore priority-filter" data-priority="{{ $prioridad['value'] }}" style="cursor: pointer;">
+                        <i class="fa-solid fa-circle priority-light" style="color: {{ $prioridad['color'] }}"></i>
+                        <span class="stat-semaphore">{{ $prioridad['label'] }}</span>
+                        <span class="task-text">{{ $subtareas->where('prioridad', $prioridad['value'])->count() }}</span>
+                    </div>
+                @endforeach
             </div>
         </div>
     </div>
@@ -56,32 +89,50 @@
     </div>
 
     {{-- Contenedor de tabla --}}
-    <div class="tasks-table-container" id="tasksTableContainer">
+    <div class="tasks-table-container" id="tasksTableContainer" 
+    data-intro="Bienvenido al tutorial de la Lista de Tareas. Te explicaremos cada función paso a paso." 
+    data-step="1">
         @if($subtareas->count() > 0)
             <table class="tasks-table" id="tasksTable">
                 <thead>
                     <tr>
-                        <th class="sortable" data-column="nombre">
+                        <th class="sortable" data-column="nombre"
+                        data-intro="Aquí puedes ver el nombre de cada tarea." 
+                        data-step="2">
                             <i class="fa-solid fa-sort"></i>
                             Nombre de Tarea
                         </th>
-                        <th class="sortable" data-column="prioridad">
+                        <th class="sortable" data-column="prioridad"
+                        data-intro="Esta columna muestra la prioridad asignada a cada tarea.
+                        La prioridad indica la importancia: Baja (azul), Media (verde), Alta (amarillo) o Urgente (rojo)." 
+                        data-step="3">
                             <i class="fa-solid fa-sort"></i>
                             Prioridad
                         </th>
-                        <th class="sortable" data-column="estado">
+                        <th class="sortable" data-column="estado"
+                        data-intro="Aquí puedes ver y cambiar el estado de cada tarea.
+                        El estado muestra el progreso de la tarea: Pendiente, En progreso o Completada." 
+                        data-step="4">
                             <i class="fa-solid fa-sort"></i>
                             Estado
                         </th>
-                        <th class="sortable" data-column="fecha_inicio">
+                        <th class="sortable" data-column="fecha_inicio"
+                        data-intro="Esta columna muestra la fecha de inicio asignada a cada tarea.
+                        La fecha de inicio indica cuándo se debe comenzar a trabajar en la tarea." 
+                        data-step="5">
                             <i class="fa-solid fa-sort"></i>
                             Fecha Inicio
                         </th>
-                        <th class="sortable" data-column="fecha_limite">
+                        <th class="sortable" data-column="fecha_limite"
+                        data-intro="Esta columna muestra la fecha límite asignada a cada tarea para que sea completada. 
+                        Es importante cumplir con esta fecha según la prioridad." 
+                        data-step="6">
                             <i class="fa-solid fa-sort"></i>
                             Fecha Límite
                         </th>
-                        <th class="actions-column">
+                        <th class="actions-column"
+                        data-intro="En esta columna encontrarás los botones para guardar los cambios realizados en cada tarea o descartarla si ya no es relevante." 
+                        data-step="7">
                             <i class="fa-solid fa-cog"></i>
                             Acciones
                         </th>
@@ -90,8 +141,11 @@
                 <tbody id="tasksTableBody">
                     @foreach ($subtareas->filter() as $task)
                         <tr class="task-row" data-task-id="{{ $task->id }}" data-status="{{ $task->estado }}"
-                            data-priority="{{ $task->prioridad }}">
-
+                        data-priority="{{ $task->prioridad }}"
+                        data-fecha-inicio ="{{ \Carbon\Carbon::parse($task->fecha_inicio)->format('d-m-Y') }}"
+                        data-fecha-limite ="{{ \Carbon\Carbon::parse($task->fecha_limite)->format('d-m-Y') }}"
+                        style="display: none;"
+                        >
                             {{-- Nombre de la tarea --}}
                             <td class="task-name-cell">
                                 <div class="task-name-content">
@@ -100,26 +154,43 @@
                             </td>
 
                             {{-- Prioridad --}}
+                            @php
+                                $iconos = [
+                                    'baja' => '<i class="fa fa-circle" style="color: #ADD8E6; margin: 0px 5px 0px 12px;"></i>',
+                                    'media' => '<i class="fa fa-circle text-success" style="margin: 0px 5px 0px 12px;"></i>',
+                                    'alta' => '<i class="fa fa-circle" style="color: #FFFF00; margin: 0px 5px 0px 12px;"></i>',
+                                    'urgente' => '<i class="fa fa-circle text-danger" style="margin: 0px 5px 0px 12px;"></i>',
+                                ];
+                                $prioridades = [
+                                    'baja' => 'Baja',
+                                    'media' => 'Media',
+                                    'alta' => 'Alta',
+                                    'urgente' => 'Urgente',
+                                ];
+                                $p = $task->prioridad;
+                            @endphp
+
                             <td class="priority-cell">
-                                <select class="priority-select prioridad" data-id="{{ $task->id }}"
-                                    aria-label="Prioridad para {{ $task->nombre }}">
-                                    @foreach(['baja' => 'Baja', 'media' => 'Media', 'alta' => 'Alta', 'urgente' => 'Urgente'] as $value => $label)
-                                        <option value="{{ $value }}" @selected($task->prioridad === $value)>
-                                            {{ $label }}
-                                        </option>
-                                    @endforeach
-                                </select>
+                                <span class="priority-label" aria-label="Prioridad para {{ $task->nombre }}">
+                                    {!! $iconos[$p] ?? '' !!} {{ $prioridades[$p] ?? 'Desconocida' }}
+                                </span>
                             </td>
+
 
                             {{-- Estado --}}
                             <td class="status-cell">
                                 <select class="status-select estado" data-id="{{ $task->id }}"
                                     aria-label="Estado para {{ $task->nombre }}">
-                                    @foreach(['Pendiente', 'En progreso', 'Completada'] as $estado)
-                                        <option value="{{ $estado }}" @selected($task->estado === $estado)>
-                                            {{ $estado }}
-                                        </option>
-                                    @endforeach
+                                    @if($task->estado === 'Vencida')
+                                        <option value="Vencida" selected disabled>Vencida</option>
+                                        <option value="Completada">Completada</option>
+                                    @else
+                                        @foreach(['Pendiente', 'En progreso', 'Completada'] as $estado)
+                                            <option value="{{ $estado }}" @selected($task->estado === $estado)>
+                                                {{ $estado }}
+                                            </option>
+                                        @endforeach
+                                    @endif
                                 </select>
                             </td>
 
@@ -150,17 +221,15 @@
                                         style="display:inline;">
                                         @csrf
                                         <button type="submit" class="action-button archive-button" title="Descartar tarea">
-                                            <i class="fa fa-x"></i>
+                                            <i class="fa fa-trash"></i>
                                         </button>
                                     </form>
-
                                 </div>
                             </td>
                         </tr>
                     @endforeach
                 </tbody>
             </table>
-
         @else
             {{-- Estado vacío --}}
             <div class="empty-state">
@@ -183,13 +252,6 @@
         </span>
     </div>
 
-    <div id="contadorCambiosPendientes" style="display:none; margin:1rem 0; text-align:center;">
-        <span
-            style="background:var(--amber-100); color:var(--amber-700); padding:0.5rem 1rem; border-radius:0.5rem; font-weight:600;">
-            Cambios pendientes: <span id="numCambiosPendientes">0</span>
-        </span>
-    </div>
-
     {{-- Paginación --}}
     <div class="pagination-container" id="tasksPagination"></div>
 
@@ -207,9 +269,14 @@
             <div class="footer-content">
                 <div class="footer-stats">
                     <div class="stat-group">
-                        <i class="fa-solid fa-check-circle text-success"></i>
-                        <span id="count-completadas">{{ $subtareas->where('estado', 'Completada')->count() }}
-                            Completadas</span>
+                        <i class="fa-solid fa-exclamation-triangle text-danger"></i>
+                        <span id="count-vencidas">{{ $subtareas->where('estado', 'Vencida')->count() }}
+                            Vencidas</span>
+                    </div>
+                    <div class="stat-group">
+                        <i class="fa-solid fa-hourglass-start text-warning"></i>
+                        <span id="count-pendientes">{{ $subtareas->where('estado', 'Pendiente')->count() }}
+                            Pendientes</span>
                     </div>
                     <div class="stat-group">
                         <i class="fa-solid fa-spinner text-primary"></i>
@@ -217,9 +284,9 @@
                             Progreso</span>
                     </div>
                     <div class="stat-group">
-                        <i class="fa-solid fa-hourglass-start text-warning"></i>
-                        <span id="count-pendientes">{{ $subtareas->where('estado', 'Pendiente')->count() }}
-                            Pendientes</span>
+                        <i class="fa-solid fa-check-circle text-success"></i>
+                        <span id="count-completadas">{{ $subtareas->where('estado', 'Completada')->count() }}
+                            Completadas</span>
                     </div>
                 </div>
                 <div class="footer-info">
