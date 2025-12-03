@@ -18,7 +18,6 @@
     --gray-50: #f9fafb;
     --gray-100: #f3f4f6;
     --gray-200: #e5e7eb;
-    --gray-250: #E4E6EA;
     --gray-300: #d1d5db;
     --gray-400: #9ca3af;
     --gray-500: #6b7280;
@@ -71,8 +70,6 @@
     --radius-3xl: 2rem;
 
     /* === TIPOGRAFÍA === */
-    --font-size-3xs: 0.35rem;
-    --font-size-2xs: 0.55rem;
     --font-size-xs: 0.75rem;
     --font-size-sm: 0.875rem;
     --font-size-base: 1rem;
@@ -92,8 +89,6 @@
     --line-height-relaxed: 1.625;
 
     /* === ESPACIADO === */
-    --space-02: 0.05rem;
-    --space-01: 0.15rem;
     --space-1: 0.25rem;
     --space-2: 0.5rem;
     --space-3: 0.75rem;
@@ -152,10 +147,10 @@ body {
 .task-list-container {
     position: relative;
     background: linear-gradient(135deg, #ffffff, #fefefe);
-    border: 1px solid var(--amber-100);
     border-radius: var(--radius-lg);
     padding: var(--space-4);
     box-shadow: var(--shadow-md);
+    border: 1px solid var(--amber-100);
     overflow: hidden;
     width: 100%;
     max-width: none; /* Cambio: eliminar restricción de ancho */
@@ -209,11 +204,6 @@ body {
     font-size: var(--font-size-lg);
 }
 
-h2.header-title {
-    font-size: var(--font-size-lg);
-    margin-top: var(--space-8);
-}
-
 .header-subtitle {
     margin: 0;
     color: var(--gray-600);
@@ -235,7 +225,7 @@ h2.header-title {
 .task-stats {
     display: flex;
     justify-content: center;
-    flex-direction: wrap;
+    flex-wrap: wrap;
     gap: var(--space-2);
 }
 
@@ -249,171 +239,33 @@ h2.header-title {
     border-radius: var(--radius-lg);
     color: var(--amber-700);
     font-weight: var(--font-weight-medium);
-    font-size: var(--font-size-ms);
+    font-size: var(--font-size-sm);
 }
 
 .stat-item i {
     color: var(--amber-500);
-    font-size: var(--font-size-lg);
-}
-/* ================================================================
-   BOTON ACTUALIZAR PLAN DE TRABAJO
-   ================================================================ */
-    .btn-Actualizar{
-    background: linear-gradient(135deg, #144c8e, #0e325e);
-    padding: var(--space-2) var(--space-3);
-    color: white;
-    border: none;
-    border-radius: var(--radius-lg);
     font-size: var(--font-size-sm);
+}
+
+.print-button {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-3) var(--space-4);
+    background: var(--gradient-amber);
+    color: white;
+    text-decoration: none;
+    border-radius: var(--radius-lg);
     font-weight: var(--font-weight-semibold);
-    cursor: pointer;
+    font-size: var(--font-size-sm);
     transition: var(--transition-all);
     box-shadow: var(--shadow-sm);
-    margin-right: var(--space-4);
-    }
-
-    .btn-Actualizar:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-lg);
-    }
-
-    .btn-Actualizar i {
-    font-size: var(--font-size-lg);
-    padding-right: var(--space-2);
-    }
-
-    /* Tooltip deslizante para el botón de actualizar plan */
-.btn-Actualizar {
-    position: relative;
-    overflow: visible;
 }
 
-.btn-Actualizar .update-tooltip {
-    position: absolute;
-    right: 100%;
-    top: 50%;
-    margin-right: var(--space-1);
-    transform: translateX(12px) translateY(-50%);
-    opacity: 0;
-    pointer-events: none;
-    transition: transform 0.22s cubic-bezier(.2,.8,.2,1), opacity 0.18s ease;
-    border: 1px solid rgba(0,0,0,0.12);
-    background: linear-gradient(135deg, #ffffff, #fefefe);
-    color: var(--gray-700);
-    padding: 0.45rem 0.65rem;
-    border-radius: var(--radius-md);
-    /* Permite que el texto se ajuste y quepa dentro del tooltip */
-    white-space: normal;
-    overflow-wrap: anywhere;
-    word-break: break-word;
-    text-align: left;
-    box-shadow: var(--shadow-sm);
-    font-size: var(--font-size-sm);
-    z-index: 30;
-    /* Contenedor del tooltip */
-    max-width: 470px;
-    width: max-content;
-    box-sizing: border-box;
-}
-
-/* Mostrar al hacer hover o focus (teclas) */
-.btn-Actualizar:hover .update-tooltip,
-.btn-Actualizar:focus .update-tooltip,
-.btn-Actualizar:focus-within .update-tooltip {
-    transform: translateX(0) translateY(-50%);
-    opacity: 1;
-}
-
-/* Ocultar en pantallas pequeñas para no romper el layout */
-@media (max-width: 640px) {
-    .btn-Actualizar .update-tooltip {
-        display: none;
-    }
-}
-
-/* ================================================================
-   FILTRO DE SEMÁFORO
-   ================================================================ */
-.header-semaphore {
-    display: flex;
-    align-items: flex-start;
-    flex-direction: column;
-    gap: var(--space-2);
-    width: fit-content;
-    margin-left: none;
-    margin-right: 20px;
-}
-
-.task-semaphore {
-    display: flex;
-    align-items: center;
-    position: relative;
-    width: 100%;
-    min-width: 75px;
-    cursor: pointer;
-    transition: transform 0.2s ease, opacity 0.2s ease;
-}
-
-.task-semaphore:hover {
-    transform: translateY(-5px);
-}
-
-.task-semaphore.active {
-    transform: translateX(15px);
-}
-
-.task-semaphore.active .stat-semaphore {
-    background: var(--gray-300);
-    font-weight: var(--font-weight-bold);
-}
-
-.task-semaphore.active .task-text {
-    background: var(--gray-400);
-    font-weight: var(--font-weight-bold);
-}
-
-.priority-light {
-    display: flex;
-    align-items: center;
-    font-size: var(--font-size-2xl);
-    position: relative;
-    z-index: 3;
-    flex-shrink: 0;
-    width: var(--font-size-2xl);
-    height: var(--font-size-2xl);
-}
-
-.stat-semaphore {
-    display: flex;
-    align-items: center;
-    background: var(--gray-200);
-    border-radius: var(--radius-xl);
-    font-weight: var(--font-weight-medium);
-    font-size: var(--font-size-xs);
-    padding: var(--space-1) var(--space-1);
-    padding-left: var(--space-6);
-    margin-left: -18px;
-    box-shadow: 0px 0px 5px -2px #0000003d;
-    position: relative;
-    z-index: 2;
-    flex: 1;
-    min-width: 0;
-}
-
-.task-text {
-    background: var(--gray-250);
-    border-radius: var(--radius-xl);
-    font-weight: var(--font-weight-bold);
-    font-size: var(--font-size-xs);
-    padding: var(--space-1) var(--space-1);
-    padding-left: var(--space-6);
-    padding-right: var(--space-2);
-    margin-left: -20px;
-    position: relative;
-    z-index: 1;
-    flex-shrink: 0;
-    min-width: 30px;
+.print-button:hover {
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-md);
+    color: white;
 }
 
 /* ================================================================
@@ -526,7 +378,7 @@ h2.header-title {
 }
 
 .tasks-table td {
-    padding: var(--space-1);
+    padding: var(--space-3);
     border-bottom: 1px solid var(--gray-100);
     vertical-align: middle;
     font-size: var(--font-size-sm);
@@ -569,16 +421,14 @@ h2.header-title {
 /* ================================================================
    CONTROLES DE FORMULARIO
    ================================================================ */
-
-
+.priority-select,
 .status-select {
     width: 100%;
     min-width: 120px;
     max-width: none;
     padding: var(--space-2);
     border: 1.5px solid var(--gray-200);
-    border-radius: var(--radius-2xl);
-    box-shadow: 0 1px 3px black, 0 1px 2px black;
+    border-radius: var(--radius-md);
     background: white;
     font-size: var(--font-size-xs);
     font-weight: var(--font-weight-medium);
@@ -592,6 +442,7 @@ h2.header-title {
     background-size: 1em 1em;
 }
 
+.priority-select:focus,
 .status-select:focus {
     outline: none;
     border-color: var(--amber-500);
@@ -599,6 +450,7 @@ h2.header-title {
     box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.1);
 }
 
+.priority-select:hover,
 .status-select:hover {
     border-color: var(--amber-300);
     background-color: var(--amber-50);
@@ -649,7 +501,7 @@ h2.header-title {
     gap: var(--space-1);
     padding: var(--space-2) var(--space-3); /* Cambio: más padding horizontal */
     border: none;
-    border-radius: var(--radius-3xl);
+    border-radius: var(--radius-md);
     font-size: var(--font-size-xs);
     font-weight: var(--font-weight-semibold);
     cursor: pointer;
@@ -668,21 +520,19 @@ h2.header-title {
 .save-button {
     background: var(--gradient-success);
     color: white;
-    border-radius: var(--radius-2xl);
 }
 
 .save-button:hover {
-    background: var(--success-700);
+    background: var(--success-600);
     transform: translateY(-1px);
-    box-shadow: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
 }
 
 .archive-button {
     background: var(--danger-500);
     color: #fff;
-    border-radius: var(--radius-2xl);
+    transition: background 0.2s; 
 }
-
 .archive-button:hover {
     background: var(--danger-700);
     color: #fff;
@@ -1037,11 +887,9 @@ h2.header-title {
         min-width: 900px; /* Cambio: incrementar ancho mínimo */
     }
 
-    .tasks-table th {
-        padding: var(--space-4);
-    }
+    .tasks-table th,
     .tasks-table td {
-        padding: var(--space-3);
+        padding: var(--space-4);
     }
 
     .task-name {
@@ -1075,11 +923,9 @@ h2.header-title {
         min-width: 1000px; /* Cambio: incrementar ancho mínimo */
     }
 
-    .tasks-table th {
-        padding: var(--space-5);
-    }
+    .tasks-table th,
     .tasks-table td {
-        padding: var(--space-2);
+        padding: var(--space-5);
     }
 
     .task-name {
@@ -1115,11 +961,9 @@ h2.header-title {
         min-width: 1200px; /* Cambio: incrementar ancho mínimo */
     }
 
-    .tasks-table th {
-        padding: var(--space-6);
-    }
+    .tasks-table th,
     .tasks-table td {
-        padding: var(--space-3);
+        padding: var(--space-6);
     }
 
     .task-name {

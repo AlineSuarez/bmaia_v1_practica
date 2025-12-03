@@ -19,39 +19,20 @@
             </div>
         </div>
 
-        @php
-            $year = now()->year;
-        @endphp
-
         <div class="apiario-wrapper">
             <!-- Encabezado principal -->
             <header class="apiario-header">
                 <h1 class="apiario-title"><span>Plan de Trabajo Anual</span></h1>
-                <h2 class="apiario-title-h2">Temporada {{ $year }} - {{ $year + 1 }} </h2>
             </header>
 
             <!-- Controles de vista y administración -->
             <section class="apiario-controls">
                 <div class="view-controls">
-                    <button class="btn-panal view-toggler" data-view="list" 
-                        title="Ver en formato lista">Lista</button>
-
+                    <button class="btn-panal view-toggler" data-view="list" title="Ver en formato lista">Lista</button>
                     <button class="btn-panal view-toggler" data-view="kanban"
                         title="Ver en formato tablero">Tablero</button>
-
-                    <button class="btn-panal view-toggler" data-view="timeline" 
-                        title="Ver en línea temporal">Línea de Tiempo</button>
-                        
-                    <button class="btn-panal view-toggler" data-view="agenda" 
-                        title="Ver en formato agenda">Agenda</button>
-                </div>
-
-                <!-- Segunda linea de botones (total y Imprimir) -->
-                <div class="task-stats">
-                    <span class="stat-item">
-                        <i class="fa-solid fa-tasks"></i>
-                        <span>{{ $subtareas->count() }} tareas</span>
-                    </span>
+                    <button class="btn-panal view-toggler" data-view="timeline" title="Ver en línea temporal">Línea de
+                        Tiempo</button>
                 </div>
 
                 <!-- Nuevos botones separados -->
@@ -60,26 +41,9 @@
                         title="Crear tareas personalizadas">
                         <i class="fa fa-plus-circle"></i> Crear Tareas
                     </button>
-
                     <button id="btn-ver-archivadas" class="btn-miel" type="button" title="Ver tareas archivadas"
                         data-url="{{ route('tareas.archivadas') }}">
                         <i class="fa fa-archive"></i> Ver Tareas Descartadas
-                    </button>
-
-
-                   
-                    <button id="btn-editar-nombre" class="btn-miel" type="button" title="Editar nombre de las tareas">
-                        <i class="fa fa-edit"></i><span>Editar</span>
-                    </button>
-
-
-                    <button type="button"
-                        id="btn-preview-pdf"
-                        class="btn-miel print-button"
-                        title="Vista previa e imprimir"
-                        data-pdf-url="{{ route('tareas.imprimirTodas') }}">
-                        <i class="fa fa-print"></i>
-                        <span>Imprimir</span>
                     </button>
                 </div>
             </section>
@@ -106,69 +70,12 @@
                     @include('tareas.timeline')
                 </div>
 
-                <!-- Vista Agenda -->
-                <div class="view agenda">
-                    @include('tareas.agenda')
-                </div>
-
                 <!-- Consejo final -->
                 <div class="consejo-final">
                     <p>Revisa regularmente tus tareas para mantener el progreso de tu proyecto</p>
                 </div>
             </main>
         </div>
-
-        <!-- Modal: Vista previa PDF -->
-    <div class="modal fade" id="pdfPreviewModal" tabindex="-1" role="dialog" aria-labelledby="pdfPreviewModalLabel" aria-hidden="true" data-bs-backdrop="true" data-bs-keyboard="true">
-        <div class="modal-dialog modal-xl modal-fullscreen-sm-down" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="pdfPreviewModalLabel">
-                        <i class="fa fa-file-pdf"></i> Vista previa - Tareas
-                    </h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar">X</button>
-                </div>
-                <div class="modal-body" style="min-height:60vh; position: relative;">
-                    <!-- Loader mientras carga el PDF -->
-                    <div id="pdf-loader" style="display: none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; z-index: 10;">
-                        <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;">
-                            <span class="visually-hidden">Cargando...</span>
-                        </div>
-                        <p class="mt-3" style="font-size: 1.1rem; color: #666;">Cargando PDF...</p>
-                    </div>
-                    
-                    <!-- Contenedor del iframe -->
-                    <div style="height:100%; display:flex; flex-direction:column;">
-                        <div style="flex:1 1 auto; min-height:0;">
-                            <iframe id="pdfPreviewIframe" 
-                                    src="" 
-                                    frameborder="0" 
-                                    style="width:100%; height:100%; min-height:480px; border: none;">
-                            </iframe>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="modal-footer">
-                    <div class="me-auto">
-                        <small class="text-muted">Si el PDF no se muestra, puede descargarlo con el botón de abajo.</small>
-                    </div>
-
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-
-                    <button type="button" id="btn-print-iframe" class="btn btn-secondary">
-                        <i class="fa fa-print"></i> Imprimir
-                    </button>
-
-                    <button type="button" id="btn-download-pdf" class="btn btn-secondary">
-                        <i class="fa fa-download"></i> Descargar
-                    </button>
-
-                </div>
-            </div>
-        </div>
-    </div>
-
     </div>
 
     <!-- Modal de Tareas Predefinidas -->
@@ -233,7 +140,7 @@
                                                         <th><i class="fa fa-tasks me-1"></i>Nombre de la Tarea</th>
                                                         <th><i class="fa fa-calendar-day me-1"></i>Fecha Inicio</th>
                                                         <th><i class="fa fa-calendar-check me-1"></i>Fecha Límite</th>
-                                                        <th><i class="fa fa-circle me-1"></i>Prioridad</th>
+                                                        <th><i class="fa fa-flag me-1"></i>Prioridad</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>

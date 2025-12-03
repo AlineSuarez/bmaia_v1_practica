@@ -30,9 +30,7 @@ class SubTarea extends Model
         'fecha_limite',
         'estado', // Ej.: pendiente, completada, urgente
         'prioridad', // Ej.: pendiente, completada, urgente,
-        'prioridad_base', // Prioridad original de la tarea
         'user_id',
-        'archivada', // Campo para archivar tareas
     ];
 
     protected $casts = [
