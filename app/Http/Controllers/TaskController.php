@@ -5,12 +5,14 @@ use App\Models\Task;
 use App\Models\TareaGeneral;
 use App\Models\SubTarea;
 use App\Models\TareasPredefinidas;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\DB;
 
-
+// Controlador para gestionar las tareas y subtareas
 class TaskController extends Controller
 {
     public function __construct()
@@ -25,15 +27,17 @@ class TaskController extends Controller
         // Si no existen subtareas para el usuario, insertar tareas predefinidas automáticamente
         if (SubTarea::where('user_id', $user->id)->count() === 0) {
             $predefinidas = TareasPredefinidas::all();
-
+            // Crear subtareas basadas en las tareas predefinidas
             foreach ($predefinidas as $tarea) {
+                $prioridad = $this->normalizePriority($tarea->prioridad ?? 'media'); // Normalizar prioridad
                 SubTarea::create([
                     'tarea_general_id' => $tarea->tarea_general_id,
                     'user_id' => $user->id,
                     'nombre' => $tarea->nombre,
                     'fecha_inicio' => $tarea->fecha_inicio ?? now(),
                     'fecha_limite' => $tarea->fecha_limite ?? now()->addDays(7),
-                    'prioridad' => $tarea->prioridad ?? 'media',
+                    'prioridad' => $prioridad,
+                    'prioridad_base' => $prioridad, // Guardar también como prioridad base
                     'estado' => 'Pendiente',
                     'archivada' => false,
                 ]);
@@ -179,26 +183,46 @@ class TaskController extends Controller
         }
     }
 
-    public function update(Request $request, Subtarea $subtarea)
+    // Normaliza la prioridad a los valores esperados en español
+    protected function normalizePriority(?string $p): string
     {
-        // Log temporal para depuración (puedes eliminar después)
+        if (!$p) return 'baja';
+        $p = strtolower(trim($p));
+        $map = [
+            'low' => 'baja', 'baja' => 'baja',
+            'medium' => 'media', 'media' => 'media',
+            'high' => 'alta', 'alta' => 'alta',
+            'urgent' => 'urgente', 'urgente' => 'urgente',
+        ];
+        return $map[$p] ?? 'baja';
+    }
+
+    // Actualiza una subtarea existente
+    public function update(Request $request, SubTarea $subtarea)
+    {   // Registrar los datos recibidos para depuración
         logger()->info('Datos recibidos en update:', $request->all());
         $request->validate([
             'nombre' => 'required|string|max:255',
             'descripcion' => 'nullable|string',
             'fecha_inicio' => 'required|date',
             'fecha_fin' => 'required|date|after_or_equal:fecha_inicio',
-            'prioridad' => 'nullable|in:urgent,high,low',
+            'prioridad' => 'nullable|string',
             'estado' => 'required|in:Pendiente,En progreso,Completada,Vencida',
         ]);
+
+        // Normalizar prioridad
+        $prioridad = $this->normalizePriority($request->prioridad);
+
+        // Actualizar subtarea con los datos validados
         $subtarea->update([
             'nombre' => $request->nombre,
             'descripcion' => $request->descripcion,
             'fecha_inicio' => $request->fecha_inicio,
             'fecha_limite' => $request->fecha_fin,
-            'prioridad' => $request->prioridad,
+            'prioridad' => $prioridad,  // Usar la prioridad normalizada
             'estado' => $request->estado,
         ]);
+        // Redirigir con mensaje de éxito
         return redirect()->route('tareas')->with('success', 'Subtarea actualizada exitosamente.');
     }
 
@@ -214,27 +238,67 @@ class TaskController extends Controller
 
     public function guardarCambios(Request $request, $id)
     {
+        // Permitir también actualizar el nombre; validaciones opcionales
         $request->validate([
+            'nombre' => 'nullable|string|max:255',  // Nuevo campo nombre
             'estado' => 'nullable|in:Pendiente,En progreso,Completada,Vencida',
             'fecha_inicio' => 'nullable|date',
             'fecha_limite' => 'nullable|date|after_or_equal:fecha_inicio',
-            'prioridad' => 'nullable|in:baja,media,alta,urgente',
+            'prioridad' => 'nullable|string',
         ]);
-        $subtarea = Subtarea::findOrFail($id);
-        $data = array_filter($request->only([
-            'estado',
-            'fecha_inicio',
-            'fecha_limite',
-            'prioridad'
-        ]), fn($value) => !is_null($value));
+
+        // Encontrar la subtarea por ID
+        $subtarea = SubTarea::findOrFail($id);
+
+        // Log para debugging
+        Log::info('Guardando cambios en subtarea', [
+            'id' => $id,
+            'nombre_anterior' => $subtarea->nombre,
+            'nombre_nuevo' => $request->input('nombre'),
+            'datos_request' => $request->all()
+        ]);
+
+        // Construir array de datos para actualizar
+        $data = [];
+        
+        // Solo agregar campos que están presentes en la petición y no son nulos
+        if ($request->has('nombre') && !is_null($request->input('nombre'))) {
+            $data['nombre'] = $request->input('nombre');
+        }
+        if ($request->has('estado') && !is_null($request->input('estado'))) {
+            $data['estado'] = $request->input('estado');
+        }
+        if ($request->has('fecha_inicio') && !is_null($request->input('fecha_inicio'))) {
+            $data['fecha_inicio'] = $request->input('fecha_inicio');
+        }
+        if ($request->has('fecha_limite') && !is_null($request->input('fecha_limite'))) {
+            $data['fecha_limite'] = $request->input('fecha_limite');
+        }
+        if ($request->has('prioridad') && !is_null($request->input('prioridad'))) {
+            $data['prioridad'] = $this->normalizePriority($request->input('prioridad'));
+        }
+
         $subtarea->update($data);
+        $subtarea->refresh(); // Refrescar para obtener los datos actualizados
+
+        Log::info('Subtarea actualizada', [
+            'id' => $id,
+            'nombre_final' => $subtarea->nombre,
+            'datos_guardados' => $data
+        ]);
+
         if ($request->ajax()) {
-            return response()->json(['message' => 'Tarea modificada con éxito.']);
+            // devolver la subtarea actualizada para que el cliente use el nombre persistido
+            return response()->json([
+                'message' => 'Tarea modificada con éxito.',
+                'tarea' => $subtarea->toArray()
+            ]);
         }
         return redirect()->route('tareas')->with('success', 'Tarea modificada con éxito');
     }
 
 
+    // Actualiza solo el estado de una subtarea
     public function updateStatus(Request $request, $id)
     {
         Log::info('Entró a updateStatus', [
@@ -244,10 +308,18 @@ class TaskController extends Controller
         $request->validate([
             'estado' => 'required|in:Pendiente,En progreso,Completada,Vencida',
         ]);
-        $subtarea = Subtarea::findOrFail($id);
+        $subtarea = SubTarea::findOrFail($id); // Buscar la subtarea por su ID
+        $estadoAnterior = $subtarea->estado;
+        
         $subtarea->update([
             'estado' => $request->estado,
         ]);
+
+        // Si la tarea se marca como completada, eliminar de Google Calendar
+        if ($request->estado === 'Completada' && $estadoAnterior !== 'Completada') {
+            $this->eliminarDeGoogleCalendar($subtarea);
+        }
+
         return response()->json([
             'success' => true,
             'message' => 'Estado actualizado correctamente'
@@ -284,6 +356,50 @@ class TaskController extends Controller
         return response()->json($events);
     }
 
+    /**
+     * Actualiza en bloque las subtareas recibidas: guarda nuevas fechas y estado.
+     * Estructura esperada: { tasks: [ { id, fecha_inicio, fecha_limite, estado }, ... ] }
+     */
+    public function actualizarPlanTrabajo(Request $request)
+    {
+        $user = Auth::user();
+
+        $data = $request->all();
+        $tasks = data_get($data, 'tasks', []);
+
+        if (!is_array($tasks) || count($tasks) === 0) {
+            return response()->json(['error' => 'No se recibieron tareas para actualizar.'], 422);
+        }
+
+        DB::beginTransaction();
+        try {
+            foreach ($tasks as $t) {
+                $id = data_get($t, 'id');
+                $fecha_inicio = data_get($t, 'fecha_inicio');
+                $fecha_limite = data_get($t, 'fecha_limite');
+                $estado = data_get($t, 'estado', 'Pendiente');
+
+                if (!$id) continue;
+
+                $subtarea = SubTarea::find($id);
+                // Solo actualizar si existe y pertenece al usuario autenticado
+                if (!$subtarea || $subtarea->user_id !== $user->id) continue;
+
+                $subtarea->fecha_inicio = $fecha_inicio;
+                $subtarea->fecha_limite = $fecha_limite;
+                $subtarea->estado = $estado;
+                $subtarea->save();
+            }
+
+            DB::commit();
+            return response()->json(['ok' => true, 'message' => 'Plan de Trabajo actualizado correctamente.']);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Error al actualizar plan de trabajo: ' . $e->getMessage(), ['exception' => $e]);
+            return response()->json(['error' => 'Error interno al actualizar tareas.'], 500);
+        }
+    }
+
     public function default(Request $request)
     {
         // Validar que se reciban las subtareas seleccionadas
@@ -307,6 +423,7 @@ class TaskController extends Controller
             if ($fechaLimite->isPast() && $fechaLimite->isSameDay($hoy)) {
                 $fechaLimite->addYear();
             }
+            $prioridad = $this->normalizePriority($tareaPredefinida->prioridad ?? 'baja');
             // Crear una nueva subtarea asociada al usuario y a la misma tarea general
             Subtarea::create([
                 'tarea_general_id' => $tareaPredefinida->tarea_general_id,
@@ -314,7 +431,8 @@ class TaskController extends Controller
                 'nombre' => $tareaPredefinida->nombre,
                 'fecha_inicio' => $fechaInicio,
                 'fecha_limite' => $fechaLimite,
-                'prioridad' => $tareaPredefinida->prioridad,
+                'prioridad' => $prioridad,
+                'prioridad_base' => $prioridad, // Guardar también como prioridad base
             ]);
         }
         // Redireccionar con un mensaje de éxito
@@ -345,12 +463,14 @@ class TaskController extends Controller
             $tareaGeneral = TareaGeneral::findOrFail($request->tarea_general_id);
             // Crear Subtareas asociadas
             foreach ($request->subtareas as $subtarea) {
+                $prioridad = $this->normalizePriority($subtarea['prioridad'] ?? 'baja');
                 $tareaGeneral->subtareas()->create([
                     'nombre' => $subtarea['nombre'],
                     'fecha_inicio' => $subtarea['fecha_inicio'],
                     'fecha_limite' => $subtarea['fecha_fin'],
                     'estado' => $subtarea['estado'],
-                    'prioridad' => $subtarea['prioridad'],
+                    'prioridad' => $prioridad,
+                    'prioridad_base' => $prioridad, // Guardar también como prioridad base
                     'user_id' => Auth::id(),
                 ]);
             }
@@ -409,5 +529,91 @@ class TaskController extends Controller
             ->get();
 
         return response()->json($tareasGenerales);
+    }
+
+    /**
+     * Verifica el estado de sincronización de Google Calendar
+     */
+    public function checkGoogleCalendarStatus()
+    {
+        $user = Auth::user();
+        
+        $isConnected = !empty($user->google_calendar_token) && 
+                       !empty($user->google_calendar_token_expires_at) &&
+                       Carbon::parse($user->google_calendar_token_expires_at)->isFuture();
+
+        return response()->json([
+            'connected' => $isConnected,
+            'synced' => (bool) $user->google_calendar_synced,
+            'expires_at' => $user->google_calendar_token_expires_at,
+        ]);
+    }
+
+    /**
+     * Elimina una tarea de Google Calendar
+     *
+     * @param SubTarea $tarea
+     * @return void
+     */
+    private function eliminarDeGoogleCalendar(SubTarea $tarea): void
+    {
+        try {
+            $user = User::find($tarea->user_id);
+            
+            if (!$user || !$user->google_calendar_token) {
+                return;
+            }
+
+            // Configurar cliente de Google
+            $client = new \Google_Client();
+            $client->setClientId(config('services.google.client_id'));
+            $client->setClientSecret(config('services.google.client_secret'));
+            $client->setAccessToken($user->google_calendar_token);
+
+            // Verificar y renovar token si es necesario
+            if ($client->isAccessTokenExpired()) {
+                if ($user->google_calendar_refresh_token) {
+                    $client->fetchAccessTokenWithRefreshToken($user->google_calendar_refresh_token);
+                    $newToken = $client->getAccessToken();
+                    
+                    $user->update([
+                        'google_calendar_token' => $newToken['access_token'],
+                        'google_calendar_token_expires_at' => now()->addSeconds($newToken['expires_in'] ?? 3600),
+                    ]);
+                } else {
+                    return;
+                }
+            }
+
+            $service = new \Google_Service_Calendar($client);
+
+            // Buscar el evento en Google Calendar
+            $events = $service->events->listEvents('primary', [
+                'q' => $tarea->nombre,
+                'timeMin' => Carbon::parse($tarea->fecha_inicio)->startOfDay()->toRfc3339String(),
+                'timeMax' => Carbon::parse($tarea->fecha_limite)->endOfDay()->toRfc3339String(),
+                'singleEvents' => true,
+            ]);
+
+            // Eliminar el evento encontrado
+            foreach ($events->getItems() as $event) {
+                if ($event->getSummary() === $tarea->nombre) {
+                    $service->events->delete('primary', $event->getId());
+                    
+                    Log::info("Tarea completada eliminada de Google Calendar", [
+                        'tarea_id' => $tarea->id,
+                        'evento_id' => $event->getId(),
+                        'nombre' => $tarea->nombre
+                    ]);
+                    break;
+                }
+            }
+
+        } catch (\Exception $e) {
+            Log::warning("No se pudo eliminar tarea de Google Calendar", [
+                'tarea_id' => $tarea->id,
+                'error' => $e->getMessage()
+            ]);
+        }
     }
 }

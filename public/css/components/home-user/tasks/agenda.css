@@ -1,0 +1,1058 @@
+/* ===== VARIABLES CSS ===== */
+:root {
+    /* Colores principales */
+    --primary-color: #f59e0b;
+    --primary-dark: #d97706;
+    --primary-light: #fbbf24;
+    --secondary-light: #f9f924;
+    --secondary-color: #10b981;
+    --accent-color: #3b82f6;
+
+    /* Colores de estado */
+    --success-color: #10b981;
+    --warning-color: #f59e0b;
+    --error-color: #ef4444;
+    --info-color: #3b82f6;
+
+    /* Colores neutros */
+    --text-primary: #1f2937;
+    --text-secondary: #6b7280;
+    --text-muted: #9ca3af;
+    --bg-primary: #ffffff;
+    --bg-secondary: #f9fafb;
+    --bg-tertiary: #f3f4f6;
+    --bg-fourth: #979fab71;
+    --border-color: #e5e7eb;
+    --border-light: #f3f4f6;
+
+    /* Sombras */
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+        0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+        0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
+        0 10px 10px -5px rgba(0, 0, 0, 0.04);
+
+    /* Espaciado */
+    --spacing-xs: 0.25rem;
+    --spacing-sm: 0.5rem;
+    --spacing-md: 1rem;
+    --spacing-lg: 1.5rem;
+    --spacing-xl: 2rem;
+    --spacing-2xl: 3rem;
+    --spacing-3xl: 4rem;
+
+    /* Tipografía */
+    --font-size-xs: 0.75rem;
+    --font-size-sm: 0.875rem;
+    --font-size-base: 1rem;
+    --font-size-lg: 1.125rem;
+    --font-size-xl: 1.25rem;
+    --font-size-2xl: 1.5rem;
+    --font-size-3xl: 1.875rem;
+    --font-size-4xl: 2.25rem;
+    --font-size-5xl: 2.50rem;
+    --font-size-6xl: 3rem;
+
+    /* Bordes */
+    --border-radius-sm: 0.375rem;
+    --border-radius-md: 0.5rem;
+    --border-radius-lg: 0.75rem;
+    --border-radius-xl: 1rem;
+    --border-radius-2xl: 1.5rem;
+    --border-radius-3xl: 2rem;
+    --border-radius-full: 9999px;
+
+    /* Transiciones */
+    --transition-fast: 0.15s ease-in-out;
+    --transition-normal: 0.3s ease-in-out;
+    --transition-slow: 0.5s ease-in-out;
+}
+
+/* ===== ESTILOS GLOBALES =====*/
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+.container-agenda {
+    position: relative;
+    background: linear-gradient(135deg, #ffffff, #fefefe);
+    border: 1px solid var(--amber-100);
+    border-radius: var(--border-radius-3xl);
+    padding: var(--space-4);
+    box-shadow: var(--shadow-md);
+    overflow: hidden;
+    max-width: none;
+}
+.container-agenda::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: var(--gradient-amber);
+    z-index: 10;
+}
+
+.container-agenda .task-list-header {
+    margin-top: var(--spacing-lg);
+    margin-left: var(--spacing-md);
+    margin-bottom: var(--spacing-lg);
+}
+
+.agenda-content {
+    display: grid;
+    grid-template-columns: 50% 50%;
+    gap: 30px;
+    margin: 0 auto;
+}
+
+
+
+/* Sección del Calendario */
+.calendar-section {
+    background-color: #FEFBF8;
+    padding: var(--spacing-md);
+    border-radius: 15px;
+    user-select: none;
+}
+
+.calendar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.calendar-header h2 {
+    font-size: var(--font-size-3xl);
+    font-weight: 600;
+    color: #2C3E50;
+}
+
+/* Este es el nuevo padre relativo */
+.navegador-contenedor {
+    position: relative;
+}
+.fa-calendar-alt {
+    font-size: var(--font-size-2xl);
+    width: var(--font-size-5xl);
+    height: var(--font-size-5xl);
+    background-color: var(--primary-color);
+    border-radius: var(--border-radius-lg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--bg-primary);
+    z-index: 5;
+    transition: all var(--transition-fast);
+}
+.fa-calendar-alt:hover {
+    background-color: var(--primary-dark);
+    transform: translateY(2px);
+}
+
+.fa-x{
+    font-size: var(--font-size-2xl);
+    width: var(--font-size-5xl);
+    height: var(--font-size-5xl);
+    background-color: var(--error-color);
+    border-radius: var(--border-radius-lg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--bg-primary);
+    z-index: 5;
+    transition: all var(--transition-fast);
+}
+.fa-x:hover {
+    background-color: #b91c1c;
+    transform: translateY(2px);
+}
+
+/* Estilos para el contenedor de los meses */
+#opciones-meses {
+    position: absolute; /* Para que "flote" sobre el contenido si es necesario */
+    top: 100%; /* Ajusta este valor para posicionarlo debajo del header */
+    right: 0;/* Puedes usar 'left' o 'right' para alinearlo al icono */
+    z-index: 3; /* Un z-index alto asegura que esté sobre otros elementos */
+    background-color: #FFFFFF; /* Fondo visible */
+    border: 1px solid #CCC;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    /* Estilos de Grid/Flexbox para organizar los meses dentro */
+    display: grid; 
+    grid-template-columns: repeat(2, 1fr); /* Ejemplo de 3 columnas */
+    gap: var(--spacing-sm);
+    
+}
+
+.mes{
+    cursor: pointer;
+    user-select: none;
+    text-align: center;
+    padding: var(--spacing-xs) var(--spacing-lg);
+    border-radius: var(--border-radius-xl);
+    border-color: var(--text-primary);
+    transition: all var(--transition-fast);
+}
+
+.mes:hover {
+    background-color: var(--bg-fourth);
+    border-radius: var(--border-radius-xl);
+    border-color: var(--text-muted);
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.382);
+    transform: translateY(2px);
+}
+
+.mes.selected {
+    background-color: var(--primary-color);
+    font-weight: 700;
+    color: var(--bg-primary);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    transform: translateY(2px);
+}
+
+/* 2. Clase para ocultar el elemento */
+.hidden {
+    display: none !important; 
+    opacity: 0; /* Oculta y asegura que no interfiera con el click */
+    /* También puedes usar: visibility: hidden; si prefieres */
+}
+
+.weekdays {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 6px;
+    margin-bottom: 6px;
+    text-align: center;
+}
+
+.weekday {
+    font-weight: 600;
+    font-size: 14px;
+    color: #FF8C42;
+    padding: 3px 0;
+}
+
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 6px;
+    margin-bottom: 3px;
+    /* eliminar altura fija para permitir aspect-ratio en los días */
+    grid-auto-rows: auto;
+    overflow: hidden;
+}
+
+.day {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    font-size: 18px;
+    font-weight: 500;
+    cursor: pointer;
+    border-radius: 50%;        /* círculo */
+    transition: all 0.2s ease;
+    padding: 6px;              /* espacio interior reducido */
+    aspect-ratio: 1 / 1;       /* fuerza proporción 1:1 (anchura = altura) */
+    width: 100%;               /* ocupa el ancho de la celda del grid */
+    max-width: 56px;           /* controla tamaño del círculo (ajusta a gusto) */
+    margin: 0 auto;
+}
+
+.day:hover {
+    background-color: #f0f0f0;
+}
+
+.day.empty {
+    cursor: default;
+    opacity: 0.5;
+}
+
+.day.empty:hover {
+    background-color: transparent;
+}
+
+.day.has-tasks::after {
+    content: attr(data-tasks);
+    position: absolute;
+    bottom: 6px;
+    right: 6px;
+    background-color: #FF8C42;
+    color: white;
+    font-size: 12px;
+    font-weight: 600;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.day.selected {
+    background-color: #FFE87C;
+    border: 2px solid #FF8C42;
+    font-weight: 700;
+}
+
+.calendar-navigation {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 20px;
+}
+
+.nav-button {
+    background-color: #FF8C42;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    transition: background-color 0.3s ease;
+}
+
+.nav-button:hover {
+    background-color: #e67a35;
+}
+
+/* Sección de Tareas */
+.tasks-section {
+    padding: 20px;
+    user-select: none;
+}
+
+.tasks-header {
+    margin-bottom: 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.tasks-header h2 {
+    font-size: 28px;
+    font-weight: 600;
+    color: #2C3E50;
+    margin-bottom: 0;
+}
+
+.tasks-header .date-subtitle {
+    font-size: 18px;
+    color: #7f8c8d;
+    font-weight: 400;
+}
+
+.google-calendar {
+    display: flex;
+    justify-content: right;
+    align-items: center;
+    margin-right: 25px;
+    margin-bottom: 18px;
+    transition: all var(--transition-fast);
+}
+
+.google-calendar:hover {
+    transform: translateY(-2px);
+}
+
+.google-calendar-btn {
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: background-color 0.3s ease;
+}
+
+.google-calendar-btn i {
+    font-size: 18px;
+}
+
+.tasks-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.task-item {
+    background-color: #FEFBF8;
+    border-radius: 12px;
+    padding: 20px;
+    margin-right: 20px;
+    display: flex;
+    align-items: center;
+    position: relative;
+    min-width: 0; /* permite que los hijos flex se encojan correctamente en pantallas pequeñas */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.09);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.task-item:hover {
+    box-shadow: 0 6px 12px #f59f0b75;
+}
+
+.priority-bar {
+    width: 15px;
+    height: 80px;
+    border-radius: 5px;
+    margin-right: 20px;
+    flex-shrink: 0;
+}
+
+.priority-bar.blue {
+    background-color: lightblue;
+}
+
+.priority-bar.green {
+    background-color: #3cc64a;
+}
+
+.priority-bar.yellow {
+    background-color: yellow;
+}
+
+.priority-bar.red {
+    background-color: red;
+}
+
+.task-content {
+    flex: 1;
+    min-width: 0; /* importante para que el contenido pueda reducirse y evitar overflow */
+}
+
+/* Estilos para el contenido de la tarea */
+.task-name {
+    font-size: 16px;
+    font-weight: 500;
+    color: #2C3E50;
+    margin-bottom: 8px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: normal;
+}
+
+.task-dates {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.task-date {
+    font-size: 14px;
+    color: #7f8c8d;
+}
+
+.task-actions {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-left: 20px;
+    flex-shrink: 0;
+    min-width: 0; /* permitir que el contenedor se reduzca en pantallas pequeñas */
+}
+
+/* Estilos para los íconos de estado */
+.status-icon {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    flex-shrink: 0;
+}
+
+.status-icon.pending {
+    background-color: #f0f0f0;
+    color: #636e72;
+}
+
+.status-icon.completed {
+    background-color: #e8f5e9;
+    color: #4CAF50;
+}
+
+.edit-icon {
+    width: 32px;
+    height: 32px;
+    background-color: #f0f0f0;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    flex-shrink: 0;
+}
+
+.edit-icon:hover {
+    background-color: #e0e0e0;
+}
+
+/* Estilo para el día actual (hoy) */
+.day.today {
+    background-color: #FF8C42;
+    color: white;
+    font-weight: 700;
+    box-shadow: 0 2px 8px rgba(255, 140, 66, 0.4);
+}
+
+.day.today:hover {
+    background-color: #e67a35;
+}
+
+/* Si el día actual también está seleccionado */
+.day.today.selected {
+    background-color: #FF8C42;
+    border: 3px solid #FFE87C;
+    color: white;
+}
+
+/* Ajuste para el badge de tareas en el día actual */
+.day.today.has-tasks::after {
+    background-color: white;
+    color: #FF8C42;
+}
+
+/* ===== ESTILOS ADICIONALES DEL CALENDARIO ===== */
+
+/* Estilos para días con tareas completadas */
+.day.completed-tasks::after {
+    background-color: var(--success-color);
+}
+
+/* Estilos mejorados para el número del día */
+.day-number {
+    z-index: 1;
+    position: relative;
+}
+
+/* Efecto hover mejorado para días con tareas */
+.day.has-tasks:hover {
+    background-color: #ffe5cc;
+}
+
+/* Estilo para días del mes anterior/siguiente más suave */
+.day.empty {
+    opacity: 0.4;
+    color: var(--text-muted);
+}
+
+/* Animación suave al cambiar de mes */
+.calendar-grid {
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Mejora visual del indicador de tareas */
+.day.has-tasks::after {
+    transition: all 0.2s ease;
+}
+
+.day.has-tasks:hover::after {
+    box-shadow: 0 2px 6px rgba(255, 140, 66, 0.4);
+}
+
+/* Estilo para el mes seleccionado en el dropdown */
+.mes.current-month {
+    background-color: var(--primary-color);
+    color: var(--bg-primary);
+}
+
+/* ===== FIN ESTILOS ADICIONALES ===== */
+
+.calendar-day {
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+}
+
+.calendar-day:hover {
+    background-color: #f0f0f0;
+    transform: scale(1.05);
+}
+
+.calendar-day.selected {
+    background-color: #FFA500;
+    color: white;
+    font-weight: bold;
+}
+
+.calendar-day.today {
+    border: 2px solid #FFA500;
+}
+
+.calendar-day.other-month {
+    opacity: 0.3;
+    pointer-events: none;
+}
+
+.task-indicator {
+    position: absolute;
+    bottom: 2px;
+    right: 2px;
+    background-color: #FFA500;
+    color: white;
+    border-radius: 50%;
+    width: 18px;
+    height: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+}
+
+/* Indicador verde cuando todas las tareas están completadas */
+.task-indicator.completed {
+    background-color: #10b981; /* Verde success */
+    box-shadow: 0 2px 4px rgba(16, 185, 129, 0.4);
+}
+
+.empty-tasks {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem;
+    color: #999;
+    text-align: center;
+}
+
+.empty-tasks p {
+    margin-top: 1rem;
+    font-size: 1.1rem;
+}
+
+.edit-task-btn {
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
+
+.edit-task-btn:hover {
+    color: #FFA500;
+}
+
+/* Estilos para el pill de estado (ícono + texto dentro de un mismo borde redondeado) */
+.status-pill {
+    display: inline-flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 8px;
+    padding: 0 14px;
+    height: 36px;
+    width: auto; /* permitir que el pill crezca según contenido */
+    min-width: 80px; /* mínimo razonable para mantener consistencia pero más compacto en pantallas pequeñas */
+    max-width: 320px; /* evitar que crezca demasiado y rompa layout */
+    box-sizing: border-box; /* asegurar que border y padding no alteren tamaño total */
+    border-radius: 10px;
+    border: 1px solid rgba(0,0,0,0.08);
+    font-size: 0.9rem;
+    font-weight: 600;
+    flex-shrink: 1; /* permitir que el pill se reduzca si el espacio es limitado */
+    max-width: 100%; /* asegurar que no sobresalga del contenedor padre */
+    position: relative; /* permitir que el popover se posicione relativo a este elemento */
+    /* permitir que el texto haga wrap dentro del pill en varias líneas si es necesario */
+    white-space: normal;
+    overflow-wrap: anywhere;
+    transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* Estado pendiente: icono y texto en gris, fondo claro/transparente */
+.status-pill.pending {
+    background-color: transparent;
+    color: #7f8c8d;
+    border-color: #e1e4e6;
+}
+.status-pill.pending i {
+    color: #7f8c8d;
+}
+
+/* Estado en progreso: fondo claro azul, texto e icono en azul oscuro */
+.status-pill.in-progress {
+    background-color: #eef6ff;
+    color: #1d4ed8;
+    border-color: rgba(59,130,246,0.18);
+}
+.status-pill.in-progress i {
+    color: #1d4ed8;
+}
+
+/* Estado completado: fondo verde, texto e icono blancos */
+.status-pill.completed {
+    background-color: var(--success-color);
+    color: #ffffff;
+    border-color: rgba(16,185,129,0.9);
+    box-shadow: 0 2px 6px rgba(16,185,129,0.18);
+}
+.status-pill.completed i {
+    color: #ffffff;
+}
+
+/* Ajustes visuales del icono y texto dentro del pill */
+.status-pill i {
+    font-size: 1rem;
+    width: 20px;
+    min-width: 20px;
+    text-align: center;
+    line-height: 1;
+    flex-shrink: 0;
+}
+
+.status-text {
+    display: inline-block;
+    text-transform: none; /* mantener texto tal cual viene */
+    font-weight: 600;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Popover que aparece al hacer click en el status-pill */
+.status-popover {
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 50%; /* centrar respecto al pill */
+    transform: translateX(-50%);
+    min-width: 140px;
+    max-width: 320px;
+    width: max-content;
+    background-color: #ffffff;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    box-shadow: 0 6px 22px rgba(0,0,0,0.14);
+    display: flex;
+    flex-direction: column;
+    padding: 6px;
+    z-index: 30; /* asegurar que quede por encima de otros elementos */
+}
+
+.status-popover.hidden {
+    display: none;
+}
+
+.status-popover .status-option {
+    background: transparent;
+    border: none;
+    text-align: left;
+    padding: 8px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.status-popover .status-option:hover {
+    background: rgba(0,0,0,0.04);
+}
+
+.status-pill.open {
+    box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+}
+
+/* Alineación dentro de task-actions ya existente */
+.task-actions {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-left: 20px;
+    flex-shrink: 0;
+}
+
+/* ===== POPUP DE CONFIRMACIÓN GOOGLE CALENDAR ===== */
+.popup-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    animation: fadeIn 0.2s ease-in-out;
+}
+
+.popup-container {
+    background: white;
+    border-radius: var(--border-radius-xl);
+    border: 2px solid var(--bg-primary);
+    box-shadow: var(--shadow-xl);
+    max-width: 480px;
+    width: 90%;
+    overflow: hidden;
+    animation: slideUp 0.3s ease-out;
+}
+
+.popup-header {
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+    color: white;
+    padding: var(--spacing-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-md);
+}
+
+.popup-header i {
+    font-size: var(--font-size-3xl);
+}
+
+.popup-header h3 {
+    margin: 0;
+    font-size: var(--font-size-xl);
+    font-weight: 600;
+}
+
+.popup-body {
+    padding: var(--spacing-2xl);
+}
+
+.popup-body p {
+    margin: 0 0 var(--spacing-md) 0;
+    font-size: var(--font-size-base);
+    color: var(--text-primary);
+    line-height: 1.6;
+}
+
+.popup-note {
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+    font-style: italic;
+}
+
+.popup-actions {
+    padding: var(--spacing-lg) var(--spacing-xl);
+    background-color: var(--bg-secondary);
+    display: flex;
+    gap: var(--spacing-md);
+    justify-content: center;
+}
+
+.popup-btn {
+    padding: var(--spacing-sm) var(--spacing-xl);
+    border: none;
+    border-radius: var(--border-radius-md);
+    font-size: var(--font-size-base);
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    transition: all var(--transition-fast);
+}
+
+.popup-btn i {
+    font-size: var(--font-size-lg);
+}
+
+.popup-btn-cancel {
+    background-color: var(--bg-tertiary);
+    color: var(--text-primary);
+}
+
+.popup-btn-cancel:hover {
+    background-color: var(--border-color);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-sm);
+}
+
+.popup-btn-confirm {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.popup-btn-confirm:hover {
+    background-color: var(--primary-dark);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideUpCenter {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* ===== MODAL DE SINCRONIZACIÓN ===== */
+.sync-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10000;
+    animation: fadeIn 0.3s ease;
+    overflow-y: auto;
+}
+
+.sync-modal-content {
+    background: white;
+    border-radius: 16px;
+    padding: 2rem;
+    max-width: 500px;
+    width: 90%;
+    box-shadow: var(--shadow-xl);
+    animation: slideUpCenter 0.3s ease;
+    margin: auto;
+}
+
+.sync-header {
+    text-align: center;
+    margin-bottom: 1.5rem;
+}
+
+.sync-header h3 {
+    margin-top: 0.5rem;
+    font-size: 1.5rem;
+    color: var(--text-primary);
+}
+
+.sync-body {
+    text-align: center;
+}
+
+.sync-body p {
+    color: var(--text-secondary);
+    margin-bottom: 1rem;
+}
+
+.progress-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    margin: 1.5rem 0;
+    position: relative;
+}
+
+/* Loader circular con abeja animada */
+.loader {
+    width: 80px;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: 
+        radial-gradient(farthest-side, #ffa516 94%, #0000) top/12px 12px no-repeat,
+        conic-gradient(#0000 30%, #ffa516);
+    -webkit-mask: radial-gradient(farthest-side, #0000 calc(100% - 12px), #000 0);
+    mask: radial-gradient(farthest-side, #0000 calc(100% - 12px), #000 0);
+    animation: l13 1s infinite linear;
+    position: relative;
+    margin: 0 auto;
+}
+
+
+
+@keyframes l13 { 
+    100% { transform: rotate(1turn); }
+}
+
+@keyframes beeFly {
+    0% { transform: translateX(-50%) translateY(-6px) rotate(0deg); }
+    100% { transform: translateX(-50%) translateY(-6px) rotate(360deg); }
+}
+
+.progress-bar {
+    width: 100%;
+    height: 24px;
+    background: var(--bg-tertiary);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #4285f4 0%, #34a853 100%);
+    border-radius: 12px;
+    transition: width 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding-right: 8px;
+}
+
+#syncPercentage {
+    font-weight: 700;
+    font-size: 1.5rem;
+    color: var(--primary-color);
+}
+
+.sync-details {
+    font-size: 0.875rem;
+    color: var(--text-muted);
+    margin-top: 1rem;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@media (max-width: 1024px) {
+    .agenda-content {
+        grid-template-columns: 1fr;
+    }
+}

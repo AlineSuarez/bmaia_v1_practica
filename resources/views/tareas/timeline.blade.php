@@ -21,12 +21,12 @@
         <div class="timeline-container">
             <div class="etapas-grid">
                 @foreach ($tareasGenerales as $tareaGeneral)
-                                                    @php
-                    $subtareas = $tareaGeneral->subtareas;
-                    $completadas = $subtareas->where('estado', 'Completada')->count();
-                    $total = $subtareas->count();
-                    $progreso = $total > 0 ? round(($completadas / $total) * 100) : 0;
-                                                    @endphp
+                    @php
+                        $subtareas = $tareaGeneral->subtareas;
+                        $completadas = $subtareas->where('estado', 'Completada')->count();
+                        $total = $subtareas->count();
+                        $progreso = $total > 0 ? round(($completadas / $total) * 100) : 0;
+                    @endphp
 
                     <div class="etapa-card fade-in collapsed">
                         <!-- Header de la etapa -->
@@ -55,40 +55,41 @@
                                     data-task-id="{{ $subtarea->id }}">
 
                                     <div class="task-header">
-                                        <input type="checkbox" class="task-checkbox toggle-completada" data-id="{{ $subtarea->id }}"
-                                            {{ $subtarea->estado === 'Completada' ? 'checked' : '' }}>
+                                        <div class="task-checkbox-placeholder" aria-hidden="true"></div>
 
-                                        <div class="task-name {{ $subtarea->estado === 'Completada' ? 'completed' : '' }}">
+                                        <div class="task-name">
                                             {{ $subtarea->nombre }}
                                         </div>
-                                    </div>
+                                        <div class="task-meta">
+                                            <div class="task-badges">
+                                                <span class="prioridad-badge" data-prioridad="{{ strtolower($subtarea->prioridad) }}">
+                                                    <span class="prio"><span class="prio-dot" aria-hidden="true"></span>{{ ucfirst($subtarea->prioridad) }}</span>
+                                                </span>
 
-                                    <div class="task-meta">
-                                        <div class="task-badges">
-                                            <span class="prioridad-badge" data-prioridad="{{ strtolower($subtarea->prioridad) }}">
-                                                {{ ucfirst($subtarea->prioridad) }}
-                                            </span>
-
-                                            <span class="estado-badge estado-{{ strtolower(str_replace(' ', '', $subtarea->estado)) }}"
-                                                data-id="{{ $subtarea->id }}" data-current-state="{{ $subtarea->estado }}">
-                                                {{ $subtarea->estado }}
-                                            </span>
-                                        </div>
-
-                                        @if ($subtarea->fecha_inicio || $subtarea->fecha_fin)
-                                            <div class="task-dates">
-                                                @if ($subtarea->fecha_inicio)
-                                                    <div class="date-item">
-                                                        <span>{{ \Carbon\Carbon::parse($subtarea->fecha_inicio)->format('d/m/Y') }}</span>
-                                                    </div>
-                                                @endif
-                                                @if ($subtarea->fecha_fin)
-                                                    <div class="date-item">
-                                                        <span>{{ \Carbon\Carbon::parse($subtarea->fecha_fin)->format('d/m/Y') }}</span>
-                                                    </div>
-                                                @endif
+                                                <select class="estado-badge estado-{{ strtolower(str_replace(' ', '', $subtarea->estado)) }}"
+                                                    data-id="{{ $subtarea->id }}" data-current-state="{{ $subtarea->estado }}" aria-label="Cambiar estado">
+                                                    <option value="Pendiente" {{ $subtarea->estado === 'Pendiente' ? 'selected' : '' }}>Pendiente</option>
+                                                    <option value="En progreso" {{ $subtarea->estado === 'En progreso' ? 'selected' : '' }}>En progreso</option>
+                                                    <option value="Completada" {{ $subtarea->estado === 'Completada' ? 'selected' : '' }}>Completada</option>
+                                                </select>
                                             </div>
-                                        @endif
+
+                                            @if ($subtarea->fecha_inicio || $subtarea->fecha_limite)
+                                                <div class="task-dates">
+                                                    @if ($subtarea->fecha_inicio)
+                                                        <div class="date-item">
+                                                            <span> Fecha de Inicio: {{ \Carbon\Carbon::parse($subtarea->fecha_inicio)->format('d/m/Y') }}</span>
+                                                        </div>
+                                                    @endif
+                                                    @if ($subtarea->fecha_limite)
+                                                    <!-- │ -->
+                                                        <div class="date-item">
+                                                            <span> Fecha Límite: {{ \Carbon\Carbon::parse($subtarea->fecha_limite)->format('d/m/Y') }}</span>
+                                                        </div>
+                                                    @endif
+                                                </div>
+                                            @endif
+                                        </div>  
                                     </div>
                                 </div>
                             @empty
@@ -113,9 +114,6 @@
                             </div>
 
                             <div class="etapa-actions">
-                                <button class="btn-etapa deshacer-seleccionadas-btn" data-etapa-id="{{ $tareaGeneral->id }}" disabled>
-                                    ⎌ Deshacer (<span class="deshacer-count">0</span>)
-                                </button>
                                 <button class="btn-etapa completar-seleccionadas-btn" data-etapa-id="{{ $tareaGeneral->id }}" disabled>
                                     ✓ Completar (<span class="completar-count">0</span>)
                                 </button>
@@ -129,7 +127,7 @@
 </div> <!-- Cierre de .task-list-container -->
 
 <div id="tareas-success-toast"
-    style="display:none;position:fixed;top:30px;right:30px;z-index:9999;background:#4caf50;color:#fff;padding:16px 24px;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,0.15);font-size:16px;">
+    style="display:none;position:fixed;top:30px;right:30px;z-index:9999;background:#4caf50;color:#fff;padding: 16px;px 24px;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,0.15);font-size:16px;">
     ¡Tareas completadas!
 </div>
 
@@ -142,7 +140,7 @@
                 taskCard.classList.add('updating');
             }
 
-            fetch(`/tareas/${subtareaId}/update-status`, {
+            return fetch(`/tareas/${subtareaId}/update-status`, {
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json',
@@ -164,6 +162,7 @@
                             setTimeout(() => taskCard.classList.remove('error'), 2000);
                         }
                     }
+                    return data;
                 })
                 .catch(error => {
                     console.error('Error en la petición:', error);
@@ -171,10 +170,14 @@
                         taskCard.classList.add('error');
                         setTimeout(() => taskCard.classList.remove('error'), 2000);
                     }
+                    throw error;
                 })
                 .finally(() => {
                     if (taskCard) {
                         taskCard.classList.remove('updating');
+                        // Re-enable the estado select if present
+                        const sel = taskCard.querySelector('.estado-badge');
+                        if (sel && sel.tagName === 'SELECT') sel.disabled = false;
                     }
                 });
         }
@@ -185,27 +188,28 @@
             if (!taskCard) return; // Si no existe, sal
 
             const checkbox = taskCard.querySelector('.toggle-completada');
-            if (!checkbox) return; // Si no existe, sal
 
             const taskName = taskCard.querySelector('.task-name');
             const estadoBadge = taskCard.querySelector('.estado-badge');
 
-            // Actualizar checkbox
-            checkbox.checked = nuevoEstado === 'Completada';
+            // Actualizar checkbox (si existe)
+            if (checkbox) checkbox.checked = nuevoEstado === 'Completada';
 
             // Actualizar clases de completado
             if (nuevoEstado === 'Completada') {
                 taskCard.classList.add('completed');
-                if (taskName) taskName.classList.add('completed');
             } else {
                 taskCard.classList.remove('completed');
-                if (taskName) taskName.classList.remove('completed');
-                checkbox.disabled = false;
+                if (checkbox) checkbox.disabled = false;
             }
 
-            // Actualizar badge de estado
+            // Actualizar badge/select de estado
             if (estadoBadge) {
-                estadoBadge.textContent = nuevoEstado;
+                if (estadoBadge.tagName === 'SELECT') {
+                    estadoBadge.value = nuevoEstado;
+                } else {
+                    estadoBadge.textContent = nuevoEstado;
+                }
                 estadoBadge.className = `estado-badge estado-${nuevoEstado.toLowerCase().replace(' ', '')}`;
                 estadoBadge.setAttribute('data-current-state', nuevoEstado);
             }
@@ -230,26 +234,60 @@
             });
         }
 
-        // Acción para "Completar seleccionadas"
-        document.querySelectorAll('.completar-seleccionadas-btn').forEach(btn => {
-            btn.addEventListener('click', function (e) {
-                e.preventDefault();
-                const etapaCard = this.closest('.etapa-card');
-                const checkboxes = etapaCard.querySelectorAll('.toggle-completada:checked:not(:disabled)');
-                const tareasACompletar = Array.from(checkboxes).filter(checkbox => {
-                    const taskCard = checkbox.closest('.task-mini-card');
-                    return !taskCard.classList.contains('completed');
+        
+
+        document.querySelectorAll('.etapa-card').forEach(etapaCard => {
+            const btnCompletar = etapaCard.querySelector('.completar-seleccionadas-btn');
+            const selects = etapaCard.querySelectorAll('.estado-badge');
+
+            // Inicializar: permitir foco/uso en selects
+            selects.forEach(sel => sel.disabled = false);
+
+            function actualizarBotones() {
+                // Completar / Aplicar cambios: selects cuyo valor difiere del original
+                const cambios = Array.from(selects).filter(sel => {
+                    const original = sel.getAttribute('data-current-state');
+                    return sel.value !== original;
                 });
 
-                if (tareasACompletar.length === 0) {
+                // Construir el contenido del botón sin perder el span de conteo
+                if (cambios.length > 0) {
+                    const allToComplete = cambios.every(s => s.value === 'Completada');
+                    const label = allToComplete ? '✓ Completar' : 'Aplicar cambios';
+                    btnCompletar.disabled = false;
+                    btnCompletar.innerHTML = `${label} (<span class="completar-count">${cambios.length}</span>)`;
+                } else {
+                    btnCompletar.disabled = true;
+                    btnCompletar.innerHTML = '✓ Completar (<span class="completar-count">0</span>)';
+                }
+            }
+
+            // Actualiza los botones cada vez que cambia un select
+            selects.forEach(sel => {
+                sel.addEventListener('change', actualizarBotones);
+            });
+
+            // Inicializa el estado de los botones al cargar
+            actualizarBotones();
+
+            
+
+            // Acción al hacer click en "Completar / Aplicar cambios"
+            btnCompletar.addEventListener('click', function (e) {
+                e.preventDefault();
+                // Guardar referencia al botón original para poder restaurarlo al cancelar
+                const originalBtn = this;
+                // Recolectar selects con cambios
+                const cambios = Array.from(selects).filter(sel => sel.value !== sel.getAttribute('data-current-state'));
+                if (cambios.length === 0) {
                     alert('No hay tareas seleccionadas para completar.');
                     return;
                 }
 
                 // Animación: ocultar el botón original
-                this.classList.add('fade-out');
+                originalBtn.classList.add('fade-out');
                 setTimeout(() => {
-                    this.style.display = 'none';
+                    originalBtn.style.display = 'none';
 
                     // Crear botón de cancelar
                     const btnCancelar = document.createElement('button');
@@ -259,47 +297,37 @@
                     // Crear botón de confirmar
                     const btnConfirmar = document.createElement('button');
                     btnConfirmar.className = 'btn-etapa confirmar fade-in';
-                    btnConfirmar.textContent = '¿Confirmar selección?';
+                    btnConfirmar.textContent = `¿Confirmar cambios (${cambios.length})?`;
 
-                    // Insertar botones: primero cancelar, luego confirmar
                     const actions = this.parentElement;
-
-                    // OCULTAR el botón de deshacer mientras se confirma
-                    const btnDeshacer = actions.querySelector('.deshacer-seleccionadas-btn');
-                    if (btnDeshacer) {
-                        btnDeshacer.style.display = 'none';
-                    }
 
                     actions.appendChild(btnCancelar);
                     actions.appendChild(btnConfirmar);
 
                     // Confirmar
                     btnConfirmar.addEventListener('click', () => {
-                        tareasACompletar.forEach(checkbox => {
-                            const subtareaId = checkbox.dataset.id;
-                            actualizarEstadoTarea(subtareaId, 'Completada');
+                        // Ejecutar todas las peticiones y esperar a que terminen
+                        const promises = cambios.map(sel => {
+                            const subtareaId = sel.getAttribute('data-id');
+                            const nuevoEstado = sel.value;
+                            // marcar tarjeta como updating para feedback
+                            const card = document.querySelector(`[data-task-id="${subtareaId}"]`);
+                            if (card) card.classList.add('updating');
+                            return actualizarEstadoTarea(subtareaId, nuevoEstado).catch(err => ({ success: false, error: err }));
                         });
 
-                        // Cambiar texto y animar el botón de confirmar
-                        btnConfirmar.textContent = '¡Tarea(s) completada(s)!';
+                        // Cambiar texto y bloquear el botón mientras se ejecutan
+                        btnConfirmar.textContent = 'Procesando...';
                         btnConfirmar.classList.remove('confirmar');
-                        btnConfirmar.classList.add('completado');
                         btnConfirmar.disabled = true;
 
-                        // OCULTAR o DESHABILITAR el botón de deshacer
-                        const btnDeshacer = btn.parentElement.querySelector('.deshacer-seleccionadas-btn');
-                        if (btnDeshacer) {
-                            btnDeshacer.style.display = 'none'; // O usa: btnDeshacer.disabled = true;
-                        }
-
-                        // Opcional: animación de color para feedback
-                        btnConfirmar.style.background = '#4caf50';
-                        btnConfirmar.style.color = '#fff';
-
-                        // Restaurar el botón original o recargar después de un tiempo
-                        setTimeout(() => {
+                        Promise.all(promises).then(results => {
+                            // Después de aplicar todos los cambios recargar para mostrar el estado real
                             location.reload();
-                        }, 1200);
+                        }).catch(() => {
+                            // En caso de error, recargar también para intentar mostrar el estado real y limpiar UI
+                            location.reload();
+                        });
                     });
 
                     // Cancelar
@@ -311,77 +339,18 @@
                         setTimeout(() => {
                             btnConfirmar.remove();
                             btnCancelar.remove();
-                            btn.style.display = '';
-                            btn.classList.remove('fade-out');
-                            btn.classList.add('fade-in');
-                            setTimeout(() => btn.classList.remove('fade-in'), 250);
+                            // Restaurar el botón original
+                            originalBtn.style.display = '';
+                            originalBtn.classList.remove('fade-out');
+                            originalBtn.classList.add('fade-in');
+                            setTimeout(() => originalBtn.classList.remove('fade-in'), 250);
 
-                            // MOSTRAR de nuevo el botón de deshacer
-                            if (btnDeshacer) {
-                                btnDeshacer.style.display = '';
-                            }
+                            // no hay botón 'Deshacer' — nada que mostrar
+                            // Recalcular botones (en caso de que selects hayan cambiado)
+                            actualizarBotones();
                         }, 250);
                     });
                 }, 250);
-            });
-        });
-
-        document.querySelectorAll('.etapa-card').forEach(etapaCard => {
-            const btnDeshacer = etapaCard.querySelector('.deshacer-seleccionadas-btn');
-            const deshacerCount = btnDeshacer.querySelector('.deshacer-count');
-            const btnCompletar = etapaCard.querySelector('.completar-seleccionadas-btn');
-            const completarCount = btnCompletar.querySelector('.completar-count');
-            const checkboxes = etapaCard.querySelectorAll('.toggle-completada');
-
-            // Permitir seleccionar tareas completadas para deshacer
-            checkboxes.forEach(checkbox => {
-                const taskCard = checkbox.closest('.task-mini-card');
-                if (taskCard.classList.contains('completed')) {
-                    checkbox.disabled = false;
-                }
-            });
-
-            function actualizarBotones() {
-                // Deshacer: tareas completadas desmarcadas
-                const desmarcadas = Array.from(checkboxes).filter(checkbox => {
-                    const taskCard = checkbox.closest('.task-mini-card');
-                    return taskCard.classList.contains('completed') && !checkbox.checked;
-                });
-                deshacerCount.textContent = desmarcadas.length;
-                btnDeshacer.disabled = desmarcadas.length === 0;
-
-                // Completar: tareas NO completadas marcadas
-                const seleccionadas = Array.from(checkboxes).filter(checkbox => {
-                    const taskCard = checkbox.closest('.task-mini-card');
-                    return !taskCard.classList.contains('completed') && checkbox.checked;
-                });
-                completarCount.textContent = seleccionadas.length;
-                btnCompletar.disabled = seleccionadas.length === 0;
-            }
-
-            // Actualiza los botones cada vez que cambia un checkbox
-            checkboxes.forEach(checkbox => {
-                checkbox.addEventListener('change', actualizarBotones);
-            });
-
-            // Inicializa el estado de los botones al cargar
-            actualizarBotones();
-
-            // Acción al hacer click en "Deshacer"
-            btnDeshacer.addEventListener('click', function () {
-                const desmarcadas = Array.from(checkboxes).filter(checkbox => {
-                    const taskCard = checkbox.closest('.task-mini-card');
-                    return taskCard.classList.contains('completed') && !checkbox.checked;
-                });
-                if (desmarcadas.length === 0) return;
-                desmarcadas.forEach(checkbox => {
-                    const subtareaId = checkbox.dataset.id;
-                    actualizarEstadoTarea(subtareaId, 'Pendiente');
-                });
-                // Feedback visual
-                btnDeshacer.textContent = 'Tarea quitada';
-                btnDeshacer.disabled = true;
-                setTimeout(() => location.reload(), 1200);
             });
         });
 
@@ -397,6 +366,20 @@
                 footer.style.display = isCollapsed ? 'none' : '';
             });
 
+        });
+
+        // Manejar cambios en los selects de estado dentro de cada etapa (delegación)
+        document.querySelectorAll('.etapa-card').forEach(card => {
+            card.addEventListener('change', function (e) {
+                const target = e.target;
+                if (!target) return;
+                if (target.classList && target.classList.contains('estado-badge') && target.tagName === 'SELECT') {
+                    const subtareaId = target.getAttribute('data-id');
+                    const nuevoEstado = target.value;
+                    // No deshabilitamos el select aquí para permitir re-apertura; se gestiona en la respuesta.
+                    actualizarEstadoTarea(subtareaId, nuevoEstado);
+                }
+            });
         });
     });
 

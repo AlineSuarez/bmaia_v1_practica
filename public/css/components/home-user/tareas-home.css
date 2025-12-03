@@ -4,6 +4,7 @@
     --primary-color: #f59e0b;
     --primary-dark: #d97706;
     --primary-light: #fbbf24;
+    --secondary-light: #f9f924;
     --secondary-color: #10b981;
     --accent-color: #3b82f6;
     /* Colores de estado */
@@ -174,6 +175,13 @@
     border-radius: 2px;
 }
 
+.apiario-title-h2 {
+    transform: translateY(20px);
+    font-size: var(--font-size-2xl);
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
 .apiario-subtitle {
     font-size: var(--font-size-base);
     color: var(--text-secondary);
@@ -185,9 +193,14 @@
 .apiario-controls {
     display: flex;
     flex-direction: column;
+    position: sticky;
+    z-index: 12;
+    top: 0;
     gap: var(--spacing-lg);
-    margin-bottom: var(--spacing-xl);
-    padding: 0 var(--spacing-sm);
+    margin-bottom: var(--spacing-xs);
+    padding: var(--spacing-sm) var(--spacing-sm);
+    background-color:  #F9FAFB;
+    border-bottom: 1px solid var(--border-light);
 }
 
 .view-controls {
@@ -227,23 +240,22 @@
 
 /* ===== CONTROLES DE ADMINISTRACIÓN ===== */
 .admin-controls {
-    display: flex;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
     gap: var(--spacing-md);
-    flex-wrap: wrap;
     justify-content: center;
     align-items: center;
 }
 
 .admin-controls .btn-miel {
     min-width: 180px;
-    padding: var(--spacing-md) var(--spacing-lg);
+    padding: var(--spacing-md) var(--spacing-sm);
     font-size: var(--font-size-sm);
     font-weight: 600;
     white-space: nowrap;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: var(--spacing-sm);
 }
 
 .btn-miel {
@@ -275,6 +287,79 @@
 
 .btn-miel:active {
     transform: translateY(0);
+}
+
+.btn-miel.activo{
+    background: var(--success-color);
+}
+.btn-miel.activo:hover{
+    background: #0fad78;
+    box-shadow: var(--shadow-sm);
+}
+
+/* ========================================
+   MODAL VISTA PREVIA PDF
+   ======================================== */
+
+/* Asegurar z-index correcto del modal por encima del backdrop */
+#pdfPreviewModal{
+    z-index: 1055;
+}
+
+#pdfPreviewModal .modal-dialog {
+    z-index: 1056;
+    margin: 1.75rem auto;
+}
+
+/* Backdrop específico para este modal */
+#pdfPreviewModal ~ .modal-backdrop {
+    z-index: 1050;
+}
+
+
+/* ===== ESTILOS ESPECÍFICOS PARA MODAL DE PDF ===== */
+/* --- Fix para que los modales sean interactivos --- */
+
+/* Evita que el loader o pseudo-elementos bloqueen el modal */
+.modal-loading::after,
+.modal-loading::before {
+    z-index: 1049 !important; /* debajo del modal (1050-1056) */
+}
+
+.modal-loading {
+    pointer-events: auto !important;
+}
+
+/* Cuando se usa un loader, no debe bloquear clics fuera del área visible */
+.global-loader[style*="opacity: 0"],
+.global-loader[style*="display: none"] {
+    pointer-events: none !important;
+}
+/* -------------------------------------------- */
+
+
+/* Iframe debe ser completamente interactivo */
+#pdfPreviewIframe {
+    pointer-events: auto;
+    background-color: #f5f5f5;
+}
+
+/* Loader del PDF */
+#pdf-loader .spinner-border {
+    border-width: 0.35rem;
+}
+
+/* Asegurar que el modal-content sea interactivo */
+#pdfPreviewModal .modal-content {
+    pointer-events: auto;
+    z-index: 1;
+}
+
+/* Responsive */
+@media (max-width: 576px) {
+    #pdfPreviewModal .modal-dialog {
+        margin: 0;
+    }
 }
 
 /* ===== PANEL DE GESTIÓN ===== */
