@@ -22,9 +22,9 @@ class AlertController extends Controller
             $data = $request->validate([
                 'title'       => 'required|string|max:255',
                 'description' => 'nullable|string',
-                'type'        => 'required|in:temperature,inspection,treatment,harvest,priority_change',
+                'type'        => 'required|in:temperature,inspection,treatment,harvest',
                 'date'        => 'required|date',
-                'priority'    => 'required|in:low,medium,high,baja,media,alta,urgente',
+                'priority'    => 'required|in:low,medium,high',
             ]);
 
             $alert = Alert::create([
@@ -53,9 +53,9 @@ class AlertController extends Controller
         $data = $request->validate([
             'title'       => 'required|string',
             'description' => 'nullable|string',
-            'type'        => 'required|in:temperature,inspection,treatment,harvest,priority_change',
+            'type'        => 'required|in:temperature,inspection,treatment,harvest',
             'date'        => 'required|date',
-            'priority'    => 'required|in:low,medium,high,baja,media,alta,urgente',
+            'priority'    => 'required|in:low,medium,high',
         ]);
         $alert->update($data);
         return response()->json($alert);

@@ -35,39 +35,16 @@
         th {
             background-color: #ddd;
         }
-
-        /* Prioridad: texto normal + círculo de color antes del texto
-           Texto en negro; evitar que el círculo y el texto se apilen */
-        .prioridad-urgente,
-        .prioridad-alta,
-        .prioridad-media,
+        .prioridad-alta {
+            color: #b30000;
+            font-weight: bold;
+        }
+        .prioridad-media {
+            color: #b36b00;
+        }
         .prioridad-baja {
-            font-weight: normal;
-            color: #000000;
-            white-space: nowrap;
-            vertical-align: middle;
+            color: #006600;
         }
-
-        /* Indicador: usar marcado inline para mayor compatibilidad con PDF renderers */
-        .prio {
-            display: inline-block;
-            white-space: nowrap;
-            vertical-align: middle;
-        }
-
-        .prio-dot {
-            display: inline-block;
-            width: 0.9em;
-            height: 0.9em;
-            border-radius: 50%;
-            margin-right: 0.45em;
-            vertical-align: middle;
-        }
-
-        .prioridad-urgente .prio-dot { background-color: red; }
-        .prioridad-alta .prio-dot { background-color: yellow; }
-        .prioridad-media .prio-dot { background-color: green; }
-        .prioridad-baja .prio-dot { background-color: lightblue; }
         .estado {
             font-style: italic;
         }
@@ -96,10 +73,10 @@
                         <td>{{ \Carbon\Carbon::parse($tarea->fecha_inicio)->format('d/m/Y') }}</td>
                         <td>{{ \Carbon\Carbon::parse($tarea->fecha_limite)->format('d/m/Y') }}</td>
                         <td class="prioridad-{{ strtolower($tarea->prioridad ?? 'media') }}">
-                            <span class="prio"><span class="prio-dot" aria-hidden="true"></span>{{ ucfirst($tarea->prioridad ?? 'Media') }}</span>
+                            {{ ucfirst($tarea->prioridad ?? 'Media') }}
                         </td>
                         <td class="estado">
-                            {{ ucfirst($tarea->estado ?? 'Pendiente') }}
+                            {{ $tarea->completada ? 'Completada' : ($tarea->archivada ? 'Archivada' : 'Pendiente') }}
                         </td>
                     </tr>
                 @endforeach

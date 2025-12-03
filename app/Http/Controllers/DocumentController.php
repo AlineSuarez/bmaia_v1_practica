@@ -596,46 +596,30 @@ class DocumentController extends Controller
         return $this->qrPdf($apiario, $colmena);
     }
 
-public function imprimirTodasSubtareas()
-{
-    // Obtener el usuario autenticado
-    $user = Auth::user();
-    
-    // Obtener subtareas no archivadas con la relación a tarea general DEL USUARIO ACTUAL
-    $subtareas = SubTarea::with('tareaGeneral')
-        ->where('user_id', $user->id)
-        ->where('archivada', false)
-        ->get();
+    public function imprimirTodasSubtareas()
+    {
+        $subtareas = SubTarea::with('tareaGeneral')
+            ->where('archivada', false)
+            ->get();
+        // 🔹 Eliminar duplicados por nombre normalizado
+        $subtareas = $subtareas
+            ->map(function ($t) {
+                $t->nombre_key = Str::of($t->nombre)->squish()->lower();
+                return $t;
+            })
+            ->unique('nombre_key') // quita duplicados
+            ->values();
+        $fechaGeneracion = $this->obtenerFechaHoraLocal();
+        $pdf = Pdf::loadView('documents.tareas-todas', compact('subtareas', 'fechaGeneracion'));
+        $pdf->setPaper('A4', 'portrait');
+        $pdf->setOptions([
+            'isHtml5ParserEnabled' => true,
+            'isPhpEnabled' => false,
+            'defaultFont' => 'DejaVu Sans',
+            'enable_remote' => false,
+        ]);
 
-    // Log para debugging
-    Log::info('Generando PDF de tareas', [
-        'user_id' => $user->id,
-        'total_subtareas' => $subtareas->count(),
-        'nombres' => $subtareas->pluck('nombre')->toArray()
-    ]);
-
-    // Normalizar y eliminar duplicados por nombre
-    $subtareas = $subtareas
-        ->map(function ($t) {
-            $t->nombre_key = Str::of($t->nombre)->squish()->lower();
-            return $t;
-        })
-        ->unique('nombre_key')
-        ->values();
-
-    $fechaGeneracion = $this->obtenerFechaHoraLocal();
-
-    $pdf = Pdf::loadView('documents.tareas-todas', compact('subtareas', 'fechaGeneracion'));
-    $pdf->setPaper('A4', 'portrait');
-    $pdf->setOptions([
-        'isHtml5ParserEnabled' => true,
-        'isPhpEnabled' => false,
-        'defaultFont' => 'DejaVu Sans',
-        'enable_remote' => false,
-    ]);
-
-    // Siempre retornar stream para vista previa en iframe
-    return $pdf->stream('Tareas_Activas.pdf');
-}
+        return $pdf->download('Tareas_Activas.pdf');
+    }
 
 }

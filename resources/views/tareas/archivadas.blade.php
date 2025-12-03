@@ -58,54 +58,59 @@
                 @else
                     <!-- Lista de tareas archivadas -->
                     <div class="tareas-archivadas-container">
-                        <div class="tareas-lista">
+                        <div class="tareas-grid">
                             @foreach ($tareasArchivadas as $tarea)
-                                <div class="tarea-item" data-tarea-id="{{ $tarea->id }}">
-                                    <!-- Icono -->
-                                    <div class="item-icon">
-                                        <i class="fa fa-archive"></i>
+                                <div class="tarea-card" data-tarea-id="{{ $tarea->id }}">
+                                    <div class="card-header">
+                                        <div class="card-icon">
+                                            <i class="fa fa-archive"></i>
+                                        </div>
+                                        <h4 class="card-title">{{ $tarea->nombre }}</h4>
                                     </div>
 
-                                    <!-- Información de la tarea -->
-                                    <div class="item-info">
-                                        <h4 class="item-title">{{ $tarea->nombre }}</h4>
-                                        
-                                        <div class="item-details">
-                                            <span class="detail-item">
+                                    <div class="card-body">
+                                        <div class="card-dates">
+                                            <div class="date-item">
                                                 <i class="fa fa-calendar-day"></i>
-                                                Inicio: {{ \Carbon\Carbon::parse($tarea->fecha_inicio)->format('d/m/Y') }}
-                                            </span>
-                                            <span class="detail-separator">•</span>
-                                            <span class="detail-item">
+                                                <span class="date-label">Inicio:</span>
+                                                <span class="date-value">{{ \Carbon\Carbon::parse($tarea->fecha_inicio)->format('d/m/Y') }}</span>
+                                            </div>
+                                            <div class="date-item">
                                                 <i class="fa fa-calendar-check"></i>
-                                                Límite: {{ \Carbon\Carbon::parse($tarea->fecha_limite)->format('d/m/Y') }}
-                                            </span>
-                                            <span class="detail-separator">•</span>
+                                                <span class="date-label">Límite:</span>
+                                                <span class="date-value">{{ \Carbon\Carbon::parse($tarea->fecha_limite)->format('d/m/Y') }}</span>
+                                            </div>
+                                        </div>
+
+                                        <div class="card-meta">
                                             <div class="priority-badge priority-{{ strtolower($tarea->prioridad ?? 'media') }}">
-                                                <i class="fa fa-circle"></i>
+                                                <i class="fa fa-flag"></i>
                                                 <span>{{ ucfirst($tarea->prioridad ?? 'Media') }}</span>
                                             </div>
                                         </div>
                                     </div>
 
-                                    <!-- Acciones -->
-                                    <div class="item-actions">
-                                        <form action="{{ route('tareas.restaurar', $tarea->id) }}" method="POST" class="restore-form">
-                                            @csrf
-                                            <button class="btn-restaurar" type="submit" title="Restaurar tarea">
-                                                <i class="fa fa-rotate-left"></i>
-                                                <span>Restaurar</span>
-                                            </button>
-                                        </form>
+                                    <div class="card-actions">
+                                        <div class="actions-buttons">
+                                            <!-- Restaurar -->
+                                            <form action="{{ route('tareas.restaurar', $tarea->id) }}" method="POST" class="restore-form">
+                                                @csrf
+                                                <button class="btn-restaurar" type="submit" title="Restaurar tarea">
+                                                    <i class="fa fa-rotate-left"></i>
+                                                    <span>Restaurar</span>
+                                                </button>
+                                            </form>
 
-                                        <form action="{{ route('tareas.destroy', $tarea->id) }}" method="POST" class="delete-form" onsubmit="return confirm('¿Estás seguro de eliminar esta tarea permanentemente?');">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button class="btn-eliminar" type="submit" title="Eliminar tarea">
-                                                <i class="fa fa-trash"></i>
-                                                <span>Eliminar</span>
-                                            </button>
-                                        </form>
+                                            <!-- Eliminar -->
+                                            <form action="{{ route('tareas.destroy', $tarea->id) }}" method="POST" class="delete-form" onsubmit="return confirm('¿Estás seguro de eliminar esta tarea permanentemente?');">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button class="btn-eliminar" type="submit" title="Eliminar tarea">
+                                                    <i class="fa fa-trash"></i>
+                                                    <span>Eliminar</span>
+                                                </button>
+                                            </form>
+                                        </div>
                                     </div>
                                 </div>
                             @endforeach

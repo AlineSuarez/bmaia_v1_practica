@@ -33,10 +33,6 @@ use App\Http\Controllers\TareaApiarioController;
 
 Auth::routes();
 
-// Ruta para vista previa / descarga del PDF de todas las tareas
-Route::get('/tareas/imprimir-todas', [App\Http\Controllers\DocumentController::class, 'imprimirTodasSubtareas'])
-    ->name('tareas.imprimirTodas')
-    ->middleware('auth');
 // Proxy para reverse geocoding (Nominatim)
 Route::get('/reverse-geocode', function (Illuminate\Http\Request $request) {
     $lat = $request->query('lat');
@@ -54,16 +50,6 @@ Route::view('/politica-de-cookies', 'legal.cookies')->name('cookies');
 // Login con Google usando controlador
 Route::get('auth/google', [GoogleController::class, 'redirectToGoogle'])->name('auth.google');
 Route::get('auth/google/callback', [GoogleController::class, 'handleGoogleCallback']);
-
-// Google Calendar - Autorización y sincronización
-Route::middleware(['auth'])->group(function () {
-    Route::get('auth/google-calendar', [GoogleController::class, 'redirectToGoogleCalendar'])->name('auth.google.calendar');
-    Route::get('auth/google-calendar/callback', [GoogleController::class, 'handleGoogleCalendarCallback'])->name('auth.google.calendar.callback');
-    Route::get('google-calendar/status', [TaskController::class, 'checkGoogleCalendarStatus'])->name('google.calendar.status');
-    Route::get('google-calendar/sync-status', [GoogleController::class, 'getSyncStatus'])->name('google.calendar.sync.status');
-    Route::post('google-calendar/sync-batch', [GoogleController::class, 'syncBatch'])->name('google.calendar.sync.batch');
-    Route::delete('google-calendar/delete-all', [GoogleController::class, 'deleteAllCalendarEvents'])->name('google.calendar.delete.all');
-});
 
 /*
 Route::middleware(['auth'])->group(function () {
@@ -162,7 +148,6 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/user/settings/preferences/date-format', [PreferencesController::class, 'updateDateFormat'])->name('preferences.updateDateFormat');
 
     // Alertas
-    Route::get('/alerts', [AlertController::class, 'index'])->name('alerts.api'); // API para notificaciones
     Route::get('/user/settings/alerts', [AlertController::class, 'index'])->name('alerts.index');
     Route::post('/user/settings/alerts', [AlertController::class, 'store'])->name('alerts.store');
     Route::put('/user/settings/alerts/{alert}', [AlertController::class, 'update'])->name('alerts.update');
@@ -334,10 +319,6 @@ Route::middleware(['auth', 'check.payment'])->group(function () {
     Route::get('/tareas/{id}', [TaskController::class, 'show'])->name('tareas.show');
     Route::post('/tareas/update/{id}', [TaskController::class, 'guardarCambios']);
     Route::patch('/tareas/{id}/update', [TaskController::class, 'updateTarea']);
-    // Actualizar plan de trabajo (bulk): incrementar año y actualizar estado/fechas
-    Route::post('/tareas/actualizar-plan-trabajo', [TaskController::class, 'actualizarPlanTrabajo'])->name('tareas.actualizarPlanTrabajo');
-    // Ruta para imprimir todas las tareas (PDF)
-    Route::get('/tareas/imprimir-todas', [App\Http\Controllers\DocumentController::class, 'imprimirTodasSubtareas'])->name('tareas.imprimirTodas')->middleware('auth');
     Route::get('/todas-las-tareas/imprimir', [DocumentController::class, 'imprimirTodasSubtareas'])->name('tareas.imprimirTodas');
     Route::get('/datos-subtareas', [TaskController::class, 'obtenerSubtareasJson'])->name('tareas.datos');
     Route::get('/tareas/calendario', [TaskController::class, 'calendario'])->name('tareas.calendario');
