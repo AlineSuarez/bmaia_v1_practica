@@ -1,0 +1,24 @@
+<?php
+
+namespace Database\Seeders;
+
+use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use Illuminate\Database\Seeder;
+use App\Models\Admin;
+
+class AdminsTableSeeder extends Seeder
+{
+    /**
+     * Run the database seeds.
+     */
+    public function run(): void
+    {
+        Admin::updateOrCreate(
+            ['email' => 'admin@bmaia.cl'],
+            [
+                'name' => 'Administrador',
+                'password' => bcrypt('admin123'),
+            ]
+        );
+    }
+}
