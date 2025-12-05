@@ -14,7 +14,8 @@
                     justify-content: flex-end;
                     width: 100%;
                     left: -23px;
-                    gap: 10px;
+                    bottom: 80px;
+                    gap: 15px;
                 `;
 
                 const editContainer = document.querySelector('.buttons-edit-container');

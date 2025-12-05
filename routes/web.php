@@ -323,7 +323,9 @@ Route::middleware(['auth', 'check.payment'])->group(function () {
     Route::post('/inventario/addPedido', [App\Http\Controllers\InventoryController::class, 'addPedido'])->name('inventario.addPedido');
     Route::get('/inventario/verPedidos', [App\Http\Controllers\InventoryController::class, 'verPedidos'])->name('inventario.pedidos');
     Route::delete('/inventario/deletePedido/{id}', [App\Http\Controllers\InventoryController::class, 'deletePedido'])->name('inventario.deletePedido');
-
+    Route::post('/inventario/archivarPedido/{id}', [App\Http\Controllers\InventoryController::class, 'archivarPedido'])->name('inventario.archivarPedido');
+    Route::post('/inventario/buscarProducto', [App\Http\Controllers\InventoryController::class, 'buscarProducto'])->name('inventario.buscarProducto');
+    
     // Zonificación
     Route::get('/zonificacion', [ZonificacionController::class, 'index'])->name('zonificacion');
 

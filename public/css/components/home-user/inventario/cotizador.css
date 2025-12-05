@@ -1,0 +1,1737 @@
+/* Variables de color del sistema principal */
+:root {
+    --primary-color: #f89d13;
+    --secondary-color: #fafafa;
+    --border-color: #e5e7eb;
+    --text-dark: #374151;
+    --text-light: #6b7280;
+    --error-color: #ef4444;
+    --success-color: #10b981;
+    --highlight-color: #17a2b8;
+}
+
+/* ============================================
+   ESTILOS PARA BOTONES PRINCIPALES
+   ============================================ */
+.btn {
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: all 0.2s;
+    text-align: center;
+}
+
+.btn:hover:not(:disabled) {
+    background: #e08a0f;
+    transform: translateY(-1px);
+}
+
+.btn:disabled {
+    background: rgba(248, 157, 19, 0.4);
+    cursor: not-allowed;
+    transform: none;
+}
+
+.btn a {
+    color: white;
+    text-decoration: none;
+}
+
+.cotizador-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.cotizador-buttons-right {
+    display: flex;
+    gap: 10px;
+}
+
+/* ============================================
+   CONTENEDORES Y LAYOUT
+   ============================================ */
+.hidden {
+    visibility: hidden !important;
+    position: absolute !important;
+    opacity: 0 !important;
+}
+
+/* ============================================
+   ESTILOS PARA CARDS DE LA API (TIENDA OFICIAL)
+   ============================================ */
+.api-card {
+    display: grid;
+    grid-template-columns: 140px auto;
+    gap: 20px;
+    padding: 15px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    margin-bottom: 15px;
+    background: white;
+    transition: all 0.3s;
+}
+
+.api-card:hover {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    border-color: var(--primary-color);
+}
+
+.api-card img {
+    width: 140px;
+    height: 140px;
+    object-fit: cover;
+    border-radius: 5px;
+    flex-shrink: 0;
+}
+
+.api-info {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.api-info .nombre {
+    font-size: 18px;
+    font-weight: bold;
+    color: var(--text-dark);
+    margin: 0;
+}
+
+.api-info .precio {
+    font-size: 24px;
+    font-weight: bold;
+    color: var(--success-color);
+    margin: 5px 0;
+}
+
+.api-info .descripcion {
+    font-size: 14px;
+    color: var(--text-light);
+    line-height: 1.4;
+    margin: 5px 0;
+}
+
+.api-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+    flex-wrap: wrap;
+}
+
+.api-actions a {
+    color: var(--highlight-color);
+    text-decoration: none;
+    font-size: 14px;
+    padding: 8px 15px;
+    border: 1px solid var(--highlight-color);
+    border-radius: 5px;
+    transition: all 0.3s;
+}
+
+.api-actions a:hover {
+    background: var(--highlight-color);
+    color: white;
+}
+
+.api-actions button {
+    background: var(--success-color);
+    color: white;
+    border: none;
+    padding: 8px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+    transition: background 0.3s;
+}
+
+.api-actions button:hover {
+    background: #0ea572;
+}
+
+/* ============================================
+   ESTILOS PARA CAROUSEL DE DESTACADOS
+   ============================================ */
+#carouselDestacados::-webkit-scrollbar {
+    height: 8px;
+}
+
+#carouselDestacados::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+
+#carouselDestacados::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 10px;
+}
+
+#carouselDestacados::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+#seccionDestacados {
+    background: linear-gradient(135deg, #fef3e2 0%, #fce8c4 100%);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    margin-bottom: 30px;
+    border: 2px solid #f89d13;
+}
+
+#seccionDestacados h3 {
+    margin-top: 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--primary-color);
+}
+
+.scraping-card {
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.scraping-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+}
+
+.badge-destacado {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-weight: bold;
+    font-size: 12px;
+    color: white;
+    z-index: 5;
+    text-transform: uppercase;
+}
+
+.carousel-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 10;
+    background: rgba(248, 157, 19, 0.8);
+    color: white;
+    border: none;
+    padding: 15px 10px;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background 0.3s;
+}
+
+.carousel-btn:hover {
+    background: var(--primary-color);
+}
+
+.carousel-btn:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+}
+
+/* ============================================
+   ESTILOS PARA LISTADO HORIZONTAL (TIENDAS ONLINE Y MIS PEDIDOS)
+   ============================================ */
+.producto-horizontal,
+.product-card {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 15px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    margin-bottom: 15px;
+    background: white;
+    transition: all 0.3s;
+}
+
+.producto-horizontal:hover,
+.product-card:hover {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    border-color: var(--primary-color);
+}
+
+.producto-horizontal img,
+.product-card > div:first-child img {
+    width: 120px;
+    height: 120px;
+    object-fit: cover;
+    border-radius: 5px;
+    flex-shrink: 0;
+    border: 1px solid var(--border-color);
+}
+
+.producto-info-horizontal,
+.product-info {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.producto-nombre-horizontal,
+.product-info .nombre {
+    font-size: 18px;
+    font-weight: bold;
+    color: var(--text-dark);
+    margin: 0;
+}
+
+.producto-tienda-horizontal,
+.product-info .proveedor {
+    font-size: 14px;
+    color: var(--text-light);
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.producto-link-horizontal,
+.product-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+    flex-wrap: wrap;
+}
+
+.producto-link-horizontal a,
+.product-actions a {
+    color: var(--highlight-color);
+    text-decoration: none;
+    font-size: 14px;
+    padding: 8px 15px;
+    border: 1px solid var(--highlight-color);
+    border-radius: 5px;
+    transition: all 0.3s;
+}
+
+.producto-link-horizontal a:hover,
+.product-actions a:hover {
+    background: var(--highlight-color);
+    color: white;
+}
+
+.producto-precio-horizontal,
+.product-info .precio {
+    font-size: 24px;
+    font-weight: bold;
+    color: var(--success-color);
+    margin: 0 30px;
+    flex-shrink: 0;
+}
+
+.producto-accion-horizontal,
+.product-actions {
+    flex-shrink: 0;
+}
+
+.producto-accion-horizontal button,
+.product-actions button,
+.btn-confirmar,
+.btn-eliminar {
+    background: var(--success-color);
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+    transition: background 0.3s;
+}
+
+.producto-accion-horizontal button:hover,
+.product-actions button:hover,
+.btn-confirmar:hover {
+    background: #0ea572;
+}
+
+.btn-eliminar {
+    background: var(--error-color) !important;
+}
+
+.btn-eliminar:hover {
+    background: #dc2626;
+}
+
+.product-info .descripcion {
+    font-size: 14px;
+    color: var(--text-light);
+    line-height: 1.4;
+    margin: 5px 0;
+}
+
+/* ============================================
+   BARRA DE BÚSQUEDA Y FILTROS
+   ============================================ */
+.barra-busqueda {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.barra-busqueda input {
+    width: 350px;
+    padding: 10px 15px;
+    border: 1px solid var(--border-color);
+    border-radius: 5px;
+    font-size: 14px;
+    transition: border-color 0.2s;
+}
+
+.barra-busqueda input:focus {
+    border-color: var(--primary-color);
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(248, 157, 19, 0.1);
+}
+
+.btn-filtro {
+    background: var(--text-dark);
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 20px;
+    transition: all 0.3s;
+}
+
+.btn-filtro:hover {
+    background: var(--primary-color);
+    transform: translateY(-1px);
+}
+
+/* ============================================
+   MODAL DE FILTROS Y MODALES GENERALES
+   ============================================ */
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.65);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 999;
+}
+
+.modal-overlay.active {
+    display: flex;
+}
+
+/* Modal caja estándar */
+.modal-content,
+.modal-box {
+    background: white;
+    padding: 30px;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 1200px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+    animation: fadeIn 0.2s ease-in-out;
+    margin: auto;
+}
+
+.modal-content h3,
+.modal-box h3 {
+    margin-top: 0;
+    color: var(--text-dark);
+    font-size: 1.4rem;
+    font-weight: 600;
+}
+
+.modal-content label,
+.modal-box label {
+    display: block;
+    margin-bottom: 10px;
+    font-weight: 600;
+    color: var(--text-dark);
+}
+
+.modal-content select,
+.modal-box select,
+.modal-content input,
+.modal-box input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid var(--border-color);
+    border-radius: 5px;
+    font-size: 14px;
+    margin-bottom: 20px;
+    transition: border-color 0.2s;
+}
+
+.modal-content select:focus,
+.modal-box select:focus,
+.modal-content input:focus,
+.modal-box input:focus {
+    border-color: var(--primary-color);
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(248, 157, 19, 0.1);
+}
+
+/* Modal historial grande */
+.modal-box-historial {
+    background: #fff;
+    width: 95%;
+    max-width: 95vw;
+    height: 95vh;
+    padding: 0;
+    border-radius: 10px;
+    animation: fadeIn 0.2s ease-in-out;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.25);
+    margin: auto;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.modal-historial-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 25px;
+    border-bottom: 1px solid #ddd;
+    background: #f8f9fa;
+}
+
+.modal-historial-header h5 {
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #333;
+}
+
+.modal-historial-close {
+    background: none;
+    border: none;
+    font-size: 28px;
+    cursor: pointer;
+    color: #666;
+    line-height: 1;
+    padding: 0;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.2s;
+}
+
+.modal-historial-close:hover {
+    color: #000;
+}
+
+.modal-historial-body {
+    flex: 1;
+    overflow: hidden;
+}
+
+.modal-historial-body iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+
+@keyframes fadeIn {
+    from { 
+        opacity: 0; 
+        transform: scale(0.95); 
+    }
+    to { 
+        opacity: 1; 
+        transform: scale(1); 
+    }
+}
+
+.modal-botones {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+}
+
+.modal-botones button,
+.btn-primary,
+.btn-secondary {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    transition: all 0.2s;
+}
+
+.btn-aplicar-filtro,
+.btn-primary {
+    background: var(--success-color);
+    color: white;
+}
+
+.btn-aplicar-filtro:hover,
+.btn-primary:hover {
+    background: #0ea572;
+    transform: translateY(-1px);
+}
+
+.btn-quitar-filtro {
+    background: var(--error-color);
+    color: white;
+}
+
+.btn-quitar-filtro:hover {
+    background: #dc2626;
+    transform: translateY(-1px);
+}
+
+.btn-cerrar-modal,
+.btn-secondary {
+    background: #6c757d;
+    color: white;
+}
+
+.btn-cerrar-modal:hover,
+.btn-secondary:hover {
+    background: #5a6268;
+    transform: translateY(-1px);
+}
+
+/* ============================================
+   PAGINACIÓN
+   ============================================ */
+#paginacionScraping,
+.pagination-container {
+    display: flex;
+    gap: 5px;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+#paginacionScraping button,
+.pagination li a,
+.pagination li span {
+    padding: 8px 12px;
+    border: 1px solid var(--border-color);
+    background: white;
+    color: var(--text-dark);
+    cursor: pointer;
+    border-radius: 3px;
+    transition: all 0.3s;
+    font-weight: 500;
+    text-decoration: none;
+    display: inline-block;
+}
+
+#paginacionScraping button:hover,
+.pagination li a:hover {
+    background: var(--secondary-color);
+    border-color: var(--primary-color);
+}
+
+#paginacionScraping button.active,
+.pagination li.active a {
+    background: var(--primary-color);
+    color: white;
+    border-color: var(--primary-color);
+}
+
+.pagination {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    gap: 5px;
+}
+
+.pagination li {
+    display: inline-block;
+}
+
+.pagination li.disabled span {
+    color: #ccc;
+    cursor: not-allowed;
+}
+
+/* ============================================
+   ESTILOS ADICIONALES
+   ============================================ */
+.empty-state {
+    text-align: center;
+    padding: 40px;
+    color: var(--text-light);
+    font-size: 16px;
+}
+
+.cards-container {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+/* Ajuste para inputs tipo number */
+input[type="number"] {
+    width: 100%;
+}
+
+/* Estilos para checkboxes en subcategorías */
+.modal-box label[style*="display:block"] {
+    font-weight: normal;
+    margin-bottom: 5px;
+}
+
+/* Formateo de precios */
+.price-display,
+.price-real {
+    width: 100%;
+}
+
+/* ============================================
+   ESTILOS ADICIONALES PARA COTIZADOR
+   ============================================ */
+
+/* Barra de búsqueda API */
+.barra-busqueda-api {
+    margin-bottom: 20px;
+    display: flex;
+    gap: 10px;
+}
+
+.barra-busqueda-api input {
+    width: 350px;
+    padding: 10px 15px;
+    border: 1px solid var(--border-color);
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+.btn-reset {
+    background: #6c757d !important;
+}
+
+.btn-reset:hover {
+    background: #5a6268 !important;
+}
+
+/* Wrapper del carousel */
+.carousel-wrapper {
+    position: relative;
+    overflow: hidden;
+    padding: 0 50px;
+}
+
+.carousel-destacados {
+    display: flex;
+    gap: 15px;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    padding: 20px 0;
+    scroll-snap-type: x mandatory;
+}
+
+.carousel-btn-prev {
+    left: 0;
+}
+
+.carousel-btn-next {
+    right: 0;
+}
+
+.info-promedio {
+    text-align: center;
+    color: #666;
+    margin-top: 10px;
+    font-size: 14px;
+}
+
+.titulo-productos {
+    margin-top: 20px;
+    color: var(--text-dark);
+}
+
+
+/* ============================================================
+   ESTILOS PARA ALERTAS PERSONALIZADAS (POSICIÓN FIJA)
+   ============================================================ */
+.custom-alert {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    min-width: 350px;
+    max-width: 500px;
+    padding: 16px 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 99999;
+    animation: slideInAlert 0.3s ease-out;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.custom-alert.success {
+    background-color: #d1fae5;
+    border-left: 4px solid #10b981;
+    color: #065f46;
+}
+
+.custom-alert.error {
+    background-color: #fee2e2;
+    border-left: 4px solid #ef4444;
+    color: #991b1b;
+}
+
+.custom-alert .icon {
+    font-size: 20px;
+    font-weight: bold;
+    min-width: 20px;
+    text-align: center;
+}
+
+.custom-alert .close-alert {
+    margin-left: auto;
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    color: inherit;
+    opacity: 0.7;
+    transition: opacity 0.2s;
+    padding: 0 5px;
+}
+
+.custom-alert .close-alert:hover {
+    opacity: 1;
+}
+
+@keyframes slideInAlert {
+    from {
+        transform: translateX(400px);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slideOut {
+    from {
+        transform: translateX(0);
+        opacity: 1;
+    }
+    to {
+        transform: translateX(400px);
+        opacity: 0;
+    }
+}
+
+/* ============================================================
+   ESTILOS PARA LOS BOTONES PRINCIPALES (TIENDA OFICIAL/ONLINE)
+   ============================================================ */
+.btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    background: #f89d13;
+    color: white;
+}
+
+.btn.active {
+    background: #f3f4f6;
+    color: #6b7280;
+    cursor: default;
+    pointer-events: none;
+}
+
+.btn:not(.active):hover {
+    background: #e68a00;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(248, 157, 19, 0.3);
+}
+
+/* ============================================================
+   ESTILOS PARA INPUT DE BÚSQUEDA CON X
+   ============================================================ */
+.search-container {
+    position: relative;
+    display: inline-block;
+    width: 350px;
+}
+
+.search-input {
+    width: 100%;
+    padding: 10px 35px 10px 15px;
+    border: 1px solid #e5e7eb;
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+.clear-search {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    font-size: 18px;
+    color: #6b7280;
+    cursor: pointer;
+    display: none;
+    padding: 0;
+    width: 20px;
+    height: 20px;
+    line-height: 1;
+}
+
+.search-container:has(.search-input:not(:placeholder-shown)) .clear-search {
+    display: block;
+}
+
+.clear-search:hover {
+    color: #374151;
+}
+
+/* ============================================================
+   ESTILOS PARA CARDS DE API
+   ============================================================ */
+.api-card {
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 15px;
+    display: flex;
+    gap: 15px;
+    background: white;
+    transition: box-shadow 0.3s;
+}
+
+.api-card:hover {
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.api-card img {
+    width: 120px;
+    height: 120px;
+    object-fit: cover;
+    border-radius: 5px;
+}
+
+.api-info {
+    flex: 1;
+}
+
+.api-info .nombre {
+    font-weight: bold;
+    font-size: 16px;
+    color: #374151;
+    margin-bottom: 5px;
+}
+
+.api-info .precio {
+    color: #10b981;
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+
+.api-info .descripcion {
+    color: #6b7280;
+    font-size: 13px;
+    margin-bottom: 12px;
+}
+
+.api-actions {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.api-actions a {
+    text-decoration: none;
+    color: #17a2b8;
+    padding: 8px 15px;
+    border: 1px solid #17a2b8;
+    border-radius: 5px;
+    font-size: 13px;
+    transition: all 0.2s;
+}
+
+.api-actions a:hover {
+    background: #17a2b8;
+    color: white;
+}
+
+.api-actions button {
+    background: #f89d13;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 13px;
+    transition: all 0.2s;
+}
+
+.api-actions button:hover {
+    background: #e68a00;
+}
+
+.api-actions button:disabled {
+    background: #d1d5db;
+    cursor: not-allowed;
+}
+
+/* ============================================================
+   PAGINACIÓN
+   ============================================================ */
+#paginacionApi, #paginacionScraping {
+    display: flex;
+    gap: 5px;
+    justify-content: center;
+    margin-top: 20px;
+    flex-wrap: wrap;
+}
+
+#paginacionApi nav {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+#paginacionApi .pagination {
+    display: flex;
+    gap: 8px;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    align-items: center;
+}
+
+#paginacionApi .pagination li {
+    display: inline-block;
+}
+
+#paginacionApi .pagination a,
+#paginacionApi .pagination span {
+    padding: 10px 16px;
+    border: 1px solid #e5e7eb;
+    background: white;
+    border-radius: 5px;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    text-decoration: none;
+    color: #374151;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 44px;
+    min-height: 44px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+#paginacionApi .pagination a:hover:not(.active span) {
+    background: #f3f4f6;
+    border-color: #d1d5db;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+#paginacionApi .pagination .active span {
+    background: #f89d13;
+    color: white;
+    border-color: #f89d13;
+    cursor: default;
+    font-weight: 600;
+    box-shadow: 0 2px 4px rgba(248, 157, 19, 0.3);
+}
+
+#paginacionApi .pagination .disabled span,
+#paginacionApi .pagination .disabled a {
+    background: #f9fafb;
+    color: #d1d5db;
+    cursor: not-allowed;
+    border-color: #e5e7eb;
+    box-shadow: none;
+}
+
+#paginacionApi .pagination .disabled:hover span,
+#paginacionApi .pagination .disabled:hover a {
+    transform: none;
+    box-shadow: none;
+}
+
+#paginacionScraping button {
+    padding: 10px 16px;
+    border: 1px solid #e5e7eb;
+    background: white;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    min-width: 44px;
+    min-height: 44px;
+    color: #374151;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+#paginacionScraping button:hover:not(.active) {
+    background: #f3f4f6;
+    border-color: #d1d5db;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+#paginacionScraping button.active {
+    background: #f89d13;
+    color: white;
+    border-color: #f89d13;
+    font-weight: 600;
+    box-shadow: 0 2px 4px rgba(248, 157, 19, 0.3);
+    cursor: default;
+}
+
+#paginacionScraping button:disabled {
+    background: #f9fafb;
+    color: #d1d5db;
+    cursor: not-allowed;
+    border-color: #e5e7eb;
+}
+
+@media (max-width: 640px) {
+    #paginacionApi .pagination,
+    #paginacionScraping {
+        gap: 4px;
+    }
+    
+    #paginacionApi .pagination a,
+    #paginacionApi .pagination span,
+    #paginacionScraping button {
+        padding: 8px 12px;
+        min-width: 36px;
+        min-height: 36px;
+        font-size: 13px;
+    }
+}
+
+.hidden {
+    display: none !important;
+}
+
+/* ============================================================
+   ESTILOS PARA PRODUCTOS HORIZONTALES
+   ============================================================ */
+.producto-horizontal {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    padding: 15px;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    background: white;
+}
+
+.producto-horizontal img {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 5px;
+}
+
+.producto-info-horizontal {
+    flex: 1;
+}
+
+.producto-nombre-horizontal {
+    margin: 0 0 10px 0;
+    color: #374151;
+    font-size: 16px;
+}
+
+.producto-tienda-horizontal {
+    font-size: 13px;
+    color: #6b7280;
+    margin-bottom: 5px;
+}
+
+.producto-link-horizontal a {
+    color: #17a2b8;
+    font-size: 13px;
+    text-decoration: none;
+}
+
+.producto-link-horizontal a:hover {
+    text-decoration: underline;
+}
+
+.producto-precio-horizontal {
+    color: #10b981;
+    font-size: 28px;
+    font-weight: bold;
+    min-width: 150px;
+    text-align: right;
+}
+
+.producto-accion-horizontal button {
+    background: #f89d13;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.2s;
+}
+
+.producto-accion-horizontal button:hover {
+    background: #e68a00;
+}
+
+/* ============================================================
+   MODAL
+   ============================================================ */
+.modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-overlay.active {
+    display: flex;
+}
+
+.modal-content {
+    background: white;
+    padding: 30px;
+    border-radius: 10px;
+    max-width: 500px;
+    width: 90%;
+}
+
+.modal-content h3 {
+    margin-top: 0;
+}
+
+.modal-content select {
+    width: 100%;
+    padding: 10px;
+    margin: 15px 0;
+    border: 1px solid #e5e7eb;
+    border-radius: 5px;
+}
+
+.modal-botones {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+    margin-top: 20px;
+}
+
+.modal-botones button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.btn-aplicar-filtro {
+    background: #10b981;
+    color: white;
+}
+
+.btn-quitar-filtro {
+    background: #ef4444;
+    color: white;
+}
+
+.btn-cerrar-modal {
+    background: #6b7280;
+    color: white;
+}
+
+/* ============================================================
+   CAROUSEL
+   ============================================================ */
+.carousel-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(0,0,0,0.5);
+    color: white;
+    border: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+    z-index: 10;
+}
+
+.carousel-btn:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+}
+
+.badge-destacado {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    padding: 5px 10px;
+    color: white;
+    font-size: 11px;
+    font-weight: bold;
+    border-radius: 3px;
+    z-index: 1;
+}
+
+.barra-busqueda {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.barra-busqueda input {
+    flex: 1;
+    padding: 10px 35px 10px 15px;
+    border: 1px solid #e5e7eb;
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+.btn-inventory {
+    background: #f89d13;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.no-resultados-busqueda {
+    text-align: center;
+    padding: 40px;
+    color: #6b7280;
+    font-size: 16px;
+}
+
+/* ============================================================
+   ESTILOS PARA PRODUCTOS EDITABLES
+   ============================================================ */
+.producto-nombre-editable {
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 4px;
+    padding: 4px 8px;
+    width: 100%;
+    font-size: 16px;
+    font-weight: 600;
+    transition: border-color 0.2s;
+}
+
+.producto-nombre-editable:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.producto-nombre-editable:hover {
+    border-color: #94a3b8;
+}
+
+/* ============================================================
+   ITEMS DE PRODUCTOS
+   ============================================================ */
+.producto-item {
+    display: flex;
+    align-items: center;
+    padding: 15px;
+    padding-right: 50px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    border-left: 4px solid #3b82f6;
+    position: relative;
+}
+
+/* ============================================================
+   BOTONES DE PRODUCTO
+   ============================================================ */
+.btn-actualizar-producto {
+    position: absolute;
+    top: 10px;
+    right: 45px;
+    width: 28px;
+    height: 28px;
+    border: none;
+    background: #10b981;
+    color: white;
+    border-radius: 50%;
+    cursor: pointer;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.btn-actualizar-producto:hover {
+    background: #059669;
+    transform: scale(1.1);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.btn-actualizar-producto:active {
+    transform: scale(0.95);
+}
+
+.btn-actualizar-producto.visible {
+    display: flex;
+}
+
+.btn-eliminar-producto {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 28px;
+    height: 28px;
+    border: none;
+    background: #ef4444;
+    color: white;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.btn-eliminar-producto:hover {
+    background: #dc2626;
+    transform: scale(1.1);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.btn-eliminar-producto:active {
+    transform: scale(0.95);
+}
+
+/* ============================================================
+   BADGES Y ETIQUETAS
+   ============================================================ */
+.producto-match-badge {
+    display: inline-block;
+    padding: 2px 8px;
+    background: #10b981;
+    color: white;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 600;
+    margin-left: 8px;
+}
+
+/* ============================================================
+   BOTONES DE VISTA ACTIVA
+   ============================================================ */
+.btn-inventory.active-view {
+    background-color: #94a3b8;
+    opacity: 0.8;
+    cursor: default;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.btn-inventory.active-view:hover {
+    background-color: #94a3b8;
+    opacity: 0.8;
+}
+
+/* ============================================================
+   CHECKBOXES DE SUBCATEGORÍAS
+   ============================================================ */
+.checkbox-subcategory-container {
+    border: 1px solid #ddd;
+    padding: 15px;
+    border-radius: 8px;
+    max-height: 200px;
+    overflow-y: auto;
+    background-color: #f9fafb;
+}
+
+.checkbox-subcategory-label {
+    display: flex;
+    align-items: center;
+    padding: 8px 12px;
+    margin-bottom: 6px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.checkbox-subcategory-label:hover {
+    background-color: #e5e7eb;
+}
+
+.checkbox-subcategory-label input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    margin-right: 10px;
+    cursor: pointer;
+    accent-color: #3b82f6;
+}
+
+.checkbox-subcategory-label span {
+    font-size: 14px;
+    color: #374151;
+    user-select: none;
+}
+
+/* ============================================================
+   ALERTAS PERSONALIZADAS
+   ============================================================ */
+.alert-custom {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    min-width: 300px;
+    padding: 15px 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    z-index: 9999;
+    animation: slideIn 0.3s ease-out;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.alert-success {
+    background-color: #d4edda;
+    border-left: 4px solid #28a745;
+    color: #155724;
+}
+
+.alert-error {
+    background-color: #f8d7da;
+    border-left: 4px solid #dc3545;
+    color: #721c24;
+}
+
+@keyframes slideIn {
+    from { transform: translateX(400px); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes slideOut {
+    from { transform: translateX(0); opacity: 1; }
+    to { transform: translateX(400px); opacity: 0; }
+}
+
+.alert-custom.hiding {
+    animation: slideOut 0.3s ease-in forwards;
+}
+
+/* ============================================================
+   LOADING OVERLAY
+   ============================================================ */
+.loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 9998;
+}
+
+.loading-spinner {
+    width: 50px;
+    height: 50px;
+    border: 5px solid #f3f3f3;
+    border-top: 5px solid #3498db;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* ============================================================
+   ESTILOS PARA FACTURA
+   ============================================================ */
+.resultados-factura {
+    padding: 20px;
+}
+
+.resultados-factura h4 {
+    color: #2c3e50;
+    margin-bottom: 20px;
+    font-size: 18px;
+}
+
+.productos-list {
+    max-height: 400px;
+    overflow-y: auto;
+    margin-bottom: 20px;
+}
+
+.producto-numero {
+    width: 30px;
+    height: 30px;
+    background: #3b82f6;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    margin-right: 15px;
+    flex-shrink: 0;
+}
+
+.producto-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.producto-info strong {
+    color: #2c3e50;
+    font-size: 16px;
+}
+
+.producto-info span {
+    color: #666;
+    font-size: 14px;
+}
+
+.producto-info .precio {
+    color: #16a34a;
+    font-weight: 600;
+}
+
+.total-compra {
+    background: #e0f2fe;
+    padding: 15px;
+    border-radius: 8px;
+    text-align: right;
+    font-size: 18px;
+    font-weight: bold;
+    color: #0369a1;
+    margin-bottom: 20px;
+}
+
+.acciones-factura {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+}
+
+/* ============================================================
+   LOADER OVERLAY CON SISTEMA DE VARIABLES
+   ============================================================ */
+.loader-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(17, 24, 39, 0.85);
+    backdrop-filter: blur(8px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 99999;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.loader-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.loader-content {
+    text-align: center;
+    background: white;
+    padding: 2.5rem;
+    border-radius: 1rem;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3),
+                0 8px 10px -6px rgba(0, 0, 0, 0.3);
+    max-width: 400px;
+    width: 90%;
+    border: 2px solid #fbbf24;
+}
+
+.loader-spinner {
+    width: 4rem;
+    height: 4rem;
+    margin: 0 auto 1.5rem;
+    border: 4px solid #fef3c7;
+    border-top: 4px solid #f59e0b;
+    border-radius: 50%;
+    animation: spin-loader 0.8s linear infinite;
+}
+
+@keyframes spin-loader {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.loader-text {
+    margin: 0 0 0.5rem 0;
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #374151;
+}
+
+.loader-subtext {
+    margin: 0;
+    font-size: 0.875rem;
+    color: #6b7280;
+}
+
+/* Prevenir scroll cuando el loader está activo */
+body.loader-active {
+    overflow: hidden !important;
+}

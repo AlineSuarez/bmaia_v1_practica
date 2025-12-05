@@ -19,29 +19,17 @@
                 <i class="fas fa-plus"></i>
                 Agregar Producto
             </button>
-            <button class="btn-inventory">
-                <a href="{{ route('inventario.archivadas') }}" class="text-white">
-                    <i class="fas fa-archive"></i>
-                    Recuperar Producto
-                </a>
-            </button>
-            <button class="btn-inventory" style="display: none;">
-                <a href="{{ route('inventario.pedidos') }}" class="text-white">
-                    <i class="fas fa-shopping-cart"></i>
-                    Mis Pedidos
-                </a>
-            </button>
         </div>
         
         <div class="control-group">
-            <button class="btn-inventory" style="display: none;">
+            <button class="btn-inventory">
                 <a href="{{ url('/cotizador') }}" class="text-white">
                     Cotizador
                 </a>    
             </button>
             <button id="modalFiltrar" class="btn-inventory">
                 <i class="fas fa-filter"></i>
-                Filtrar
+                Buscar / Filtrar
             </button>
         </div>
     </div>

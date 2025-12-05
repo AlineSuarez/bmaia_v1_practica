@@ -5,33 +5,28 @@
             <div class="inventory-stats">
                 <span>{{ $productos->total() }} Productos</span>
             </div>
-            <div id="modal-imprimir">
-                <!-- para hacer un espaciado debajo del total de productos -->
-                <br>
-                <br>
-            </div>
-            <div id="modal-imprimir" style="position:absolute;
-                        display: flex;
-                        justify-content: flex-end;
-                        width: 100%;
-                        margin-top: 40px;
-                        left:-23px;">
+            <!-- <div id="modal-imprimir">
+                <br><br>
+            </div> -->
+            <div id="modal-imprimir" style="position:absolute; display: flex; justify-content: flex-end; width: 100%; margin-top: 40px; right:425px; bottom:73px;">
                 <button class="btn-inventory" onclick="showInventarioPreview()">
                     <i class="fa-solid fa-print"></i>
                     <span>Inventario</span>
                 </button>
             </div>
             <div class="buttons-edit-container">
-                <button id="btn-guardar-cambios" class="btn-inventory">
+                <button id="btn-guardar-cambios" class="btn-inventory" style="position:absolute; top:53px; right:180px; white-space: nowrap; width: auto; padding: 10px 18px; display: inline-block; color:white; background:#10b981;">
                     <i class="fa-solid fa-save"></i> Guardar cambios
                 </button>
                 <div class="edit-cancel-wrapper">
-                    <button id="btn-editar" class="btn-inventory">
-                        Editar
+                    <button id="btn-editar" class="btn-inventory">Editar</button>
+                    <button class="btn-inventory" style="position: absolute; right: 180px; white-space: nowrap; width: auto; padding: 10px 18px; display: inline-block;">
+                        <a href="{{ route('inventario.archivadas') }}" class="text-white">
+                            <i class="fas fa-archive"></i>
+                            Recuperar Producto
+                        </a>
                     </button>
-                    <button id="btn-cancelar" class="btn-inventory" style="display:none;">
-                        Cancelar Edicion
-                    </button>
+                    <button id="btn-cancelar" class="btn-inventory" style="display:none; background:#ef4444; color:white;">Cancelar Edicion</button>
                 </div>
             </div>
         </div>
@@ -46,10 +41,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    <iframe id="iframeInventarioPreview"
-                        src=""
-                        width="100%" height="500px" style="border:none;">
-                    </iframe>
+                    <iframe id="iframeInventarioPreview" src="" width="100%" height="500px" style="border:none;"></iframe>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
@@ -65,14 +57,24 @@
                 <p>No se encontraron productos que coincidan con los filtros aplicados.</p>
             </div>
         @else
-            <div >
+            <div>
                 <table class="inventory-table">
                     <thead>
                         <tr>
-                            <th>Nombre Producto</th>
+                            
+                            <th class="sortable-header" data-sort="nombre" data-order="none">
+                                Nombre Producto
+                                <span class="sort-icon">
+                                    <span class="sort-arrow up"></span>
+                                    <span class="sort-arrow down"></span>
+                                </span>
+                            </th>
                             <th>Cantidad</th>
                             <th>Unidad</th>
-                            <th>Categoría</th>
+                            <th class="sortable-header" data-filter="categoria" style="cursor: pointer;"> 
+                                Categoría
+                                <span class="filter-icon" style="margin-left: 6px; font-size: 12px;" title="Click para filtrar">▼</span>
+                            </th>
                             <th>Subcategoría</th>
                             <th>Precio</th>
                             <th>Observación</th>
@@ -85,7 +87,6 @@
                                 {{-- Nombre Producto y seleccion para archivar --}}
                                 <td style="padding-left: 10px;">
                                     <div style="display: flex; align-items: center; gap: 8px;">
-                                        <!-- Checkbox de selección -->
                                         <input type="checkbox" 
                                             class="checkbox-seleccionar-producto" 
                                             data-product-id="{{ $producto->id }}"
@@ -102,25 +103,17 @@
                                 {{-- Cantidad --}}
                                 <td>
                                     <span class="view-mode">
-                                        {{-- Formateo de cantidad para mostrar solo decimales a Kg, Ml, L, Gr --}}
                                         @php
-                                            // Unidades que deben mostrarse SIN decimales
                                             $sinDecimales = ['Unidad', 'Botellas', 'Caja', 'Tiras', 'Dosis'];
                                         @endphp
-
                                         @if(in_array($producto->unidad, $sinDecimales))
                                             {{ number_format($producto->cantidad, 0, ',', '.') }}
                                         @else
                                             {{ number_format($producto->cantidad, 2, ',', '.') }}
                                         @endif
                                     </span>
-
-                                    <input type="number" 
-                                        name="cantidad" 
-                                        class="edit-mode input-number-inventory" 
-                                        value="{{ $producto->cantidad }}" 
-                                        min="0"
-                                        hidden>
+                                    <input type="number" name="cantidad" class="edit-mode input-number-inventory" 
+                                        value="{{ $producto->cantidad }}" min="0" hidden>
                                 </td>
                                 {{-- Unidad --}}
                                 <td>
@@ -152,7 +145,6 @@
                                             {{ $subcategory->nombreSubcategoria }}@if(!$loop->last), @endif
                                         @endforeach
                                     </span>
-
                                     <div class="edit-mode checkbox-group" hidden>
                                         @foreach ($subcategories as $sub)
                                             <label style="display:block; font-size:13px;">
@@ -165,19 +157,16 @@
                                 </td>
                                 {{-- Precio --}}
                                 <td>
-                                    {{-- Mostrar Precio en formato "255.000" SOLO EN LISTADO --}}
                                     <span class="view-mode">${{ number_format($producto->precio, 0, '.', '.') }}</span>
-                                    <input type="number" name="precio" class="edit-mode input-number-inventory" 
-                                        value="{{ $producto->precio }}" hidden>
+                                    <input type="text" name="precio" class="edit-mode input-number-inventory" 
+                                        value="{{ intval($producto->precio) }}" hidden>
                                 </td>
                                 {{-- Observacion --}}
                                 <td>
-                                    {{-- Modal para Editar Observacion --}}
                                     <span class="view-mode">
                                         <button class="btn-observacion truncate-text" id="btn-openModalEditObservacion-{{ $producto->id }}">
                                             {{ Str::limit($producto->observacion, 30, '...') }}
                                         </button>
-
                                         <div id="modalEditObservacion-{{ $producto->id }}" class="modal-observacion" style="display:none;">
                                             <div class="modal-header-obs">
                                                 <span class="modal-title-obs">Editar Observación</span>
@@ -188,7 +177,7 @@
                                             <form method="POST" action="{{ route('inventario.update_observacion', $producto->id) }}">
                                                 @csrf
                                                 @method('PATCH')
-                                                <textarea name="observacion" class="observacion-input" placeholder="Ingrese una observación para el producto...">{{ $producto->observacion }}</textarea>
+                                                <textarea name="observacion" class="observacion-input" placeholder="Ingrese una observación...">{{ $producto->observacion }}</textarea>
                                                 <div class="modal-actions">
                                                     <button type="button" class="btn-cancel-observacion" id="CancelEditarObservacion-{{ $producto->id }}">Cancelar</button>
                                                     <button type="submit" class="btn-ok-observacion">Guardar</button>
@@ -196,13 +185,10 @@
                                             </form>
                                         </div>
                                     </span>
-
-                                    {{-- Modal para Editar Observacion en Editar Activo --}}
                                     <div class="edit-mode" hidden>
                                         <button class="btn-observacion truncate-text" id="btn-openModalEditObservacionInline-{{ $producto->id }}">
                                             {{ $producto->observacion ? Str::limit($producto->observacion, 15, '...') : '' }}
                                         </button>
-
                                         <div id="modalEditObservacionInline-{{ $producto->id }}" class="modal-observacion" style="display:none;">
                                             <div class="modal-header-obs">
                                                 <span class="modal-title-obs">Editar Observación</span>
@@ -213,7 +199,7 @@
                                             <div>
                                                 <textarea name="observacion" class="observacion-input" 
                                                         data-product-id="{{ $producto->id }}"
-                                                        placeholder="Ingrese una observación para el producto...">{{ $producto->observacion }}</textarea>
+                                                        placeholder="Ingrese una observación...">{{ $producto->observacion }}</textarea>
                                                 <div class="modal-actions">
                                                     <button type="button" class="btn-cancel-observacion">Cancelar</button>
                                                     <button type="button" class="btn-ok-observacion">Guardar</button>
@@ -223,7 +209,7 @@
                                     </div>
                                 </td>
                                 {{-- Actions --}}
-                                <td id="btn-archivar" class="actions-cell" >
+                                <td id="btn-archivar" class="actions-cell">
                                     <div class="action-buttons-centered">
                                         <input type="hidden" class="product-id" value="{{ $producto->id }}">
                                         <form action="{{ route('inventario.archivar', $producto->id) }}" method="POST" onsubmit="return confirm('¿Descartar producto?');" style="display:inline;">
@@ -244,21 +230,18 @@
             <div class="pagination-container">
                 @if ($productos->lastPage() > 1)
                     <ul class="pagination">
-                        {{-- Boton anterior --}}
                         @if ($productos->onFirstPage())
                             <li class="disabled"><span>«</span></li>
                         @else
                             <li><a href="{{ $productos->previousPageUrl() }}">«</a></li>
                         @endif
 
-                        {{-- Numeros de pagina --}}
                         @for ($i = 1; $i <= $productos->lastPage(); $i++)
                             <li class="{{ $productos->currentPage() == $i ? 'active' : '' }}">
                                 <a href="{{ $productos->url($i) }}">{{ $i }}</a>
                             </li>
                         @endfor
 
-                        {{-- Boton siguiente --}}
                         @if ($productos->hasMorePages())
                             <li><a href="{{ $productos->nextPageUrl() }}">»</a></li>
                         @else
@@ -270,14 +253,7 @@
         @endif
     </div>
     
-    {{-- Ruta para preview y actualización --}}
-    <div id="inventario-preview-route"
-        data-inventario-preview="{{ route('inventario.previewTodo') }}"
-    >
-    </div>
-    
-    <div id="update-route"
-        data-update-multiple="{{ route('inventario.updateMultiple') }}"
-    >
-    </div>
+    {{-- Rutas para preview y actualización --}}
+    <div id="inventario-preview-route" data-inventario-preview="{{ route('inventario.previewTodo') }}"></div>
+    <div id="update-route" data-update-multiple="{{ route('inventario.updateMultiple') }}"></div>
 </div>

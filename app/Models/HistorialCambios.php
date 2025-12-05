@@ -21,6 +21,8 @@ class HistorialCambios extends Model
         'precio',
         'cantidad',
         'fecha_actualizacion',
+        'comprado_en_tienda',
+        'proveedor',
     ];
 
     public function inventory(){

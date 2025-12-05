@@ -39,13 +39,14 @@
 </head>
 <body>
 
-    <h1>Mi Inventario Apicola</h1>
+    <h1>Historial de Compras</h1>
     <table>
         <thead>
             <tr>
                 <th>Nombre</th>
                 <th>Cantidad</th>
                 <th>Precio</th>
+                <th>Proveedor</th>
                 <th>Fecha Ultima Modificacion</th>
             </tr>
         </thead>
@@ -55,6 +56,9 @@
                     <td>{{ $producto->Inventory->nombreProducto }}</td>
                     <td>{{ $producto->cantidad }}</td>
                     <td>${{ $producto->precio }}</td>
+                    <td>
+                            {{ $producto->proveedor ?? 'No especificado' }}   
+                    </td>
                     <td>{{ \Carbon\Carbon::parse($producto->fecha_actualizacion)->format('d/m/Y H:i') }}</td>
                 </tr>
             @empty

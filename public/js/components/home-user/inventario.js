@@ -31,6 +31,114 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // ============================================
+    // FORMATEO DE CAMPOS EN MODO EDICIÓN
+    // ============================================
+    
+    // Función para formatear precio (agregar puntos de miles) - FORMATO CHILENO
+    function formatearPrecio(input) {
+        // Guardar posición del cursor
+        const cursorPos = input.selectionStart;
+        const valorOriginal = input.value;
+        
+        // Quitar todo excepto números
+        let numero = input.value.replace(/[^\d]/g, '');
+        
+        // Aplicar formato con puntos (estilo chileno)
+        if (numero) {
+            input.value = new Intl.NumberFormat('es-CL', {
+                useGrouping: true,
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 0
+            }).format(numero);
+        } else {
+            input.value = '';
+        }
+        
+        // Ajustar cursor (aproximado)
+        const diff = input.value.length - valorOriginal.length;
+        input.setSelectionRange(cursorPos + diff, cursorPos + diff);
+    }
+    
+    // Función para formatear cantidad según unidad
+    function formatearCantidad(input) {
+        const tr = input.closest('tr');
+        const selectUnidad = tr?.querySelector('select[name="unidad"]');
+        const unidad = selectUnidad?.value || '';
+        
+        // Unidades sin decimales
+        const sinDecimales = ['Unidad', 'Botellas', 'Caja', 'Tiras', 'Dosis'];
+        
+        let valor = input.value.trim();
+        if (valor === '') return;
+        
+        const numero = parseFloat(valor);
+        if (isNaN(numero)) return;
+        
+        // Aplicar formato según unidad
+        if (sinDecimales.includes(unidad)) {
+            input.value = Math.round(numero); // Sin decimales
+        } else {
+            input.value = numero.toFixed(2); // Con 2 decimales
+        }
+    }
+    
+    // Listener global para formateo de precio en inputs de edición
+    document.addEventListener('input', function(e) {
+        // Formatear precio
+        if (e.target.name === 'precio' && e.target.classList.contains('input-number-inventory')) {
+            formatearPrecio(e.target);
+        }
+    });
+    
+    // Listener para formateo de cantidad al cambiar unidad
+    document.addEventListener('change', function(e) {
+        // Si cambia la unidad, reformatear la cantidad
+        if (e.target.name === 'unidad') {
+            const tr = e.target.closest('tr');
+            const inputCantidad = tr?.querySelector('input[name="cantidad"]');
+            if (inputCantidad && inputCantidad.value) {
+                formatearCantidad(inputCantidad);
+            }
+        }
+        
+        // Si cambia la cantidad, aplicar formato según unidad actual
+        if (e.target.name === 'cantidad' && e.target.classList.contains('input-number-inventory')) {
+            formatearCantidad(e.target);
+        }
+    });
+    
+    // Función para aplicar formato inicial a todos los campos de precio
+    function aplicarFormatoPrecios() {
+        document.querySelectorAll('input[name="precio"].input-number-inventory:not([hidden])').forEach(input => {
+            if (input.value) {
+                // Quitar cualquier formato previo y obtener solo números
+                const numero = input.value.replace(/[^\d]/g, '');
+                if (numero) {
+                    // Aplicar formato chileno con puntos
+                    input.value = new Intl.NumberFormat('es-CL', {
+                        useGrouping: true,
+                        minimumFractionDigits: 0,
+                        maximumFractionDigits: 0
+                    }).format(numero);
+                }
+            }
+        });
+        
+        // Formatear todas las cantidades según su unidad
+        document.querySelectorAll('input[name="cantidad"].input-number-inventory:not([hidden])').forEach(input => {
+            if (input.value) {
+                formatearCantidad(input);
+            }
+        });
+    }
+
+    
+    
+    // ============================================
+    // FIN FORMATEO DE CAMPOS
+    // ============================================
+
     //Modal de filtros
     const btnModalFiltros = document.getElementById('modalFiltrar')
     const divModalFiltro = document.getElementById('inventario-filtros')
@@ -67,6 +175,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    
     const btnClearFilters = document.getElementById('btn-clear-filters');
     const searchInput = document.getElementById('searchInput');
     const categorySelect = document.getElementById('categorySelect');
@@ -93,18 +202,19 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function actualizarBotonQuitarFiltros() {
-        const hasSearch = searchInput.value.trim() !== '';
-        const hasCategory = categorySelect.value !== '';
-        const hasSubcategory = Array.from(getSubcategoryCheckboxes()).some(cb => cb.checked);
+    const hasSearch = searchInput.value.trim() !== '';
+    const hasCategory = categorySelect.value !== '';
+    const hasSubcategory = Array.from(getSubcategoryCheckboxes()).some(cb => cb.checked);
 
-        if (hasSearch || hasCategory || hasSubcategory) {
-            btnClearFilters.style.display = 'inline-block';
-            btnClearFilters.classList.add('btn-cancel-observacion');
-        } else {
-            btnClearFilters.style.display = 'none';
-            btnClearFilters.classList.remove('btn-cancel-observacion');
-        }
+    // ✅ NO incluir ordenActivo aquí, es independiente
+    if (hasSearch || hasCategory || hasSubcategory) {
+        btnClearFilters.style.display = 'inline-block';
+        btnClearFilters.classList.add('btn-cancel-observacion');
+    } else {
+        btnClearFilters.style.display = 'none';
+        btnClearFilters.classList.remove('btn-cancel-observacion');
     }
+}
 
     if (btnClearFilters) {
         btnClearFilters.addEventListener('click', () => {
@@ -122,7 +232,8 @@ document.addEventListener('DOMContentLoaded', () => {
             category_id: categorySelect.value,
             subcategory_id: Array.from(getSubcategoryCheckboxes())
                 .filter(cb => cb.checked)
-                .map(cb => cb.value)
+                .map(cb => cb.value),
+            sort_order: ordenActivo ? 'asc' : 'default'
         };
 
         fetch(`/inventario/search?page=${page}`, {
@@ -138,9 +249,11 @@ document.addEventListener('DOMContentLoaded', () => {
             document.querySelector('#inventario-listado').innerHTML = html;
             bindFilterEvents();
             bindPaginationLinks();
-            bindEditButtons()
+            bindEditButtons();
             actualizarBotonesObservacion();
             actualizarBotonQuitarFiltros();
+            bindCategoriaFilter();
+            bindOrdenamiento();
 
             if (window._reinicializarSeleccion) window._reinicializarSeleccion();
 
@@ -163,6 +276,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
                 if (btnCancelar) btnCancelar.style.display = 'inline-flex';
                 if (btnGuardar) btnGuardar.style.display = window._inventarioCambios?.length > 0 ? 'inline-flex' : 'none';
+                
+                // APLICAR FORMATO DE PRECIOS DESPUÉS DE CARGAR
+                setTimeout(() => aplicarFormatoPrecios(), 50);
             
             } else {
                 document.querySelectorAll('.edit-mode').forEach(el => el.hidden = true);
@@ -201,6 +317,16 @@ document.addEventListener('DOMContentLoaded', () => {
                                 const cb = tr.querySelector(`input[name="subcategories[]"][value="${v}"]`);
                                 if (cb) cb.checked = true;
                             });
+                        } else if (field === 'precio') {
+                            // Formatear precio al restaurar cambios
+                            const numero = value.toString().replace(/[^\d]/g, '');
+                            if (numero) {
+                                input.value = new Intl.NumberFormat('es-CL', {
+                                    useGrouping: true,
+                                    minimumFractionDigits: 0,
+                                    maximumFractionDigits: 0
+                                }).format(numero);
+                            }
                         } else {
                             input.value = value;
                         }
@@ -296,6 +422,9 @@ document.addEventListener('DOMContentLoaded', () => {
                         btn.textContent = '';
                     }
                 });
+                
+                // APLICAR FORMATO DE PRECIOS AL ACTIVAR MODO EDICIÓN
+                setTimeout(() => aplicarFormatoPrecios(), 100);
             }
             
             if (modoEdicion) {
@@ -401,7 +530,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
 
                 if (cambio.precio !== undefined) {
-                    const precio = parseFloat(cambio.precio);
+                    // Limpiar el precio de puntos antes de validar
+                    const precioLimpio = cambio.precio.toString().replace(/\./g, '');
+                    const precio = parseFloat(precioLimpio);
                     if (isNaN(precio)) {
                         erroresProducto.push('El precio debe ser un número válido');
                     } else if (precio < 0) {
@@ -449,6 +580,10 @@ document.addEventListener('DOMContentLoaded', () => {
                         copy['subcategories'] = copy['subcategories[]'];
                         delete copy['subcategories[]'];
                     }
+                    // Limpiar formato de precio antes de enviar
+                    if (copy.precio) {
+                        copy.precio = copy.precio.toString().replace(/\./g, '');
+                    }
                     return copy;
                 });
                 const res = await fetch(updateUrl, {
@@ -486,6 +621,13 @@ document.addEventListener('DOMContentLoaded', () => {
         getSubcategoryCheckboxes().forEach(cb => {
             cb.addEventListener('change', fetchFilteredResults);
         });
+        
+        // Actualizar estado de categoría cuando cambia el filtro
+        if (categorySelect) {
+            categorySelect.addEventListener('change', () => {
+                fetchFilteredResults();
+            });
+        }
     }
 
     function bindPaginationLinks() {
@@ -499,13 +641,54 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    let ordenActivo = false; // false = por defecto (updated_at), true = A-Z
+
+function toggleOrdenamiento() {
+    ordenActivo = !ordenActivo;
+    actualizarIconoOrden();
+    fetchFilteredResults(1);
+}
+
+function actualizarIconoOrden() {
+    const header = document.querySelector('.sortable-header[data-sort="nombre"]');
+    if (!header) return;
+    
+    const icon = header.querySelector('.sort-icon');
+    if (!icon) return;
+    
+    const upArrow = icon.querySelector('.up');
+    const downArrow = icon.querySelector('.down');
+    
+    if (ordenActivo) {
+        icon.classList.add('active');
+        upArrow?.classList.add('active');
+        upArrow?.classList.remove('inactive');
+        downArrow?.classList.remove('active');
+        downArrow?.classList.add('inactive');
+    } else {
+        icon.classList.remove('active');
+        upArrow?.classList.remove('active');
+        upArrow?.classList.add('inactive');
+        downArrow?.classList.remove('active');
+        downArrow?.classList.add('inactive');
+    }
+}
+
+function bindOrdenamiento() {
+    const header = document.querySelector('.sortable-header[data-sort="nombre"]');
+    if (header) {
+        header.onclick = toggleOrdenamiento;
+        actualizarIconoOrden();
+    }
+}
+
     bindFilterEvents();
     bindPaginationLinks();
     bindEditButtons();
+    bindOrdenamiento();
     actualizarBotonQuitarFiltros();
 
     searchInput.addEventListener('change', fetchFilteredResults);
-    categorySelect.addEventListener('change', fetchFilteredResults);
     subcategoryCheckboxes.forEach(cb => cb.addEventListener('change', fetchFilteredResults));
 
     
@@ -610,7 +793,6 @@ document.addEventListener('DOMContentLoaded', () => {
             let errores = [];
 
             if (valor === '') errores.push('Debe ingresar una observación antes de enviar.');
-            // if (/^\d+$/.test(valor)) errores.push('La observación no puede ser solo números.');
             if (/^[^a-zA-Z0-9]+$/.test(valor)) errores.push('La observación no puede contener solo signos.');
 
             if (errores.length === 0) {
@@ -801,9 +983,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const select = e.target.closest('select[name="unidad"]');
         if (!select) return;
 
-        // si el usuario elige Otros
         if (select.value === 'otros') {
-            // Crear modal si no existe
             let modal = document.getElementById('modalNuevaUnidad');
             if (!modal) {
                 modal = document.createElement('div');
@@ -827,20 +1007,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 document.body.appendChild(modal);
             }
 
-            // Mostrar modal
             modal.style.display = 'flex';
             const input = document.getElementById('nueva_unidad_input');
             input.value = '';
             input.focus();
 
-            // Cancelar
             const btnCancelar = document.getElementById('cancelar_nueva_unidad');
             btnCancelar.onclick = () => {
                 modal.style.display = 'none';
                 select.value = 'otros';
             };
 
-            // Guardar
             const btnGuardar = document.getElementById('guardar_nueva_unidad');
             btnGuardar.onclick = () => {
                 let nuevaUnidad = input.value.trim();
@@ -849,10 +1026,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     return;
                 }
 
-                // Normalizar con title()
                 nuevaUnidad = title(nuevaUnidad);
 
-                // Evitar duplicados
                 const existe = Array.from(select.options).some(
                     opt => opt.text.toLowerCase() === nuevaUnidad.toLowerCase()
                 );
@@ -863,21 +1038,18 @@ document.addEventListener('DOMContentLoaded', () => {
                     return;
                 }
 
-                // Crear nueva opcion y agregarla antes de "Otros"
                 const opcion = document.createElement('option');
                 opcion.value = nuevaUnidad;
                 opcion.textContent = nuevaUnidad;
                 const otros = select.querySelector('option[value="otros"]');
                 select.insertBefore(opcion, otros);
 
-                // Seleccionar automaticamente
                 select.value = nuevaUnidad;
 
                 alert(`Unidad "${nuevaUnidad}" agregada correctamente.`);
                 modal.style.display = 'none';
             };
 
-            // Cerrar con ESC
             document.addEventListener('keydown', (ev) => {
                 if (ev.key === 'Escape' && modal.style.display === 'flex') {
                     modal.style.display = 'none';
@@ -961,7 +1133,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 btn = document.createElement('button');
                 btn.id = 'btn-eliminar-seleccionados';
                 btn.className = 'btn-inventory btn-eliminar-multiple';
-                btn.style.cssText = 'background: #ef4444; margin-left: 10px;';
+                btn.style.cssText = 'background: #ef4444; margin-left: 10px; position:absolute; bottom:2px; right:-1px;';
                 btn.innerHTML = `<i class="fa fa-trash"></i> Archivar ${seleccionados.size} producto${seleccionados.size > 1 ? 's' : ''}`;
                 
                 const editContainer = document.querySelector('.buttons-edit-container');
@@ -1121,3 +1293,141 @@ document.addEventListener('change', e => {
 });
 
 actualizarVisibilidadBotones();
+
+    // ============================================
+    // SISTEMA DE FILTRO RÁPIDO DE CATEGORÍAS
+    // ============================================
+    
+    // Modal de filtro de categorías
+    function mostrarModalCategoria(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    // ELIMINAR MODAL VIEJO SI EXISTE
+    const modalViejo = document.getElementById('modalFiltroCategorias');
+    if (modalViejo) {
+        modalViejo.remove();
+    }
+    
+    // CREAR NUEVO MODAL
+    const modal = crearModalCategorias();
+    modal.style.display = 'flex';
+}
+
+function mostrarModalCategoria(e) {
+    e && e.preventDefault && e.preventDefault();
+    e && e.stopPropagation && e.stopPropagation();
+
+    // Si ya existe el modal, eliminarlo antes de crear uno nuevo
+    const modalExistente = document.getElementById('modalFiltroCategorias');
+    if (modalExistente) {
+        // quitar listener de escape si lo tiene (por seguridad)
+        document.removeEventListener('keydown', modalExistente.__escHandler__);
+        modalExistente.remove();
+    }
+
+    const modal = document.createElement('div');
+    modal.id = 'modalFiltroCategorias';
+    modal.style.cssText = `
+        display: flex;
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,0.45);
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+    `;
+    modal.innerHTML = `
+        <div style="background:white;padding:20px;border-radius:8px;min-width:320px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+                <strong>Filtrar por categoría</strong>
+                <button id="cerrarModalCategoria" aria-label="cerrar">×</button>
+            </div>
+            <div id="contenidoModalCategorias">
+                <!-- Tus opciones deben venir desde el DOM / o copiar el select existente -->
+                ${document.getElementById('categorySelect') ? document.getElementById('categorySelect').outerHTML : ''}
+            </div>
+            <div style="text-align:right;margin-top:12px">
+                <button id="cancelarFiltroCat">Cancelar</button>
+                <button id="aplicarFiltroCat">Aplicar</button>
+            </div>
+        </div>
+    `;
+    document.body.appendChild(modal);
+
+    // Esc handler (lo guardo en el nodo para poder removerlo luego)
+    function escHandler(ev) {
+        if (ev.key === 'Escape') {
+            modal.remove();
+            document.removeEventListener('keydown', escHandler);
+        }
+    }
+    modal.__escHandler__ = escHandler;
+    document.addEventListener('keydown', escHandler);
+
+    modal.addEventListener('click', function(ev) {
+        if (ev.target === modal) {
+            modal.remove();
+            document.removeEventListener('keydown', escHandler);
+        }
+    });
+
+    modal.querySelector('#cerrarModalCategoria').addEventListener('click', () => {
+        modal.remove();
+        document.removeEventListener('keydown', escHandler);
+    });
+
+    modal.querySelector('#cancelarFiltroCat').addEventListener('click', () => {
+        modal.remove();
+        document.removeEventListener('keydown', escHandler);
+    });
+
+    modal.querySelector('#aplicarFiltroCat').addEventListener('click', () => {
+        const selectInModal = modal.querySelector('#categorySelect') || modal.querySelector('select');
+        if (selectInModal) {
+            const originalSelect = document.getElementById('categorySelect');
+            if (originalSelect) {
+                originalSelect.value = selectInModal.value;
+                originalSelect.dispatchEvent(new Event('change', { bubbles: true }));
+            }
+        }
+        modal.remove();
+        document.removeEventListener('keydown', escHandler);
+    });
+}
+
+    function actualizarIconoCategoria(tieneValor) {
+        const categoriaHeader = document.querySelector('[data-filter="categoria"]');
+        if (!categoriaHeader) return;
+        
+        let icon = categoriaHeader.querySelector('.filter-icon');
+        if (!icon) {
+            icon = document.createElement('span');
+            icon.className = 'filter-icon';
+            icon.style.cssText = 'margin-left: 6px; font-size: 12px;';
+            categoriaHeader.appendChild(icon);
+        }
+        
+        if (tieneValor) {
+            icon.textContent = '🔽';
+            icon.title = 'Filtro activo - Click para cambiar';
+            icon.style.color = '#10b981';
+        } else {
+            icon.textContent = '▼';
+            icon.title = 'Click para filtrar';
+            icon.style.color = '#6b7280';
+        }
+    }
+
+    // Bind del header de categorías
+    function bindCategoriaFilter() {
+    const categoriaHeader = document.querySelector('[data-filter="categoria"]');
+    if (!categoriaHeader) return;
+
+    // NO usar cloneNode: sobreescribo onclick sin reemplazar el nodo
+    categoriaHeader.style.cursor = 'pointer';
+    categoriaHeader.onclick = mostrarModalCategoria;
+}
+
+    bindCategoriaFilter();
+

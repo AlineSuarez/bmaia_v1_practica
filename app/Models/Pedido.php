@@ -16,7 +16,12 @@ class Pedido extends Model
         'priceProduct',
         'descriptionProduct',
         'urlProduct',
-        'user_id'
+        'user_id',
+        // Campos del scraper
+        'imagen',
+        'categoria',
+        'subcategoria',
+        'tienda'
     ];
 
     public function usuario()

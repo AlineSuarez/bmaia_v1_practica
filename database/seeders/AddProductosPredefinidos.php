@@ -36,7 +36,7 @@ class AddProductosPredefinidos extends Seeder
                 'data' =>
                     [
                         'id' => 2,
-                        'nombreProducto' => 'Alcohol etílico 70%',
+                        'nombreProducto' => 'Alcohol Etílico 70%',
                         'cantidad' => 0,
                         'category_id' => 3,
                         'precio' => 0,
@@ -53,7 +53,7 @@ class AddProductosPredefinidos extends Seeder
                 'data' =>
                     [
                         'id' => 3,
-                        'nombreProducto' => 'Estampadora de cera',
+                        'nombreProducto' => 'Estampadora De Cera',
                         'cantidad' => 0,
                         'category_id' => 4,
                         'precio' => 0,
@@ -70,7 +70,7 @@ class AddProductosPredefinidos extends Seeder
                 'data' =>
                     [
                         'id' => 4,
-                        'nombreProducto' => 'Esterilizador de cera',
+                        'nombreProducto' => 'Esterilizador De Cera',
                         'cantidad' => 0,
                         'category_id' => 4,
                         'precio' => 0,
@@ -87,7 +87,7 @@ class AddProductosPredefinidos extends Seeder
                 'data' =>
                     [
                         'id' => 5,
-                        'nombreProducto' => 'Selladora térmica manual',
+                        'nombreProducto' => 'Selladora Térmica Manual',
                         'cantidad' => 0,
                         'category_id' => 4,
                         'precio' => 0,
@@ -104,7 +104,7 @@ class AddProductosPredefinidos extends Seeder
                 'data' =>
                     [
                         'id' => 6,
-                        'nombreProducto' => 'Marco alambrado',
+                        'nombreProducto' => 'Marco Alambrado',
                         'cantidad' => 0,
                         'category_id' => 5,
                         'precio' => 0,
@@ -121,7 +121,7 @@ class AddProductosPredefinidos extends Seeder
                 'data' =>
                     [
                         'id' => 7,
-                        'nombreProducto' => 'Trampas de polen',
+                        'nombreProducto' => 'Trampas De Polen',
                         'cantidad' => 0,
                         'category_id' => 5,
                         'precio' => 0,
@@ -138,7 +138,7 @@ class AddProductosPredefinidos extends Seeder
                 'data' =>
                     [
                         'id' => 8,
-                        'nombreProducto' => 'Azúcar flor',
+                        'nombreProducto' => 'Azúcar Flor',
                         'cantidad' => 0,
                         'category_id' => 2,
                         'precio' => 0,
@@ -155,7 +155,7 @@ class AddProductosPredefinidos extends Seeder
                 'data' =>
                     [
                         'id' => 9,
-                        'nombreProducto' => 'Levadura de cerveza',
+                        'nombreProducto' => 'Levadura De Cerveza',
                         'cantidad' => 0,
                         'category_id' => 2,
                         'precio' => 0,
@@ -172,7 +172,7 @@ class AddProductosPredefinidos extends Seeder
                 'data' =>
                     [
                         'id' => 10,
-                        'nombreProducto' => 'trampa para ratones',
+                        'nombreProducto' => 'Trampa Para Ratones',
                         'cantidad' => 0,
                         'category_id' => 3,
                         'precio' => 0,
@@ -189,7 +189,7 @@ class AddProductosPredefinidos extends Seeder
                 'data' =>
                     [
                         'id' => 11,
-                        'nombreProducto' => 'trampa para avispas',
+                        'nombreProducto' => 'Trampa Para Avispas',
                         'cantidad' => 0,
                         'category_id' => 3,
                         'precio' => 0,
@@ -206,7 +206,7 @@ class AddProductosPredefinidos extends Seeder
                 'data' =>
                     [
                         'id' => 12,
-                        'nombreProducto' => 'Varroa tester',
+                        'nombreProducto' => 'Varroa Tester',
                         'cantidad' => 0,
                         'category_id' => 1,
                         'precio' => 0,
@@ -223,7 +223,7 @@ class AddProductosPredefinidos extends Seeder
                 'data' =>
                     [
                         'id' => 13,
-                        'nombreProducto' => 'Cronómetro digital/analogico',
+                        'nombreProducto' => 'Cronómetro Digital/Analogico',
                         'cantidad' => 0,
                         'category_id' => 1,
                         'precio' => 0,
@@ -240,7 +240,7 @@ class AddProductosPredefinidos extends Seeder
                 'data' =>
                     [
                         'id' => 14,
-                        'nombreProducto' => 'Sublimador de acido oxalico',
+                        'nombreProducto' => 'Sublimador De Acido Oxalico',
                         'cantidad' => 0,
                         'category_id' => 1,
                         'precio' => 0,
@@ -257,7 +257,7 @@ class AddProductosPredefinidos extends Seeder
                 'data' =>
                     [
                         'id' => 15,
-                        'nombreProducto' => 'envase jalea real',
+                        'nombreProducto' => 'Envase Jalea Real',
                         'cantidad' => 0,
                         'category_id' => 6,
                         'precio' => 0,
@@ -274,7 +274,7 @@ class AddProductosPredefinidos extends Seeder
                 'data' =>
                     [
                         'id' => 16,
-                        'nombreProducto' => 'Buzo apícola',
+                        'nombreProducto' => 'Buzo Apícola',
                         'cantidad' => 0,
                         'category_id' => 7,
                         'precio' => 0,
@@ -291,7 +291,7 @@ class AddProductosPredefinidos extends Seeder
                 'data' =>
                     [
                         'id' => 17,
-                        'nombreProducto' => 'Guante apícola (cuero o sintético)',
+                        'nombreProducto' => 'Guante Apícola (cuero o sintético)',
                         'cantidad' => 0,
                         'category_id' => 7,
                         'precio' => 0,
@@ -308,7 +308,7 @@ class AddProductosPredefinidos extends Seeder
                 'data' =>
                     [
                         'id' => 18,
-                        'nombreProducto' => 'Botas apícola',
+                        'nombreProducto' => 'Botas Apícola',
                         'cantidad' => 0,
                         'category_id' => 7,
                         'precio' => 0,
@@ -325,7 +325,7 @@ class AddProductosPredefinidos extends Seeder
                 'data' =>
                     [
                         'id' => 19,
-                        'nombreProducto' => 'Guante de látex',
+                        'nombreProducto' => 'Guante De Látex',
                         'cantidad' => 0,
                         'category_id' => 8,
                         'precio' => 0,
@@ -342,7 +342,7 @@ class AddProductosPredefinidos extends Seeder
                 'data' =>
                     [
                         'id' => 20,
-                        'nombreProducto' => 'mascara respiratoria',
+                        'nombreProducto' => 'Mascara Respiratoria',
                         'cantidad' => 0,
                         'category_id' => 8,
                         'precio' => 0,
@@ -359,7 +359,7 @@ class AddProductosPredefinidos extends Seeder
                 'data' =>
                     [
                         'id' => 21,
-                        'nombreProducto' => 'lamina de cera plastica',
+                        'nombreProducto' => 'Lamina De Cera Plastica',
                         'cantidad' => 0,
                         'category_id' => 9,
                         'precio' => 0,
@@ -376,7 +376,7 @@ class AddProductosPredefinidos extends Seeder
                 'data' =>
                     [
                         'id' => 22,
-                        'nombreProducto' => 'Extintor portátil ABC',
+                        'nombreProducto' => 'Extintor Portátil ABC',
                         'cantidad' => 0,
                         'category_id' => 9,
                         'precio' => 0,
@@ -393,7 +393,7 @@ class AddProductosPredefinidos extends Seeder
                 'data' =>
                     [
                         'id' => 23,
-                        'nombreProducto' => 'Botiquín primeros auxilios',
+                        'nombreProducto' => 'Botiquín Primeros Auxilios',
                         'cantidad' => 0,
                         'category_id' => 9,
                         'precio' => 0,

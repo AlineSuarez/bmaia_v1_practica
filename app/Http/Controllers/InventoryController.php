@@ -64,6 +64,7 @@ class InventoryController extends Controller
         $productos = Inventory::with('subcategories')
             ->where('user_id', $user->id)
             ->where('archivada', false)
+            ->orderByDesc('updated_at')
             ->paginate(8);
 
         // Devolver categorias y subcategorias
@@ -166,6 +167,7 @@ class InventoryController extends Controller
         $productos = Inventory::with('subcategories')
             ->where('user_id', $user->id)
             ->where('archivada', true)
+            ->orderByDesc('updated_at')
             ->paginate(8);
 
         if ($request->ajax()) {
@@ -189,12 +191,12 @@ class InventoryController extends Controller
             ->where('user_id', $user->id)
             ->where('archivada', false);
 
+        // FILTROS
         if ($request->filled('category_id')) {
             $query->where('category_id', $request->input('category_id'));
         }
 
         $subcategoriesIds = $request->input('subcategory_id');
-
         if (is_array($subcategoriesIds) && count($subcategoriesIds) > 0) {
             $query->whereHas('subcategories', function ($q) use ($subcategoriesIds) {
                 $q->whereIn('subcategory_id', $subcategoriesIds);
@@ -205,17 +207,23 @@ class InventoryController extends Controller
             $query->where('nombreProducto', 'LIKE', '%' . $request->input('q') . '%');
         }
 
+        $sortOrder = $request->input('sort_order');
+
+        if ($sortOrder === 'asc') {
+            $query->orderBy('nombreProducto', 'asc');
+        } else {
+            $query->orderByDesc('updated_at');
+        }
+
+        // PAGINAR DESPUÉS DEL ORDENAMIENTO
         $productos = $query->paginate(8);
         
         if ($request->ajax()) {
             return view('inventario.partials.listado', compact('productos', 'categories', 'subcategories'))->render();
         }
 
-        // Fuerza el path base a /inventario/
         $productos->withPath(url('/inventario'));
-
         return view('Inventario.list', compact('productos', 'categories', 'subcategories'));
-
     }
 
     /**
@@ -237,6 +245,73 @@ class InventoryController extends Controller
     {
         $user = Auth::user();
 
+        // DETECTAR SI ES CREACIÓN MÚLTIPLE (desde factura)
+        $esMultiple = $request->has('productos') && is_array($request->productos);
+
+        if ($esMultiple) {
+            // VALIDACIÓN PARA MÚLTIPLES PRODUCTOS
+            $request->validate([
+                'productos' => 'required|array',
+                'productos.*.nombreProducto' => 'required|string|max:255',
+                'productos.*.cantidad' => 'required|numeric',
+                'productos.*.precio' => 'required|numeric',
+            ]);
+
+            $productosCreados = [];
+            $errores = [];
+
+            foreach ($request->productos as $productoData) {
+                try {
+                    // Crear producto
+                    $producto = Inventory::create([
+                        'user_id' => $user->id,
+                        'nombreProducto' => $productoData['nombreProducto'],
+                        'cantidad' => $productoData['cantidad'],
+                        'category_id' => 1, // Categoría por defecto
+                        'precio' => $productoData['precio'],
+                        'observacion' => null,
+                        'archivada' => false,
+                    ]);
+
+                    // Asociar subcategoría por defecto
+                    $producto->subcategories()->sync([1]);
+
+                    // Registrar en historial
+                    HistorialCambios::create([
+                        'inventory_id' => $producto->id,
+                        'user_id' => $user->id,
+                        'precio' => $productoData['precio'],
+                        'cantidad' => $productoData['cantidad'],
+                        'fecha_actualizacion' => $producto->updated_at,
+                        'comprado_en_tienda' => false,
+                        'proveedor' => null,
+                    ]);
+
+                    $productosCreados[] = $producto->id;
+
+                } catch (\Exception $e) {
+                    $errores[] = [
+                        'producto' => $productoData['nombreProducto'],
+                        'error' => $e->getMessage()
+                    ];
+                }
+            }
+
+            if ($request->expectsJson() || $request->ajax()) {
+                return response()->json([
+                    'status' => 'success',
+                    'message' => count($productosCreados) . ' productos creados correctamente.',
+                    'creados' => $productosCreados,
+                    'errores' => $errores
+                ]);
+            }
+
+            return redirect()
+                ->route('inventario')
+                ->with('success', count($productosCreados) . ' productos creados correctamente.');
+        }
+
+        // CREACIÓN INDIVIDUAL
         $request->validate([
             'nombreProducto' => 'required|string|max:255',
             'cantidad' => 'required|numeric',
@@ -296,6 +371,8 @@ class InventoryController extends Controller
                 'precio' => $request->input('precio'),
                 'cantidad' => $request->input('cantidad'),
                 'fecha_actualizacion' => $producto->updated_at,
+                'comprado_en_tienda' => false,
+                'proveedor' => null,
             ]);
 
             if ($isAjax) {
@@ -360,7 +437,7 @@ class InventoryController extends Controller
             $datosActualizacion['observacion'] = $request->input('observacion');
         }
 
-        // Actualizar
+        // Actualizar inventario
         if (!empty($datosActualizacion)) {
             $inventory->update($datosActualizacion);
         }
@@ -370,14 +447,34 @@ class InventoryController extends Controller
             $inventory->subcategories()->sync($request->input('subcategories'));
         }
 
-        // Historial SOLO si vienen precio Y cantidad
+        // HISTORIAL - SOLO si vienen precio Y cantidad
         if ($tienePrecio && $tieneCantidad) {
+            $compradoEnTienda = false;
+            $proveedor = null;
+            
+            // VERIFICAR SI TIENE URL DE PROVEEDOR
+            if ($request->filled('urlProduct') || $request->filled('linkProducto')) {
+                $compradoEnTienda = true;
+                
+                // Obtener nombre de tienda
+                $tiendaNombre = $request->input('tienda', 'Tienda desconocida');
+                
+                // Obtener URL
+                $link = $request->input('urlProduct') ?? $request->input('linkProducto');
+                
+                // Formato final
+                $proveedor = $tiendaNombre;
+            }
+            
+            // GUARDAR EN HISTORIAL
             HistorialCambios::create([
                 'inventory_id' => $inventory->id,
                 'user_id' => $user->id,
                 'precio' => $request->input('precio'),
                 'cantidad' => $request->input('cantidad'),
                 'fecha_actualizacion' => $inventory->updated_at,
+                'comprado_en_tienda' => $compradoEnTienda,
+                'proveedor' => $proveedor,
             ]);
         }
 
@@ -398,12 +495,55 @@ class InventoryController extends Controller
     public function update(Request $request, $id)
     {
         try {
-            $this->aplicarActualizacionInventario($request, $id);
+            $user = Auth::user();
+            $inventory = Inventory::where('user_id', $user->id)->findOrFail($id);
+            
+            // SI VIENE DE FACTURA PDF, CREAR NUEVO HISTORIAL
+            if ($request->has('desde_factura') && $request->boolean('desde_factura')) {
+                // Actualizar inventario sumando cantidad y precio
+                $cantidadComprada = $request->input('cantidad');
+                $precioUnitario = $request->input('precio');
+                
+                $inventory->update([
+                    'nombreProducto' => $request->input('nombreProducto', $inventory->nombreProducto),
+                    'cantidad' => $inventory->cantidad + $cantidadComprada,
+                    'precio' => $inventory->precio + ($precioUnitario * $cantidadComprada)
+                ]);
+                
+                // CREAR NUEVA ENTRADA EN HISTORIAL
+                HistorialCambios::create([
+                    'inventory_id' => $inventory->id,
+                    'user_id' => $user->id,
+                    'precio' => $precioUnitario*$cantidadComprada,
+                    'cantidad' => $cantidadComprada,
+                    'fecha_actualizacion' => now(),
+                    'comprado_en_tienda' => false,
+                    'proveedor' => 'Factura PDF',
+                ]);
+            } else {
+                // ACTUALIZACIÓN NORMAL
+                $this->aplicarActualizacionInventario($request, $id);
+            }
+
+            if ($request->expectsJson() || $request->ajax()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Producto actualizado con éxito'
+                ]);
+            }
 
             return redirect()
                 ->route('inventario')
                 ->with('success', 'Producto actualizado con éxito');
+                
         } catch (\Exception $e) {
+            if ($request->expectsJson() || $request->ajax()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Error: ' . $e->getMessage()
+                ], 500);
+            }
+
             return redirect()
                 ->route('inventario')
                 ->with('error', 'Ocurrió un error al guardar los cambios. ' . $e->getMessage())
@@ -473,72 +613,16 @@ class InventoryController extends Controller
     {
         $user = Auth::user();
 
-        $productos = Inventory::with('subcategories')
-            ->where('user_id', $user->id)
+        // DATOS PARA LA VISTA DE PEDIDOS
+        $pedidos = Pedido::where('user_id', $user->id)
             ->where('archivada', false)
-            ->where('unidad','unit')
-            ->where('cantidad', '<', 5)
-            ->get();
+            ->orderByDesc('id')
+            ->paginate(8, ['*'], 'pedidos_page');
 
-        $response = Http::withoutVerifying()->get('https://api-inventario-morning-paper-8617.fly.dev/api/productos/');
-        $url = 'https://api-inventario-morning-paper-8617.fly.dev/producto/';
-
-        $productosProveedor = collect($response->json() ?? []);
-
-        $page = request()->get('page', 1);
-        $perPage = 5;
-
-        $paginados = new LengthAwarePaginator(
-            $productosProveedor->forPage($page, $perPage),
-            $productosProveedor->count(),
-            $perPage,
-            $page,
-            ['path' => request()->url(), 'query' => request()->query()]
-        );
-
-        return view('Inventario.cotizador', compact('productos', 'paginados', 'url'));
-    }
-
-    public function addPedido(Request $request)
-    {
-        $user = Auth::user();
-
-        $request->validate([
-            'nameProduct' => 'required|string|max:255',
-            'priceProduct' => 'required|numeric',
-            'descriptionProduct' => 'nullable|string',
-            'urlProduct' => 'required|url',
-        ]);
-
-        try {
-
-            Pedido::create(
-                [
-                    'user_id' => $user->id,
-                    'nameProduct' => $request->nameProduct,
-                    'priceProduct' => $request->priceProduct,
-                    'descriptionProduct'=> $request->descriptionProduct,
-                    'urlProduct' => $request->urlProduct,
-                ]
-            );
-            
-            return redirect()
-                ->route('inventario')
-                ->with('success', 'Producto guardado');
-                
-        } catch (\Exception $e) {
-            return redirect()
-                ->route('inventario')
-                ->with('error', 'Ocurrio un error al guardar. ' . $e->getMessage())
-                ->withInput();
-        }
-    }
-
-    public function verPedidos()
-    {
-        $user = Auth::user();
-
-        $pedidos = Pedido::where('user_id', $user->id)->get();
+        $archivados = Pedido::where('user_id', $user->id)
+            ->where('archivada', true)
+            ->orderByDesc('fecha_archivado')
+            ->paginate(8, ['*'], 'historial_page');
 
         $productos = Inventory::where('user_id', $user->id)
             ->where('archivada', false)
@@ -553,7 +637,140 @@ class InventoryController extends Controller
             })
             ->get();
 
+        $categorias = Category::all();
+        $subcategorias = Subcategory::all();
+
         // Generar sugerencias
+        $sugerencias = [];
+        foreach ($pedidos as $pedido) {
+            $nombrePedido = strtolower(trim($pedido->nameProduct));
+            $coincidencias = $productos->map(function ($producto) use ($nombrePedido) {
+                $nombreProducto = strtolower(trim($producto->nombreProducto));
+                $distancia = levenshtein($nombreProducto, $nombrePedido);
+                return [
+                    'producto' => $producto,
+                    'distancia' => $distancia,
+                ];
+            });
+            $mejorCoincidencia = $coincidencias->sortBy('distancia')->first();
+            $sugerencias[$pedido->id] = $mejorCoincidencia['producto'] ?? null;
+        }
+
+        return view('Inventario.cotizador', compact(
+            'pedidos',
+            'archivados',
+            'productos',
+            'categorias',
+            'subcategorias',
+            'sugerencias'
+        ));
+    }
+
+    public function addPedido(Request $request)
+    {
+        $user = Auth::user();
+
+        // Detectar si es producto API oficial (tiene "nameProduct")
+        $esApiOficial = $request->has('nameProduct');
+
+        if ($esApiOficial) {
+            // Producto desde la API oficial del proveedor
+            $name = $request->nameProduct;
+            $price = $request->priceProduct;
+            $desc = $request->descriptionProduct ?? 'Sin descripción';
+            $url  = $request->urlProduct;
+
+            $dataCrear = [
+                'user_id'            => $user->id,
+                'nameProduct'        => $name,
+                'priceProduct'       => $price,
+                'descriptionProduct' => $desc,
+                'urlProduct'         => $url,
+            ];
+
+        } else {
+            // Producto desde el SCRAPER multi-tienda
+            $dataCrear = [
+                'user_id'            => $user->id,
+                'nameProduct'        => $request->nombreProducto,
+                'priceProduct'       => $request->precioProducto,
+                'descriptionProduct' => $request->descripcion ?? 'Sin descripción',
+                'urlProduct'         => $request->linkProducto,
+
+                // CAMPOS EXTRA SCRAPER
+                'imagen'             => $request->imagen ?? null,
+                'categoria'          => $request->categoria ?? null,
+                'subcategoria'       => $request->subcategoria ?? null,
+                'tienda'             => $request->tienda ?? null,
+            ];
+        }
+
+        try {
+            Pedido::create($dataCrear);
+
+            // Si es petición AJAX, devolver JSON
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Producto agregado a tus pedidos correctamente'
+                ]);
+            }
+
+            // Si no es AJAX
+            return redirect()
+                ->route('inventario')
+                ->with('success', 'Producto guardado correctamente');
+
+        } catch (\Exception $e) {
+            // Si es petición AJAX, devolver JSON con error
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Error al agregar el producto: ' . $e->getMessage()
+                ], 500);
+            }
+
+            // Si no es AJAX, redirigir con error
+            return redirect()
+                ->route('inventario')
+                ->with('error', 'Error: ' . $e->getMessage())
+                ->withInput();
+        }
+    }
+
+    public function verPedidos(Request $request)
+    {
+        $user = Auth::user();
+
+        // Paginación para pedidos activos (8 por página)
+        $pedidos = Pedido::where('user_id', $user->id)
+            ->where('archivada', false)
+            ->orderByDesc('id')
+            ->paginate(8, ['*'], 'pedidos_page');
+
+        // Paginación para historial (8 por página)
+        $archivados = Pedido::where('user_id', $user->id)
+            ->where('archivada', true)
+            ->orderByDesc('fecha_archivado')
+            ->paginate(8, ['*'], 'historial_page');
+
+        $productos = Inventory::where('user_id', $user->id)
+            ->where('archivada', false)
+            ->where(function ($query) {
+                $query->where(function ($q) {
+                    $q->where('unidad', 'unit')->where('cantidad', '<', 5);
+                })->orWhere(function ($q) {
+                    $q->whereIn('unidad', ['gr', 'ml'])->where('cantidad', '<', 20);
+                })->orWhere(function ($q) {
+                    $q->whereIn('unidad', ['kg', 'l'])->where('cantidad', '<', 3);
+                });
+            })
+            ->get();
+
+        $categorias = Category::all();
+        $subcategorias = Subcategory::all();
+
+        // Generar sugerencias solo para los pedidos de la página actual
         $sugerencias = [];
 
         foreach ($pedidos as $pedido) {
@@ -577,37 +794,134 @@ class InventoryController extends Controller
             $sugerencias[$pedido->id] = $mejorCoincidencia['producto'] ?? null;
         }
 
+        // SI ES AJAX, DEVOLVER SOLO EL HTML
+        if ($request->ajax() || $request->wantsJson()) {
+            return view('inventario.pedidos', compact('pedidos', 'productos', 'sugerencias', 'categorias', 'subcategorias', 'archivados'))->render();
+        }
 
-        return view('inventario.pedidos', compact('pedidos', 'productos', 'sugerencias'));
+        // SI NO ES AJAX, DEVOLVER LA VISTA COMPLETA
+        return view('inventario.pedidos', compact('pedidos', 'productos', 'sugerencias', 'categorias', 'subcategorias', 'archivados'));
+    }
+
+    public function buscarProducto(Request $request)
+    {
+        $user = Auth::user();
+        
+        $nombre = $request->input('nombre');
+        
+        // Buscar producto exacto o similar
+        $producto = Inventory::where('user_id', $user->id)
+            ->where('archivada', false)
+            ->where(function($query) use ($nombre) {
+                $query->whereRaw('LOWER(nombreProducto) = ?', [strtolower($nombre)])
+                    ->orWhereRaw('LOWER(nombreProducto) LIKE ?', ['%' . strtolower($nombre) . '%']);
+            })
+            ->first();
+        
+        if ($producto) {
+            return response()->json([
+                'encontrado' => true,
+                'producto' => [
+                    'id' => $producto->id,
+                    'nombreProducto' => $producto->nombreProducto,
+                    'cantidad' => $producto->cantidad,
+                    'precio' => $producto->precio
+                ]
+            ]);
+        }
+        
+        return response()->json([
+            'encontrado' => false
+        ]);
     }
 
     public function deletePedido(Request $request, $id)
     {
         $user = Auth::user();
-        $pedido = Pedido::where('user_id', $user->id)->findOrFail($id);
+        
+        try {
+            $pedido = Pedido::where('user_id', $user->id)->findOrFail($id);
+            $pedido->delete();
 
-        // Si se envian datos de producto para actualizar inventario
+            if ($request->ajax()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Pedido eliminado correctamente.'
+                ]);
+            }
+
+            return redirect()->route('inventario')->with('success', 'Pedido eliminado correctamente.');
+            
+        } catch (\Exception $e) {
+            if ($request->ajax()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Error al eliminar el pedido: ' . $e->getMessage()
+                ], 500);
+            }
+            
+            return redirect()->route('inventario')->with('error', 'Error al eliminar el pedido.');
+        }
+    }
+
+    public function archivarPedido(Request $request, $id)
+    {
+        $user = Auth::user();
+        $pedido = Pedido::where('user_id', $user->id)->findOrFail($id);
+        $mensaje = 'Pedido archivado correctamente.';
+
+        // Si se envían datos de producto para actualizar inventario
         if ($request->filled('producto_id') && ($request->filled('precio') || $request->filled('cantidad'))) {
             $producto = Inventory::find($request->input('producto_id'));
 
             $precio_unitario = $request->input('precio');
             $cantidad = $request->input('cantidad');
 
-            // Calcular Precio
+            // Calcular Precio Total
             $precio_total = $precio_unitario * $cantidad;
 
-            $request->merge(['precio' => $precio_total]);
+            // Calcular Cantidad Total
+            $cantidad_total = $cantidad + $producto->cantidad;
 
+            // CREAR ARRAY CON TODOS LOS DATOS NECESARIOS
+            $datosActualizacion = [
+                'precio' => $precio_total,
+                'cantidad' => $cantidad_total,
+            ];
+
+            // DETERMINAR PROVEEDOR SEGÚN ORIGEN DEL PEDIDO
+            if (!empty($pedido->tienda)) {
+                // Viene del SCRAPER con tienda específica
+                $datosActualizacion['tienda'] = $pedido->tienda;
+                $datosActualizacion['linkProducto'] = $pedido->urlProduct;
+            } elseif (!empty($pedido->urlProduct)) {
+                // Viene de la API OFICIAL
+                $datosActualizacion['tienda'] = 'Proveedor API';
+                $datosActualizacion['urlProduct'] = $pedido->urlProduct;
+            }
+
+            // HACER MERGE DE TODOS LOS DATOS DE UNA VEZ
+            $request->merge($datosActualizacion);
+
+            // LLAMAR A LA FUNCIÓN DE ACTUALIZACIÓN
             $this->aplicarActualizacionInventario($request, $producto->id);
 
-            $mensaje = 'Pedido confirmado, inventario actualizado y eliminado correctamente.';
-        } else {
-            $mensaje = 'Pedido eliminado correctamente.';
+            $mensaje = 'Pedido confirmado, inventario actualizado.';
         }
 
-        $pedido->delete();
+        $pedido->archivada = true;
+        $pedido->fecha_archivado = now();
+        $pedido->save();
+
+        if ($request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'message' => $mensaje
+            ]);
+        }
 
         return redirect()->route('inventario')->with('success', $mensaje);
+
     }
 
     /**

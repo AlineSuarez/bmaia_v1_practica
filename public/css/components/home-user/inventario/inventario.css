@@ -1,3 +1,193 @@
+/* ============================================
+   ESTILOS PARA ORDENAMIENTO Y FILTROS
+   ============================================ */
+
+/* Headers clickeables */
+.sortable-header,
+[data-filter] {
+    cursor: pointer;
+    user-select: none;
+    position: relative;
+    transition: all 0.2s ease;
+}
+
+.sortable-header:hover,
+[data-filter]:hover {
+    background-color: #f3f4f6;
+}
+
+/* Contenedor de iconos de ordenamiento */
+.sort-icon {
+    display: inline-flex;
+    flex-direction: column;
+    margin-left: 6px;
+    vertical-align: middle;
+    gap: 1px;
+}
+
+/* Flechas de ordenamiento */
+.sort-arrow {
+    width: 0;
+    height: 0;
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+    transition: all 0.2s ease;
+}
+
+.sort-arrow.up {
+    border-bottom: 5px solid #9ca3af;
+    margin-bottom: 1px;
+}
+
+.sort-arrow.down {
+    border-top: 5px solid #9ca3af;
+}
+
+/* Estados de las flechas */
+.sort-arrow.active {
+    opacity: 1;
+}
+
+.sort-arrow.up.active {
+    border-bottom-color: #10b981;
+}
+
+.sort-arrow.down.active {
+    border-top-color: #10b981;
+}
+
+.sort-arrow.inactive {
+    opacity: 0.3;
+}
+
+/* Icono activo */
+.sort-icon.active {
+    transform: scale(1.1);
+}
+
+/* Icono de filtro de categoría */
+.filter-icon {
+    display: inline-block;
+    margin-left: 6px;
+    font-size: 12px;
+    transition: all 0.2s ease;
+    color: #6b7280;
+}
+
+[data-filter]:hover .filter-icon {
+    transform: translateY(2px);
+}
+
+/* Animación de ordenamiento */
+.inventory-table tbody.sorting-animation {
+    opacity: 0.6;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+
+/* Modal de categorías */
+#modalFiltroCategorias {
+    animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+#modalFiltroCategorias > div {
+    animation: slideDown 0.3s ease;
+}
+
+@keyframes slideDown {
+    from {
+        transform: translateY(-20px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+/* Select dentro de la modal */
+#selectCategoriaModal {
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+#selectCategoriaModal:hover {
+    border-color: #10b981;
+}
+
+#selectCategoriaModal:focus {
+    outline: none;
+    border-color: #10b981;
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+}
+
+/* Botones de la modal */
+#cerrarModalCategoria:hover {
+    color: #1f2937;
+    transform: scale(1.1);
+}
+
+/* Indicador visual de filtro activo */
+[data-filter].filtro-activo {
+    background-color: #d1fae5;
+}
+
+[data-filter].filtro-activo .filter-icon {
+    color: #10b981;
+    font-weight: bold;
+}
+
+/* Tooltip en hover */
+.sortable-header::after,
+[data-filter]::after {
+    content: attr(title);
+    position: absolute;
+    bottom: -30px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #1f2937;
+    color: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+    z-index: 1000;
+}
+
+.sortable-header:hover::after,
+[data-filter]:hover::after {
+    opacity: 1;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .sort-icon {
+        margin-left: 4px;
+    }
+    
+    .filter-icon {
+        font-size: 10px;
+        margin-left: 4px;
+    }
+    
+    #modalFiltroCategorias > div {
+        width: 90% !important;
+        max-width: 350px;
+    }
+}
+
 /* Estilos para selección multiple */
 .checkbox-seleccionar-producto {
     appearance: none;             
